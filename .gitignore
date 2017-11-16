@@ -1,0 +1,9 @@
+.idea/workspace.xml
+/.idea/
+.idea/
+.idea
+target/
+rubiconBot.iml
+bot-core.iml
+src/main/META-INF
+src/main/java/de/rubicon/util/Info.java
