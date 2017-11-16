@@ -2,12 +2,9 @@ package de.rubicon.command;
 
 public enum CommandCategory {
 
-    GENERAL
+    GENERAL,
+    id,
+    TEST,
+    displayname;
 
-    private String id;
-    private String displayname;
-
-    CommandCategory(String id, String displayname) {
-
-    }
 }

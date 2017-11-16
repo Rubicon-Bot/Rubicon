@@ -25,7 +25,7 @@ public class DiscordCore {
         new ListenerManager(builder);
         new CommandManager();
 
-        try {
+        /*try {
             jda = builder.buildBlocking();
         } catch (LoginException e) {
             Logger.error(e.getMessage());
@@ -33,7 +33,7 @@ public class DiscordCore {
             Logger.error(e.getMessage());
         } catch (RateLimitedException e) {
             Logger.error(e.getMessage());
-        }
+        }*/
     }
 
     public JDA getJDA() {
