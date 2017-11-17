@@ -45,6 +45,13 @@ public abstract class Command {
         e.getMessage().delete().queue();
     }
 
+    protected void sendEmbededMessage(String message) {
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.setDescription(message);
+        builder.setColor(Colors.COLOR_PRIMARY);
+        e.getTextChannel().sendMessage(builder.build()).queue(msg -> msg.delete().queueAfter(defaultDeleteSeconds, TimeUnit.SECONDS));
+    }
+
     protected void sendErrorMessage(String message) {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setAuthor("Error", null, e.getJDA().getSelfUser().getEffectiveAvatarUrl());

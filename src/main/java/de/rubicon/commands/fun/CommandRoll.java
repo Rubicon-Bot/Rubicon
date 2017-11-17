@@ -14,10 +14,27 @@ public class CommandRoll extends Command{
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
         int randomnumber, lownumber, highnumber;
-        lownumber = Integer.valueOf(args[0]);
-        highnumber = Integer.valueOf(args[1]);
-        randomnumber = (int)(Math.random() *highnumber)+lownumber;
-        e.getTextChannel().sendMessage(e.getAuthor().getAsMention()+ " rolls a " + randomnumber).queue(msg -> msg.delete().queueAfter(defaultDeleteSeconds, TimeUnit.SECONDS));
+        if(args.length<1)
+        {
+            sendUsageMessage();
+            return;
+        }
+        try {
+            lownumber = Integer.parseInt(args[0]);
+            highnumber = Integer.parseInt(args[1]);
+        }catch (NumberFormatException exception){
+            lownumber = highnumber = 0;
+            sendErrorMessage("Only numbers allowed.");
+            sendUsageMessage();
+            return;
+        }
+        if(lownumber>highnumber) {
+            randomnumber = (int) (Math.random() * lownumber) + highnumber;
+            sendEmbededMessage(e.getAuthor().getAsMention() + " rolls a " + randomnumber);
+        }else {
+            randomnumber = (int) (Math.random() * highnumber) + lownumber;
+            sendEmbededMessage(e.getAuthor().getAsMention() + " rolls a " + randomnumber);
+        }
     }
 
     @Override
@@ -26,8 +43,7 @@ public class CommandRoll extends Command{
     }
 
     @Override
-    public String getUsage() {
-        return "roll lowNumber highNumber";
+    public String getUsage() { return "roll <number> <number>";
     }
 
     @Override

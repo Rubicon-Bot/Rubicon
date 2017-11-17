@@ -14,7 +14,7 @@ public class CommandPing extends Command{
 
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
-        e.getTextChannel().sendMessage("Pong! Bot online.").queue(msg -> msg.delete().queueAfter(defaultDeleteSeconds, TimeUnit.SECONDS));
+       sendEmbededMessage("Pong! Bot online.");
     }
 
     @Override
