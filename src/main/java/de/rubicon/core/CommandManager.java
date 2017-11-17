@@ -16,10 +16,7 @@ public class CommandManager {
     private void initCommands() {
         CommandHandler.addCommand(new CommandPing("ping", CommandCategory.BOT_OWNER));
         CommandHandler.addCommand(new CommandRoll("roll", CommandCategory.FUN));
-<<<<<<< HEAD
         CommandHandler.addCommand(new CommandHelp("help", CommandCategory.GENERAL));
-=======
         CommandHandler.addCommand(new CommandSearch("search", CommandCategory.TOOLS));
->>>>>>> master
     }
 }
