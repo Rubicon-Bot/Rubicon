@@ -34,7 +34,7 @@ public class CommandClear extends Command{
         e.getMessage().delete().queue();
         //PERMISSION HERE
         if (args.length < 1) sendErrorMessage("Please give an amount of Messages!");
-        int numb = (args[0]);
+        int numb = Integer.parseInt(args[0]);
         if (numb > 1 && numb <= 100) {
             try{
                 MessageHistory history = new MessageHistory(e.getChannel());
