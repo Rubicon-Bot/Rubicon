@@ -115,7 +115,7 @@ public class MySQL {
 
     public boolean ifGuildExits(Guild guild){
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM guild where serverid =?");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM guilds where serverid =?");
             ps.setString(1, guild.getId());
             ResultSet rs = ps.executeQuery();
             return rs.next();
@@ -125,15 +125,44 @@ public class MySQL {
         return false;
     }
 
-    public MySQL updateGuildValue(Guild guild, String row, String value){
-        try {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO `guild`(`serverid`, `channel`, `prefix`, `joinmsg`, `leavemsg`, 'logchannel') VALUES (?, '0', '0', '0', '_', '1', '0', 'Welcome %user% on %guild%', 'Bye %user%', '0')");
+    public void updateGuildValue(Guild guild, String type, String value){
+        try{
+            if(connection.isClosed())
+                connect();
+            if(!ifGuildExits(guild))
+                createGuildServer(guild);
+            PreparedStatement ps = connection.prepareStatement("UPDATE guilds SET " + type + " = '" + value + "' WHERE serverid = " + guild.getId());
+            ps.execute();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+    public String getGuildValue(Guild guild, String type){
+        try{
+            if(connection.isClosed())
+                connect();
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM guilds WHERE `serverid` = ?");
+            ps.setString(1, guild.getId());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                return rs.getString(type);
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public void createGuildServer(Guild guild) {
+        try{
+            if(connection.isClosed())
+                connect();
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO `guilds`(`serverid`, `channel`, `prefix`, `joinmsg`, `leavemsg`, `logchannel`) VALUES (?, '0', 'LE!', 'Welcome %user% on %guild%', 'Bye %user%', '0')");
             ps.setString(1, String.valueOf(guild.getIdLong()));
             ps.execute();
         } catch (SQLException e){
             e.printStackTrace();
         }
-        return this;
     }
+
 
 }
