@@ -5,6 +5,7 @@ public enum CommandCategory {
     TEST("test", "Test"),
     GENERAL("general", "General"),
     FUN("fun", "Fun"),
+    TOOLS("tools", "Tools"),
     MODERATION("mod", "Moderation"),
     ADMIN("admin", "Admin"),
     GUILD_OWNER("guildOwner", "Server Owner"),
