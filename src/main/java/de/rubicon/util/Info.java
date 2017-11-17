@@ -44,4 +44,8 @@ public class Info {
 
     }
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> master
