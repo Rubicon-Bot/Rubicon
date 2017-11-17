@@ -14,7 +14,7 @@ public class Info {
     public final static String BOT_NAME = "Rubicon";
     public final static String BOT_VERSION = "0.1.0";
     public final static String CONFIG_FILE = "config.json";
-    public final static String[] CONFIG_KEYS = {"token","mysql_host","mysql_port","mysql_database","mysql_password","mysql_user"};
+    public final static String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user"};
     public final static User[] BOT_AUTHORS = {
             DiscordCore.getJDA().getUserById(227817074976751616L), //ForYaSee
             DiscordCore.getJDA().getUserById(318773753796624394L), //Scryptex
@@ -35,7 +35,7 @@ public class Info {
     public static void init() {
         Configuration cfg = Main.getConfiguration();
         for (String configKey : CONFIG_KEYS) {
-            if(!cfg.has(configKey)){
+            if (!cfg.has(configKey)) {
                 String input = Setup.prompt("Please enter the the value of " + configKey);
                 cfg.set(configKey, input);
             }
@@ -43,9 +43,4 @@ public class Info {
         }
 
     }
-
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> master
