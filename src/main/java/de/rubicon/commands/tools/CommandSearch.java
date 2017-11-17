@@ -80,7 +80,7 @@ public class CommandSearch extends Command {
 
     @Override
     public String getDescription() {
-        return "Searches for users, roles and channels with a specified name";
+        return "Searches for users, roles and channels with a specified name.";
     }
 
     @Override

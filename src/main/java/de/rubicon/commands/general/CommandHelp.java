@@ -6,15 +6,11 @@ import de.rubicon.command.CommandHandler;
 import de.rubicon.core.DiscordCore;
 import de.rubicon.util.Colors;
 import de.rubicon.util.Info;
-import de.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 public class CommandHelp extends Command {
 
@@ -42,19 +38,19 @@ public class CommandHelp extends Command {
 
             for (Map.Entry<String, Command> c : CommandHandler.getCommands().entrySet()) {
                 if(c.getValue().getCategory().equals(CommandCategory.GENERAL)) {
-                    sbGeneral.append(Info.BOT_DEFAULT_PREFIX + c.getValue().getCommand() + "\n");
+                    sbGeneral.append(Info.BOT_DEFAULT_PREFIX + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
                 } else if(c.getValue().getCategory().equals(CommandCategory.FUN)) {
-                    sbFun.append(Info.BOT_DEFAULT_PREFIX + c.getValue().getCommand() + "\n");
+                    sbFun.append(Info.BOT_DEFAULT_PREFIX + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
                 } else if(c.getValue().getCategory().equals(CommandCategory.TOOLS)) {
-                    sbTools.append(Info.BOT_DEFAULT_PREFIX + c.getValue().getCommand() + "\n");
+                    sbTools.append(Info.BOT_DEFAULT_PREFIX + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
                 } else if(c.getValue().getCategory().equals(CommandCategory.MODERATION)) {
-                    sbModeration.append(Info.BOT_DEFAULT_PREFIX + c.getValue().getCommand() + "\n");
+                    sbModeration.append(Info.BOT_DEFAULT_PREFIX + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
                 } else if(c.getValue().getCategory().equals(CommandCategory.ADMIN)) {
-                    sbAdmin.append(Info.BOT_DEFAULT_PREFIX + c.getValue().getCommand() + "\n");
+                    sbAdmin.append(Info.BOT_DEFAULT_PREFIX + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
                 } else if(c.getValue().getCategory().equals(CommandCategory.GUILD_OWNER)) {
-                    sbGuildOwner.append(Info.BOT_DEFAULT_PREFIX + c.getValue().getCommand() + "\n");
+                    sbGuildOwner.append(Info.BOT_DEFAULT_PREFIX + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
                 } else if(c.getValue().getCategory().equals(CommandCategory.BOT_OWNER)) {
-                    sbBotOwner.append(Info.BOT_DEFAULT_PREFIX + c.getValue().getCommand() + "\n");
+                    sbBotOwner.append(Info.BOT_DEFAULT_PREFIX + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
                 }
             }
 
@@ -76,7 +72,7 @@ public class CommandHelp extends Command {
 
     @Override
     public String getDescription() {
-        return "Shows all commands in a list!";
+        return "Shows all commands in a list.";
     }
 
     @Override

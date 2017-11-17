@@ -64,12 +64,12 @@ public class CommandGoogle extends Command{
 
     @Override
     public String getDescription() {
-        return null;
+        return "Google (useful) stuff.";
     }
 
     @Override
     public String getUsage() {
-        return "google <Search Querry>";
+        return "google <Search Query>";
     }
 
     @Override

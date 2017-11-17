@@ -19,11 +19,6 @@ public abstract class Command {
      * 4 - Bot Owner
      */
 
-    /*
-     * Categories
-     *
-     */
-
     protected int defaultDeleteSeconds = 30;
 
     protected String command;
