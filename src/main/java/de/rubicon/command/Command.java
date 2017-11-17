@@ -30,12 +30,10 @@ public abstract class Command {
     protected String[] args;
     protected MessageReceivedEvent e;
     protected CommandCategory category;
-    protected CommandCategory subcategory;
 
-    public Command(String command, CommandCategory category, CommandCategory subcategory) {
+    public Command(String command, CommandCategory category) {
         this.command = command;
         this.category = category;
-        this.subcategory = subcategory;
     }
 
     public void call(String[] args, MessageReceivedEvent e) {
@@ -98,9 +96,6 @@ public abstract class Command {
         return category;
     }
 
-    public CommandCategory getSubcategory() {
-        return subcategory;
-    }
 
     public abstract String getDescription();
 
