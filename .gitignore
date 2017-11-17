@@ -1,5 +1,4 @@
 # Created by .ignore support plugin (hsz.mobi)
-.gitignore
 .idea/
 .idea/workspace.xml
 /.idea/
@@ -8,5 +7,4 @@
 target/
 rubiconBot.iml
 rubicon.iml
-src/main/java/de/rubicon/util/Info.java
 /config.json
