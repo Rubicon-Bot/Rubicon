@@ -1,0 +1,34 @@
+package fun.rubicon.core;
+
+import fun.rubicon.command.CommandCategory;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.commands.botowner.CommandStop;
+import fun.rubicon.commands.general.CommandHelp;
+import fun.rubicon.commands.general.CommandInfo;
+import fun.rubicon.commands.general.CommandPing;
+import fun.rubicon.commands.fun.CommandRoll;
+import fun.rubicon.commands.guildowner.CommandSettings;
+import fun.rubicon.commands.guildowner.CommandStartup;
+import fun.rubicon.commands.moderation.CommandClear;
+import fun.rubicon.commands.tools.CommandGoogle;
+import fun.rubicon.commands.tools.CommandSearch;
+
+public class CommandManager {
+
+    public CommandManager() {
+        initCommands();
+    }
+
+    private void initCommands() {
+        CommandHandler.addCommand(new CommandPing("ping", CommandCategory.GENERAL));
+        CommandHandler.addCommand(new CommandRoll("roll", CommandCategory.FUN));
+        CommandHandler.addCommand(new CommandHelp("help", CommandCategory.GENERAL));
+        CommandHandler.addCommand(new CommandSearch("search", CommandCategory.TOOLS));
+        CommandHandler.addCommand(new CommandClear("clear", CommandCategory.MODERATION));
+        CommandHandler.addCommand(new CommandGoogle("google", CommandCategory.GENERAL));
+        CommandHandler.addCommand(new CommandInfo("info", CommandCategory.GENERAL));
+        CommandHandler.addCommand(new CommandSettings("settings", CommandCategory.GUILD_OWNER));
+        CommandHandler.addCommand(new CommandStartup("startup", CommandCategory.GUILD_OWNER));
+        CommandHandler.addCommand(new CommandStop("stop", CommandCategory.BOT_OWNER));
+    }
+}
