@@ -8,6 +8,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.List;
 
 public class Configuration {
 
@@ -104,6 +105,7 @@ public class Configuration {
         }
         return 0;
     }
+
 
     public boolean has(final String key){
         return this.json.has(key);
