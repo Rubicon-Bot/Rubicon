@@ -15,7 +15,7 @@ public class Info {
     public final static String BOT_VERSION = "0.1.0";
     public final static String CONFIG_FILE = "config.json";
     public final static String[] CONFIG_KEYS = {"token","mysql_host","mysql_port","mysql_database","mysql_password","mysql_user"};
-    public final static User[] BOT_AUTHORS = {
+    /*public final static User[] BOT_AUTHORS = {
             DiscordCore.getJDA().getUserById(227817074976751616L), //ForYaSee
             DiscordCore.getJDA().getUserById(318773753796624394L), //Scryptex
             DiscordCore.getJDA().getUserById(138014719582797824L), //Eiskeks
@@ -23,7 +23,7 @@ public class Info {
             DiscordCore.getJDA().getUserById(148905646715043841L), //Robert
             DiscordCore.getJDA().getUserById(153507094933274624L), //Lee
             DiscordCore.getJDA().getUserById(224528662710452224L) //ForMoJa
-    };
+    };*/
     /* MySQL login */
     public final static String MYSQL_HOST = cfg.getString("mysql_host");
     public final static String MYSQL_PORT = cfg.getString("mysql_port");
