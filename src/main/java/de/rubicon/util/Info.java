@@ -12,6 +12,8 @@ public class Info {
 
     public final static String BOT_NAME = "Rubicon";
     public final static String BOT_VERSION = "0.1.0";
+    public final static String BOT_WEBSITE = "https://rubicon.fun";
+    public final static String BOT_GITHUB = "https://github.com/Rubicon-Bot/RubiCon";
     public final static String CONFIG_FILE = "config.json";
     public final static String[] CONFIG_KEYS = {"token","mysql_host","mysql_port","mysql_database","mysql_password","mysql_user"};
     public final static User[] BOT_AUTHORS = {

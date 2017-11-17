@@ -3,6 +3,7 @@ package de.rubicon.core;
 import de.rubicon.command.CommandCategory;
 import de.rubicon.command.CommandHandler;
 import de.rubicon.commands.general.CommandHelp;
+import de.rubicon.commands.general.CommandInfo;
 import de.rubicon.commands.general.CommandPing;
 import de.rubicon.commands.fun.CommandRoll;
 import de.rubicon.commands.moderation.CommandClear;
@@ -22,5 +23,6 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandSearch("search", CommandCategory.TOOLS));
         CommandHandler.addCommand(new CommandClear("clear", CommandCategory.MODERATION));
         CommandHandler.addCommand(new CommandGoogle("google", CommandCategory.GENERAL));
+        CommandHandler.addCommand(new CommandInfo("info", CommandCategory.GENERAL));
     }
 }
