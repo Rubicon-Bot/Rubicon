@@ -4,9 +4,13 @@ import de.rubicon.command.Command;
 import de.rubicon.command.CommandCategory;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
+<<<<<<< HEAD
 import java.util.concurrent.TimeUnit;
 
 public class CommandRoll extends Command {
+=======
+public class CommandRoll extends Command{
+>>>>>>> master
     public CommandRoll(String command, CommandCategory category) {
         super(command, category);
     }

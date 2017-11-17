@@ -14,12 +14,13 @@ import javax.security.auth.login.LoginException;
 public class DiscordCore {
 
     private static JDA jda;
+    private static String token;
 
-    public void start() {
-        Info.init();
+    public static void start() {
+        token = Main.getConfiguration().getString("token");
 
         JDABuilder builder = new JDABuilder(AccountType.BOT);
-        builder.setToken(Info.BOT_TOKEN);
+        builder.setToken(token);
         builder.setGame(Game.of(Info.BOT_NAME + " " + Info.BOT_VERSION));
 
         new ListenerManager(builder);
@@ -34,6 +35,7 @@ public class DiscordCore {
         } catch (RateLimitedException e) {
             Logger.error(e.getMessage());
         }
+        Info.init();
     }
 
     public static JDA getJDA() {
