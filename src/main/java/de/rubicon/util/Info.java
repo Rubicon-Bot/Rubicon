@@ -7,7 +7,6 @@ import net.dv8tion.jda.core.entities.User;
 public class Info {
 
     static Configuration cfg = Main.getConfiguration();
-    public final static String BOT_TOKEN = cfg.getString("token");
     public final static String BOT_ID = "380713705073147915";
     public final static String BOT_DEFAULT_PREFIX = "RC!";
 
@@ -43,4 +42,5 @@ public class Info {
         }
 
     }
+
 }
