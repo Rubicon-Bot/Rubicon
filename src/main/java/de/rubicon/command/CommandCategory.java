@@ -2,13 +2,6 @@ package de.rubicon.command;
 
 public enum CommandCategory {
 
-<<<<<<< HEAD
-    GENERAL,
-    id,
-    TEST,
-    displayname;
-
-=======
     TEST("test", "Test"),
     GENERAL("general", "General"),
     FUN("fun", "Fun"),
@@ -34,5 +27,4 @@ public enum CommandCategory {
     public String getDisplayname() {
         return displayname;
     }
->>>>>>> 80afd8508f106d6342277fe619c25c22a895a416
 }
