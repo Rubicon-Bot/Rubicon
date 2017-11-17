@@ -7,5 +7,4 @@
 target/
 rubiconBot.iml
 rubicon.iml
-src/main/java/de/rubicon/util/Info.java
 /config.json
