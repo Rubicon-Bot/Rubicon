@@ -38,9 +38,6 @@ public class Info {
                 String input = Setup.prompt("Please enter the the value of " + configKey);
                 cfg.set(configKey, input);
             }
-
         }
-
     }
-
 }
