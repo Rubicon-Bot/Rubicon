@@ -12,7 +12,7 @@ public class CommandManager {
     }
 
     private void initCommands() {
-        CommandHandler.addCommand(new CommandPing("ping", CommandCategory.BOT_OWNER, CommandCategory.SUB_NONE));
-        CommandHandler.addCommand(new CommandRoll("roll", CommandCategory.FUN, CommandCategory.SUB_NONE));
+        CommandHandler.addCommand(new CommandPing("ping", CommandCategory.BOT_OWNER));
+        CommandHandler.addCommand(new CommandRoll("roll", CommandCategory.FUN));
     }
 }

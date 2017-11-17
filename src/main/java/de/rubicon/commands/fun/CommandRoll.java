@@ -7,8 +7,8 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import java.util.concurrent.TimeUnit;
 
 public class CommandRoll extends Command{
-    public CommandRoll(String command, CommandCategory category, CommandCategory subcategory) {
-        super(command, category, subcategory);
+    public CommandRoll(String command, CommandCategory category) {
+        super(command, category);
     }
 
     @Override
