@@ -70,7 +70,40 @@ public class MySQL {
         } catch (SQLException e){
             e.printStackTrace();
         }
-
         return null;
     }
+
+    /**
+     *
+     * @param table
+     * @param key
+     * @param value
+     * @param where
+     * @param wherevalue
+     * @return null
+     */
+    public MySQL setString(String table, String key, String value, String where, String wherevalue){
+        try {
+            PreparedStatement ps = connection.prepareStatement("UPDATE ? SET ?=? WHERE ?=?");
+            ps.setString(1, table);
+            ps.setString(2, key);
+            ps.setString(3, value);
+            ps.setString(4, where);
+            ps.setString(5, wherevalue);
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return this;
+    }
+
+    public MySQL executePreparedStatement(PreparedStatement ps){
+        try {
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+
 }

@@ -1,4 +1,11 @@
-/config.json
-/rubiconBot.iml
+# Created by .ignore support plugin (hsz.mobi)
+# Created by .ignore support plugin (hsz.mobi)
+.idea/
+.idea/workspace.xml
 /.idea/
-/target/
+.idea
+.idea/*
+target/
+rubiconBot.iml
+rubicon.iml
+/config.json
