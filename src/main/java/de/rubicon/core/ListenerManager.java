@@ -1,6 +1,7 @@
 package de.rubicon.core;
 
 import de.rubicon.listener.CommandListener;
+import de.rubicon.listener.SelfMentionListener;
 import net.dv8tion.jda.core.JDABuilder;
 
 public class ListenerManager {
@@ -14,5 +15,6 @@ public class ListenerManager {
 
     private void initListener() {
         b.addEventListener(new CommandListener());
+        b.addEventListener(new SelfMentionListener());
     }
 }

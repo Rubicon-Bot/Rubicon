@@ -13,7 +13,7 @@ import javax.security.auth.login.LoginException;
 
 public class DiscordCore {
 
-    private JDA jda;
+    private static JDA jda;
 
     public void start() {
         Info.init();
@@ -36,7 +36,7 @@ public class DiscordCore {
         }*/
     }
 
-    public JDA getJDA() {
+    public static JDA getJDA() {
         return jda;
     }
 }

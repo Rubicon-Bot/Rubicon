@@ -3,6 +3,7 @@ package de.rubicon.commands.botowner;
 import de.rubicon.command.Command;
 import de.rubicon.command.CommandCategory;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import java.util.concurrent.TimeUnit;
 
 public class CommandPing extends Command{
 
@@ -13,7 +14,7 @@ public class CommandPing extends Command{
 
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
-        e.getTextChannel().sendMessage("Pong! Bot online.").queue();
+       sendEmbededMessage("Pong! Bot online.");
     }
 
     @Override

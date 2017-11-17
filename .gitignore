@@ -9,7 +9,8 @@
 .idea
 >>>>>>> 80afd8508f106d6342277fe619c25c22a895a416
 target/
-rubiconBot.iml
+rubiconBot.iml
+rubicon.iml
 bot-core.iml
 src/main/META-INF
 src/main/java/de/rubicon/util/Info.java
