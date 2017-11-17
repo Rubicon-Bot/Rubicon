@@ -1,5 +1,7 @@
 package de.rubicon.util;
 
+import net.dv8tion.jda.core.entities.Guild;
+
 import java.sql.*;
 
 /**
@@ -97,10 +99,38 @@ public class MySQL {
         return this;
     }
 
+    public MySQL generatePermissions(Guild guild){
+
+        return this;
+    }
+
     public MySQL executePreparedStatement(PreparedStatement ps){
         try {
             ps.execute();
         } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+
+    public boolean ifGuildExits(Guild guild){
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM guild where serverid =?");
+            ps.setString(1, guild.getId());
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public MySQL updateGuildValue(Guild guild, String row, String value){
+        try {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO `guild`(`serverid`, `channel`, `prefix`, `joinmsg`, `leavemsg`, 'logchannel') VALUES (?, '0', '0', '0', '_', '1', '0', 'Welcome %user% on %guild%', 'Bye %user%', '0')");
+            ps.setString(1, String.valueOf(guild.getIdLong()));
+            ps.execute();
+        } catch (SQLException e){
             e.printStackTrace();
         }
         return this;
