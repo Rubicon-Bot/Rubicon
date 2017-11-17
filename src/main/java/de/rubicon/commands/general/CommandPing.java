@@ -1,4 +1,4 @@
-package de.rubicon.commands.botowner;
+package de.rubicon.commands.general;
 
 import de.rubicon.command.Command;
 import de.rubicon.command.CommandCategory;
