@@ -1,7 +1,7 @@
 package de.rubicon.listener;
 
+import de.rubicon.core.Main;
 import de.rubicon.util.MySQL;
-import de.rubicon.util.SQL;
 import net.dv8tion.jda.core.entities.Category;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -27,7 +27,7 @@ import java.util.TimerTask;
 public class JoinSQL extends ListenerAdapter {
     public void onGuildJoin(GuildJoinEvent event) {
         Guild g = event.getGuild();
-        MySQL.createServer(g);
+        Main.getMySQL().createGuildServer(g);
         System.out.println("System started on: " + g.getName());
         Guild guild = event.getGuild();
         GuildController controller = guild.getController();
@@ -55,8 +55,8 @@ public class JoinSQL extends ListenerAdapter {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                MySQL.updateValue(guild, "logchannel", event.getGuild().getTextChannelsByName("log", true).get(0).getId());
-                MySQL.updateValue(guild, "channel", event.getGuild().getTextChannelsByName("randomstuff", true).get(0).getId());
+                Main.getMySQL().updateGuildValue(guild, "logchannel", event.getGuild().getTextChannelsByName("log", true).get(0).getId());
+                Main.getMySQL().updateGuildValue(guild, "channel", event.getGuild().getTextChannelsByName("randomstuff", true).get(0).getId());
             }
         }, 7000);
 

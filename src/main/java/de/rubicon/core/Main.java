@@ -3,7 +3,7 @@ package de.rubicon.core;
 import de.rubicon.util.Configuration;
 import de.rubicon.util.Info;
 import de.rubicon.util.MySQL;
-import de.rubicon.util.SQL;
+
 
 import java.io.File;
 public class Main {
@@ -23,7 +23,6 @@ public class Main {
         discordCore.start();
         mySQL = new MySQL(Info.MYSQL_HOST, Info.MYSQL_PORT, Info.MYSQL_USER, Info.MYSQL_PASSWORD, Info.MYSQL_DATABASE);
         mySQL.connect();
-        SQL.connect();
     }
 
     public static DiscordCore getDiscordCore() {
