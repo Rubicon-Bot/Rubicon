@@ -45,7 +45,7 @@ public class MySQL {
             connection = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database, this.user, this.password);
             Logger.info("MySQL connection success");
         } catch (SQLException e){
-            Logger.error("MySQL connection failes");
+            Logger.error("MySQL connection failed");
             e.printStackTrace();
         }
         return this;
