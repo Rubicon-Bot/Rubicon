@@ -30,7 +30,7 @@ public class Info {
     public final static String MYSQL_PASSWORD = cfg.getString("mysql_password");
     public final static String MYSQL_DATABASE = cfg.getString("mysql_database");
 
-    //TODO Namen richtig?
+
     public static void init() {
         Configuration cfg = Main.getConfiguration();
         for (String configKey : CONFIG_KEYS) {
