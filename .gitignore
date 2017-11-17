@@ -1,6 +1,13 @@
+<<<<<<< HEAD
 # Created by .ignore support plugin (hsz.mobi)
 .gitignore
 .idea/
+=======
+.idea/workspace.xml
+/.idea/
+.idea/
+.idea
+>>>>>>> 80afd8508f106d6342277fe619c25c22a895a416
 target/
 rubiconBot.iml
 bot-core.iml
