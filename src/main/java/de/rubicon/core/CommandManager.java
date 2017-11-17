@@ -2,7 +2,7 @@ package de.rubicon.core;
 
 import de.rubicon.command.CommandCategory;
 import de.rubicon.command.CommandHandler;
-import de.rubicon.commands.botowner.CommandPing;
+import de.rubicon.commands.general.CommandPing;
 
 public class CommandManager {
 
