@@ -7,12 +7,20 @@ import de.rubicon.util.MySQL;
 import java.io.File;
 public class Main {
 
+<<<<<<< HEAD
     private static DiscordCore discordCore;
     private static MySQL mySQL;
+=======
+    public static Configuration getConfiguration() {
+        return configuration;
+    }
+
+>>>>>>> master
     private static Configuration configuration;
 
     public static void main(String[] args) {
         configuration = new Configuration(new File(Info.CONFIG_FILE));
+<<<<<<< HEAD
         discordCore = new DiscordCore();
         discordCore.start();
         mySQL = new MySQL(Info.MYSQL_HOST, Info.MYSQL_PORT, Info.MYSQL_USER, Info.MYSQL_PASSWORD, Info.MYSQL_DATABASE);
@@ -31,4 +39,8 @@ public class Main {
         return configuration;
     }
 
+=======
+        DiscordCore.start();
+    }
+>>>>>>> master
 }
