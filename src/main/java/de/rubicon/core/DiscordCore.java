@@ -15,7 +15,7 @@ public class DiscordCore {
 
     private static JDA jda;
 
-    public void start() {
+    public static void start() {
         Info.init();
 
         JDABuilder builder = new JDABuilder(AccountType.BOT);

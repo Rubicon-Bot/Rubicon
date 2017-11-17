@@ -6,8 +6,6 @@ import java.io.File;
 
 public class Main {
 
-    private static DiscordCore discordCore;
-
     public static Configuration getConfiguration() {
         return configuration;
     }
@@ -16,12 +14,6 @@ public class Main {
 
     public static void main(String[] args) {
         configuration = new Configuration(new File(Info.CONFIG_FILE));
-        discordCore = new DiscordCore();
-        discordCore.start();
+        DiscordCore.start();
     }
-
-    public static DiscordCore getDiscordCore() {
-        return discordCore;
-    }
-
 }
