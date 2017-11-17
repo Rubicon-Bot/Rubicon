@@ -1,14 +1,14 @@
 package de.rubicon.util;
 
-<<<<<<< HEAD
+
 import de.rubicon.core.Main;
 
 import java.util.HashMap;
-=======
+
 import de.rubicon.core.DiscordCore;
 import de.rubicon.core.Main;
 import net.dv8tion.jda.core.entities.User;
->>>>>>> master
+
 
 public class Info {
 
@@ -20,10 +20,10 @@ public class Info {
     public final static String BOT_NAME = "Rubicon";
     public final static String BOT_VERSION = "0.1.0";
     public final static String CONFIG_FILE = "config.json";
-    public final static String[] CONFIG_KEYS = {"token","mysql_host","mysql_port","mysql_database","mysql_password","mysql_user"};
-<<<<<<< HEAD
+    public final static String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user"};
+
     private static HashMap<String, Long> BOT_AUTHORS;
-=======
+
     public final static User[] BOT_AUTHORS = {
             DiscordCore.getJDA().getUserById(227817074976751616L), //ForYaSee
             DiscordCore.getJDA().getUserById(318773753796624394L), //Scryptex
@@ -33,7 +33,7 @@ public class Info {
             DiscordCore.getJDA().getUserById(153507094933274624L), //Lee
             DiscordCore.getJDA().getUserById(224528662710452224L) //ForMoJa
     };
->>>>>>> master
+
     /* MySQL login */
     public final static String MYSQL_HOST = cfg.getString("mysql_host");
     public final static String MYSQL_PORT = cfg.getString("mysql_port");
@@ -43,7 +43,7 @@ public class Info {
 
     //TODO Namen richtig?
     public static void init() {
-<<<<<<< HEAD
+
         BOT_AUTHORS = new HashMap<String, Long>();
         BOT_AUTHORS.put("ForYaSee", 227817074976751616L);
         BOT_AUTHORS.put("xEiiskeksx", 138014719582797824L);
@@ -53,21 +53,13 @@ public class Info {
         BOT_AUTHORS.put("Lee", 153507094933274624L);
         BOT_AUTHORS.put("ForMoJa", 224528662710452224L);
 
-=======
->>>>>>> master
+
         Configuration cfg = Main.getConfiguration();
         for (String configKey : CONFIG_KEYS) {
-            if(!cfg.has(configKey)){
+            if (!cfg.has(configKey)) {
                 String input = Setup.prompt("Please enter the the value of " + configKey);
                 cfg.set(configKey, input);
             }
-
         }
-
     }
-
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> master
