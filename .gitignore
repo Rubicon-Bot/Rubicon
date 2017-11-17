@@ -1,11 +1,12 @@
+# Created by .ignore support plugin (hsz.mobi)
+.gitignore
+.idea/
 .idea/workspace.xml
 /.idea/
-.idea/
 .idea
 .idea/*
 target/
-rubiconBot.iml
+rubiconBot.iml
 rubicon.iml
-bot-core.iml
-src/main/META-INF
 src/main/java/de/rubicon/util/Info.java
+/config.json
