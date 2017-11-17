@@ -2,6 +2,7 @@ package de.rubicon.core;
 
 import de.rubicon.command.CommandCategory;
 import de.rubicon.command.CommandHandler;
+import de.rubicon.commands.botowner.CommandStop;
 import de.rubicon.commands.general.CommandHelp;
 import de.rubicon.commands.general.CommandInfo;
 import de.rubicon.commands.general.CommandPing;
@@ -28,5 +29,6 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandInfo("info", CommandCategory.GENERAL));
         CommandHandler.addCommand(new CommandSettings("settings", CommandCategory.GUILD_OWNER));
         CommandHandler.addCommand(new CommandStartup("startup", CommandCategory.GUILD_OWNER));
+        CommandHandler.addCommand(new CommandStop("stop", CommandCategory.BOT_OWNER));
     }
 }
