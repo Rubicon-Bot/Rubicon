@@ -2,7 +2,7 @@ package de.rubicon.commands.guildowner;
 
 import de.rubicon.command.Command;
 import de.rubicon.command.CommandCategory;
-import de.rubicon.util.SQL;
+import de.rubicon.util.MySQL;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -32,14 +32,14 @@ public class CommandSettings extends Command {
         MessageChannel channel = e.getTextChannel();
         //Permission here
         if (args.length < 2) e.getChannel().sendMessage(getUsage());
-        String joinmessage = SQL.getValue(guild, "joinmsg");
+        String joinmessage = MySQL.getValue(guild, "joinmsg");
         switch (args[0].toLowerCase()) {
             case "prefix":
                 if (args.length < 2) {
                     e.getChannel().sendMessage(getUsage());
                     return;
                 }
-                SQL.updateValue(guild, "prefix", args[1]);
+                MySQL.updateValue(guild, "prefix", args[1]);
                 sendEmbededMessage(":white_check_mark: Succesfully set the Prefix!");
                 break;
             case "logchannel":
@@ -48,7 +48,7 @@ public class CommandSettings extends Command {
                     return;
                 }
                 String txt = e.getMessage().getMentionedChannels().get(0).getId();
-                SQL.updateValue(guild, "logchannel", txt);
+                MySQL.updateValue(guild, "logchannel", txt);
                 sendEmbededMessage(":white_check_mark: Succesfully set the LogChannel!");
                 break;
             case "joinmessage":
@@ -60,8 +60,8 @@ public class CommandSettings extends Command {
                 for(int i = 1; i < args.length; i++){
                     temp += " " + args[i];
                 }
-                SQL.updateValue(guild, "joinmsg", temp.replaceFirst("null ", ""));
-                String up = SQL.getValue(guild, "joinmsg");
+                MySQL.updateValue(guild, "joinmsg", temp.replaceFirst("null ", ""));
+                String up = MySQL.getValue(guild, "joinmsg");
                 sendEmbededMessage(":white_check_mark:  Successfully set joinmessage to `" + up + "`!");
                 break;
             case "channel":
@@ -70,7 +70,7 @@ public class CommandSettings extends Command {
                     return;
                 }
                 String ch = e.getMessage().getMentionedChannels().get(0).getId();
-                SQL.updateValue(guild, "channel", ch);
+                MySQL.updateValue(guild, "channel", ch);
                 sendEmbededMessage(":white_check_mark: Succesfully set the Joinmessagechannel!");
                 break;
         }
