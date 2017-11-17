@@ -3,7 +3,8 @@
 .idea/
 .idea
 target/
-rubiconBot.iml
+rubiconBot.iml
+rubicon.iml
 bot-core.iml
 src/main/META-INF
 src/main/java/de/rubicon/util/Info.java
