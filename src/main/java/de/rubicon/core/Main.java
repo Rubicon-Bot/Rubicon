@@ -5,18 +5,10 @@ import de.rubicon.util.Info;
 import de.rubicon.util.MySQL;
 
 import java.io.File;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
 public class Main {
 
     private static DiscordCore discordCore;
     private static MySQL mySQL;
-
-    public static Configuration getConfiguration() {
-        return configuration;
-    }
-
     private static Configuration configuration;
 
     public static void main(String[] args) {
@@ -34,4 +26,9 @@ public class Main {
     public static MySQL getMySQL() {
         return mySQL;
     }
+
+    public static Configuration getConfiguration() {
+        return configuration;
+    }
+
 }

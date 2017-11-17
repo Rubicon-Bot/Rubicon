@@ -1,4 +1,4 @@
-package de.rubicon.commands.botowner;
+package de.rubicon.commands.general;
 
 import de.rubicon.command.Command;
 import de.rubicon.command.CommandCategory;
@@ -8,8 +8,8 @@ import java.util.concurrent.TimeUnit;
 public class CommandPing extends Command{
 
 
-    public CommandPing(String command, CommandCategory category, CommandCategory subcategory) {
-        super(command, category, subcategory);
+    public CommandPing(String command, CommandCategory category) {
+        super(command, category);
     }
 
     @Override
@@ -30,6 +30,6 @@ public class CommandPing extends Command{
 
     @Override
     public int getPermissionLevel() {
-        return 4;
+        return 0;
     }
 }
