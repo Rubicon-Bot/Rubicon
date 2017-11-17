@@ -2,10 +2,10 @@ package de.rubicon.core;
 
 import de.rubicon.command.CommandCategory;
 import de.rubicon.command.CommandHandler;
-import de.rubicon.commands.general.CommandHelp;
 import de.rubicon.commands.general.CommandPing;
 import de.rubicon.commands.fun.CommandRoll;
-import de.rubicon.commands.tools.CommandSearch;
+import de.rubicon.commands.moderation.CommandClear;
+import de.rubicon.commands.tools.CommandGoogle;
 
 public class CommandManager {
 
@@ -16,7 +16,12 @@ public class CommandManager {
     private void initCommands() {
         CommandHandler.addCommand(new CommandPing("ping", CommandCategory.GENERAL));
         CommandHandler.addCommand(new CommandRoll("roll", CommandCategory.FUN));
+<<<<<<< HEAD
         CommandHandler.addCommand(new CommandHelp("help", CommandCategory.GENERAL));
         CommandHandler.addCommand(new CommandSearch("search", CommandCategory.TOOLS));
+=======
+        CommandHandler.addCommand(new CommandClear("clear", CommandCategory.MODERATION));
+        CommandHandler.addCommand(new CommandGoogle("google", CommandCategory.GENERAL));
+>>>>>>> master
     }
 }

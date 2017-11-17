@@ -11,6 +11,10 @@ import java.io.FileOutputStream;
 import java.util.List;
 
 public class Configuration {
+    /**
+     * @author Schlaubi
+     * @version
+     */
 
     private static File file;
     private static JsonObject json;
@@ -36,6 +40,12 @@ public class Configuration {
 
     }
 
+    /**
+     *
+     * @param key
+     * @param val
+     * @description Sets tha value of a key in config
+     */
     public Configuration set(final String key, final String val) {
         if (this.json.has(key)) {
             this.json.remove(key);
@@ -46,6 +56,12 @@ public class Configuration {
         return this.save();
     }
 
+    /**
+     *
+     * @param key
+     * @param val
+     * @description Sets tha value of a key in config
+     */
     public Configuration set(final String key, final int val)
     {
         if(this.json.has(key))
@@ -56,12 +72,22 @@ public class Configuration {
         return this.save();
     }
 
+    /**
+     *
+     * @param key
+     * @description Removes key from config
+     */
     private Configuration unset(final String key){
         if(this.json.has(key)){
             this.json.remove(key);
         }
         return this.save();
     }
+
+    /**
+     *
+     * @description Saves the config
+     */
     private Configuration save()
     {
         try
@@ -89,7 +115,11 @@ public class Configuration {
         return this;
     }
 
-
+    /**
+     *
+     * @param key
+     * @return Value of key in config as string
+     */
     public  String getString(final String key){
         try{
             return this.json.get(key).getAsString();
@@ -99,6 +129,11 @@ public class Configuration {
         return "";
     }
 
+    /**
+     *
+     * @param key
+     * @return Value of key in config as integer
+     */
     public  int getInt(final String key){
         if(this.json.has(key)){
             return this.json.get(key).getAsInt();
@@ -106,7 +141,11 @@ public class Configuration {
         return 0;
     }
 
-
+    /**
+     *
+     * @param key
+     * @return If key exists
+     */
     public boolean has(final String key){
         return this.json.has(key);
     }

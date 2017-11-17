@@ -16,11 +16,11 @@ public class Info {
     public final static String[] CONFIG_KEYS = {"token","mysql_host","mysql_port","mysql_database","mysql_password","mysql_user"};
     public final static User[] BOT_AUTHORS = {
             DiscordCore.getJDA().getUserById(227817074976751616L), //ForYaSee
+            DiscordCore.getJDA().getUserById(153507094933274624L), //Lee
             DiscordCore.getJDA().getUserById(318773753796624394L), //Scryptex
             DiscordCore.getJDA().getUserById(138014719582797824L), //Eiskeks
             DiscordCore.getJDA().getUserById(264048760580079616L), //Schlaubi
             DiscordCore.getJDA().getUserById(148905646715043841L), //Robert
-            DiscordCore.getJDA().getUserById(153507094933274624L), //Lee
             DiscordCore.getJDA().getUserById(224528662710452224L) //ForMoJa
     };
     /* MySQL login */
@@ -30,7 +30,7 @@ public class Info {
     public final static String MYSQL_PASSWORD = cfg.getString("mysql_password");
     public final static String MYSQL_DATABASE = cfg.getString("mysql_database");
 
-    //TODO Namen richtig?
+
     public static void init() {
         Configuration cfg = Main.getConfiguration();
         for (String configKey : CONFIG_KEYS) {

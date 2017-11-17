@@ -28,11 +28,7 @@ public class DiscordCore {
 
         try {
             jda = builder.buildBlocking();
-        } catch (LoginException e) {
-            Logger.error(e.getMessage());
-        } catch (InterruptedException e) {
-            Logger.error(e.getMessage());
-        } catch (RateLimitedException e) {
+        } catch (LoginException | InterruptedException | RateLimitedException e) {
             Logger.error(e.getMessage());
         }
         Info.init();
