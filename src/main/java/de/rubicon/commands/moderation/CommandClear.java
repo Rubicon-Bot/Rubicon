@@ -26,6 +26,14 @@ import static javax.swing.UIManager.getInt;
  * © Coders Place 2017
  */
 public class CommandClear extends Command{
+    private int getInt(String string){
+        try {
+            return Integer.parseInt(string);
+        } catch (Exception e){
+            e.printStackTrace();
+            return 0;
+        }
+    }
     public CommandClear(String command, CommandCategory category) {
         super(command, category);
     }
@@ -34,8 +42,8 @@ public class CommandClear extends Command{
         e.getMessage().delete().queue();
         //PERMISSION HERE
         if (args.length < 1) sendErrorMessage("Please give an amount of Messages!");
-        int numb = Integer.parseInt(args[0]);
-        if (numb > 1 && numb <= 100) {
+        int numb = getInt(args[0]);
+        if(!(numb <=1 && numb >= 1000)){
             try{
                 MessageHistory history = new MessageHistory(e.getChannel());
                 List<Message> msgs;
