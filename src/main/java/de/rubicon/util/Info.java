@@ -8,7 +8,7 @@ public class Info {
 
     static Configuration cfg = Main.getConfiguration();
     public final static String BOT_ID = "380713705073147915";
-    public final static String BOT_DEFAULT_PREFIX = "RC!";
+    public final static String BOT_DEFAULT_PREFIX = "rc!";
 
     public final static String BOT_NAME = "Rubicon";
     public final static String BOT_VERSION = "0.1.0";

@@ -9,9 +9,7 @@ public enum CommandCategory {
     ADMIN("admin", "Admin"),
     GUILD_OWNER("guildOwner", "Server Owner"),
     BOT_OWNER("botOwner", "Bot Owner"),
-    TOOLS("tools", "Tools"),
-
-    SUB_NONE("subNone", "");
+    TOOLS("tools", "Tools");
 
     private String id;
     private String displayname;
