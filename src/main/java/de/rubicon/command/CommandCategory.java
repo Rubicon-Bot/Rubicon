@@ -5,13 +5,11 @@ public enum CommandCategory {
     TEST("test", "Test"),
     GENERAL("general", "General"),
     FUN("fun", "Fun"),
-    TOOLS("tools", "Tools"),
     MODERATION("mod", "Moderation"),
     ADMIN("admin", "Admin"),
     GUILD_OWNER("guildOwner", "Server Owner"),
     BOT_OWNER("botOwner", "Bot Owner"),
-
-    SUB_NONE("subNone", "");
+    TOOLS("tools", "Tools");
 
     private String id;
     private String displayname;
