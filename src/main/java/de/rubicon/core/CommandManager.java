@@ -25,11 +25,8 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandSearch("search", CommandCategory.TOOLS));
         CommandHandler.addCommand(new CommandClear("clear", CommandCategory.MODERATION));
         CommandHandler.addCommand(new CommandGoogle("google", CommandCategory.GENERAL));
-<<<<<<< HEAD
         CommandHandler.addCommand(new CommandInfo("info", CommandCategory.GENERAL));
-=======
         CommandHandler.addCommand(new CommandSettings("settings", CommandCategory.GUILD_OWNER));
         CommandHandler.addCommand(new CommandStartup("startup", CommandCategory.GUILD_OWNER));
->>>>>>> master
     }
 }
