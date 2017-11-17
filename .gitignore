@@ -1,9 +1,10 @@
+# Created by .ignore support plugin (hsz.mobi)
+.idea/
 .idea/workspace.xml
 /.idea/
-.idea/
 .idea
+.idea/*
 target/
 rubiconBot.iml
-bot-core.iml
-src/main/META-INF
-src/main/java/de/rubicon/util/Info.java
+rubicon.iml
+/config.json

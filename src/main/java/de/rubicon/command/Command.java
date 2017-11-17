@@ -30,12 +30,10 @@ public abstract class Command {
     protected String[] args;
     protected MessageReceivedEvent e;
     protected CommandCategory category;
-    protected CommandCategory subcategory;
 
-    public Command(String command, CommandCategory category, CommandCategory subcategory) {
+    public Command(String command, CommandCategory category) {
         this.command = command;
         this.category = category;
-        this.subcategory = subcategory;
     }
 
     public void call(String[] args, MessageReceivedEvent e) {
@@ -43,6 +41,13 @@ public abstract class Command {
         this.e = e;
         execute(args, e);
         e.getMessage().delete().queue();
+    }
+
+    protected void sendEmbededMessage(String message) {
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.setDescription(message);
+        builder.setColor(Colors.COLOR_PRIMARY);
+        e.getTextChannel().sendMessage(builder.build()).queue(msg -> msg.delete().queueAfter(defaultDeleteSeconds, TimeUnit.SECONDS));
     }
 
     protected void sendErrorMessage(String message) {
@@ -91,9 +96,6 @@ public abstract class Command {
         return category;
     }
 
-    public CommandCategory getSubcategory() {
-        return subcategory;
-    }
 
     public abstract String getDescription();
 

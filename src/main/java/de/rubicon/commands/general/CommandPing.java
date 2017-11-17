@@ -3,22 +3,24 @@ package de.rubicon.commands.general;
 import de.rubicon.command.Command;
 import de.rubicon.command.CommandCategory;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import java.util.concurrent.TimeUnit;
 
 public class CommandPing extends Command{
 
 
-    public CommandPing(String command, CommandCategory category, CommandCategory subcategory) {
-        super(command, category, subcategory);
+    public CommandPing(String command, CommandCategory category) {
+        super(command, category);
     }
 
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
-        e.getTextChannel().sendMessage("Pong! Bot online.").queue();
+        long ping = e.getJDA().getPing();
+        e.getChannel().sendMessage("Pong!").queue(msg -> msg.editMessage("Ping : " + ping).queueAfter(2, TimeUnit.SECONDS));
     }
 
     @Override
     public String getDescription() {
-        return "Checking bot online status.";
+        return "Check the bot online status.";
     }
 
     @Override
@@ -28,6 +30,6 @@ public class CommandPing extends Command{
 
     @Override
     public int getPermissionLevel() {
-        return 4;
+        return 0;
     }
 }
