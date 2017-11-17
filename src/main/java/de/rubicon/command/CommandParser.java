@@ -8,7 +8,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 public class CommandParser {
 
     public CommandContainer parse(String raw, MessageReceivedEvent e) {
-        String beheaded = raw.replaceFirst(Info.BOT_DEFAULT_PREFIX, "");
+        String beheaded = raw.toLowerCase().replaceFirst(Info.BOT_DEFAULT_PREFIX.toLowerCase(), "");
         String[] splitBeheaded = beheaded.split(" ");
         String invoke = splitBeheaded[0];
         ArrayList<String> split = new ArrayList<>();
