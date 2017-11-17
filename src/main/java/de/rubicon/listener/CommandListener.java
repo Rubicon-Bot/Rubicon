@@ -10,7 +10,7 @@ public class CommandListener extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent e) {
         try {
             if (e.getAuthor() != e.getJDA().getSelfUser()) {
-                if (e.getMessage().getContent().startsWith(Info.BOT_DEFAULT_PREFIX)) {
+                if (e.getMessage().getContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase())) {
                     CommandHandler.handleCommand(CommandHandler.parser.parse(e.getMessage().getContent(), e));
                 }
             }
