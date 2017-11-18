@@ -1,6 +1,8 @@
 package fun.rubicon.command;
 
+import fun.rubicon.core.permission.PermissionManager;
 import fun.rubicon.util.Colors;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -25,6 +27,7 @@ public abstract class Command {
     protected String[] args;
     protected MessageReceivedEvent e;
     protected CommandCategory category;
+    protected PermissionManager permissionManager;
 
     public Command(String command, CommandCategory category) {
         this.command = command;
@@ -34,7 +37,13 @@ public abstract class Command {
     public void call(String[] args, MessageReceivedEvent e) {
         this.args = args;
         this.e = e;
-        execute(args, e);
+        this.permissionManager = new PermissionManager(e.getMember(), this);
+        if(permissionManager.hasPermission()) {
+            execute(args, e);
+        } else {
+            sendNoPermissionMessage();
+            Logger.debug("No Permissions!");
+        }
         try {
             e.getMessage().delete().queue();
         } catch (Exception ex) {
