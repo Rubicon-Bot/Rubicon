@@ -54,6 +54,15 @@ public class MySQL {
         }
         return this;
     }
+    public MySQL disconnect(){
+        try {
+            connection.close();
+            System.out.println("disconnected from MYSQL");
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return this;
+    }
 
     /**
      * @param table
