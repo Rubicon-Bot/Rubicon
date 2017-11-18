@@ -16,14 +16,12 @@ public class GameAnimator {
             "Helping " + DiscordCore.getJDA().getUsers().size() + " users!",
             "JDA squad!",
             Info.BOT_NAME + " " + Info.BOT_VERSION,
-            "Crazy Shit!",
             "Generating new features...",
     };
 
     public static synchronized void start() {
         if (!running) {
             t = new Thread(() -> {
-                Logger.debug("Executed");
                 long last = 0;
                 while (running) {
                     if (System.currentTimeMillis() >= last + 60000) {
