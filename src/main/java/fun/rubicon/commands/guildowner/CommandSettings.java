@@ -93,11 +93,11 @@ public class CommandSettings extends Command {
     @Override
     public String getUsage() {
         return
-                "_settings logchannel <Mention channel> (Set the logchannel | 0 for no Channel.)\n" +
-                "_settings prefix <NEWPREFIX> (Set the new Bot Prefix for this Guild)\n" +
-                "_settings autorole <ROLENAME> (Set the Autorole at UserJoin | 0 for no Role.)\n" +
-                "_settings joinmessage <Message> (%user% for the Username %guild% for Guildname) (0 for no message)\n" +
-                "_settings channel <Channel> (Mention the channel for the Joinmessage)";
+                "settings logchannel <Mention channel> (Set the logchannel | 0 for no Channel.)\n" +
+                "settings prefix <NEWPREFIX> (Set the new Bot Prefix for this Guild)\n" +
+                "settings autorole <ROLENAME> (Set the Autorole at UserJoin | 0 for no Role.)\n" +
+                "settings joinmessage <Message> (%user% for the Username %guild% for Guildname) (0 for no message)\n" +
+                "settings channel <Channel> (Mention the channel for the Joinmessage)";
     }
 
     @Override
