@@ -18,7 +18,7 @@ public class GameAnimator {
             "JDA squad!",
             Info.BOT_NAME + " " + Info.BOT_VERSION,
             "Generating new features...",
-            "Lee stinkt",
+            CommandHandler.getCommands().size() + " Commands loaded",
             "Supplying " + CommandHandler.commands.values().size() + " commands"
     };
 

@@ -1,4 +1,4 @@
-package fun.rubicon.commands.moderation;
+package fun.rubicon.commands.tools;
 
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;

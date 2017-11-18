@@ -33,7 +33,6 @@ public class CommandHelp extends Command {
         } else {
             StringBuilder sbGeneral = new StringBuilder();
             StringBuilder sbFun = new StringBuilder();
-            StringBuilder sbModeration = new StringBuilder();
             StringBuilder sbAdmin = new StringBuilder();
             StringBuilder sbGuildOwner = new StringBuilder();
             StringBuilder sbBotOwner = new StringBuilder();
@@ -46,8 +45,6 @@ public class CommandHelp extends Command {
                     sbFun.append(SQL.getGuildValue(e.getGuild(), "prefix") + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
                 } else if(c.getValue().getCategory().equals(CommandCategory.TOOLS)) {
                     sbTools.append(SQL.getGuildValue(e.getGuild(), "prefix") + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
-                } else if(c.getValue().getCategory().equals(CommandCategory.MODERATION)) {
-                    sbModeration.append(SQL.getGuildValue(e.getGuild(), "prefix") + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
                 } else if(c.getValue().getCategory().equals(CommandCategory.ADMIN)) {
                     sbAdmin.append(SQL.getGuildValue(e.getGuild(), "prefix") + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
                 } else if(c.getValue().getCategory().equals(CommandCategory.GUILD_OWNER)) {
@@ -64,7 +61,6 @@ public class CommandHelp extends Command {
             builder.addField("General", sbGeneral.toString(), false);
             builder.addField("Fun", sbFun.toString(), false);
             builder.addField("Tools", sbTools.toString(), false);
-            builder.addField("Moderation", sbModeration.toString(), false);
             builder.addField("Admin", sbAdmin.toString(), false);
             builder.addField("Server Owner", sbGuildOwner.toString(), false);
             builder.addField("Bot Owner", sbBotOwner.toString(), false);
