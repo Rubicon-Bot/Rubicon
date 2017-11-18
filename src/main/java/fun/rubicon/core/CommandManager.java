@@ -5,6 +5,7 @@ import fun.rubicon.command.CommandHandler;
 import fun.rubicon.commands.botowner.CommandRestart;
 import fun.rubicon.commands.botowner.CommandStop;
 import fun.rubicon.commands.fun.CommandJoke;
+import fun.rubicon.commands.fun.CommandLmgtfy;
 import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.commands.general.CommandPing;
@@ -36,5 +37,6 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandJoke("joke", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandRestart("restart", CommandCategory.BOT_OWNER));
         CommandHandler.addCommand(new CommandSpeedTest("speedtest", CommandCategory.GENERAL));
+        CommandHandler.addCommand(new CommandLmgtfy("lmgtfy", CommandCategory.FUN));
     }
 }
