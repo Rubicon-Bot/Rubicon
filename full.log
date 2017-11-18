@@ -1,6 +1,6 @@
 ---- Rubicon 0.1.0 Log ----
 
-Date: 18_11_2017-15:20:47
+Date: 18_11_2017-15:40:17
 
 -- System Details --
 Operating System: Windows 10 (amd64) version 10.0
@@ -9,5 +9,4 @@ Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporat
 Memory: 124866992 bytes (119 MB) / 128974848 bytes (123 MB) up to 1905262592 bytes (1817 MB)
 
 -- Log --
-[Info] (15:20:51) | MySQL connection success
-[Info] (15:21:02) | MySQL connection success
+[Info] (15:40:21) | MySQL connection success
