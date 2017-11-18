@@ -15,12 +15,12 @@ public class CommandPing extends Command{
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
         long ping = e.getJDA().getPing();
-        e.getChannel().sendMessage("Pong!").queue(msg -> msg.editMessage("Ping : " + ping).queueAfter(2, TimeUnit.SECONDS));
+        e.getChannel().sendMessage("Bot online!").queue(msg -> msg.editMessage("Ping: " + ping + "ms").queueAfter(2, TimeUnit.SECONDS));
     }
 
     @Override
     public String getDescription() {
-        return "Check the bot online status.";
+        return "Checking Bot ping.";
     }
 
     @Override
