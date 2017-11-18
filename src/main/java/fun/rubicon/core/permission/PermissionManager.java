@@ -24,6 +24,10 @@ public class PermissionManager {
         int lvl = getPermissionLevel();
         int cmdLvl = command.getPermissionLevel();
 
+        for(User user : Arrays.asList(Info.BOT_AUTHORS)) {
+            if(user.getId().equalsIgnoreCase(member.getUser().getId()))
+                return true;
+        }
         if(getPermissionLevel() > cmdLvl) {
             return true;
         }
@@ -39,11 +43,6 @@ public class PermissionManager {
         } else if(cmdLvl == 3) {
             if(member.isOwner())
                 return true;
-        } else if(cmdLvl == 4) {
-            for(User user : Arrays.asList(Info.BOT_AUTHORS)) {
-                if(user.getId().equalsIgnoreCase(member.getUser().getId()))
-                    return true;
-            }
         }
         return false;
     }
