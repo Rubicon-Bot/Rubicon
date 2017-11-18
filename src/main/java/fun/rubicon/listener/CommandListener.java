@@ -18,10 +18,6 @@ public class CommandListener extends ListenerAdapter {
             Main.getMySQL().createUser(e.getAuthor());
             return;
         }
-        if (!Main.getMySQL().ifMemberExist(e.getMember())) {
-            Main.getMySQL().createMember(e.getMember());
-            return;
-        }
         String prefix = Main.getMySQL().getGuildValue(g, "prefix");
         if (e.getMessage().getContent().startsWith(prefix) && e.getMessage().getAuthor().getId() != e.getJDA().getSelfUser().getId()) {
             try {
