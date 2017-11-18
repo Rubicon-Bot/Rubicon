@@ -4,6 +4,7 @@ import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.commands.admin.CommandPermission;
 import fun.rubicon.commands.botowner.CommandBroadcast;
+import fun.rubicon.commands.botowner.CommandEval;
 import fun.rubicon.commands.botowner.CommandRestart;
 import fun.rubicon.commands.botowner.CommandStop;
 import fun.rubicon.commands.fun.CommandJoke;
@@ -28,6 +29,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandBroadcast("broadcast", CommandCategory.BOT_OWNER));
         CommandHandler.addCommand(new CommandRestart("restart", CommandCategory.BOT_OWNER));
         CommandHandler.addCommand(new CommandStop("stop", CommandCategory.BOT_OWNER));
+        CommandHandler.addCommand(new CommandEval("eval", CommandCategory.BOT_OWNER));
 
         //Fun
         CommandHandler.addCommand(new CommandJoke("joke", CommandCategory.FUN));
