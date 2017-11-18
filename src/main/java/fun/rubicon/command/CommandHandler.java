@@ -1,5 +1,8 @@
 package fun.rubicon.command;
 
+import fun.rubicon.util.ChannelLog;
+import fun.rubicon.util.Logger;
+
 import java.util.HashMap;
 
 public class CommandHandler {
@@ -11,6 +14,7 @@ public class CommandHandler {
 
         if (commands.containsKey(cmd.invoke.toLowerCase().toLowerCase())) {
             commands.get(cmd.invoke.toLowerCase()).call(cmd.args, cmd.event);
+            ChannelLog.logCommand(cmd.invoke.toString(), cmd.event);
         }
     }
 
