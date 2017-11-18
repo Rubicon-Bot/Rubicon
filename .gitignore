@@ -8,15 +8,11 @@ target/
 rubiconBot.iml
 rubicon.iml
 /config.json
-<<<<<<< HEAD
 /latest.log
 /full.log
 full.log
 latest.log
 *.log
 /.gitignore
-=======
-full.log
-latest.log
-*.log
->>>>>>> master
+
+
