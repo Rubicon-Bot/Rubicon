@@ -2,6 +2,7 @@ package fun.rubicon.core;
 
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
+import fun.rubicon.commands.admin.CommandPermission;
 import fun.rubicon.commands.botowner.CommandRestart;
 import fun.rubicon.commands.botowner.CommandStop;
 import fun.rubicon.commands.fun.CommandJoke;
@@ -42,5 +43,6 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandSpeedTest("speedtest", CommandCategory.GENERAL));
         CommandHandler.addCommand(new CommandUserInfo("userinfo", CommandCategory.TOOLS));
         CommandHandler.addCommand(new CommandLmgtfy("lmgtfy", CommandCategory.FUN));
+        CommandHandler.addCommand(new CommandPermission("permission", CommandCategory.ADMIN));
     }
 }

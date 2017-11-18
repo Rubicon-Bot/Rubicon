@@ -24,6 +24,10 @@ public class PermissionManager {
         int lvl = getPermissionLevel();
         int cmdLvl = command.getPermissionLevel();
 
+        if(getPermissionLevel() > cmdLvl) {
+            return true;
+        }
+
         if(cmdLvl == 0) {
             return true;
         } else if (cmdLvl == 1) {
