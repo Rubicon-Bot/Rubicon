@@ -1,6 +1,7 @@
 package fun.rubicon.util;
 
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.User;
 
 import java.sql.*;
 
@@ -100,7 +101,28 @@ public class MySQL {
     }
 
     public MySQL generatePermissions(Guild guild){
+        guild.getMembers().forEach(u -> {
+            try{
+                PreparedStatement ps = connection.prepareStatement("INSERT INTO `permissions`(`discordid`, `serverid`, `permlvl`) VALUES (?, ?, '0');");
+                ps.setString(1, u.getUser().getId());
+                ps.setString(2, guild.getId());
+                ps.execute();
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+        });
+        return this;
+    }
 
+    public MySQL createUserPermissiones(User user, Guild guild){
+        try{
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO `permissions`(`discordid`, `serverid`, `permlvl`) VALUES (?, ?, '0');");
+            ps.setString(1, user.getId());
+            ps.setString(2, guild.getId());
+            ps.execute();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
         return this;
     }
 
@@ -165,4 +187,8 @@ public class MySQL {
     }
 
 
+<<<<<<< HEAD:src/main/java/de/rubicon/util/MySQL.java
+
+=======
+>>>>>>> 37a9dbf4ca22449da21f9ea36a6084eef96903ae:src/main/java/fun/rubicon/util/MySQL.java
 }
