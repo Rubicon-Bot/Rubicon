@@ -21,11 +21,12 @@ public class CommandServerInfo extends Command{
         Guild guild = e.getGuild();
         TextChannel channel = e.getTextChannel();
 
-        StringBuilder roles = new StringBuilder();
+        StringBuilder rolesraw = new StringBuilder();
         guild.getRoles().forEach(r -> {
-            roles.append(r.getName()).append(", ");
+            rolesraw.append(r.getName()).append(", ");
         });
-
+        StringBuilder roles = new StringBuilder(rolesraw.toString());
+        roles.replace(rolesraw.lastIndexOf(","), roles.lastIndexOf(",") + 1, "" );
         EmbedBuilder serverinfo = new EmbedBuilder();
         serverinfo.setColor(Colors.COLOR_PRIMARY);
         serverinfo.setFooter(Info.EMBED_FOOTER, Info.ICON_URL);
