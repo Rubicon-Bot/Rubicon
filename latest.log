@@ -1,12 +1,36 @@
 ---- Rubicon 0.1.0 Log ----
 
-Date: 18_11_2017-17:58:35
+<<<<<<< HEAD
+Date: 18_11_2017-17:35:13
 
 -- System Details --
 Operating System: Windows 10 (amd64) version 10.0
-Java Version: 1.8.0_101, Oracle Corporation
+Java Version: 1.8.0_144, Oracle Corporation
 Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
-Memory: 124845104 bytes (119 MB) / 128974848 bytes (123 MB) up to 1905262592 bytes (1817 MB)
+Memory: 60753232 bytes (57 MB) / 64487424 bytes (61 MB) up to 928514048 bytes (885 MB)
 
 -- Log --
-[Info] (17:58:39) | MySQL connection success
+[Debug] (17:35:17) | Executed
+[Info] (17:35:18) | MySQL connection success
+=======
+<<<<<<< HEAD
+Date: 18_11_2017-17:31:21
+=======
+Date: 18_11_2017-17:12:16
+>>>>>>> master
+
+-- System Details --
+Operating System: Windows 10 (amd64) version 10.0
+Java Version: 1.8.0_121, Oracle Corporation
+Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+Memory: 250710344 bytes (239 MB) / 257425408 bytes (245 MB) up to 3817865216 bytes (3641 MB)
+
+-- Log --
+<<<<<<< HEAD
+[Info] (17:31:25) | MySQL connection success
+[Debug] (17:31:43) | No Permissions!
+=======
+[Debug] (17:12:19) | Executed
+[Info] (17:12:20) | MySQL connection success
+>>>>>>> master
+>>>>>>> master

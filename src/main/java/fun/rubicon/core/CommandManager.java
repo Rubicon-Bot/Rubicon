@@ -5,7 +5,6 @@ import fun.rubicon.command.CommandHandler;
 import fun.rubicon.commands.botowner.CommandRestart;
 import fun.rubicon.commands.botowner.CommandStop;
 import fun.rubicon.commands.fun.CommandJoke;
-import fun.rubicon.commands.fun.CommandLmgtfy;
 import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.commands.general.CommandPing;
@@ -16,6 +15,8 @@ import fun.rubicon.commands.guildowner.CommandStartup;
 import fun.rubicon.commands.moderation.CommandClear;
 import fun.rubicon.commands.tools.CommandGoogle;
 import fun.rubicon.commands.tools.CommandSearch;
+import fun.rubicon.commands.tools.CommandServerInfo;
+import fun.rubicon.commands.tools.CommandUserInfo;
 
 public class CommandManager {
 
@@ -36,7 +37,9 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandStop("stop", CommandCategory.BOT_OWNER));
         CommandHandler.addCommand(new CommandJoke("joke", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandRestart("restart", CommandCategory.BOT_OWNER));
+        CommandHandler.addCommand(new CommandServerInfo("serverinfo", CommandCategory.TOOLS));
         CommandHandler.addCommand(new CommandSpeedTest("speedtest", CommandCategory.GENERAL));
-        CommandHandler.addCommand(new CommandLmgtfy("lmgtfy", CommandCategory.FUN));
+        CommandHandler.addCommand(new CommandUserInfo("userinfo", CommandCategory.TOOLS));
+
     }
 }
