@@ -61,7 +61,7 @@ public class MySQL {
      * @param wherevalue
      * @return Value of the given key
      */
-    public String getString(String table, String key,String where, String wherevalue) {
+    public String etString(String table, String key,String where, String wherevalue) {
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM ? WHERE ?=?");
             ps.setString(1, table);
@@ -187,8 +187,5 @@ public class MySQL {
     }
 
 
-<<<<<<< HEAD:src/main/java/de/rubicon/util/MySQL.java
 
-=======
->>>>>>> 37a9dbf4ca22449da21f9ea36a6084eef96903ae:src/main/java/fun/rubicon/util/MySQL.java
 }
