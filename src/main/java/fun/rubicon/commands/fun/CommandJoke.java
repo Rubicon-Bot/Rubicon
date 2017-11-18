@@ -32,7 +32,7 @@ public class CommandJoke extends Command {
 
     @Override
     public String getUsage() {
-        return "joke <chucknorris>";
+        return "joke";
     }
 
     @Override

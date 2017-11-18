@@ -32,6 +32,7 @@ public class DiscordCore {
             Logger.error(e.getMessage());
         }
         Info.init();
+        GameAnimator.start();
     }
 
     public static JDA getJDA() {
