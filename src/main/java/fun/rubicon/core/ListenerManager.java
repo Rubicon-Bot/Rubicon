@@ -1,5 +1,11 @@
 package fun.rubicon.core;
 
+<<<<<<< HEAD
+=======
+import de.rubicon.listener.GuildJoinListener;
+import de.rubicon.listener.GuildMemberJoinListener;
+import fun.rubicon.listener.AutoRoleWelcome;
+>>>>>>> master
 import fun.rubicon.listener.CommandListener;
 import fun.rubicon.listener.SQLPreventDisconnect;
 import fun.rubicon.listener.SelfMentionListener;
@@ -18,5 +24,6 @@ public class ListenerManager {
         b.addEventListener(new CommandListener());
         b.addEventListener(new SelfMentionListener());
         b.addEventListener(new SQLPreventDisconnect());
+        b.addEventListener(new AutoRoleWelcome());
     }
 }
