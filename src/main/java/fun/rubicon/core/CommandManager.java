@@ -36,10 +36,8 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandStop("stop", CommandCategory.BOT_OWNER));
         CommandHandler.addCommand(new CommandJoke("joke", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandRestart("restart", CommandCategory.BOT_OWNER));
-<<<<<<< HEAD
         CommandHandler.addCommand(new CommandServerInfo("serverinfo", CommandCategory.TOOLS));
-=======
         CommandHandler.addCommand(new CommandSpeedTest("speedtest", CommandCategory.GENERAL));
->>>>>>> master
+
     }
 }
