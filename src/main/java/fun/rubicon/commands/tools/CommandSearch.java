@@ -19,7 +19,6 @@ public class CommandSearch extends Command {
     protected void execute(String[] args, MessageReceivedEvent e) {
         TextChannel channel = e.getTextChannel();
         Guild guild = e.getGuild();
-        channel.sendTyping().queue();
 
         if(args.length == 0){
             sendUsageMessage();
