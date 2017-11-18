@@ -58,10 +58,6 @@
             <artifactId>jsoup</artifactId>
             <version>1.8.3</version>
         </dependency>
-
-
-
-
     </dependencies>
     <repositories>
         <repository>
@@ -78,20 +74,16 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.5.1</version>
-
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
             </plugin>
-
             <!-- Build a fat jar -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>2.4.3</version>
-
-
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -101,7 +93,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <!-- Run our tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -123,6 +114,4 @@
             </plugin>
         </plugins>
     </build>
-
-
 </project>
