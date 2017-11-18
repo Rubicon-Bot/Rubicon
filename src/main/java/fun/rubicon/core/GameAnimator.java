@@ -22,7 +22,6 @@ public class GameAnimator {
     public static synchronized void start() {
         if (!running) {
             t = new Thread(() -> {
-                Logger.debug("Executed");
                 long last = 0;
                 while (running) {
                     if (System.currentTimeMillis() >= last + 60000) {
