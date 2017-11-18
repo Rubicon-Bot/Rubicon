@@ -5,7 +5,7 @@ import java.util.HashMap;
 public class CommandHandler {
 
     public static final CommandParser parser = new CommandParser();
-    private static HashMap<String, Command> commands = new HashMap<String, Command>();
+    public static HashMap<String, Command> commands = new HashMap<String, Command>();
 
     public static void handleCommand(CommandParser.CommandContainer cmd) {
 
