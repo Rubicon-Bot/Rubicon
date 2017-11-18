@@ -43,6 +43,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandSpeedTest("speedtest", CommandCategory.GENERAL));
         CommandHandler.addCommand(new CommandStatistics("statistics", CommandCategory.GENERAL));
         CommandHandler.addCommand(new CommandInvite("invite", CommandCategory.GENERAL));
+        CommandHandler.addCommand(new CommandUptime("uptime", CommandCategory.GENERAL));
 
         //Guildowner
         CommandHandler.addCommand(new CommandSettings("settings", CommandCategory.GUILD_OWNER));
