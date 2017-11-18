@@ -1,7 +1,7 @@
 package de.rubicon.listener;
 
-import de.rubicon.core.Main;
-import de.rubicon.util.MySQL;
+import fun.rubicon.core.Main;
+import fun.rubicon.util.MySQL;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 

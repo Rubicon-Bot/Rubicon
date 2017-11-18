@@ -11,17 +11,6 @@ import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/**
- * Amme JDA BOT
- * <p>
- * By LordLee at 17.11.2017 20:12
- * <p>
- * Contributors for this class:
- * - github.com/zekrotja
- * - github.com/DRSchlaubi
- * <p>
- * © Coders Place 2017
- */
 public class JoinSQL extends ListenerAdapter {
     public void onGuildJoin(GuildJoinEvent event) {
         Guild g = event.getGuild();
