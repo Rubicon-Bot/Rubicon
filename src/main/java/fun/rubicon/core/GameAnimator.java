@@ -17,6 +17,7 @@ public class GameAnimator {
             "JDA squad!",
             Info.BOT_NAME + " " + Info.BOT_VERSION,
             "Generating new features...",
+            "Lee stinkt"
     };
 
     public static synchronized void start() {
