@@ -40,10 +40,9 @@ public class CommandClear extends Command{
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
         e.getMessage().delete().queue();
-        //PERMISSION HERE
         if (args.length < 1) sendErrorMessage("Please give an amount of Messages!");
         int numb = getInt(args[0]);
-        if(!(numb <=1 && numb >= 1000)){
+        if(numb>= 2 && numb<=100){
             try{
                 MessageHistory history = new MessageHistory(e.getChannel());
                 List<Message> msgs;
@@ -66,7 +65,7 @@ public class CommandClear extends Command{
                 fuck.printStackTrace();
             }
         }else {
-            sendErrorMessage("Amount must be between 2 and 100!");
+            sendUsageMessage();
         }
     }
 
