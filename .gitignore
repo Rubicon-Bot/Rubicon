@@ -9,5 +9,10 @@ target/
 rubiconBot.iml
 rubicon.iml
 /config.json
+<<<<<<< HEAD
 full.log
 latest.log
+=======
+latest.log
+*.log
+>>>>>>> master

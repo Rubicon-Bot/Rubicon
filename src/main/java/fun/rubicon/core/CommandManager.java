@@ -9,6 +9,7 @@ import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.commands.general.CommandPing;
 import fun.rubicon.commands.fun.CommandRoll;
+import fun.rubicon.commands.general.CommandSpeedTest;
 import fun.rubicon.commands.guildowner.CommandSettings;
 import fun.rubicon.commands.guildowner.CommandStartup;
 import fun.rubicon.commands.moderation.CommandClear;
@@ -34,5 +35,6 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandStop("stop", CommandCategory.BOT_OWNER));
         CommandHandler.addCommand(new CommandJoke("joke", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandRestart("restart", CommandCategory.BOT_OWNER));
+        CommandHandler.addCommand(new CommandSpeedTest("speedtest", CommandCategory.GENERAL));
     }
 }
