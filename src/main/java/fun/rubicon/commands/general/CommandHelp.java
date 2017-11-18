@@ -69,6 +69,8 @@ public class CommandHelp extends Command {
             builder.addField("Server Owner", sbGuildOwner.toString(), false);
             builder.addField("Bot Owner", sbBotOwner.toString(), false);
 
+            builder.setFooter("Loaded Commands: " + CommandHandler.getCommands().entrySet().size(), null);
+
             e.getAuthor().openPrivateChannel().queue(ch -> ch.sendMessage(builder.build()).queue());
         }
     }
