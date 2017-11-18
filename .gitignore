@@ -9,3 +9,5 @@ target/
 rubiconBot.iml
 rubicon.iml
 /config.json
+latest.log
+*.log
