@@ -4,6 +4,8 @@ import fun.rubicon.core.DiscordCore;
 import fun.rubicon.core.Main;
 import net.dv8tion.jda.core.entities.User;
 
+import java.util.Date;
+
 public class Info {
 
     static Configuration cfg = Main.getConfiguration();
@@ -18,6 +20,8 @@ public class Info {
     public final static String[] CONFIG_KEYS = {"token","mysql_host","mysql_port","mysql_database","mysql_password","mysql_user"};
     public final static String EMBED_FOOTER = "© 2017 Rubicon Dev Team";
     public final static String ICON_URL = "https://images-ext-2.discordapp.net/external/Xae9oFQTIRhV7V21twWufcxtdcxhmW6NFNatN8cyxz8/https/cdn.discordapp.com/icons/380415148545802250/579ee17b8de4d027c98853606567d760.jpg?width=72&height=72";
+    public static Date lastRestart;
+
     public final static User[] BOT_AUTHORS = {
             DiscordCore.getJDA().getUserById(227817074976751616L), //ForYaSee
             DiscordCore.getJDA().getUserById(153507094933274624L), //Lee
