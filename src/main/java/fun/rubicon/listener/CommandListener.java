@@ -3,6 +3,7 @@ package fun.rubicon.listener;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.core.Main;
 import fun.rubicon.core.permission.PermissionManager;
+import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -29,6 +30,13 @@ public class CommandListener extends ListenerAdapter {
             if (e.getMessage().getContent().startsWith(prefix) && e.getMessage().getAuthor().getId() != e.getJDA().getSelfUser().getId()) {
                 try {
                     CommandHandler.handleCommand(CommandHandler.parser.parse(e.getMessage().getContent(), e));
+                } catch (Exception fuck) {
+                    fuck.printStackTrace();
+                }
+            }
+            if (e.getMessage().getContent().startsWith(Info.BOT_DEFAULT_PREFIX) && e.getMessage().getAuthor().getId() != e.getJDA().getSelfUser().getId()) {
+                try {
+                    CommandHandler.handleCommand(CommandHandler.parser.parsep(e.getMessage().getContent(), e));
                 } catch (Exception fuck) {
                     fuck.printStackTrace();
                 }
