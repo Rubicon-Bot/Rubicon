@@ -19,7 +19,7 @@ public class Main {
     private static Configuration configuration;
 
     public static void main(String[] args) {
-        Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, new File("full.log"));
+        Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, new File("latest.log"));
         configuration = new Configuration(new File(Info.CONFIG_FILE));
 
         discordCore = new DiscordCore();
