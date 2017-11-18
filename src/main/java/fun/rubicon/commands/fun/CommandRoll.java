@@ -4,6 +4,9 @@ import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
 public class CommandRoll extends Command{
     public CommandRoll(String command, CommandCategory category) {
         super(command, category);
@@ -12,7 +15,7 @@ public class CommandRoll extends Command{
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
         int randomnumber, lownumber, highnumber;
-        if(args.length<1)
+        if(args.length<=1)
         {
             sendUsageMessage();
             return;
@@ -27,10 +30,10 @@ public class CommandRoll extends Command{
             return;
         }
         if(lownumber>highnumber) {
-            randomnumber = (int) (Math.random() * lownumber) + highnumber;
+            randomnumber = ThreadLocalRandom.current().nextInt(highnumber, lownumber + 1);
             sendEmbededMessage(e.getAuthor().getAsMention() + " rolls a " + randomnumber);
         }else {
-            randomnumber = (int) (Math.random() * highnumber) + lownumber;
+            randomnumber = ThreadLocalRandom.current().nextInt(lownumber, highnumber + 1);
             sendEmbededMessage(e.getAuthor().getAsMention() + " rolls a " + randomnumber);
         }
     }

@@ -2,6 +2,7 @@ package fun.rubicon.listener;
 
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.core.Main;
+import fun.rubicon.core.permission.PermissionManager;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
