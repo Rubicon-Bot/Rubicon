@@ -1,5 +1,6 @@
 package fun.rubicon.core;
 
+import fun.rubicon.command.CommandHandler;
 import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.Game;
@@ -17,6 +18,8 @@ public class GameAnimator {
             "JDA squad!",
             Info.BOT_NAME + " " + Info.BOT_VERSION,
             "Generating new features...",
+            "Lee stinkt",
+            "Supplying " + CommandHandler.commands.values().size() + " commands"
     };
 
     public static synchronized void start() {

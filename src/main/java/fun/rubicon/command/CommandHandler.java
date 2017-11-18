@@ -11,6 +11,7 @@ public class CommandHandler {
 
         if (commands.containsKey(cmd.invoke.toLowerCase().toLowerCase())) {
             commands.get(cmd.invoke.toLowerCase()).call(cmd.args, cmd.event);
+            cmd.event.getChannel().sendTyping().queue();
         }
     }
 
