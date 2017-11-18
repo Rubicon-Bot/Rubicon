@@ -2,10 +2,11 @@ package fun.rubicon.command;
 
 import fun.rubicon.core.permission.PermissionManager;
 import fun.rubicon.util.Colors;
-import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
+import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -54,6 +55,14 @@ public abstract class Command {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setDescription(message);
         builder.setColor(Colors.COLOR_PRIMARY);
+        e.getTextChannel().sendMessage(builder.build()).queue(msg -> msg.delete().queueAfter(defaultDeleteSeconds, TimeUnit.SECONDS));
+    }
+
+    protected void sendEmbededMessage(Channel ch, String title, Color color, String message) {
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.setAuthor(title, null, e.getJDA().getSelfUser().getEffectiveAvatarUrl());
+        builder.setDescription(message);
+        builder.setColor(color);
         e.getTextChannel().sendMessage(builder.build()).queue(msg -> msg.delete().queueAfter(defaultDeleteSeconds, TimeUnit.SECONDS));
     }
 
