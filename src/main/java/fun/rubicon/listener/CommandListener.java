@@ -34,13 +34,15 @@ public class CommandListener extends ListenerAdapter {
                     fuck.printStackTrace();
                 }
             }
-            if (Main.getMySQL().getGuildValue(g, "prefix") == Info.BOT_DEFAULT_PREFIX) return;
+            if (e.getMessage().getContent().startsWith(Info.BOT_DEFAULT_PREFIX) && !e.getMessage().getContent().startsWith(prefix.toString())){
+                System.out.println("Hu");
+
             if (e.getMessage().getContent().startsWith(Info.BOT_DEFAULT_PREFIX) && e.getMessage().getAuthor().getId() != e.getJDA().getSelfUser().getId()) {
                 try {
                     CommandHandler.handleCommand(CommandHandler.parser.parsep(e.getMessage().getContent(), e));
                 } catch (Exception fuck) {
                     fuck.printStackTrace();
-                }
+                }}
             }
         } catch (NullPointerException ex) {
             //No Guild -> Private Message

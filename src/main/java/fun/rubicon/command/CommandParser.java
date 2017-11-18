@@ -28,7 +28,13 @@ public class CommandParser {
     }
     public CommandContainer parsep(String rw, MessageReceivedEvent e) {
 
+
+
         ArrayList<String> split = new ArrayList<>();
+
+        if (Main.getMySQL().getGuildValue(e.getGuild(),"prefix").equals(Info.BOT_DEFAULT_PREFIX)){
+
+        }
 
         String raw = rw;
         String beheaded = raw.substring(Info.BOT_DEFAULT_PREFIX.length(), raw.length());
