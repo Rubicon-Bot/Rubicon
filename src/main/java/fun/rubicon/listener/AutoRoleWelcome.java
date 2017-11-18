@@ -5,6 +5,7 @@ import fun.rubicon.core.Main;
 import fun.rubicon.util.MySQL;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.PrivateChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -39,4 +40,12 @@ public class AutoRoleWelcome extends ListenerAdapter{
             }
 
     }
-}
+        String enabled = SQL.getGuildValue(guild, "joinchannel");
+        String channelid = SQL.getGuildValue(guild, "joinchannel");
+        String joinmessage = SQL.getGuildValue(guild, "joinmessage").replace("%user%", event.getUser().getAsMention()).replace("%guild%", guild.getName());
+        if (!enabled.equals("0")) {
+            TextChannel channel = guild.getTextChannelById(channelid);
+            channel.sendTyping().queue();
+            channel.sendMessage(joinmessage).queue();
+        }
+}}
