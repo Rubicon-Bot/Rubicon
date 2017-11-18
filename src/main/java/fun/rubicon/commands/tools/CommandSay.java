@@ -22,7 +22,7 @@ public class CommandSay extends Command {
         for(int i = 0; i < args.length; i++) {
             text += args[i];
         }
-        sendEmbededMessage(e.getTextChannel(), e.getMember().getEffectiveName() + " says", Colors.COLOR_PRIMARY, text);
+        sendEmbededMessage(e.getTextChannel(), e.getMember().getEffectiveName(), Colors.COLOR_PRIMARY, text);
     }
 
     @Override
