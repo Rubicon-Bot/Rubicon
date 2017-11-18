@@ -302,10 +302,5 @@ public class MySQL {
             e.printStackTrace();
         }
     }
-<<<<<<< HEAD
 
-
-
-=======
->>>>>>> master
 }
