@@ -25,8 +25,9 @@ public class PermissionManager {
         int cmdLvl = command.getPermissionLevel();
 
         for(User user : Arrays.asList(Info.BOT_AUTHORS)) {
-            if(user.getId().equalsIgnoreCase(member.getUser().getId()))
+            if(user.getId().equalsIgnoreCase(member.getUser().getId())) {
                 return true;
+            }
         }
         if(getPermissionLevel() > cmdLvl) {
             return true;
@@ -60,5 +61,21 @@ public class PermissionManager {
             Logger.error(ex);
         }
         return i;
+    }
+
+    public void addPermissions(String command) {
+        String s = getPermissionsAsString();
+        s += command.toLowerCase() + ",";
+        Main.getMySQL().updateMemberValue(member, "permissions", s);
+    }
+
+    public void removePermission(String command) {
+
+    }
+
+    public boolean containsPermission(String command) {
+        if(getPermissionsAsString().contains(command))
+            return true;
+        return false;
     }
 }
