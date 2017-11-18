@@ -39,16 +39,16 @@ public class CommandStartup extends Command{
 
     @Override
     public String getDescription() {
-        return null;
+        return "Starts the Bot on a Guild if the Category gets Deleted";
     }
 
     @Override
     public String getUsage() {
-        return null;
+        return "startup";
     }
 
     @Override
     public int getPermissionLevel() {
-        return 0;
+        return 3;
     }
 }
