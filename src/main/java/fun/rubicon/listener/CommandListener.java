@@ -34,6 +34,7 @@ public class CommandListener extends ListenerAdapter {
                     fuck.printStackTrace();
                 }
             }
+            if (Main.getMySQL().getGuildValue(g, "prefix") == Info.BOT_DEFAULT_PREFIX) return;
             if (e.getMessage().getContent().startsWith(Info.BOT_DEFAULT_PREFIX) && e.getMessage().getAuthor().getId() != e.getJDA().getSelfUser().getId()) {
                 try {
                     CommandHandler.handleCommand(CommandHandler.parser.parsep(e.getMessage().getContent(), e));
