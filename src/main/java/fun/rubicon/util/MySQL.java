@@ -1,6 +1,7 @@
 package fun.rubicon.util;
 
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.User;
 
 import java.sql.*;
@@ -49,6 +50,15 @@ public class MySQL {
             Logger.info("MySQL connection success");
         } catch (SQLException e){
             Logger.error("MySQL connection failed");
+            e.printStackTrace();
+        }
+        return this;
+    }
+    public MySQL disconnect(){
+        try {
+            connection.close();
+            System.out.println("disconnected from MYSQL");
+        } catch (SQLException e){
             e.printStackTrace();
         }
         return this;
@@ -135,6 +145,114 @@ public class MySQL {
         return this;
     }
 
+    //Member Stuff
+    public boolean ifMemberExist(Member member) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM member where userid = ? AND guildid = ?");
+            ps.setString(1, member.getUser().getId());
+            ps.setString(2, member.getGuild().getId());
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public void updateMemberValue(Member member, String type, String value){
+        try{
+            if(connection.isClosed())
+                connect();
+            if(!ifMemberExist(member))
+                createMember(member);
+            PreparedStatement ps = connection.prepareStatement("UPDATE member SET " + type + " = '" + value + "' WHERE userid = '" + member.getUser().getId() + "' AND guildid = '" + member.getGuild().getId() + "'");
+            ps.execute();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+    public String getMemberValue(Member member, String type){
+        try{
+            if(connection.isClosed())
+                connect();
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM member WHERE `userid` = ? AND `guildid` = ?");
+            ps.setString(1, member.getUser().getId());
+            ps.setString(2, member.getGuild().getId());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                return rs.getString(type);
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public void createMember(Member member) {
+        try{
+            if(connection.isClosed())
+                connect();
+            String permLevel = (member.isOwner()) ? "3" : "0";
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO `member`(`userid`, `guildid`, `permissionlevel`, `permissions`) VALUES (?, ?, ?, '')");
+            ps.setString(1, String.valueOf(member.getUser().getId()));
+            ps.setString(2, String.valueOf(member.getGuild().getId()));
+            ps.setString(3, String.valueOf(permLevel));
+            ps.execute();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    //User Stuff
+    public boolean ifUserExist(User user) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM user where userid = ?");
+            ps.setString(1, user.getId());
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public void updateUserValue(User user, String type, String value){
+        try{
+            if(connection.isClosed())
+                connect();
+            if(!ifUserExist(user))
+                createUser(user);
+            PreparedStatement ps = connection.prepareStatement("UPDATE user SET " + type + " = '" + value + "' WHERE userid = " + user.getId());
+            ps.execute();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+    public String getUserValue(User user, String type){
+        try{
+            if(connection.isClosed())
+                connect();
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM user WHERE `userid` = ?");
+            ps.setString(1, user.getId());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                return rs.getString(type);
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public void createUser(User user) {
+        try{
+            if(connection.isClosed())
+                connect();
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO `user`(`userid`, `bio`) VALUES (?, '')");
+            ps.setString(1, String.valueOf(user.getIdLong()));
+            ps.execute();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    //Guild Stuff
     public boolean ifGuildExits(Guild guild){
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM guilds where serverid =?");
@@ -146,7 +264,6 @@ public class MySQL {
         }
         return false;
     }
-
     public void updateGuildValue(Guild guild, String type, String value){
         try{
             if(connection.isClosed())
@@ -185,7 +302,10 @@ public class MySQL {
             e.printStackTrace();
         }
     }
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> master
 }

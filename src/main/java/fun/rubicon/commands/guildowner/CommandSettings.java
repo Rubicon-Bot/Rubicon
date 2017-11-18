@@ -79,16 +79,20 @@ public class CommandSettings extends Command {
 
     @Override
     public String getDescription() {
-        return null;
+        return "Set up Guild specific Settings!";
     }
 
     @Override
     public String getUsage() {
-        return null;
+        return
+                "_settings logchannel <Mention channel> (Set the logchannel | 0 for no Channel.)\n" +
+                "_settings prefix <NEWPREFIX> (Set the new Bot Prefix for this Guild)\n" +
+                "_settings joinmessage <Message> (%user% for the Username %guild% for Guildname) (0 for no message)\n" +
+                "_settings channel <Channel> (Mention the channel for the Joinmessage)";
     }
 
     @Override
     public int getPermissionLevel() {
-        return 0;
+        return 3;
     }
 }

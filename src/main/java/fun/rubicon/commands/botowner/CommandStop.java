@@ -2,6 +2,7 @@ package fun.rubicon.commands.botowner;
 
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
+import fun.rubicon.core.Main;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class CommandStop extends Command {
@@ -13,6 +14,8 @@ public class CommandStop extends Command {
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
         //TODO Saving Stuff?
+        Main.getMySQL().disconnect();
+        sendEmbededMessage(":battery: System Shutdown :battery:");
         System.exit(0);
     }
 
