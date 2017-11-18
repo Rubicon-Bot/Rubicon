@@ -16,7 +16,6 @@ public class GameAnimator {
             "Helping " + DiscordCore.getJDA().getUsers().size() + " users!",
             "JDA squad!",
             Info.BOT_NAME + " " + Info.BOT_VERSION,
-            "Crazy Shit!",
             "Generating new features...",
     };
 
