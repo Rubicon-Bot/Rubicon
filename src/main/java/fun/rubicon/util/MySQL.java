@@ -111,32 +111,6 @@ public class MySQL {
         return this;
     }
 
-    public MySQL generatePermissions(Guild guild){
-        guild.getMembers().forEach(u -> {
-            try{
-                PreparedStatement ps = connection.prepareStatement("INSERT INTO `permissions`(`discordid`, `serverid`, `permlvl`) VALUES (?, ?, '0');");
-                ps.setString(1, u.getUser().getId());
-                ps.setString(2, guild.getId());
-                ps.execute();
-            } catch (SQLException e){
-                e.printStackTrace();
-            }
-        });
-        return this;
-    }
-
-    public MySQL createUserPermissiones(User user, Guild guild){
-        try{
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO `permissions`(`discordid`, `serverid`, `permlvl`) VALUES (?, ?, '0');");
-            ps.setString(1, user.getId());
-            ps.setString(2, guild.getId());
-            ps.execute();
-        } catch (SQLException e){
-            e.printStackTrace();
-        }
-        return this;
-    }
-
     public MySQL executePreparedStatement(PreparedStatement ps){
         try {
             ps.execute();
