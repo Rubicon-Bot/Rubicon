@@ -65,6 +65,14 @@ public class CommandSettings extends Command {
                 String up = Main.getMySQL().getGuildValue(guild, "joinmsg");
                 sendEmbededMessage(":white_check_mark:  Successfully set joinmessage to `" + up + "`!");
                 break;
+            case "autorole":
+                if (args.length < 2) {
+                    e.getTextChannel().sendMessage(getUsage() + "\n(watch for large and lower case\n)");
+                    return;
+                }
+                Main.getMySQL().updateGuildValue(guild, "autorole", args[1]);
+                sendEmbededMessage(":white_check_mark: Succesfully set the Autorole!");
+                break;
             case "channel":
                 if (args.length < 2) {
                     e.getChannel().sendMessage(getUsage() + "\n(watch for large and lower case\n)");
@@ -87,6 +95,7 @@ public class CommandSettings extends Command {
         return
                 "_settings logchannel <Mention channel> (Set the logchannel | 0 for no Channel.)\n" +
                 "_settings prefix <NEWPREFIX> (Set the new Bot Prefix for this Guild)\n" +
+                "_settings autorole <ROLENAME> (Set the Autorole at UserJoin | 0 for no Role.)\n" +
                 "_settings joinmessage <Message> (%user% for the Username %guild% for Guildname) (0 for no message)\n" +
                 "_settings channel <Channel> (Mention the channel for the Joinmessage)";
     }

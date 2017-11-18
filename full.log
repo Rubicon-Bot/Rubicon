@@ -1,12 +1,12 @@
 ---- Rubicon 0.1.0 Log ----
 
-Date: 18_11_2017-15:40:17
+Date: 18_11_2017-15:50:38
 
 -- System Details --
-Operating System: Windows 10 (amd64) version 10.0
-Java Version: 1.8.0_101, Oracle Corporation
+Operating System: Mac OS X (x86_64) version 10.10.5
+Java Version: 1.8.0_151, Oracle Corporation
 Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
-Memory: 124866992 bytes (119 MB) / 128974848 bytes (123 MB) up to 1905262592 bytes (1817 MB)
+Memory: 124159480 bytes (118 MB) / 128974848 bytes (123 MB) up to 1908932608 bytes (1820 MB)
 
 -- Log --
-[Info] (15:40:21) | MySQL connection success
+[Info] (15:50:41) | MySQL connection success
