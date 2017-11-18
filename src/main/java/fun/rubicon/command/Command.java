@@ -35,7 +35,11 @@ public abstract class Command {
         this.args = args;
         this.e = e;
         execute(args, e);
-        e.getMessage().delete().queue();
+        try {
+            e.getMessage().delete().queue();
+        } catch (Exception ex) {
+
+        }
     }
 
     protected void sendEmbededMessage(String message) {

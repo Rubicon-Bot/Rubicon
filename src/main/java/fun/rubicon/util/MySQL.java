@@ -2,6 +2,7 @@ package fun.rubicon.util;
 
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.User;
 
 import java.sql.*;
@@ -110,7 +111,7 @@ public class MySQL {
         return this;
     }
 
-    public MySQL generatePermissions(Guild guild){
+    /*public MySQL generatePermissions(Guild guild){
         guild.getMembers().forEach(u -> {
             try{
                 PreparedStatement ps = connection.prepareStatement("INSERT INTO `permissions`(`discordid`, `serverid`, `permlvl`) VALUES (?, ?, '0');");
@@ -134,7 +135,7 @@ public class MySQL {
             e.printStackTrace();
         }
         return this;
-    }
+    }*/
 
     public MySQL executePreparedStatement(PreparedStatement ps){
         try {
@@ -143,6 +144,57 @@ public class MySQL {
             e.printStackTrace();
         }
         return this;
+    }
+
+    //Role Stuff
+    public boolean ifRoleExist(Role role) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM roles where roleid = ?");
+            ps.setString(1, role.getId());
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public void updateRoleValue(Role role, String type, String value){
+        try{
+            if(connection.isClosed())
+                connect();
+            if(!ifRoleExist(role))
+                createRole(role);
+            PreparedStatement ps = connection.prepareStatement("UPDATE roles SET " + type + " = '" + value + "' WHERE role = '" + role.getId());
+            ps.execute();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+    public String getRoleValue(Role role, String type) {
+        try{
+            if(connection.isClosed())
+                connect();
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM roles WHERE `roleid` = ?");
+            ps.setString(1, role.getId());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                return rs.getString(type);
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public void createRole(Role role) {
+        try{
+            if(connection.isClosed())
+                connect();
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO `roles`(`roleid`, `permissions`) VALUES (?, '')");
+            ps.setString(1, String.valueOf(role.getId()));
+            ps.execute();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     //Member Stuff
