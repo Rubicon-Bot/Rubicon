@@ -54,8 +54,8 @@ public class CommandEval extends Command{
         se.put("message", e.getMessage());
         se.put("author", e.getAuthor());
 
-        String modified_msg = args[0]
-                .replace("getToken", "getTextChannelById(channel.getId()).sendMessage(\"UnsupportedOperationException(\\\"Nice try m8!\\\")\").queue");
+        String modified_msg = String.join(" ", args)
+                .replace("getToken", "getTextChannelById(channel.getId()).sendMessage(\"UnsupportedOperationException(\\\"Nice try m8!\\\")\").queue").replace("System.exit(0)", "getTextChannelById(channel.getId()).sendMessage(\"UnsupportedOperationException(\\\"Nice try m8!\\\")\").queue");
         //        .replace("ProcessBuilder","throw new UnsupportedOperationException(\"Locked\")");
 
         //    modified_msg = modified_msg.replaceAll("#", "().");
