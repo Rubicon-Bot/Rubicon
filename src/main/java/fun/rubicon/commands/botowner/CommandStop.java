@@ -2,6 +2,7 @@ package fun.rubicon.commands.botowner;
 
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
+import fun.rubicon.core.DiscordCore;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class CommandStop extends Command {
