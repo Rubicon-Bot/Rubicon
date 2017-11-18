@@ -3,6 +3,7 @@ package fun.rubicon.core;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.commands.botowner.CommandStop;
+import fun.rubicon.commands.fun.CommandJoke;
 import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.commands.general.CommandPing;
@@ -30,5 +31,6 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandSettings("settings", CommandCategory.GUILD_OWNER));
         CommandHandler.addCommand(new CommandStartup("startup", CommandCategory.GUILD_OWNER));
         CommandHandler.addCommand(new CommandStop("stop", CommandCategory.BOT_OWNER));
+        CommandHandler.addCommand(new CommandJoke("joke", CommandCategory.FUN));
     }
 }
