@@ -28,7 +28,7 @@ public class CommandStartup extends Command{
         Guild g = e.getGuild();
         if(!Main.getMySQL().ifGuildExits(g)) {
             Main.getMySQL().createGuildServer(g);
-            System.out.println("[Amme]System started on: " + g.getName());
+            System.out.println("System started on: " + g.getName());
             e.getChannel().sendMessage("System Online!").queue();
         }else {
             Main.getMySQL().createGuildServer(g);
@@ -39,7 +39,7 @@ public class CommandStartup extends Command{
 
     @Override
     public String getDescription() {
-        return "Starts the Bot on a Guild if the Category gets Deleted";
+        return "Starts the Bot on a Guild if the Category gets Deleted or something got fucked up!";
     }
 
     @Override

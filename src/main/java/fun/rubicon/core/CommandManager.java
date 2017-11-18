@@ -1,5 +1,6 @@
 package fun.rubicon.core;
 
+import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.commands.admin.CommandPermission;
@@ -39,7 +40,11 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandInfo("info", CommandCategory.GENERAL));
         CommandHandler.addCommand(new CommandPing("ping", CommandCategory.GENERAL));
         CommandHandler.addCommand(new CommandSpeedTest("speedtest", CommandCategory.GENERAL));
+<<<<<<< HEAD
         CommandHandler.addCommand(new CommandStatistics("statistics", CommandCategory.GENERAL));
+=======
+        CommandHandler.addCommand(new CommandInvite("invite", CommandCategory.GENERAL));
+>>>>>>> master
 
         //Guildowner
         CommandHandler.addCommand(new CommandSettings("settings", CommandCategory.GUILD_OWNER));
