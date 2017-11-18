@@ -70,7 +70,9 @@ public class PermissionManager {
     }
 
     public void removePermission(String command) {
-
+        String s = getPermissionsAsString();
+        s = s.replace(command + ",", "");
+        Main.getMySQL().updateMemberValue(member, "permissions", s);
     }
 
     public boolean containsPermission(String command) {

@@ -6,6 +6,7 @@ import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.PrivateChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.awt.*;
@@ -61,12 +62,12 @@ public abstract class Command {
         e.getTextChannel().sendMessage(builder.build()).queue(msg -> msg.delete().queueAfter(defaultDeleteSeconds, TimeUnit.SECONDS));
     }
 
-    protected void sendEmbededMessage(Channel ch, String title, Color color, String message) {
+    protected void sendEmbededMessage(TextChannel ch, String title, Color color, String message) {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setAuthor(title, null, e.getJDA().getSelfUser().getEffectiveAvatarUrl());
         builder.setDescription(message);
         builder.setColor(color);
-        e.getTextChannel().sendMessage(builder.build()).queue(msg -> msg.delete().queueAfter(defaultDeleteSeconds, TimeUnit.SECONDS));
+        ch.sendMessage(builder.build()).queue(msg -> msg.delete().queueAfter(defaultDeleteSeconds, TimeUnit.SECONDS));
     }
     protected void sendEmbededMessage(PrivateChannel pc, String title, Color color, String message) {
         EmbedBuilder builder = new EmbedBuilder();

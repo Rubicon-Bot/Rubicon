@@ -13,16 +13,21 @@ public class CommandSay extends Command {
 
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
-        if(args.length == 0) {
+        if(args.length < 2) {
+            sendUsageMessage();
+            return;
+        }
+
+        if(e.getMessage().getMentionedChannels().size() != 1) {
             sendUsageMessage();
             return;
         }
 
         String text = "";
-        for(int i = 0; i < args.length; i++) {
+        for(int i = 1; i < args.length; i++) {
             text += args[i];
         }
-        sendEmbededMessage(e.getTextChannel(), e.getMember().getEffectiveName(), Colors.COLOR_PRIMARY, text);
+        sendEmbededMessage(e.getMessage().getMentionedChannels().get(0), e.getMember().getEffectiveName(), Colors.COLOR_PRIMARY, text);
     }
 
     @Override
@@ -32,7 +37,7 @@ public class CommandSay extends Command {
 
     @Override
     public String getUsage() {
-        return "say <message>";
+        return "say <channel> <message>";
     }
 
     @Override
