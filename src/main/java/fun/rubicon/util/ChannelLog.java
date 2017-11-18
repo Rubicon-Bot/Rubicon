@@ -29,7 +29,7 @@ public class ChannelLog {
         String us = event.getMember().getNickname();
         TextChannel channel = guild.getTextChannelById(logchannel);
         if(us == null) us = event.getAuthor().getName();
-        event.getTextChannel().sendMessage(new EmbedBuilder().setDescription("[Command] `" + prefix +  command + "` was executed by **" + us + " (" + event.getAuthor().getName()+ "#" + event.getAuthor().getDiscriminator() + ")**").build()).queue();
+        channel.sendMessage(new EmbedBuilder().setDescription("[Command] `" + prefix +  command + "` was executed by **" + us + " (" + event.getAuthor().getName()+ "#" + event.getAuthor().getDiscriminator() + ")**").build()).queue();
     }
 
         }
