@@ -27,17 +27,17 @@ public class CommandListener extends ListenerAdapter {
                 return;
             }
             String prefix = Main.getMySQL().getGuildValue(g, "prefix");
-            if (e.getMessage().getContent().startsWith(prefix) && e.getMessage().getAuthor().getId() != e.getJDA().getSelfUser().getId()) {
+            if (e.getMessage().getContent().toLowerCase().startsWith(prefix.toLowerCase()) && e.getMessage().getAuthor().getId() != e.getJDA().getSelfUser().getId()) {
                 try {
                     CommandHandler.handleCommand(CommandHandler.parser.parse(e.getMessage().getContent(), e));
                 } catch (Exception fuck) {
                     fuck.printStackTrace();
                 }
             }
-            if (e.getMessage().getContent().startsWith(Info.BOT_DEFAULT_PREFIX) && !e.getMessage().getContent().startsWith(prefix.toString())){
+            if (e.getMessage().getContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()) && !e.getMessage().getContent().startsWith(prefix.toLowerCase().toString())){
                 System.out.println("Hu");
 
-            if (e.getMessage().getContent().startsWith(Info.BOT_DEFAULT_PREFIX) && e.getMessage().getAuthor().getId() != e.getJDA().getSelfUser().getId()) {
+            if (e.getMessage().getContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()) && e.getMessage().getAuthor().getId() != e.getJDA().getSelfUser().getId()) {
                 try {
                     CommandHandler.handleCommand(CommandHandler.parser.parsep(e.getMessage().getContent(), e));
                 } catch (Exception fuck) {
