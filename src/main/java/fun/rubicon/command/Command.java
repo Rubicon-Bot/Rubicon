@@ -134,7 +134,7 @@ public abstract class Command {
     //Stuff
     private String generateTimeStamp() {
         Date date = new Date();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         return simpleDateFormat.format(date);
     }
 }
