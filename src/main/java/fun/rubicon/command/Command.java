@@ -46,7 +46,6 @@ public abstract class Command {
             execute(args, e);
         } else {
             sendNoPermissionMessage();
-            Logger.debug("No Permissions!");
         }
         try {
             e.getMessage().delete().queue();

@@ -8,11 +8,8 @@ import fun.rubicon.commands.botowner.CommandRestart;
 import fun.rubicon.commands.botowner.CommandStop;
 import fun.rubicon.commands.fun.CommandJoke;
 import fun.rubicon.commands.fun.CommandLmgtfy;
-import fun.rubicon.commands.general.CommandHelp;
-import fun.rubicon.commands.general.CommandInfo;
-import fun.rubicon.commands.general.CommandPing;
+import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.fun.CommandRoll;
-import fun.rubicon.commands.general.CommandSpeedTest;
 import fun.rubicon.commands.guildowner.CommandSettings;
 import fun.rubicon.commands.guildowner.CommandStartup;
 import fun.rubicon.commands.tools.*;
@@ -42,6 +39,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandInfo("info", CommandCategory.GENERAL));
         CommandHandler.addCommand(new CommandPing("ping", CommandCategory.GENERAL));
         CommandHandler.addCommand(new CommandSpeedTest("speedtest", CommandCategory.GENERAL));
+        CommandHandler.addCommand(new CommandStatistics("statistics", CommandCategory.GENERAL));
 
         //Guildowner
         CommandHandler.addCommand(new CommandSettings("settings", CommandCategory.GUILD_OWNER));

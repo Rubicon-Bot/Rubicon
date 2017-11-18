@@ -14,10 +14,22 @@ public class CommandPermission extends Command {
 
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
-        Role role;
-        Member member;
+        Role role = null;
+        Member member = null;
         if(e.getMessage().getMentionedUsers().size() == 1) {
             member = e.getGuild().getMember(e.getMessage().getMentionedUsers().get(0));
+        }
+        if(e.getMessage().getMentionedRoles().size() == 1) {
+            role = e.getMessage().getMentionedRoles().get(0);
+        }
+
+        if(member == null && role == null) {
+            sendErrorMessage("You have to mention one user or role!");
+            return;
+        }
+
+        if(member != null) {
+
         }
     }
 
@@ -28,7 +40,8 @@ public class CommandPermission extends Command {
 
     @Override
     public String getUsage() {
-        return "permission <@User/@Role> <add/remove/list> <command>";
+        return "permission <@User/@Role> <add/remove> <command>\n" +
+                "permission <@User/@Role> <list>";
     }
 
     @Override
