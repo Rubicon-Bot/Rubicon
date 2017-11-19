@@ -95,7 +95,7 @@ public class CommandBday extends Command{
 
     @Override
     public String getUsage() {
-        return null;
+        return "Kp";
     }
 
     @Override
