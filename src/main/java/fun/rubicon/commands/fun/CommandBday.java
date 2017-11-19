@@ -4,6 +4,7 @@ import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.core.Main;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -63,13 +64,24 @@ public class CommandBday extends Command{
         timer.schedule(new TimerTask(){
             public void run(){
                 if (getDateTime().equals(d)){
-                    e.getGuild().getDefaultChannel().sendMessage(new EmbedBuilder()
-                            .setColor(Color.CYAN)
-                            .setTitle(":cake: Happy Birthday " + user.getAsMention() + " :cake:")
-                            .setAuthor(user.getName(), "", user.getAvatarUrl())
-                            .setDescription("Hey @here ,\n" + user.getName() + "has his Birthday Today!")
-                            .build()
-                    ).queue();
+                    if (Main.getMySQL().getGuildValue(e.getGuild(), "channel").equals(0)){
+                        e.getTextChannel().sendMessage(new EmbedBuilder()
+                                .setColor(Color.CYAN)
+                                .setTitle(":cake: Happy Birthday " + user.getAsMention() + " :cake:")
+                                .setAuthor(user.getName(), "", user.getAvatarUrl())
+                                .setDescription("Hey @here ,\n" + user.getName() + "has his Birthday Today!")
+                                .build()
+                        ).queue();
+                    }else {
+                        e.getGuild().getTextChannelById(Main.getMySQL().getGuildValue(e.getGuild(), "channel")).sendMessage(new EmbedBuilder()
+                                .setColor(Color.CYAN)
+                                .setTitle(":cake: Happy Birthday " + user.getAsMention() + " :cake:")
+                                .setAuthor(user.getName(), "", user.getAvatarUrl())
+                                .setDescription("Hey @here ,\n" + user.getName() + "has his Birthday Today!")
+                                .build()
+                        ).queue();
+                    }
+
                 }
             }
         },date, 24*60*60*1000);
