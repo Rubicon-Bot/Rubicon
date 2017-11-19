@@ -27,7 +27,7 @@ public class CommandShort extends Command{
         if(args.length > 0) {
             Bitly bitly = new Bitly(Info.BITLY_TOKEN);
             try{
-                sendEmbededMessage("Shorted URL:" + bitly.generateShortLink(args[0]));
+                sendEmbededMessage("Shorted URL: " + bitly.generateShortLink(args[0]));
             } catch (Exception ex){
                 sendErrorMessage(":warning: Please enter a valid URL");
             }

@@ -77,6 +77,11 @@
       <artifactId>jspeedtest</artifactId>
       <version>1.31.2</version>
     </dependency>
+      <dependency>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+          <version>8.0.7-dmr</version>
+      </dependency>
   </dependencies>
 </project>
 

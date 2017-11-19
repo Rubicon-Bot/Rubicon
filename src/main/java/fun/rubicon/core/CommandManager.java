@@ -10,7 +10,7 @@ import fun.rubicon.commands.botowner.CommandStop;
 import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.guildowner.CommandSettings;
-import fun.rubicon.commands.guildowner.CommandStartup;
+import fun.rubicon.commands.guildowner.CommandRebuild;
 import fun.rubicon.commands.tools.*;
 
 /**
@@ -46,11 +46,10 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandChoose("choose", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandLevel("rank", CommandCategory.FUN).addAliases("lvl"));
         CommandHandler.addCommand(new CommandBday("birthday", CommandCategory.FUN).addAliases("bday"));
-<<<<<<< HEAD
         CommandHandler.addCommand(new CommandShort("short", CommandCategory.TOOLS));
-=======
         CommandHandler.addCommand(new CommandPortal("portal", CommandCategory.FUN).addAliases("mirror"));
->>>>>>> 75f1d3aff4a47aad4f1e2bc35f427449d2bd69fd
+        CommandHandler.addCommand(new CommandShort("short", CommandCategory.FUN));
+
 
         //general
         CommandHandler.addCommand(new CommandHelp("help", CommandCategory.GENERAL).addAliases("h"));
@@ -64,7 +63,7 @@ public class CommandManager {
 
         //Guildowner
         CommandHandler.addCommand(new CommandSettings("settings", CommandCategory.GUILD_OWNER));
-        CommandHandler.addCommand(new CommandStartup("startup", CommandCategory.GUILD_OWNER));
+        CommandHandler.addCommand(new CommandRebuild("rebuild", CommandCategory.GUILD_OWNER));
 
         //Tools
         CommandHandler.addCommand(new CommandClear("clear", CommandCategory.TOOLS).addAliases("purge"));
