@@ -31,11 +31,11 @@ public class CommandManager {
 
     private void initCommands() {
         //Admin
-        CommandHandler.addCommand(new CommandPermission("permissions", CommandCategory.ADMIN));
+        CommandHandler.addCommand(new CommandPermission("permission", CommandCategory.ADMIN).addAliases("permission", "perm", "perms"));
 
         //BotOwner
-        CommandHandler.addCommand(new CommandBroadcast("broadcast", CommandCategory.BOT_OWNER).addAliases("sayb","bsay"));
-        CommandHandler.addCommand(new CommandRestart("restart", CommandCategory.BOT_OWNER).addAliases("r","re"));
+        CommandHandler.addCommand(new CommandBroadcast("broadcast", CommandCategory.BOT_OWNER).addAliases("sayb","bsay", "br"));
+        CommandHandler.addCommand(new CommandRestart("restart", CommandCategory.BOT_OWNER).addAliases("r","re", "rs"));
         CommandHandler.addCommand(new CommandStop("stop", CommandCategory.BOT_OWNER).addAliases("terminate"));
         CommandHandler.addCommand(new CommandEval("eval", CommandCategory.BOT_OWNER).addAliases("e"));
 
@@ -46,15 +46,16 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandColor("color", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandChoose("choose", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandLevel("rank", CommandCategory.FUN).addAliases("lvl"));
+        CommandHandler.addCommand(new CommandBday("birthday", CommandCategory.FUN).addAliases("bday"));
 
         //general
         CommandHandler.addCommand(new CommandHelp("help", CommandCategory.GENERAL).addAliases("h"));
-        CommandHandler.addCommand(new CommandInfo("info", CommandCategory.GENERAL));
+        CommandHandler.addCommand(new CommandInfo("info", CommandCategory.GENERAL).addAliases("inf"));
         CommandHandler.addCommand(new CommandPing("ping", CommandCategory.GENERAL));
-        CommandHandler.addCommand(new CommandSpeedTest("speedtest", CommandCategory.GENERAL));
-        CommandHandler.addCommand(new CommandStatistics("statistics", CommandCategory.GENERAL));
-        CommandHandler.addCommand(new CommandInvite("invite", CommandCategory.GENERAL));
-        CommandHandler.addCommand(new CommandUptime("uptime", CommandCategory.GENERAL));
+        CommandHandler.addCommand(new CommandSpeedTest("speedtest", CommandCategory.GENERAL).addAliases("st"));
+        CommandHandler.addCommand(new CommandStatistics("statistics", CommandCategory.GENERAL).addAliases("stats"));
+        CommandHandler.addCommand(new CommandInvite("invite", CommandCategory.GENERAL).addAliases("inv"));
+        CommandHandler.addCommand(new CommandUptime("uptime", CommandCategory.GENERAL).addAliases("up"));
 
 
         //Guildowner
