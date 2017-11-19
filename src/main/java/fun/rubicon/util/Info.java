@@ -26,7 +26,6 @@ public class Info {
     public final static String BOT_WEBSITE = "https://rubicon.fun";
     public final static String BOT_GITHUB = "https://github.com/Rubicon-Bot/RubiCon";
     public final static String CONFIG_FILE = "config.json";
-    public final static String[] CONFIG_KEYS = {"token","mysql_host","mysql_port","mysql_database","mysql_password","mysql_user","bitlytoken"};
     public final static String EMBED_FOOTER = "© 2017 Rubicon Dev Team";
     public final static String ICON_URL = "https://images-ext-2.discordapp.net/external/Xae9oFQTIRhV7V21twWufcxtdcxhmW6NFNatN8cyxz8/https/cdn.discordapp.com/icons/380415148545802250/579ee17b8de4d027c98853606567d760.jpg?width=72&height=72";
     public final static String BITLY_TOKEN = cfg.getString("bitlytoken");
@@ -49,13 +48,5 @@ public class Info {
     public final static String MYSQL_DATABASE = cfg.getString("mysql_database");
 
 
-    public static void init() {
-        Configuration cfg = Main.getConfiguration();
-        for (String configKey : CONFIG_KEYS) {
-            if(!cfg.has(configKey)){
-                String input = Setup.prompt(configKey);
-                cfg.set(configKey, input);
-            }
-        }
-    }
+
 }
