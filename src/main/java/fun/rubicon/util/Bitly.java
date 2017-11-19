@@ -27,7 +27,7 @@ public class Bitly {
         String URL = this.BITLY_API.replace("LONG_URL", longurl);
         try {
             HttpRequest request = new HttpRequest(URL);
-            RequestResult result = request.sendGETRequest();
+            String result = request.sendGETRequest().getResponse();
             JSONObject json = new JSONObject(result);
             if(!json.getString("status_txt").equals("OK"))
                 throw new Exception();
