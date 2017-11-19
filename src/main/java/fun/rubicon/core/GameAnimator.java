@@ -20,6 +20,7 @@ public class GameAnimator {
             "Generating new features...",
             CommandHandler.getCommands().size() + " Commands loaded",
             "Supplying " + CommandHandler.commands.values().size() + " commands"
+            "Blowing stuff up!"
     };
 
     public static synchronized void start() {
