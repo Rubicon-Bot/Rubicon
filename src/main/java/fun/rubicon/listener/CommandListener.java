@@ -34,9 +34,8 @@ public class CommandListener extends ListenerAdapter {
                     fuck.printStackTrace();
                 }
             }
-            if (e.getMessage().getContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()) && !e.getMessage().getContent().startsWith(prefix.toLowerCase().toString())){
-                System.out.println("Hu");
-
+            if (e.getMessage().getContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()) && !e.getMessage().getContent().toLowerCase().startsWith(prefix.toLowerCase().toString())){
+                //Above for not dubble
             if (e.getMessage().getContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()) && e.getMessage().getAuthor().getId() != e.getJDA().getSelfUser().getId()) {
                 try {
                     CommandHandler.handleCommand(CommandHandler.parser.parsep(e.getMessage().getContent(), e));

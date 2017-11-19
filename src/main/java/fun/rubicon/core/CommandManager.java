@@ -7,6 +7,7 @@ import fun.rubicon.commands.botowner.CommandBroadcast;
 import fun.rubicon.commands.botowner.CommandEval;
 import fun.rubicon.commands.botowner.CommandRestart;
 import fun.rubicon.commands.botowner.CommandStop;
+import fun.rubicon.commands.fun.CommandColor;
 import fun.rubicon.commands.fun.CommandJoke;
 import fun.rubicon.commands.fun.CommandLmgtfy;
 import fun.rubicon.commands.general.*;
@@ -35,6 +36,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandJoke("joke", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandLmgtfy("lmgtfy", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandRoll("roll", CommandCategory.FUN));
+        CommandHandler.addCommand(new CommandColor("color", CommandCategory.FUN));
 
         //general
         CommandHandler.addCommand(new CommandHelp("help", CommandCategory.GENERAL));
