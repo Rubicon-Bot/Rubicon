@@ -13,6 +13,15 @@ import fun.rubicon.commands.guildowner.CommandSettings;
 import fun.rubicon.commands.guildowner.CommandStartup;
 import fun.rubicon.commands.tools.*;
 
+/**
+ * Rubicon Discord bot
+ *
+ * @author Yannick Seeger / ForYaSee
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package fun.rubicon.core
+ */
+
 public class CommandManager {
 
     public CommandManager() {
@@ -27,7 +36,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandBroadcast("broadcast", CommandCategory.BOT_OWNER));
         CommandHandler.addCommand(new CommandRestart("restart", CommandCategory.BOT_OWNER));
         CommandHandler.addCommand(new CommandStop("stop", CommandCategory.BOT_OWNER));
-        //CommandHandler.addCommand(new CommandEval("eval", CommandCategory.BOT_OWNER));
+        CommandHandler.addCommand(new CommandEval("eval", CommandCategory.BOT_OWNER));
 
         //Fun
         CommandHandler.addCommand(new CommandJoke("joke", CommandCategory.FUN));

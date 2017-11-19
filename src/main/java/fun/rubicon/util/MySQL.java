@@ -8,9 +8,14 @@ import net.dv8tion.jda.core.entities.User;
 import java.sql.*;
 
 /**
- * @author Schlaubi
- * @version 1.0
+ * Rubicon Discord bot
+ *
+ * @author Michael Rittmeister / Yannick Seeger
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package fun.rubicon.util
  */
+
 public class MySQL {
 
     private static Connection connection;

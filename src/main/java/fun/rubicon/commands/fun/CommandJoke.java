@@ -9,6 +9,15 @@ import org.json.JSONObject;
 
 public class CommandJoke extends Command {
 
+    /**
+     * Rubicon Discord bot
+     *
+     * @author Yannick Seeger / ForYaSee
+     * @copyright Rubicon Dev Team 2017
+     * @license MIT License <http://rubicon.fun/license>
+     * @package fun.rubicon.commands.fun
+     */
+
     public CommandJoke(String command, CommandCategory category) {
         super(command, category);
     }

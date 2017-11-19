@@ -11,11 +11,12 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 /**
  * Rubicon Discord bot
  *
- * @author Leon Kappes / Lee
+ * @author Yannick Seeger / ForYaSee
  * @copyright Rubicon Dev Team 2017
  * @license MIT License <http://rubicon.fun/license>
- * @package commands.general
+ * @package fun.rubicon.commands.general
  */
+
 public class CommandInvite extends Command{
     public CommandInvite(String command, CommandCategory category) {
         super(command, category);

@@ -5,6 +5,15 @@ import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.entities.Game;
 import java.util.stream.Collectors;
 
+/**
+ * Rubicon Discord bot
+ *
+ * @author Yannick Seeger / ForYaSee
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package fun.rubicon.core
+ */
+
 public class GameAnimator {
 
     private static Thread t;
@@ -19,8 +28,8 @@ public class GameAnimator {
             Info.BOT_NAME + " " + Info.BOT_VERSION,
             "Generating new features...",
             CommandHandler.getCommands().size() + " Commands loaded",
-            "Supplying " + CommandHandler.commands.values().size() + " commands"
-            "Blowing stuff up!"
+            "Supplying " + CommandHandler.commands.values().size() + " commands",
+            "Blowing stuff up!",
     };
 
     public static synchronized void start() {

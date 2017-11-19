@@ -8,10 +8,10 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 /**
  * Rubicon Discord bot
  *
- * @author Foryase / Yannick
+ * @author Yannick Seeger / ForYaSee
  * @copyright Rubicon Dev Team 2017
  * @license MIT License <http://rubicon.fun/license>
- * @package commands.tools
+ * @package fun.rubicon.commands.tools
  */
 
 public class CommandSay extends Command {

@@ -6,6 +6,15 @@ import net.dv8tion.jda.core.entities.User;
 
 import java.util.Date;
 
+/**
+ * Rubicon Discord bot
+ *
+ * @author Yannick Seeger / ForYaSee
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package fun.rubicon.util
+ */
+
 public class Info {
 
     static Configuration cfg = Main.getConfiguration();

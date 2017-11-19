@@ -11,6 +11,15 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+/**
+ * Rubicon Discord bot
+ *
+ * @author Yannick Seeger / ForYaSee
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package fun.rubicon.commands.general
+ */
+
 public class CommandStatistics extends Command {
 
     public CommandStatistics(String command, CommandCategory category) {

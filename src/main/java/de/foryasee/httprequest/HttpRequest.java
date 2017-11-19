@@ -9,6 +9,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * HttpRequests
+ *
+ * @author Yannick Seeger / ForYaSee
+ * @copyright Yannick Seeger 2017
+ * @license MIT License
+ * @package de.foryasee.httprequest
+ */
+
 public class HttpRequest {
 
     private String urlP;

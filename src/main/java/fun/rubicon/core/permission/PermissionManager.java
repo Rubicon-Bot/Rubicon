@@ -10,6 +10,15 @@ import net.dv8tion.jda.core.entities.User;
 
 import java.util.Arrays;
 
+/**
+ * Rubicon Discord bot
+ *
+ * @author Yannick Seeger / ForYaSee
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package fun.rubicon.core.permission
+ */
+
 public class PermissionManager {
 
     private Member member;

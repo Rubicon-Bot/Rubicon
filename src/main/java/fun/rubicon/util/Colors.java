@@ -2,6 +2,15 @@ package fun.rubicon.util;
 
 import java.awt.*;
 
+/**
+ * Rubicon Discord bot
+ *
+ * @author Yannick Seeger / ForYaSee
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package fun.rubicon.util
+ */
+
 public class Colors {
 
     public static Color COLOR_PRIMARY = new Color(46, 204, 113);

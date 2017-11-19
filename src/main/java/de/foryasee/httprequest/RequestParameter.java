@@ -1,5 +1,14 @@
 package de.foryasee.httprequest;
 
+/**
+ * HttpRequests
+ *
+ * @author Yannick Seeger / ForYaSee
+ * @copyright Yannick Seeger 2017
+ * @license MIT License
+ * @package de.foryasee.httprequest
+ */
+
 public class RequestParameter {
 
     private String key;

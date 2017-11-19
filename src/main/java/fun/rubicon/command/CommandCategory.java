@@ -1,5 +1,14 @@
 package fun.rubicon.command;
 
+/**
+ * Rubicon Discord bot
+ *
+ * @author Yannick Seeger / ForYaSee
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package fun.rubicon.command
+ */
+
 public enum CommandCategory {
 
     TEST("test", "Test"),

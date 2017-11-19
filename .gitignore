@@ -14,5 +14,5 @@ full.log
 latest.log
 *.log
 /.gitignore
-out/
+out/*
 src/META-INF/MANIFEST.MF
