@@ -5,6 +5,7 @@
  
 [![Uptime Robot status](https://img.shields.io/uptimerobot/status/m779511046-c42978b8bcbefa73044af91d.svg)](https://status.rubicon.fun) &nbsp;
 [![Uptime Robot ratio (7 days)](https://img.shields.io/uptimerobot/ratio/7/m779511046-c42978b8bcbefa73044af91d.svg)](https://status.rubicon.fun)
+[![Travis-CI](rc!vote create  Ist der Vote command gut | Ja!!! | NE BRUHH | HAlt doch dein verschissenes Maul )](https://travis-ci.org/Rubicon-Bot/Rubicon)
 [![Discord Guild](https://discordapp.com/api/guilds/381419503164325900/embed.png)](https://discord.gg/k3zJhDU)
  
 <a href="https://discordapp.com/oauth2/authorize?client_id=380713705073147915&scope=bot&permissions=2146958591">
