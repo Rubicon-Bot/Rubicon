@@ -59,7 +59,7 @@ public class CommandASCII extends Command {
                         asciiBuilder.append("0");
                     asciiBuilder.append(ascii).append(" ");
                 }
-                asciiBuilder.append("023").append(" ");
+                asciiBuilder.append("023 ");
             }
             output.append(text.toString()).append("`\n");
             output.append(asciiBuilder.toString()).append("`");
