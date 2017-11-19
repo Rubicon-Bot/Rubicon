@@ -42,6 +42,7 @@ public class CommandBday extends Command{
         switch (args[0]) {
             case "set":
                 Main.getMySQL().setString("user", "bday", args[0], "userid", e.getAuthor().getId());
+                sendEmbededMessage("Sucesfully set your Birthday!");
                 return;
         }
         User user = e.getAuthor();
@@ -90,12 +91,16 @@ public class CommandBday extends Command{
 
     @Override
     public String getDescription() {
-        return "Congratulations to your birthday!";
+        return "Let the Bot remind you on your Birthday";
     }
 
     @Override
     public String getUsage() {
+<<<<<<< HEAD
         return "Kp";
+=======
+        return "bday set dd:MM (example: 19:12)";
+>>>>>>> master
     }
 
     @Override
