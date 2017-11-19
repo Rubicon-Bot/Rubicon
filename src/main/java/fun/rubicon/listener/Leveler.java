@@ -21,18 +21,18 @@ import java.util.TimerTask;
  * @package fun.rubicon.listener
  */
 public class Leveler extends ListenerAdapter{
-    MySQL LVL = Main.getMySQL();
+
 
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-        if (event.getAuthor().isBot()) return;
-        if (Cooldown.has(event.getAuthor().getId())) return;
-
+        if (event.getAuthor().isBot()){ return;}
+        if (Cooldown.has(event.getAuthor().getId())){ return;}
+        MySQL LVL = Main.getMySQL();
         if (LVL.ifUserExist(event.getAuthor())) {
             //Point System
             int current = Integer.parseInt(LVL.getUserValue(event.getAuthor(), "points"));
             int zufallszahl = (int) ((Math.random() * 10) + 10);
-            String point = String.valueOf(current+zufallszahl);
-            int points = current+zufallszahl;
+            String point = String.valueOf(current + zufallszahl);
+            int points = current + zufallszahl;
             LVL.updateUserValue(event.getAuthor(), "points", point);
             //Cooldown
             Cooldown.add(event.getAuthor().getId());
@@ -45,14 +45,14 @@ public class Leveler extends ListenerAdapter{
 
             String lvlnow = LVL.getUserValue(event.getAuthor(), "level");
             int dann = Integer.parseInt(lvlnow);
-            int req = dann*30;
+            int req = dann * 30;
 
-            if (points>req) {
+            if (points > req) {
                 dann++;
                 String fina = String.valueOf(dann);
                 LVL.updateUserValue(event.getAuthor(), "level", fina);
                 LVL.updateUserValue(event.getAuthor(), "points", "0");
-                String l = ( LVL.getUserValue(event.getAuthor(), "level"));
+                String l = (LVL.getUserValue(event.getAuthor(), "level"));
                 int foo = Integer.parseInt(l);
                 //Level Up
                 Message msg = event.getChannel().sendMessage(new EmbedBuilder()
@@ -62,9 +62,9 @@ public class Leveler extends ListenerAdapter{
                 Random r = new Random();
                 int Low = 10;
                 int High = 100;
-                int Result = r.nextInt(High-Low) + Low;
+                int Result = r.nextInt(High - Low) + Low;
                 int ran = (int) Math.round(Result);
-                int foa = foo*2/3+ran;
+                int foa = foo * 2 / 3 + ran;
                 String m = String.valueOf(foa);
                 LVL.updateUserValue(event.getAuthor(), "money", m);
 
@@ -76,7 +76,6 @@ public class Leveler extends ListenerAdapter{
                 }, 3000);
 
             }
-
         }else LVL.createUser(event.getAuthor());
     }
 }

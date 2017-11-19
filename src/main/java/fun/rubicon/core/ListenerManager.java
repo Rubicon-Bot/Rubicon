@@ -27,5 +27,6 @@ public class ListenerManager {
         b.addEventListener(new SQLPreventDisconnect());
         b.addEventListener(new AutoRoleWelcome());
         b.addEventListener(new JoinSQL());
+        b.addEventListener(new Leveler());
     }
 }
