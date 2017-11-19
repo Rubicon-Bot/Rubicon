@@ -40,13 +40,14 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandEval("eval", CommandCategory.BOT_OWNER).addAliases("e"));
 
         //Fun
-        CommandHandler.addCommand(new CommandJoke("joke", CommandCategory.FUN));
+        //CommandHandler.addCommand(new CommandJoke("joke", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandLmgtfy("lmgtfy", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandRoll("roll", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandColor("color", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandChoose("choose", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandLevel("rank", CommandCategory.FUN).addAliases("lvl"));
         CommandHandler.addCommand(new CommandBday("birthday", CommandCategory.FUN).addAliases("bday"));
+        CommandHandler.addCommand(new CommandPortal("portal", CommandCategory.FUN).addAliases("mirror"));
 
         //general
         CommandHandler.addCommand(new CommandHelp("help", CommandCategory.GENERAL).addAliases("h"));
