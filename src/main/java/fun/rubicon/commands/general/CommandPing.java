@@ -3,10 +3,10 @@ package fun.rubicon.commands.general;
 /**
  * Rubicon Discord bot
  *
- * @author xEiisKeksx
+ * @author Leon Kappes / Lee
  * @copyright Rubicon Dev Team 2017
  * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.command
+ * @package commands.general
  */
 
 import fun.rubicon.command.Command;

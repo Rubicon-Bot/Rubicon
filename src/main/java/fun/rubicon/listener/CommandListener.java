@@ -9,6 +9,15 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
+/**
+ * Rubicon Discord bot
+ *
+ * @author Leon Kappes / Lee
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package listener
+ */
+
 public class CommandListener extends ListenerAdapter {
 
     public void onMessageReceived(MessageReceivedEvent e) {

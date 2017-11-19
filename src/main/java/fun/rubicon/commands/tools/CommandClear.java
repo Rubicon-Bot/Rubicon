@@ -15,15 +15,12 @@ import java.util.TimerTask;
 import static javax.swing.UIManager.getInt;
 
 /**
- * Amme JDA BOT
- * <p>
- * By LordLee at 17.11.2017 18:48
- * <p>
- * Contributors for this class:
- * - github.com/zekrotja
- * - github.com/DRSchlaubi
- * <p>
- * © Coders Place 2017
+ * Rubicon Discord bot
+ *
+ * @author Leon Kappes / Lee
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package commands.tools
  */
 public class CommandClear extends Command{
     private int getInt(String string){

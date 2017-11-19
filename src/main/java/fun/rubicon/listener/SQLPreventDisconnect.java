@@ -8,6 +8,16 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * Rubicon Discord bot
+ *
+ * @author Leon Kappes / Lee
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package listener
+ */
+
+
 public class SQLPreventDisconnect extends ListenerAdapter{
     private boolean check = false;
     public void onMessageReceived(MessageReceivedEvent event) {

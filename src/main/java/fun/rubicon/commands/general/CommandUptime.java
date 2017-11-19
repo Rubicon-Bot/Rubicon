@@ -10,6 +10,16 @@ import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+
+/**
+ * Rubicon Discord bot
+ *
+ * @author Leon Kappes / Lee
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package commands.general
+ */
+
 public class CommandUptime extends Command{
 
     private String getTime(Date date, String pattern) {

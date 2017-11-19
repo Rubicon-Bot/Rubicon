@@ -14,15 +14,12 @@ import java.awt.*;
 
 
 /**
- * Amme JDA BOT
- * <p>
- * By LordLee at 18.11.2017 16:59
- * <p>
- * Contributors for this class:
- * - github.com/zekrotja
- * - github.com/DRSchlaubi
- * <p>
- * © Coders Place 2017
+ * Rubicon Discord bot
+ *
+ * @author Leon Kappes / Lee
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package commands.general
  */
 public class CommandSpeedTest extends Command{
     public CommandSpeedTest(String command, CommandCategory category) {

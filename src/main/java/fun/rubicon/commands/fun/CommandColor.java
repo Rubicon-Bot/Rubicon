@@ -7,6 +7,16 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import java.awt.*;
 import java.util.Random;
 
+
+/**
+ * Rubicon Discord bot
+ *
+ * @author Lee Kappes / Lee
+ * @copyright Rubicon Dev Team ${YEAR}
+ * @license MIT License <http://rubicon.fun/license>
+ * @package commands.fun
+ */
+
 public class CommandColor extends Command{
     public CommandColor(String command, CommandCategory category) {
         super(command, category);

@@ -14,6 +14,15 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Rubicon Discord bot
+ *
+ * @author Foryasee / Yannik
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package commands.general
+ */
+
 public class CommandHelp extends Command {
 
     public CommandHelp(String command, CommandCategory category) {

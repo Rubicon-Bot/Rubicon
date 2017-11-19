@@ -4,6 +4,15 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Rubicon Discord bot
+ *
+ * @author Foryasee / Yannik
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package commands.fun
+ */
+
 public class Logger {
 
     private static File logFile;

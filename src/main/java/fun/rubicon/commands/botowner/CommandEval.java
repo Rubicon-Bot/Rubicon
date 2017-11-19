@@ -10,15 +10,12 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 /**
- * Amme JDA BOT
- * <p>
- * By LordLee at 18.11.2017 20:13
- * <p>
- * Contributors for this class:
- * - github.com/zekrotja
- * - github.com/DRSchlaubi
- * <p>
- * © Coders Place 2017
+ * Rubicon Discord bot
+ *
+ * @author Leon Kappes / Lee
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package commands.botowner
  */
 public class CommandEval extends Command{
     public CommandEval(String command, CommandCategory category) {

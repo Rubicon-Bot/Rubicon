@@ -7,15 +7,12 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 /**
- * Amme JDA BOT
- * <p>
- * By LordLee at 18.11.2017 19:25
- * <p>
- * Contributors for this class:
- * - github.com/zekrotja
- * - github.com/DRSchlaubi
- * <p>
- * © Coders Place 2017
+ * Rubicon Discord bot
+ *
+ * @author Leon Kappes / Lee
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package commands.general
  */
 public class CommandInvite extends Command{
     public CommandInvite(String command, CommandCategory category) {
