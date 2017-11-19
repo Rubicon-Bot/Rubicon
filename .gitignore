@@ -6,13 +6,6 @@
 .idea/*
 target/
 rubiconBot.iml
-rubicon.iml
-/config.json
-/latest.log
-/full.log
-full.log
-latest.log
-*.log
 /.gitignore
 out/*
 src/META-INF/MANIFEST.MF
