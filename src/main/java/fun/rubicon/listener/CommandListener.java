@@ -36,8 +36,8 @@ public class CommandListener extends ListenerAdapter {
                 Main.getMySQL().createMember(e.getMember());
                 return;
             }
-            if(e.getMessage().getMentionedUsers().size() > 0) {
-                for(User user : e.getMessage().getMentionedUsers()) {
+            if (e.getMessage().getMentionedUsers().size() > 0) {
+                for (User user : e.getMessage().getMentionedUsers()) {
                     Member member = g.getMember(user);
                     if (!Main.getMySQL().ifMemberExist(member)) {
                         Main.getMySQL().createMember(member);
@@ -57,14 +57,15 @@ public class CommandListener extends ListenerAdapter {
                     fuck.printStackTrace();
                 }
             }
-            if (e.getMessage().getContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()) && !e.getMessage().getContent().toLowerCase().startsWith(prefix.toLowerCase().toString())){
+            if (e.getMessage().getContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()) && !e.getMessage().getContent().toLowerCase().startsWith(prefix.toLowerCase().toString())) {
                 //Above for not dubble
-            if (e.getMessage().getContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()) && e.getMessage().getAuthor().getId() != e.getJDA().getSelfUser().getId()) {
-                try {
-                    CommandHandler.handleCommand(CommandHandler.parser.parsep(e.getMessage().getContent(), e));
-                } catch (Exception fuck) {
-                    fuck.printStackTrace();
-                }}
+                if (e.getMessage().getContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()) && e.getMessage().getAuthor().getId() != e.getJDA().getSelfUser().getId()) {
+                    try {
+                        CommandHandler.handleCommand(CommandHandler.parser.parsep(e.getMessage().getContent(), e));
+                    } catch (Exception fuck) {
+                        fuck.printStackTrace();
+                    }
+                }
             }
         } catch (NullPointerException ex) {
             //No Guild -> Private Message

@@ -27,8 +27,8 @@ public class SelfMentionListener extends ListenerAdapter{
                     .setColor(Colors.COLOR_SECONDARY)
                     .setAuthor(DiscordCore.getJDA().getSelfUser().getName(),null, DiscordCore.getJDA().getSelfUser().getAvatarUrl())
                     .setDescription("Hey, I am Rubicon and here to help **you**!")
-                    .addField("**-Prefix**","-`rc!`",false)
-                    .addField("**-Invite**", "[Invite](https://discordapp.com/oauth2/authorize?client_id=380713705073147915&scope=bot&permissions=2146958591)", false)
+                    .addField("**Prefix**","-`rc!`",false)
+                    .addField("**Invite**", "[My Invite](https://discordapp.com/oauth2/authorize?client_id=380713705073147915&scope=bot&permissions=2146958591)", false)
                     .build()
             ).queue();
         }
