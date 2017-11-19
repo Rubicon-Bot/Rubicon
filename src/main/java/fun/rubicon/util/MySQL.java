@@ -275,7 +275,7 @@ public class MySQL {
         try{
             if(connection.isClosed())
                 connect();
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO `user`(`userid`, `bio`, `bday`, `level`, `points`) VALUES (?, '', '0', '0', '0')");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO `user`(`userid`, `bio`, `bday`, `level`, `points`, `money`) VALUES (?, '', '0', '0', '0', '0')");
             ps.setString(1, String.valueOf(user.getIdLong()));
             ps.execute();
         } catch (SQLException e){
