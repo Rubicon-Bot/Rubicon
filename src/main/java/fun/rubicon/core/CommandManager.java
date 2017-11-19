@@ -1,6 +1,5 @@
 package fun.rubicon.core;
 
-import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.commands.admin.CommandPermission;
@@ -71,5 +70,6 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandUserInfo("userinfo", CommandCategory.TOOLS).addAliases("whois"));
         CommandHandler.addCommand(new CommandSay("say", CommandCategory.TOOLS));
         CommandHandler.addCommand(new CommandVote("vote", CommandCategory.TOOLS).addAliases("v"));
+        CommandHandler.addCommand(new CommandASCII("ascii", CommandCategory.TOOLS));
     }
 }
