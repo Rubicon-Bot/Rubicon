@@ -9,15 +9,12 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import java.awt.*;
 
 /**
- * Amme JDA BOT
- * <p>
- * By LordLee at 18.11.2017 17:47
- * <p>
- * Contributors for this class:
- * - github.com/zekrotja
- * - github.com/DRSchlaubi
- * <p>
- * © Coders Place 2017
+ * Rubicon Discord bot
+ *
+ * @author Leon Kappes / Lee
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package commands.fun
  */
 public class CommandLmgtfy extends Command{
     public CommandLmgtfy(String command, CommandCategory category) {
@@ -43,7 +40,7 @@ public class CommandLmgtfy extends Command{
 
     @Override
     public String getDescription() {
-        return "Creates a Lmgtfy link for a person which who not wants to google himself";
+        return "Creates a Lmgtfy link for a person which who not wants to google himself.";
     }
 
     @Override

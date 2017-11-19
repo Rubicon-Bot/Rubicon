@@ -5,6 +5,15 @@ import fun.rubicon.command.CommandCategory;
 import fun.rubicon.core.Main;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
+/**
+ * Rubicon Discord bot
+ *
+ * @author Leon Kappes / Lee
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package commands.botowner
+ */
+
 public class CommandStop extends Command {
 
     public CommandStop(String command, CommandCategory category) {
@@ -21,7 +30,7 @@ public class CommandStop extends Command {
 
     @Override
     public String getDescription() {
-        return "Stops the bot";
+        return "Stops the bot.";
     }
 
     @Override

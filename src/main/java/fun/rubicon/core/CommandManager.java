@@ -7,10 +7,8 @@ import fun.rubicon.commands.botowner.CommandBroadcast;
 import fun.rubicon.commands.botowner.CommandEval;
 import fun.rubicon.commands.botowner.CommandRestart;
 import fun.rubicon.commands.botowner.CommandStop;
-import fun.rubicon.commands.fun.CommandJoke;
-import fun.rubicon.commands.fun.CommandLmgtfy;
+import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
-import fun.rubicon.commands.fun.CommandRoll;
 import fun.rubicon.commands.guildowner.CommandSettings;
 import fun.rubicon.commands.guildowner.CommandStartup;
 import fun.rubicon.commands.tools.*;
@@ -35,6 +33,8 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandJoke("joke", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandLmgtfy("lmgtfy", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandRoll("roll", CommandCategory.FUN));
+        CommandHandler.addCommand(new CommandColor("color", CommandCategory.FUN));
+        CommandHandler.addCommand(new CommandChoose("choose", CommandCategory.FUN));
 
         //general
         CommandHandler.addCommand(new CommandHelp("help", CommandCategory.GENERAL));
@@ -44,6 +44,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandStatistics("statistics", CommandCategory.GENERAL));
         CommandHandler.addCommand(new CommandInvite("invite", CommandCategory.GENERAL));
         CommandHandler.addCommand(new CommandUptime("uptime", CommandCategory.GENERAL));
+
 
         //Guildowner
         CommandHandler.addCommand(new CommandSettings("settings", CommandCategory.GUILD_OWNER));

@@ -7,15 +7,12 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 /**
- * Amme JDA BOT
- * <p>
- * By LordLee at 17.11.2017 21:06
- * <p>
- * Contributors for this class:
- * - github.com/zekrotja
- * - github.com/DRSchlaubi
- * <p>
- * © Coders Place 2017
+ * Rubicon Discord bot
+ *
+ * @author Leon Kappes / Lee
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package commands.guildowner
  */
 public class CommandStartup extends Command{
     public CommandStartup(String command, CommandCategory category) {
@@ -39,7 +36,7 @@ public class CommandStartup extends Command{
 
     @Override
     public String getDescription() {
-        return "Starts the Bot on a Guild if the Category gets Deleted or something got fucked up!";
+        return "Starts the bot on a guild, if the category gets deleted or something got fucked up!";
     }
 
     @Override

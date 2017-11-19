@@ -10,15 +10,12 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 /**
- * Amme JDA BOT
- * <p>
- * By LordLee at 18.11.2017 20:13
- * <p>
- * Contributors for this class:
- * - github.com/zekrotja
- * - github.com/DRSchlaubi
- * <p>
- * © Coders Place 2017
+ * Rubicon Discord bot
+ *
+ * @author Leon Kappes / Lee
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package commands.botowner
  */
 public class CommandEval extends Command{
     public CommandEval(String command, CommandCategory category) {
@@ -27,6 +24,7 @@ public class CommandEval extends Command{
 
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
+        if (e.getAuthor().getId().equals("264048760580079616")) return;
 
         String[] par = String.join(" ", args).split("\\s+", 2);
 
@@ -47,7 +45,7 @@ public class CommandEval extends Command{
         } catch (ScriptException er) {
             er.printStackTrace();
         }
-        se.put("event", e);
+        se.put("e", e);
         se.put("jda", e.getJDA());
         se.put("guild", e.getGuild());
         se.put("channel", e.getChannel());
@@ -55,7 +53,7 @@ public class CommandEval extends Command{
         se.put("author", e.getAuthor());
 
         String modified_msg = String.join(" ", args)
-                .replace("getToken", "getTextChannelById(channel.getId()).sendMessage(\"UnsupportedOperationException(\\\"Nice try m8!\\\")\").queue").replace("System.exit(0)", "getTextChannelById(channel.getId()).sendMessage(\"UnsupportedOperationException(\\\"Nice try m8!\\\")\").queue").replace("shutdown", "getTextChannelById(channel.getId()).sendMessage(\"UnsupportedOperationException(\\\"Nice try m8!\\\")\").queue");
+                .replace("getToken", "getTextChannelById(channel.getId()).sendMessage(\"UnsupportedOperationException(\\\"Nice try m8!\\\")\").queue").replace("System.exit", "getTextChannelById(channel.getId()).sendMessage(\"UnsupportedOperationException(\\\"Nice try m8!\\\")\").queue").replace("shutdown", "getTextChannelById(channel.getId()).sendMessage(\"UnsupportedOperationException(\\\"Nice try m8!\\\")\").queue").replace("Runtime", "getTextChannelById(channel.getId()).sendMessage(\"UnsupportedOperationException(\\\"Nice try m8!\\\")\").queue").replace("leave", "getTextChannelById(channel.getId()).sendMessage(\\\"UnsupportedOperationException(\\\\\\\"Nice try m8!\\\\\\\")\\\").queue").replace("kick", "SHUT UP SCHLAUBI").replace("while", "FUCK YOU!").replace("getAsMention()", "getAsShutUp()").replace("Thread", "EINSCHEIß");
         //        .replace("ProcessBuilder","throw new UnsupportedOperationException(\"Locked\")");
 
         //    modified_msg = modified_msg.replaceAll("#", "().");
@@ -77,14 +75,13 @@ public class CommandEval extends Command{
             new MessageBuilder().appendCodeBlock(out.toString(), "Java").buildAll(MessageBuilder.SplitPolicy.NEWLINE, MessageBuilder.SplitPolicy.SPACE, MessageBuilder.SplitPolicy.ANYWHERE).forEach(message -> e.getTextChannel().sendMessage(message).queue());
         } catch (ScriptException er) {
             e.getTextChannel().sendMessage(new StringBuilder().append("```Java\n").append(modified_msg)
-                    .append("```An exception was thrown:").toString()).queue();
-            new MessageBuilder().appendCodeBlock(e.toString(), "Java").buildAll(MessageBuilder.SplitPolicy.NEWLINE, MessageBuilder.SplitPolicy.SPACE, MessageBuilder.SplitPolicy.ANYWHERE).forEach(message -> e.getTextChannel().sendMessage(message).queue());
+                    .append("``` ```Java\nAn exception was thrown:" + er.toString() + "```").toString()).queue();
         }
     }
 
     @Override
     public String getDescription() {
-        return "Simple Evealation Command!";
+        return "Simple evealation command!";
     }
 
     @Override

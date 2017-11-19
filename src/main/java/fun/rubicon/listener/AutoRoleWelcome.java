@@ -9,6 +9,16 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
+
+/**
+ * Rubicon Discord bot
+ *
+ * @author Leon Kappes / Lee
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package Listener
+ */
+
 public class AutoRoleWelcome extends ListenerAdapter{
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         MySQL SQL = Main.getMySQL();

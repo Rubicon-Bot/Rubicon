@@ -1,5 +1,14 @@
 package fun.rubicon.commands.botowner;
 
+/**
+ * Rubicon Discord bot
+ *
+ * @author xEiisKeksx
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package fun.rubicon.command
+ */
+
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.util.Colors;
@@ -32,7 +41,7 @@ public class CommandBroadcast extends Command {
 
     @Override
     public String getDescription() {
-        return "Inform all Serverowner.";
+        return "Inform all serverowner.";
     }
 
     @Override

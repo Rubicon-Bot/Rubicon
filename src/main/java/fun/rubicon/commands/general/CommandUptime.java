@@ -10,6 +10,16 @@ import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+
+/**
+ * Rubicon Discord bot
+ *
+ * @author Leon Kappes / Lee
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package commands.general
+ */
+
 public class CommandUptime extends Command{
 
     private String getTime(Date date, String pattern) {
@@ -50,7 +60,7 @@ public class CommandUptime extends Command{
 
     @Override
     public String getDescription() {
-        return "Sends the Bot uptime and when the last Restart was.";
+        return "Sends the bot uptime and when the last Restart was.";
     }
 
     @Override

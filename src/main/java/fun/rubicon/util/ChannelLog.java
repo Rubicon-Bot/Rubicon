@@ -9,15 +9,12 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import java.awt.*;
 
 /**
- * Amme JDA BOT
- * <p>
- * By LordLee at 18.11.2017 18:09
- * <p>
- * Contributors for this class:
- * - github.com/zekrotja
- * - github.com/DRSchlaubi
- * <p>
- * © Coders Place 2017
+ * Rubicon Discord bot
+ *
+ * @author Leon Kappes / Lee
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package util
  */
 public class ChannelLog {
     public static void logCommand(String command, MessageReceivedEvent event){

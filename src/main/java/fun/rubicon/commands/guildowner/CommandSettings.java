@@ -8,15 +8,12 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 /**
- * Amme JDA BOT
- * <p>
- * By LordLee at 17.11.2017 20:29
- * <p>
- * Contributors for this class:
- * - github.com/zekrotja
- * - github.com/DRSchlaubi
- * <p>
- * © Coders Place 2017
+ * Rubicon Discord bot
+ *
+ * @author Leon Kappes / Lee
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package commands.guildowner
  */
 public class CommandSettings extends Command {
     public CommandSettings(String command, CommandCategory category) {
@@ -87,7 +84,7 @@ public class CommandSettings extends Command {
 
     @Override
     public String getDescription() {
-        return "Set up Guild specific Settings!";
+        return "Set up guild specific settings!";
     }
 
     @Override

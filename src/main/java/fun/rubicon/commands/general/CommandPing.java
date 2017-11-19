@@ -1,5 +1,14 @@
 package fun.rubicon.commands.general;
 
+/**
+ * Rubicon Discord bot
+ *
+ * @author Leon Kappes / Lee
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package commands.general
+ */
+
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -20,7 +29,7 @@ public class CommandPing extends Command{
 
     @Override
     public String getDescription() {
-        return "Checking Bot ping.";
+        return "Checking bot ping.";
     }
 
     @Override

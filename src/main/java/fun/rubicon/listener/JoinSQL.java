@@ -11,6 +11,15 @@ import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * Rubicon Discord bot
+ *
+ * @author Leon Kappes / Lee
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package listener
+ */
+
 public class JoinSQL extends ListenerAdapter {
     public void onGuildJoin(GuildJoinEvent event) {
         Guild g = event.getGuild();

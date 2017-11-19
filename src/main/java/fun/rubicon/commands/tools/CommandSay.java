@@ -5,6 +5,15 @@ import fun.rubicon.command.CommandCategory;
 import fun.rubicon.util.Colors;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
+/**
+ * Rubicon Discord bot
+ *
+ * @author Foryase / Yannick
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package commands.tools
+ */
+
 public class CommandSay extends Command {
 
     public CommandSay(String command, CommandCategory category) {
@@ -32,7 +41,7 @@ public class CommandSay extends Command {
 
     @Override
     public String getDescription() {
-        return "Say some things with the bot!";
+        return "Say something with the bot!";
     }
 
     @Override

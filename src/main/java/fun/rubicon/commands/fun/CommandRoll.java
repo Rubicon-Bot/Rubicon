@@ -1,5 +1,14 @@
 package fun.rubicon.commands.fun;
 
+/**
+ * Rubicon Discord bot
+ *
+ * @author xEiisKeksx
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package fun.rubicon.command
+ */
+
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
