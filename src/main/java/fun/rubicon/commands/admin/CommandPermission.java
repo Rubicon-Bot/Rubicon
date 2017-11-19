@@ -53,9 +53,20 @@ public class CommandPermission extends Command {
                 case "remove":
                     break;
                 case "list":
+                    sendEmbededMessage(e.getTextChannel(), "Allowed Commands", );
                     break;
             }
         }
+    }
+
+    private String generatePermissionList() {
+        String allPermissions = permissionManager.getPermissionsAsString();
+        String[] arr = allPermissions.split(",");
+        String res = "";
+        for(int i = 0; i < arr.length; i++) {
+            res += arr[i];
+        }
+        return res;
     }
 
     @Override
