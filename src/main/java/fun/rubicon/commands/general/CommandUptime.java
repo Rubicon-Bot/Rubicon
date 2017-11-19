@@ -23,7 +23,7 @@ import java.util.Date;
 public class CommandUptime extends Command{
 
     private String getTime(Date date, String pattern) {
-        return new SimpleDateFormat(pattern).format(date);
+            return new SimpleDateFormat(pattern).format(date);
     }
 
     private String getTimeDiff(Date date1, Date date2) {
@@ -32,7 +32,7 @@ public class CommandUptime extends Command{
         long diffMinutes = diff / (60 * 1000) % 60;
         long diffHours = diff / (60 * 60 * 1000) % 24;
         long diffDays = diff / (24 * 60 * 60 * 1000);
-        return diffDays + " Days, " + parseTimeNumbs(diffHours) + " Hours, " + parseTimeNumbs(diffMinutes) + " Minutes, " + parseTimeNumbs(diffSeconds) + " Seconds";
+        return diffDays + " d, " + parseTimeNumbs(diffHours) + " h, " + parseTimeNumbs(diffMinutes) + " min, " + parseTimeNumbs(diffSeconds) + " sec";
     }
 
     private String parseTimeNumbs(long time) {
@@ -41,18 +41,22 @@ public class CommandUptime extends Command{
             timeString = "0" + time;
         return timeString;
     }
+
+
+
     public CommandUptime(String command, CommandCategory category) {
         super(command, category);
     }
 
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
-        e.getChannel().sendMessage(
+        e.getTextChannel().sendMessage(
                 new EmbedBuilder()
-                        .setColor(new Color(255,35,206))
-                        .setDescription(":alarm_clock:   __**UPTIME**__")
-                        .addField("Last restart", getTime(Info.lastRestart, "dd.MM.yyyy - HH:mm:ss (z)"), false)
+                        .setColor(new Color(255, 71,0))
+                        .setDescription(":alarm_clock:   **UPTIME**")
+                        .addField("Last restart", getTime(Info.lastRestart, "dd.MM.yyyy - HH:mm:ss"), false)
                         .addField("Online since", getTimeDiff(new Date(), Info.lastRestart), false)
+                        .addField("Reconnects since last restart", Info.reconnectCount + "", false)
                         .build()
         ).queue();
     }
