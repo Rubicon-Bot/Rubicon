@@ -17,7 +17,7 @@ import java.awt.*;
  * @package util
  */
 public class ChannelLog {
-    public static void logCommand(String command, MessageReceivedEvent event){
+    public static void logCommand(String command, MessageReceivedEvent event) {
         Guild guild = event.getGuild();
         MySQL SQL = Main.getMySQL();
         String prefix = SQL.getGuildValue(guild, "prefix");
@@ -25,8 +25,9 @@ public class ChannelLog {
         if (SQL.getGuildValue(guild, "logchannel").equals("0")) return;
         String us = event.getMember().getNickname();
         TextChannel channel = guild.getTextChannelById(logchannel);
-        if(us == null) us = event.getAuthor().getName();
-        channel.sendMessage(new EmbedBuilder().setDescription("[Command] `" + prefix +  command + "` was executed by **" + us + " (" + event.getAuthor().getName()+ "#" + event.getAuthor().getDiscriminator() + ")**").build()).queue();
+        if(channel == null) return;
+        if (us == null) us = event.getAuthor().getName();
+        channel.sendMessage(new EmbedBuilder().setDescription("[Command] `" + prefix + command + "` was executed by **" + us + " (" + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + ")**").build()).queue();
     }
 
-        }
+}
