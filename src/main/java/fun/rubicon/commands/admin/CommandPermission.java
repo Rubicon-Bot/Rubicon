@@ -2,9 +2,14 @@ package fun.rubicon.commands.admin;
 
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
+import fun.rubicon.core.permission.PermissionManager;
+import fun.rubicon.util.Colors;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Rubicon Discord bot
@@ -53,9 +58,25 @@ public class CommandPermission extends Command {
                 case "remove":
                     break;
                 case "list":
+                    EmbedBuilder builder = new EmbedBuilder();
+                    builder.setAuthor(member.getEffectiveName() + "'s Commands", null,member.getUser().getEffectiveAvatarUrl());
+                    builder.setDescription(generatePermissionList(member));
+                    builder.setColor(Colors.COLOR_NOT_IMPLEMENTED);
+                    e.getTextChannel().sendMessage(builder.build()).queue(msg -> msg.delete().queueAfter(defaultDeleteSeconds, TimeUnit.SECONDS));
                     break;
             }
         }
+    }
+
+    private String generatePermissionList(Member member) {
+        PermissionManager perm = new PermissionManager(member, this);
+        String allPermissions = perm.getPermissionsAsString();
+        String[] arr = allPermissions.split(",");
+        String res = "";
+        for(int i = 0; i < arr.length; i++) {
+            res += ":small_blue_diamond: **" + arr[i] + "**\n";
+        }
+        return res;
     }
 
     @Override

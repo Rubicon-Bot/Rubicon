@@ -57,7 +57,7 @@ public class PermissionManager {
         return false;
     }
 
-    private String getPermissionsAsString() {
+    public String getPermissionsAsString() {
         return Main.getMySQL().getMemberValue(member, "permissions");
     }
 
