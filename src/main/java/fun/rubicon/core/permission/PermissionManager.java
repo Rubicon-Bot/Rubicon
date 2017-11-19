@@ -33,29 +33,33 @@ public class PermissionManager {
     }
 
     public boolean hasPermission() {
-        int lvl = getPermissionLevel();
-        int cmdLvl = command.getPermissionLevel();
+        try {
+            int lvl = getPermissionLevel();
+            int cmdLvl = command.getPermissionLevel();
 
-        for(User user : Arrays.asList(Info.BOT_AUTHORS)) {
-            if(user.getId().equalsIgnoreCase(member.getUser().getId())) {
+            for (User user : Arrays.asList(Info.BOT_AUTHORS)) {
+                if (user.getId().equalsIgnoreCase(member.getUser().getId())) {
+                    return true;
+                }
+            }
+            if (getPermissionLevel() > cmdLvl) {
                 return true;
             }
-        }
-        if(getPermissionLevel() > cmdLvl) {
-            return true;
-        }
 
-        if(cmdLvl == 0) {
-            return true;
-        } else if (cmdLvl == 1) {
-            if(getPermissionsAsString().contains(command.getCommand().toLowerCase()))
+            if (cmdLvl == 0) {
                 return true;
-        } else if(cmdLvl == 2) {
-            if(member.getPermissions().contains(Permission.ADMINISTRATOR))
-                return true;
-        } else if(cmdLvl == 3) {
-            if(member.isOwner())
-                return true;
+            } else if (cmdLvl == 1) {
+                if (getPermissionsAsString().contains(command.getCommand().toLowerCase()))
+                    return true;
+            } else if (cmdLvl == 2) {
+                if (member.getPermissions().contains(Permission.ADMINISTRATOR))
+                    return true;
+            } else if (cmdLvl == 3) {
+                if (member.isOwner())
+                    return true;
+            }
+        } catch (NullPointerException ex) {
+
         }
         return false;
     }
@@ -71,21 +75,21 @@ public class PermissionManager {
             i = Integer.parseInt(s);
         } catch (NumberFormatException ex) {
             Logger.error(ex);
+            return 0;
         }
         return i;
     }
 
     public String getAllAllowedCommands() {
         List<Command> allCommands = new ArrayList<Command>(CommandHandler.getCommands().values());
-        List<Command> lvlZero = allCommands.stream().filter(command -> command.getPermissionLevel() == 0).collect(Collectors.toList());
-        List<Command> lvlTwo = allCommands.stream().filter(command -> command.getPermissionLevel() == 2).collect(Collectors.toList());
-        List<Command> lvlThree = allCommands.stream().filter(command -> command.getPermissionLevel() == 3).collect(Collectors.toList());
-        List<Command> lvlFour= allCommands.stream().filter(command -> command.getPermissionLevel() == 4).collect(Collectors.toList());
-
         String res = "";
-        for(Command cmd : lvlZero) {
-            res += cmd.getCommand() + ",";
+        for(Command cmd : allCommands) {
+            PermissionManager p = new PermissionManager(member, cmd);
+            if(p.hasPermission()) {
+                res += cmd.getCommand() + ",";
+            }
         }
+        return res;
     }
 
     public void addPermissions(String command) {

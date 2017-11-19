@@ -1,10 +1,10 @@
 package fun.rubicon.command;
 
+import fun.rubicon.core.Main;
 import fun.rubicon.core.permission.PermissionManager;
 import fun.rubicon.util.Colors;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.PrivateChannel;
-import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.awt.*;

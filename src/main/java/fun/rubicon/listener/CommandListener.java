@@ -4,8 +4,9 @@ import fun.rubicon.command.CommandHandler;
 import fun.rubicon.core.Main;
 import fun.rubicon.core.permission.PermissionManager;
 import fun.rubicon.util.Info;
-import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -34,6 +35,19 @@ public class CommandListener extends ListenerAdapter {
             if (!Main.getMySQL().ifMemberExist(e.getMember())) {
                 Main.getMySQL().createMember(e.getMember());
                 return;
+            }
+            if(e.getMessage().getMentionedUsers().size() > 0) {
+                for(User user : e.getMessage().getMentionedUsers()) {
+                    Member member = g.getMember(user);
+                    if (!Main.getMySQL().ifMemberExist(member)) {
+                        Main.getMySQL().createMember(member);
+                        return;
+                    }
+                    if (!Main.getMySQL().ifUserExist(user)) {
+                        Main.getMySQL().createUser(user);
+                        return;
+                    }
+                }
             }
             String prefix = Main.getMySQL().getGuildValue(g, "prefix");
             if (e.getMessage().getContent().toLowerCase().startsWith(prefix.toLowerCase()) && e.getMessage().getAuthor().getId() != e.getJDA().getSelfUser().getId()) {

@@ -31,27 +31,36 @@ public class CommandPermission extends Command {
     protected void execute(String[] args, MessageReceivedEvent e) {
         Role role = null;
         Member member = null;
-        if(e.getMessage().getMentionedUsers().size() == 1) {
+        if (e.getMessage().getMentionedUsers().size() == 1) {
             member = e.getGuild().getMember(e.getMessage().getMentionedUsers().get(0));
         }
-        if(e.getMessage().getMentionedRoles().size() == 1) {
+        if (e.getMessage().getMentionedRoles().size() == 1) {
             role = e.getMessage().getMentionedRoles().get(0);
         }
 
-        if(member == null && role == null) {
+        if (member == null && role == null) {
             sendErrorMessage("You have to mention one user or role!");
             return;
         }
-        if(args.length < 2) {
+        if (args.length < 2) {
             sendErrorMessage("You have to use more arguments!");
             return;
         }
 
-        if(member != null) {
+        if (member != null) {
             int nameLength = member.getEffectiveName().split(" ").length;
-            String operator = args[nameLength].toLowerCase();
+            String operator = null;
             String command = null;
-            try { command = args[nameLength + 1]; } catch (ArrayIndexOutOfBoundsException ex) {}
+            try {
+                operator = args[nameLength].toLowerCase();
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                sendUsageMessage();
+                return;
+            }
+            try {
+                command = args[nameLength + 1];
+            } catch (ArrayIndexOutOfBoundsException ex) {
+            }
 
             switch (operator) {
                 case "add":
@@ -60,9 +69,10 @@ public class CommandPermission extends Command {
                     break;
                 case "list":
                     EmbedBuilder builder = new EmbedBuilder();
-                    builder.setAuthor(member.getEffectiveName() + "'s Commands", null,member.getUser().getEffectiveAvatarUrl());
+                    builder.setAuthor(member.getEffectiveName() + "'s Commands", null, member.getUser().getEffectiveAvatarUrl());
                     builder.setDescription(generatePermissionList(member));
                     builder.setColor(Colors.COLOR_NOT_IMPLEMENTED);
+                    builder.setFooter("Allowed Commands: " + getAmountOfAllowedCommands(member), null);
                     e.getTextChannel().sendMessage(builder.build()).queue(msg -> msg.delete().queueAfter(defaultDeleteSeconds, TimeUnit.SECONDS));
                     break;
             }
@@ -71,14 +81,20 @@ public class CommandPermission extends Command {
 
     private String generatePermissionList(Member member) {
         PermissionManager perm = new PermissionManager(member, this);
-        String allPermissions = perm.getPermissionsAsString();
-        List<Command>
+        String allPermissions = perm.getAllAllowedCommands();
         String[] arr = allPermissions.split(",");
         String res = "";
-        for(int i = 0; i < arr.length; i++) {
+        for (int i = 0; i < arr.length; i++) {
             res += ":small_blue_diamond: **" + arr[i] + "**\n";
         }
         return res;
+    }
+
+    private int getAmountOfAllowedCommands(Member member) {
+        PermissionManager perm = new PermissionManager(member, this);
+        String allPermissions = perm.getAllAllowedCommands();
+        String[] arr = allPermissions.split(",");
+        return arr.length;
     }
 
     @Override
