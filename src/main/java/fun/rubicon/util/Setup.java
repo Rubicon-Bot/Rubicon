@@ -5,6 +5,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Setup {
+    /**
+     * Rubicon Discord bot
+     *
+     * @author Schlaubi
+     * @copyright Rubicon Dev Team 2017
+     * @license MIT License <http://rubicon.fun/license>
+     * @package fun.rubicon.util
+     */
 
     private static final BufferedReader sys_in;
     static {
