@@ -8,7 +8,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 /**
  * Rubicon Discord bot
  *
- * @author Foryase / Yannik
+ * @author Foryase / Yannick
  * @copyright Rubicon Dev Team 2017
  * @license MIT License <http://rubicon.fun/license>
  * @package commands.tools

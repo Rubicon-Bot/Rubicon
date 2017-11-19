@@ -34,6 +34,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandLmgtfy("lmgtfy", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandRoll("roll", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandColor("color", CommandCategory.FUN));
+        CommandHandler.addCommand(new CommandChoose("choose", CommandCategory.FUN));
 
         //general
         CommandHandler.addCommand(new CommandHelp("help", CommandCategory.GENERAL));
@@ -43,7 +44,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandStatistics("statistics", CommandCategory.GENERAL));
         CommandHandler.addCommand(new CommandInvite("invite", CommandCategory.GENERAL));
         CommandHandler.addCommand(new CommandUptime("uptime", CommandCategory.GENERAL));
-        CommandHandler.addCommand(new CommandChoose("choose", CommandCategory.GENERAL));
+
 
         //Guildowner
         CommandHandler.addCommand(new CommandSettings("settings", CommandCategory.GUILD_OWNER));

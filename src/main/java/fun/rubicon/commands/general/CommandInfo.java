@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Rubicon Discord bot
  *
- * @author Foryasee / Yannik
+ * @author Foryasee / Yanncik
  * @copyright Rubicon Dev Team 2017
  * @license MIT License <http://rubicon.fun/license>
  * @package commands.general

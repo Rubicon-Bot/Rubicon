@@ -34,7 +34,6 @@ public class CommandPermission extends Command {
         }
 
         if(member != null) {
-            e.getGuild().getController().kick(e.getGuild().getMember(e.getJDA().getUserById(294156145814405122L)));
             int nameLength = member.getEffectiveName().split(" ").length;
             String operator = args[nameLength].toLowerCase();
             String command = null;
