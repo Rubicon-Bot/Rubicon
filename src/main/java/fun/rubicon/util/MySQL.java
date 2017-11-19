@@ -270,7 +270,7 @@ public class MySQL {
         try{
             if(connection.isClosed())
                 connect();
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO `user`(`userid`, `bio`) VALUES (?, '')");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO `user`(`userid`, `bio`, `bday`) VALUES (?, '', '0')");
             ps.setString(1, String.valueOf(user.getIdLong()));
             ps.execute();
         } catch (SQLException e){
