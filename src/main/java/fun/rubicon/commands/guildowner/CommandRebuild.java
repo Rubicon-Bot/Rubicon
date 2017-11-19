@@ -4,8 +4,12 @@ import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.core.Main;
 import fun.rubicon.util.Info;
+import fun.rubicon.util.MySQL;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Category;
+import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.managers.GuildController;
 
@@ -16,47 +20,31 @@ import java.util.TimerTask;
 /**
  * Rubicon Discord bot
  *
- * @author Leon Kappes / Lee
+ * @author Yannick Seeger / ForYaSee
  * @copyright Rubicon Dev Team 2017
  * @license MIT License <http://rubicon.fun/license>
- * @package commands.guildowner
+ * @package fun.rubicon.commands.guildowner
  */
-public class CommandRebuild extends Command{
+public class CommandRebuild extends Command {
     public CommandRebuild(String command, CommandCategory category) {
         super(command, category);
     }
 
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
-        Guild guild = e.getGuild();
-        GuildController controller = guild.getController();
-
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-
-                controller.createCategory(Info.BOT_NAME).queue(cat -> {
-
-                    controller.modifyCategoryPositions()
-                            .selectPosition(cat.getPosition())
-                            .moveTo(0).queue();
-
-                    String[] list = {"commands", "log"};
-
-                    Arrays.stream(list).forEach(s ->
-                            controller.createTextChannel(s).queue(chan -> chan.getManager().setParent((Category) cat).queue())
-                    );
-                });
-
-            }
-        }, 1000);
-
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Main.getMySQL().updateGuildValue(guild, "logchannel", e.getGuild().getTextChannelsByName("log", true).get(0).getId());
-            }
-        }, 3000);
+        Category category = null;
+        TextChannel logChannel = null;
+        TextChannel commandChannel = null;
+        try {
+            category = e.getGuild().getCategoriesByName(Info.BOT_NAME, true).get(0);
+        } catch (Exception ex) {
+            e.getGuild().getController().createCategory(Info.BOT_NAME).complete();
+            category = e.getGuild().getCategoriesByName(Info.BOT_NAME, true).get(0);
+            logChannel = (TextChannel) e.getGuild().getController().createTextChannel("r-log").setParent(category).complete();
+            commandChannel = (TextChannel) e.getGuild().getController().createTextChannel("r-commands").setParent(category).complete();
+        }
+        Main.getMySQL().updateGuildValue(e.getGuild(), "logchannel", logChannel.getId());
+        sendEmbededMessage("Rubicon Channels rebuilded!");
     }
 
     @Override
