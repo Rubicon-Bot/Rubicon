@@ -235,11 +235,11 @@ public class MySQL {
     //User Stuff
     public boolean ifUserExist(User user) {
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM user where userid = ?");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM user where userid =?");
             ps.setString(1, user.getId());
             ResultSet rs = ps.executeQuery();
             return rs.next();
-        } catch (SQLException e){
+        } catch (SQLException  | NullPointerException e){
             e.printStackTrace();
         }
         return false;
@@ -275,7 +275,7 @@ public class MySQL {
         try{
             if(connection.isClosed())
                 connect();
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO `user`(`userid`, `bio`, `bday`, `level`, `points`, `money`) VALUES (?, '', '0', '0', '0', '0')");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO `user`(`userid`, `bio`, `bday`, `level`, `points`, `money`) VALUES (?, 0, 0, 0, 0, 0)");
             ps.setString(1, String.valueOf(user.getIdLong()));
             ps.execute();
         } catch (SQLException e){
