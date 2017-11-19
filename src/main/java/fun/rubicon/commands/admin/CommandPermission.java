@@ -167,8 +167,8 @@ public class CommandPermission extends Command {
 
     @Override
     public String getUsage() {
-        return "permission <@User/@Role> <add/remove> <command>\n" +
-                "permission <@User/@Role> <list>";
+        return "permission <@User/~@Role~> <add/remove> <command>\n" +
+                "permission <@User/~@Role~> <list>";
     }
 
     @Override
