@@ -29,5 +29,6 @@ public class ListenerManager {
         b.addEventListener(new JoinSQL());
         b.addEventListener(new Leveler());
         b.addEventListener(new AdminListener());
+        b.addEventListener(new ChannelDelete());
     }
 }
