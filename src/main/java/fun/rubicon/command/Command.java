@@ -1,8 +1,8 @@
 package fun.rubicon.command;
 
-import fun.rubicon.core.Main;
 import fun.rubicon.core.permission.PermissionManager;
 import fun.rubicon.util.Colors;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -10,7 +10,9 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import java.awt.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -40,6 +42,7 @@ public abstract class Command {
     protected MessageReceivedEvent e;
     protected CommandCategory category;
     protected PermissionManager permissionManager;
+    protected String[] aliases;
 
     public Command(String command, CommandCategory category) {
         this.command = command;
@@ -50,7 +53,7 @@ public abstract class Command {
         this.args = args;
         this.e = e;
         this.permissionManager = new PermissionManager(e.getMember(), this);
-        if(permissionManager.hasPermission()) {
+        if (permissionManager.hasPermission()) {
             execute(args, e);
         } else {
             sendNoPermissionMessage();
@@ -76,6 +79,7 @@ public abstract class Command {
         builder.setColor(color);
         ch.sendMessage(builder.build()).queue(msg -> msg.delete().queueAfter(defaultDeleteSeconds, TimeUnit.SECONDS));
     }
+
     protected void sendEmbededMessage(PrivateChannel pc, String title, Color color, String message) {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setAuthor(title, null, e.getJDA().getSelfUser().getEffectiveAvatarUrl());
@@ -131,6 +135,19 @@ public abstract class Command {
         return category;
     }
 
+    public Command addAliases(String ... a) {
+        this.aliases = a;
+        return this;
+    }
+
+    public List<String> getAliases() {
+        try {
+            return Arrays.asList(aliases);
+        } catch (Exception ex) {
+
+        }
+        return null;
+    }
 
     public abstract String getDescription();
 

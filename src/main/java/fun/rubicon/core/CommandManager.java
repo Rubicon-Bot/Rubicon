@@ -46,7 +46,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandChoose("choose", CommandCategory.FUN));
 
         //general
-        CommandHandler.addCommand(new CommandHelp("help", CommandCategory.GENERAL));
+        CommandHandler.addCommand(new CommandHelp("help", CommandCategory.GENERAL).addAliases("h"));
         CommandHandler.addCommand(new CommandInfo("info", CommandCategory.GENERAL));
         CommandHandler.addCommand(new CommandPing("ping", CommandCategory.GENERAL));
         CommandHandler.addCommand(new CommandSpeedTest("speedtest", CommandCategory.GENERAL));
