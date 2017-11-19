@@ -32,7 +32,7 @@ public class CommandBroadcast extends Command {
 
     @Override
     public String getDescription() {
-        return "Inform all Serverowner.";
+        return "Inform all serverowner.";
     }
 
     @Override

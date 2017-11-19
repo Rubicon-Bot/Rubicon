@@ -20,7 +20,7 @@ public class CommandPing extends Command{
 
     @Override
     public String getDescription() {
-        return "Checking Bot ping.";
+        return "Checking bot ping.";
     }
 
     @Override

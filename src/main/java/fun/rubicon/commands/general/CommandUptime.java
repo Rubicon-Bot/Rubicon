@@ -50,7 +50,7 @@ public class CommandUptime extends Command{
 
     @Override
     public String getDescription() {
-        return "Sends the Bot uptime and when the last Restart was.";
+        return "Sends the bot uptime and when the last Restart was.";
     }
 
     @Override

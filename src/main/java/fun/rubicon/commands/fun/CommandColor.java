@@ -22,7 +22,7 @@ public class CommandColor extends Command{
         Color randomColour = new Color(red,green,blue);
         String s= "!";
         System.out.println(s.toLowerCase());
-        sendEmbededMessage(e.getTextChannel(), "Generated new Color", randomColour, "Color: (R:" + randomColour.getRed()+ " G:"+randomColour.getGreen()+ " B:"+randomColour.getBlue()+")");
+        sendEmbededMessage(e.getTextChannel(), "Generated new color", randomColour, "Color: (R:" + randomColour.getRed()+ " G:"+randomColour.getGreen()+ " B:"+randomColour.getBlue()+")");
     }
 
     @Override

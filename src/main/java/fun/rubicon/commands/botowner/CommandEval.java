@@ -84,7 +84,7 @@ public class CommandEval extends Command{
 
     @Override
     public String getDescription() {
-        return "Simple Evealation Command!";
+        return "Simple evealation command!";
     }
 
     @Override

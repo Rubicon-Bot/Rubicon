@@ -87,7 +87,7 @@ public class CommandSettings extends Command {
 
     @Override
     public String getDescription() {
-        return "Set up Guild specific Settings!";
+        return "Set up guild specific settings!";
     }
 
     @Override

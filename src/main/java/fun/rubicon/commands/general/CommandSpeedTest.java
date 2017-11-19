@@ -35,12 +35,12 @@ public class CommandSpeedTest extends Command{
         SpeedTestSocket USpeed = new SpeedTestSocket();
         StringBuilder sb = new StringBuilder();
         e.getMessage().delete().queue();
-        Message msg = e.getTextChannel().sendMessage(new EmbedBuilder().setDescription("**Speed Test started...**\n\nTesting downstream...").build()).complete();
+        Message msg = e.getTextChannel().sendMessage(new EmbedBuilder().setDescription("**Speedtest started...**\n\nTesting downstream...").build()).complete();
         DSpeed.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onCompletion(SpeedTestReport report) {
                 sb.append("Downstream:  " + Math.round(report.getTransferRateBit().floatValue() / 1024 / 1024) + " MBit/s\n");
-                msg.editMessage(new EmbedBuilder().setDescription("**Speed test starting...**\n\nTesting upstream...").build()).queue();
+                msg.editMessage(new EmbedBuilder().setDescription("**Speedtest starting...**\n\nTesting upstream...").build()).queue();
                 USpeed.startUpload("http://2.testdebit.info/", 1000000);
             }
 
@@ -78,7 +78,7 @@ public class CommandSpeedTest extends Command{
 
     @Override
     public String getDescription() {
-        return "Do a Speedtest of the Bot Connection";
+        return "Do a speedtest of the bot-connection.";
     }
 
     @Override

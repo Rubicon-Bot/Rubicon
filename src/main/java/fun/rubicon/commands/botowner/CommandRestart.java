@@ -30,7 +30,7 @@ public class CommandRestart extends Command{
 
     @Override
     public String getDescription() {
-        return "Restarts the Bot and Reconnect the database";
+        return "Restarts the bot and reconnect the database.";
     }
 
     @Override

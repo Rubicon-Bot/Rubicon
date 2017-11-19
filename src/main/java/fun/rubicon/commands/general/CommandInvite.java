@@ -29,12 +29,12 @@ public class CommandInvite extends Command{
 
     @Override
     public String getDescription() {
-        return null;
+        return "Gives you the invite-link of the bot.";
     }
 
     @Override
     public String getUsage() {
-        return null;
+        return "invite";
     }
 
     @Override

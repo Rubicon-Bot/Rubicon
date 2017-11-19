@@ -71,7 +71,7 @@ public class CommandClear extends Command{
 
     @Override
     public String getDescription() {
-        return "Clears the Given amount of messages.";
+        return "Clears the given amount of messages.";
     }
 
     @Override

@@ -32,7 +32,7 @@ public class CommandSay extends Command {
 
     @Override
     public String getDescription() {
-        return "Say some things with the bot!";
+        return "Say something with the bot!";
     }
 
     @Override

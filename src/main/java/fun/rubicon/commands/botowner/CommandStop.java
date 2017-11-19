@@ -21,7 +21,7 @@ public class CommandStop extends Command {
 
     @Override
     public String getDescription() {
-        return "Stops the bot";
+        return "Stops the bot.";
     }
 
     @Override

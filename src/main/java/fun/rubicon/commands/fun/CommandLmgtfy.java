@@ -43,7 +43,7 @@ public class CommandLmgtfy extends Command{
 
     @Override
     public String getDescription() {
-        return "Creates a Lmgtfy link for a person which who not wants to google himself";
+        return "Creates a Lmgtfy link for a person which who not wants to google himself.";
     }
 
     @Override

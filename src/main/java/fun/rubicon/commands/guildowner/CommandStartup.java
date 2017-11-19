@@ -39,7 +39,7 @@ public class CommandStartup extends Command{
 
     @Override
     public String getDescription() {
-        return "Starts the Bot on a Guild if the Category gets Deleted or something got fucked up!";
+        return "Starts the bot on a guild, if the category gets deleted or something got fucked up!";
     }
 
     @Override
