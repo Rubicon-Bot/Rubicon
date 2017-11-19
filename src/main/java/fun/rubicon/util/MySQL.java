@@ -72,7 +72,7 @@ public class MySQL {
      * @param wherevalue
      * @return Value of the given key
      */
-    public String etString(String table, String key,String where, String wherevalue) {
+    public String getString(String table, String key,String where, String wherevalue) {
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM ? WHERE ?=?");
             ps.setString(1, table);

@@ -19,7 +19,7 @@ public class GameAnimator {
             Info.BOT_NAME + " " + Info.BOT_VERSION,
             "Generating new features...",
             CommandHandler.getCommands().size() + " Commands loaded",
-            "Supplying " + CommandHandler.commands.values().size() + " commands"
+            "Supplying " + CommandHandler.commands.values().size() + " commands",
             "Blowing stuff up!"
     };
 
