@@ -1,6 +1,7 @@
 package fun.rubicon.core.permission;
 
 import fun.rubicon.command.Command;
+import fun.rubicon.command.CommandHandler;
 import fun.rubicon.core.Main;
 import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
@@ -8,7 +9,9 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.User;
 
-import java.util.Arrays;
+import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * Rubicon Discord bot
@@ -70,6 +73,19 @@ public class PermissionManager {
             Logger.error(ex);
         }
         return i;
+    }
+
+    public String getAllAllowedCommands() {
+        List<Command> allCommands = new ArrayList<Command>(CommandHandler.getCommands().values());
+        List<Command> lvlZero = allCommands.stream().filter(command -> command.getPermissionLevel() == 0).collect(Collectors.toList());
+        List<Command> lvlTwo = allCommands.stream().filter(command -> command.getPermissionLevel() == 2).collect(Collectors.toList());
+        List<Command> lvlThree = allCommands.stream().filter(command -> command.getPermissionLevel() == 3).collect(Collectors.toList());
+        List<Command> lvlFour= allCommands.stream().filter(command -> command.getPermissionLevel() == 4).collect(Collectors.toList());
+
+        String res = "";
+        for(Command cmd : lvlZero) {
+            res += cmd.getCommand() + ",";
+        }
     }
 
     public void addPermissions(String command) {

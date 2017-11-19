@@ -24,6 +24,7 @@ public class CommandJoke extends Command {
 
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
+        //TODO
         HttpRequest request = new HttpRequest("http://api.icndb.com/jokes/random");
         try {
             String json = request.sendGETRequest().getResponse();

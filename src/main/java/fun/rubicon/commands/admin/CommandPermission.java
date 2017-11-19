@@ -9,6 +9,7 @@ import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -71,6 +72,7 @@ public class CommandPermission extends Command {
     private String generatePermissionList(Member member) {
         PermissionManager perm = new PermissionManager(member, this);
         String allPermissions = perm.getPermissionsAsString();
+        List<Command>
         String[] arr = allPermissions.split(",");
         String res = "";
         for(int i = 0; i < arr.length; i++) {
