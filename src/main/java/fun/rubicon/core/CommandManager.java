@@ -34,10 +34,10 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandPermission("permissions", CommandCategory.ADMIN));
 
         //BotOwner
-        CommandHandler.addCommand(new CommandBroadcast("broadcast", CommandCategory.BOT_OWNER));
-        CommandHandler.addCommand(new CommandRestart("restart", CommandCategory.BOT_OWNER));
-        CommandHandler.addCommand(new CommandStop("stop", CommandCategory.BOT_OWNER));
-        CommandHandler.addCommand(new CommandEval("eval", CommandCategory.BOT_OWNER));
+        CommandHandler.addCommand(new CommandBroadcast("broadcast", CommandCategory.BOT_OWNER).addAliases("sayb","bsay"));
+        CommandHandler.addCommand(new CommandRestart("restart", CommandCategory.BOT_OWNER).addAliases("r","re"));
+        CommandHandler.addCommand(new CommandStop("stop", CommandCategory.BOT_OWNER).addAliases("terminate"));
+        CommandHandler.addCommand(new CommandEval("eval", CommandCategory.BOT_OWNER).addAliases("e"));
 
         //Fun
         CommandHandler.addCommand(new CommandJoke("joke", CommandCategory.FUN));
@@ -45,7 +45,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandRoll("roll", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandColor("color", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandChoose("choose", CommandCategory.FUN));
-        CommandHandler.addCommand(new CommandLevel("rank", CommandCategory.FUN));
+        CommandHandler.addCommand(new CommandLevel("rank", CommandCategory.FUN).addAliases("lvl"));
 
         //general
         CommandHandler.addCommand(new CommandHelp("help", CommandCategory.GENERAL).addAliases("h"));
@@ -62,11 +62,11 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandStartup("startup", CommandCategory.GUILD_OWNER));
 
         //Tools
-        CommandHandler.addCommand(new CommandClear("clear", CommandCategory.TOOLS));
+        CommandHandler.addCommand(new CommandClear("clear", CommandCategory.TOOLS).addAliases("purge"));
         CommandHandler.addCommand(new CommandGoogle("google", CommandCategory.TOOLS));
         CommandHandler.addCommand(new CommandSearch("search", CommandCategory.TOOLS));
-        CommandHandler.addCommand(new CommandServerInfo("serverinfo", CommandCategory.TOOLS));
-        CommandHandler.addCommand(new CommandUserInfo("userinfo", CommandCategory.TOOLS));
+        CommandHandler.addCommand(new CommandServerInfo("serverinfo", CommandCategory.TOOLS).addAliases("guild","guildinfo"));
+        CommandHandler.addCommand(new CommandUserInfo("userinfo", CommandCategory.TOOLS).addAliases("whois"));
         CommandHandler.addCommand(new CommandSay("say", CommandCategory.TOOLS));
     }
 }
