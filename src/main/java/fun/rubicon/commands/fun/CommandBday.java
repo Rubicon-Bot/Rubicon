@@ -96,11 +96,7 @@ public class CommandBday extends Command{
 
     @Override
     public String getUsage() {
-<<<<<<< HEAD
-        return "Kp";
-=======
         return "bday set dd:MM (example: 19:12)";
->>>>>>> master
     }
 
     @Override
