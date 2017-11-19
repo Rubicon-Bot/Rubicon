@@ -40,7 +40,7 @@ public class CommandPortal extends Command {
                         createOwnPortal();
                         Category cat = e.getGuild().getCategoriesByName(Info.BOT_NAME, true).get(0);
                         if(cat == null) {
-                            sendErrorMessage("You deleted or renamed the rubicon category! Please use " + Main.getMySQL().getGuildValue(e.getGuild(), "prefix") + "setup");
+                            sendErrorMessage("You deleted or renamed the rubicon category! Please use " + Main.getMySQL().getGuildValue(e.getGuild(), "prefix") + "rebuild");
                             return;
                         }
                         e.getGuild().getController().createTextChannel("rubicon-portal").complete();

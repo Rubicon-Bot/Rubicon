@@ -1,11 +1,12 @@
-package fun.rubicon.listener;
+package fun.rubicon.commands.guildowner;
 
+import fun.rubicon.command.Command;
+import fun.rubicon.command.CommandCategory;
 import fun.rubicon.core.Main;
 import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.entities.Category;
 import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.managers.GuildController;
 
 import java.util.Arrays;
@@ -18,17 +19,16 @@ import java.util.TimerTask;
  * @author Leon Kappes / Lee
  * @copyright Rubicon Dev Team 2017
  * @license MIT License <http://rubicon.fun/license>
- * @package listener
+ * @package commands.guildowner
  */
+public class CommandRebuild extends Command{
+    public CommandRebuild(String command, CommandCategory category) {
+        super(command, category);
+    }
 
-public class JoinSQL extends ListenerAdapter {
-    public void onGuildJoin(GuildJoinEvent event) {
-        Guild g = event.getGuild();
-        if(Main.getMySQL().ifGuildExits(event.getGuild())) {
-            Main.getMySQL().createGuildServer(g);
-        }
-        System.out.println("System started on: " + g.getName());
-        Guild guild = event.getGuild();
+    @Override
+    protected void execute(String[] args, MessageReceivedEvent e) {
+        Guild guild = e.getGuild();
         GuildController controller = guild.getController();
 
         new Timer().schedule(new TimerTask() {
@@ -54,11 +54,23 @@ public class JoinSQL extends ListenerAdapter {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                Main.getMySQL().updateGuildValue(guild, "logchannel", event.getGuild().getTextChannelsByName("log", true).get(0).getId());
+                Main.getMySQL().updateGuildValue(guild, "logchannel", e.getGuild().getTextChannelsByName("log", true).get(0).getId());
             }
         }, 3000);
+    }
 
+    @Override
+    public String getDescription() {
+        return "Starts the bot on a guild, if the category gets deleted or something got fucked up!";
+    }
 
+    @Override
+    public String getUsage() {
+        return "startup";
+    }
 
+    @Override
+    public int getPermissionLevel() {
+        return 3;
     }
 }
