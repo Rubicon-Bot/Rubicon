@@ -1,5 +1,6 @@
 package fun.rubicon.core;
 
+import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.commands.admin.CommandPermission;
@@ -44,6 +45,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandRoll("roll", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandColor("color", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandChoose("choose", CommandCategory.FUN));
+        CommandHandler.addCommand(new CommandLevel("rank", CommandCategory.FUN));
 
         //general
         CommandHandler.addCommand(new CommandHelp("help", CommandCategory.GENERAL));
