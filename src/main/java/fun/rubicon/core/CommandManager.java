@@ -30,7 +30,7 @@ public class CommandManager {
 
     private void initCommands() {
         //Admin
-        CommandHandler.addCommand(new CommandPermission("permission", CommandCategory.ADMIN));
+        CommandHandler.addCommand(new CommandPermission("permissions", CommandCategory.ADMIN));
 
         //BotOwner
         CommandHandler.addCommand(new CommandBroadcast("broadcast", CommandCategory.BOT_OWNER));

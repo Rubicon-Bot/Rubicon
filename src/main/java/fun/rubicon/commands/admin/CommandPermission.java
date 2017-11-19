@@ -2,10 +2,13 @@ package fun.rubicon.commands.admin;
 
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
+import fun.rubicon.command.CommandHandler;
 import fun.rubicon.core.permission.PermissionManager;
 import fun.rubicon.util.Colors;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -58,22 +61,71 @@ public class CommandPermission extends Command {
                 return;
             }
             try {
-                command = args[nameLength + 1];
+                command = args[nameLength + 1].toLowerCase();
             } catch (ArrayIndexOutOfBoundsException ex) {
+
             }
 
             switch (operator) {
                 case "add":
+                    if (isCommandAvailable(command)) {
+                        PermissionManager authorManager = new PermissionManager(e.getMember(), CommandHandler.getCommandFromName(command));
+                        if(authorManager.hasPermission()) {
+                            PermissionManager memberManager = new PermissionManager(member, CommandHandler.getCommandFromName(command));
+                            if(!memberManager.hasPermission()) {
+                                memberManager.addPermissions(command);
+                                EmbedBuilder builder = new EmbedBuilder();
+                                builder.setAuthor("Permissions - " + member.getEffectiveName(), null, member.getUser().getEffectiveAvatarUrl());
+                                builder.setColor(Colors.COLOR_NOT_IMPLEMENTED);
+                                builder.setDescription("Successfully added `" + command + "`");
+                                e.getTextChannel().sendMessage(builder.build()).queue(msg -> msg.delete().queueAfter(3, TimeUnit.MINUTES));
+                            } else {
+                                sendErrorMessage("User already has this permission!");
+                                return;
+                            }
+                        } else {
+                            sendErrorMessage("You do not have permissions to give the command to others!");
+                            return;
+                        }
+                    } else {
+                        sendErrorMessage("Command does not exist!");
+                        return;
+                    }
                     break;
                 case "remove":
+                    if (isCommandAvailable(command)) {
+                        PermissionManager authorManager = new PermissionManager(e.getMember(), CommandHandler.getCommandFromName(command));
+                        if(authorManager.hasPermission()) {
+                            PermissionManager memberManager = new PermissionManager(member, CommandHandler.getCommandFromName(command));
+                            if(memberManager.hasPermission()) {
+                                memberManager.removePermission(command);
+                                EmbedBuilder builder = new EmbedBuilder();
+                                builder.setAuthor("Permissions - " + member.getEffectiveName(), null, member.getUser().getEffectiveAvatarUrl());
+                                builder.setColor(Colors.COLOR_NOT_IMPLEMENTED);
+                                builder.setDescription("Successfully removed `" + command + "`");
+                                e.getTextChannel().sendMessage(builder.build()).queue(msg -> msg.delete().queueAfter(3, TimeUnit.MINUTES));
+                            } else {
+                                sendErrorMessage("User hasn't this permission!");
+                                return;
+                            }
+                        } else {
+                            sendErrorMessage("You do not have permissions to remove the command from others!");
+                            return;
+                        }
+                    } else {
+                        sendErrorMessage("Command does not exist!");
+                        return;
+                    }
                     break;
                 case "list":
                     EmbedBuilder builder = new EmbedBuilder();
                     builder.setAuthor(member.getEffectiveName() + "'s Commands", null, member.getUser().getEffectiveAvatarUrl());
-                    builder.setDescription(generatePermissionList(member));
+                    builder.setDescription("Loading Commands...");
                     builder.setColor(Colors.COLOR_NOT_IMPLEMENTED);
+                    Message message = e.getTextChannel().sendMessage(builder.build()).complete();
+                    builder.setDescription(generatePermissionList(member));
                     builder.setFooter("Allowed Commands: " + getAmountOfAllowedCommands(member), null);
-                    e.getTextChannel().sendMessage(builder.build()).queue(msg -> msg.delete().queueAfter(defaultDeleteSeconds, TimeUnit.SECONDS));
+                    message.editMessage(builder.build()).queue(msg -> msg.delete().queueAfter(defaultDeleteSeconds, TimeUnit.SECONDS));
                     break;
             }
         }
@@ -88,6 +140,17 @@ public class CommandPermission extends Command {
             res += ":small_blue_diamond: **" + arr[i] + "**\n";
         }
         return res;
+    }
+
+    private boolean isCommandAvailable(String cmd) {
+        try {
+            if (CommandHandler.getCommands().get(cmd) != null) {
+                return true;
+            }
+        } catch (NullPointerException ex) {
+            Logger.debug("Command not found");
+        }
+        return false;
     }
 
     private int getAmountOfAllowedCommands(Member member) {

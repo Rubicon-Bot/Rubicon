@@ -28,6 +28,15 @@ public class CommandHandler {
         }
     }
 
+    public static Command getCommandFromName(String command) {
+        try {
+            return commands.get(command);
+        } catch (NullPointerException ex) {
+
+        }
+        return null;
+    }
+
     public static void addCommand(Command command) {
         commands.put(command.getCommand(), command);
     }

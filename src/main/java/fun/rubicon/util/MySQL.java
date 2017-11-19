@@ -1,5 +1,6 @@
 package fun.rubicon.util;
 
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
@@ -221,7 +222,14 @@ public class MySQL {
         try{
             if(connection.isClosed())
                 connect();
-            String permLevel = (member.isOwner()) ? "3" : "0";
+            String permLevel;
+            if(member.isOwner()) {
+                permLevel = "3";
+            } else if(member.getPermissions().contains(Permission.ADMINISTRATOR)) {
+                permLevel = "2";
+            } else {
+                permLevel = "1";
+            }
             PreparedStatement ps = connection.prepareStatement("INSERT INTO `member`(`userid`, `guildid`, `permissionlevel`, `permissions`) VALUES (?, ?, ?, '')");
             ps.setString(1, String.valueOf(member.getUser().getId()));
             ps.setString(2, String.valueOf(member.getGuild().getId()));

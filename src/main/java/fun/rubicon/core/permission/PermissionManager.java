@@ -45,6 +45,9 @@ public class PermissionManager {
             if (getPermissionLevel() > cmdLvl) {
                 return true;
             }
+            if(containsPermission(command.getCommand())) {
+                return true;
+            }
 
             if (cmdLvl == 0) {
                 return true;
