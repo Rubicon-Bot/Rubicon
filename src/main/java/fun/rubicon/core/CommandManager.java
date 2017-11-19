@@ -29,7 +29,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandBroadcast("broadcast", CommandCategory.BOT_OWNER));
         CommandHandler.addCommand(new CommandRestart("restart", CommandCategory.BOT_OWNER));
         CommandHandler.addCommand(new CommandStop("stop", CommandCategory.BOT_OWNER));
-        CommandHandler.addCommand(new CommandEval("eval", CommandCategory.BOT_OWNER));
+        //CommandHandler.addCommand(new CommandEval("eval", CommandCategory.BOT_OWNER));
 
         //Fun
         CommandHandler.addCommand(new CommandJoke("joke", CommandCategory.FUN));

@@ -16,3 +16,5 @@ latest.log
 /.gitignore
 
 
+out/artifacts/rubiconBot_jar/rubiconBot.jar
+src/META-INF/MANIFEST.MF
