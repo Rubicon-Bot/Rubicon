@@ -12,7 +12,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
  * @license MIT License <http://rubicon.fun/license>
  * @package fun.rubicon.listener
  */
-public class ChannelDelete extends ListenerAdapter {
+public class ChannelDeleteListener extends ListenerAdapter {
 
     @Override
     public void onCategoryDelete(CategoryDeleteEvent e) {

@@ -20,13 +20,13 @@ import java.util.concurrent.TimeUnit;
 /**
  * Rubicon Discord bot
  *
- * @author Leon Kappes / Lee
+ * @author Yannick Seeger / ForYaSee
  * @copyright Rubicon Dev Team 2017
  * @license MIT License <http://rubicon.fun/license>
- * @package listener
+ * @package fun.rubicon.listener
  */
 
-public class JoinSQL extends ListenerAdapter {
+public class BotJoinListener extends ListenerAdapter {
     public void onGuildJoin(GuildJoinEvent e) {
         try {
             Guild g = e.getGuild();
@@ -36,8 +36,8 @@ public class JoinSQL extends ListenerAdapter {
         } catch (Exception ex) {
 
         }
-        if (!e.getGuild().getMember(e.getJDA().getSelfUser()).getPermissions().contains(Permission.MANAGE_SERVER)) {
-            e.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("The bot needs the MANAGE_CHANNELS permissions to work correctly!\nUse rc!rebuild when the bot has the permissions!").queue());
+        if (!e.getGuild().getMember(e.getJDA().getSelfUser()).getPermissions().contains(Permission.MANAGE_CHANNEL)) {
+            e.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("The bot needs the MANAGE_CHANNEL permissions to work correctly!\nUse rc!rebuild when the bot has the permissions!").queue());
             return;
         }
         Category category = null;
