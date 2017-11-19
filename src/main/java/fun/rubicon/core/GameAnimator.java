@@ -21,6 +21,15 @@ public class GameAnimator {
 
     private static int currentGame = 0;
 
+    private static String authors(){
+        String text ="";
+        for(int i = 1; i < Info.BOT_AUTHORS.length; i++) {
+            text += Info.BOT_AUTHORS[i];
+        }
+
+        return text;
+    }
+
     private static String[] gameAnimations = {
             "Running on " + DiscordCore.getJDA().getGuilds().size() + " servers!",
             "Helping " + DiscordCore.getJDA().getUsers().stream().filter(u -> u.isBot() == false).collect(Collectors.toList()).size() + " users!",
@@ -28,7 +37,7 @@ public class GameAnimator {
             Info.BOT_NAME + " " + Info.BOT_VERSION,
             "Generating new features...",
             CommandHandler.getCommands().size() + " Commands loaded",
-            "Supplying " + CommandHandler.commands.values().size() + " commands",
+            "Created by" + "Foryasse, Schlaubi, Lee, xEiisKeksx, ...",
             "Blowing stuff up!",
     };
 
