@@ -3,7 +3,10 @@ package fun.rubicon.commands.tools;
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.util.Colors;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Rubicon Discord bot
@@ -36,7 +39,11 @@ public class CommandSay extends Command {
         for(int i = 1; i < args.length; i++) {
             text += args[i];
         }
-        sendEmbededMessage(e.getMessage().getMentionedChannels().get(0), e.getMember().getEffectiveName(), Colors.COLOR_PRIMARY, text);
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.setAuthor(e.getMember().getEffectiveName() + "'s Commands", null, e.getMember().getUser().getEffectiveAvatarUrl());
+        builder.setDescription(text);
+        builder.setColor(Colors.COLOR_PRIMARY);
+        e.getMessage().getMentionedChannels().get(0).sendMessage(builder.build()).queue();
     }
 
     @Override
