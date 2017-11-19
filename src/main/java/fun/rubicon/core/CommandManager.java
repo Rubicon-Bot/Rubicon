@@ -46,6 +46,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandColor("color", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandChoose("choose", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandLevel("rank", CommandCategory.FUN).addAliases("lvl"));
+        CommandHandler.addCommand(new CommandBday("birthday", CommandCategory.FUN).addAliases("bday"));
 
         //general
         CommandHandler.addCommand(new CommandHelp("help", CommandCategory.GENERAL).addAliases("h"));

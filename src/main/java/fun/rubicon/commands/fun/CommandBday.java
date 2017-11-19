@@ -90,7 +90,7 @@ public class CommandBday extends Command{
 
     @Override
     public String getDescription() {
-        return null;
+        return "Congratulations to your birthday!";
     }
 
     @Override
