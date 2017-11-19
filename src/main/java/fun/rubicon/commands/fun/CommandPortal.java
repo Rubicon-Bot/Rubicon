@@ -42,7 +42,12 @@ public class CommandPortal extends Command {
                             sendErrorMessage("You deleted or renamed the rubicon category! Please use " + Main.getMySQL().getGuildValue(e.getGuild(), "prefix") + "rebuild");
                             return;
                         }
-                        e.getGuild().getController().createTextChannel("rubicon-portal").complete();
+                        try {
+                            e.getGuild().getController().createTextChannel("rubicon-portal").setParent(e.getGuild().getCategoriesByName(Info.BOT_NAME, true).get(0)).complete();
+                        } catch (Exception ex) {
+                            sendErrorMessage("An error occured!");
+                            return;
+                        }
                         TextChannel channel = e.getGuild().getTextChannelsByName("rubicon-portal", false).get(0);
                         EmbedBuilder builder = new EmbedBuilder();
                         builder.setAuthor(e.getGuild().getName() + "'s portal opened", null, e.getGuild().getIconUrl());
