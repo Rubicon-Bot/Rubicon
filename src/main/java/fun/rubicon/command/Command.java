@@ -8,6 +8,7 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.awt.*;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -45,7 +46,7 @@ public abstract class Command {
         this.category = category;
     }
 
-    public void call(String[] args, MessageReceivedEvent e) {
+    public void call(String[] args, MessageReceivedEvent e) throws ParseException {
         this.args = args;
         this.e = e;
         this.permissionManager = new PermissionManager(e.getMember(), this);
@@ -124,7 +125,7 @@ public abstract class Command {
         return command;
     }
 
-    protected abstract void execute(String[] args, MessageReceivedEvent e);
+    protected abstract void execute(String[] args, MessageReceivedEvent e) throws ParseException;
 
     public CommandCategory getCategory() {
         return category;
