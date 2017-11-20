@@ -5,6 +5,7 @@ import fun.rubicon.command.CommandCategory;
 import fun.rubicon.core.Main;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 /**
@@ -67,7 +68,25 @@ public class CommandSettings extends Command {
                     e.getTextChannel().sendMessage(getUsage() + "\n(watch for large and lower case\n)");
                     return;
                 }
-                Main.getMySQL().updateGuildValue(guild, "autorole", args[1]);
+                if (e.getMessage().getMentionedRoles().size()<1){
+                    try {
+                        Role role = e.getGuild().getRolesByName(args[1], true).get(0);
+                        Main.getMySQL().updateGuildValue(guild, "autorole", role.getId());
+                    }catch (ArrayIndexOutOfBoundsException er){
+                        sendErrorMessage("Please enter a Valid Role!");
+                        return;
+                    }
+                }else if (e.getMessage().getMentionedRoles().size()>1){
+                    try {
+                        Role role = e.getMessage().getMentionedRoles().get(0);
+                        Main.getMySQL().updateGuildValue(guild, "autorole", role.getId());
+                    }catch (ArrayIndexOutOfBoundsException er){
+                        sendErrorMessage("Please enter a Valid Role!");
+                        return;
+                    }
+
+                }
+
                 sendEmbededMessage(":white_check_mark: Succesfully set the Autorole!");
                 break;
             case "channel":
