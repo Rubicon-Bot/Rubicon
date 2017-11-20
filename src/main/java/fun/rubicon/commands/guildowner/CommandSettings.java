@@ -74,7 +74,7 @@ public class CommandSettings extends Command {
                     try {
                         Role role = e.getGuild().getRolesByName(args[1], true).get(0);
                         Main.getMySQL().updateGuildValue(guild, "autorole", role.getId());
-                    }catch (ArrayIndexOutOfBoundsException er){
+                    }catch (Exception er){
                         sendErrorMessage("Please enter a Valid Role!");
                         return;
                     }
