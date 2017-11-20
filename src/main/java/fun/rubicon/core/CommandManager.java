@@ -10,7 +10,6 @@ import fun.rubicon.commands.botowner.CommandStop;
 import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.guildowner.CommandSettings;
-import fun.rubicon.commands.guildowner.CommandRebuild;
 import fun.rubicon.commands.tools.*;
 
 /**
@@ -64,7 +63,7 @@ public class CommandManager {
 
         //Guildowner
         CommandHandler.addCommand(new CommandSettings("settings", CommandCategory.GUILD_OWNER));
-        //CommandHandler.addCommand(new CommandRebuild("rebuild", CommandCategory.GUILD_OWNER));
+        CommandHandler.addCommand(new CommandRebuild("rebuild", CommandCategory.GUILD_OWNER));
 
         //Tools
         CommandHandler.addCommand(new CommandClear("clear", CommandCategory.TOOLS).addAliases("purge"));
@@ -75,5 +74,6 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandSay("say", CommandCategory.TOOLS));
         CommandHandler.addCommand(new CommandVote("vote", CommandCategory.TOOLS).addAliases("v"));
         CommandHandler.addCommand(new CommandASCII("ascii", CommandCategory.TOOLS));
+        CommandHandler.addCommand(new CommandBrainfuck("brainfuck", CommandCategory.TOOLS).addAliases("bf"));
     }
 }
