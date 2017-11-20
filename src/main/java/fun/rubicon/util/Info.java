@@ -20,7 +20,7 @@ public class Info {
     static Configuration cfg = Main.getConfiguration();
     public final static String BOT_ID = "380713705073147915";
     public final static String BOT_DEFAULT_PREFIX = "rc!";
-
+    public static int reconnectCount = 0;
     public final static String BOT_NAME = "Rubicon";
     public final static String BOT_VERSION = "0.1.0";
     public final static String BOT_WEBSITE = "https://rubicon.fun";
