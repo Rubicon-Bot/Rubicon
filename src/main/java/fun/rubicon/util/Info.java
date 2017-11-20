@@ -29,6 +29,8 @@ public class Info {
     public final static String EMBED_FOOTER = "© 2017 Rubicon Dev Team";
     public final static String ICON_URL = "https://images-ext-2.discordapp.net/external/Xae9oFQTIRhV7V21twWufcxtdcxhmW6NFNatN8cyxz8/https/cdn.discordapp.com/icons/380415148545802250/579ee17b8de4d027c98853606567d760.jpg?width=72&height=72";
     public final static String BITLY_TOKEN = cfg.getString("bitlytoken");
+    public final static String DARKSKY_TOKEN = cfg.getString("darksky_token");
+    public final static String GOOGLEMAPS_TOKEN = cfg.getString("mapstoken");
     public static Date lastRestart;
 
     public final static User[] BOT_AUTHORS = {
