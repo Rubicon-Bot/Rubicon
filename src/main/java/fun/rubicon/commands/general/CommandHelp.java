@@ -47,26 +47,28 @@ public class CommandHelp extends Command {
             StringBuilder sbBotOwner = new StringBuilder();
             StringBuilder sbTools = new StringBuilder();
 
+            String pref = SQL.getGuildValue(e.getGuild(), "prefix");
+
             for (Map.Entry<String, Command> c : CommandHandler.getCommands().entrySet()) {
                 if(c.getValue().getCategory().equals(CommandCategory.GENERAL)) {
-                    sbGeneral.append(SQL.getGuildValue(e.getGuild(), "prefix") + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
+                    sbGeneral.append(pref + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
                 } else if(c.getValue().getCategory().equals(CommandCategory.FUN)) {
-                    sbFun.append(SQL.getGuildValue(e.getGuild(), "prefix") + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
+                    sbFun.append(pref + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
                 } else if(c.getValue().getCategory().equals(CommandCategory.TOOLS)) {
-                    sbTools.append(SQL.getGuildValue(e.getGuild(), "prefix") + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
+                    sbTools.append(pref + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
                 } else if(c.getValue().getCategory().equals(CommandCategory.ADMIN)) {
-                    sbAdmin.append(SQL.getGuildValue(e.getGuild(), "prefix") + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
+                    sbAdmin.append(pref + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
                 } else if(c.getValue().getCategory().equals(CommandCategory.GUILD_OWNER)) {
-                    sbGuildOwner.append(SQL.getGuildValue(e.getGuild(), "prefix") + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
+                    sbGuildOwner.append(pref + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
                 } else if(c.getValue().getCategory().equals(CommandCategory.BOT_OWNER)) {
-                    sbBotOwner.append(SQL.getGuildValue(e.getGuild(), "prefix") + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
+                    sbBotOwner.append(pref + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
                 }
             }
 
             EmbedBuilder builder = new EmbedBuilder();
             builder.setColor(Colors.COLOR_SECONDARY);
             builder.setAuthor(Info.BOT_NAME + " Help List", null, e.getJDA().getSelfUser().getEffectiveAvatarUrl());
-            builder.setDescription("--- Want more info? Use `" + SQL.getGuildValue(e.getGuild(), "prefix") + "help <command>` ---");
+            builder.setDescription("--- Want more info? Use `" + pref + "help <command>` ---");
             builder.addField("General", sbGeneral.toString(), false);
             builder.addField("Fun", sbFun.toString(), false);
             builder.addField("Tools", sbTools.toString(), false);
