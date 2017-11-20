@@ -19,22 +19,18 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
  * @package Listener
  */
 
-public class AutoRoleWelcome extends ListenerAdapter{
+public class AutoRoleWelcome extends ListenerAdapter {
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         MySQL SQL = Main.getMySQL();
         Guild guild = event.getGuild();
-        if(!SQL.ifGuildExits(guild))
-            SQL.createGuildServer(guild);
         if (event.getMember().getUser().isBot()) return;
         PrivateChannel pc = event.getMember().getUser().openPrivateChannel().complete();
-        if(SQL.getGuildValue(event.getGuild(), "autorole").equals("0")) {
+        if (SQL.getGuildValue(event.getGuild(), "autorole").equals("0")) {
             pc.sendMessage(
                     "**Hey,** " + event.getMember().getAsMention() + " and welcome on " + event.getGuild().getName() + " :wave:\n\n" +
                             "Now, have a nice day and a lot of fun on the server! ;)"
             ).queue();
-
-
-        }else {
+        } else {
             try {
                 event.getGuild().getController().addRolesToMember(event.getMember(), event.getGuild().getRolesByName(SQL.getGuildValue(event.getGuild(), "autorole"), true)).queue();
                 pc.sendMessage(
@@ -49,7 +45,7 @@ public class AutoRoleWelcome extends ListenerAdapter{
                 ow.sendMessage(CommandHandler.commands.get("settings").getUsage() + "\n Only in Guild do not send commands at PM!");
             }
 
-    }
+        }
         String enabled = SQL.getGuildValue(guild, "channel");
         String channelid = SQL.getGuildValue(guild, "channel");
         String joinmessage = SQL.getGuildValue(guild, "joinmsg").replace("%user%", event.getUser().getAsMention()).replace("%guild%", guild.getName());
@@ -58,4 +54,5 @@ public class AutoRoleWelcome extends ListenerAdapter{
             channel.sendTyping().queue();
             channel.sendMessage(joinmessage).queue();
         }
-}}
+    }
+}

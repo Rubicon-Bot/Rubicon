@@ -12,14 +12,13 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
  * @license MIT License <http://rubicon.fun/license>
  * @package fun.rubicon.listener
  */
-public class ChannelDelete extends ListenerAdapter {
+public class ChannelDeleteListener extends ListenerAdapter {
 
     @Override
     public void onCategoryDelete(CategoryDeleteEvent e) {
         if(e.getCategory().getName().contains(Info.BOT_NAME)) {
-            e.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("You deleted the rubicon category!\n" +
-                    "Some features doesn't work anymore!\n" +
-                    "Use the rc!rebuild command!").queue());
+            e.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("You deleted the rubicon category.\n" +
+                    "Some features doesn't work anymore. Use the rc!rebuild command.").queue());
         }
     }
 }
