@@ -72,6 +72,6 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandSay("say", CommandCategory.TOOLS));
         CommandHandler.addCommand(new CommandVote("vote", CommandCategory.TOOLS).addAliases("v"));
         CommandHandler.addCommand(new CommandASCII("ascii", CommandCategory.TOOLS));
-        CommandHandler.addCommand(new Brainfuck("brainfuck", CommandCategory.TOOLS).addAliases("bf"));
+        CommandHandler.addCommand(new CommandBrainfuck("brainfuck", CommandCategory.TOOLS).addAliases("bf"));
     }
 }

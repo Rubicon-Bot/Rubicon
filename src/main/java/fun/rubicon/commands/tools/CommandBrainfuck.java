@@ -19,7 +19,7 @@ import java.util.Map;
  * @package commands.tools
  */
 
-public class Brainfuck extends Command {
+public class CommandBrainfuck extends Command {
 
     private final static int MAX = 255;
 
@@ -58,7 +58,7 @@ public class Brainfuck extends Command {
         return placeholder;
     }
 
-    public Brainfuck(String command, CommandCategory category) {
+    public CommandBrainfuck(String command, CommandCategory category) {
         super(command, category);
     }
 
