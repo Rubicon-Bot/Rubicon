@@ -36,7 +36,7 @@ public class CommandPortal extends Command {
                 if(Main.getMySQL().getGuildValue(e.getGuild(), "portal").equals("closed")) {
                     if(args.length == 1) {
                         //Search Portal
-                        createOwnPortal();
+                        Main.getMySQL().updateGuildValue(e.getGuild(), "portal", "open");
                         Category cat = e.getGuild().getCategoriesByName(Info.BOT_NAME, true).get(0);
                         if(cat == null) {
                             sendErrorMessage("You deleted or renamed the rubicon category! Please use " + Main.getMySQL().getGuildValue(e.getGuild(), "prefix") + "rebuild");
@@ -67,10 +67,6 @@ public class CommandPortal extends Command {
             case "close":
                 break;
         }
-    }
-
-    private void createOwnPortal() {
-        Main.getMySQL().updateGuildValue(e.getGuild(), "portal", "open");
     }
 
     @Override
