@@ -3,13 +3,18 @@ package fun.rubicon.commands.fun;
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.core.Main;
+import fun.rubicon.util.Colors;
 import fun.rubicon.util.Info;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Category;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.text.ParseException;
+import java.util.List;
 
 /**
  * Rubicon Discord bot
@@ -27,18 +32,23 @@ public class CommandPortal extends Command {
 
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) throws ParseException {
-        if(args.length == 0) { sendUsageMessage(); return;}
+        if (args.length == 0) {
+            sendUsageMessage();
+            return;
+        }
 
         switch (args[0]) {
             case "open":
             case "o":
             case "create":
-                if(Main.getMySQL().getGuildValue(e.getGuild(), "portal").equals("closed")) {
-                    if(args.length == 1) {
+                if (Main.getMySQL().getGuildValue(e.getGuild(), "portal").equals("closed")) {
+                    if (args.length == 1) {
                         //Search Portal
-                        Main.getMySQL().updateGuildValue(e.getGuild(), "portal", "open");
-                        Category cat = e.getGuild().getCategoriesByName(Info.BOT_NAME, true).get(0);
-                        if(cat == null) {
+                        Category cat;
+                        Message searchMessage;
+                        try {
+                            cat = e.getGuild().getCategoriesByName(Info.BOT_NAME, true).get(0);
+                        } catch (IndexOutOfBoundsException ex) {
                             sendErrorMessage("You deleted or renamed the rubicon category! Please use " + Main.getMySQL().getGuildValue(e.getGuild(), "prefix") + "rebuild");
                             return;
                         }
@@ -46,14 +56,41 @@ public class CommandPortal extends Command {
                             e.getGuild().getController().createTextChannel("rubicon-portal").setParent(e.getGuild().getCategoriesByName(Info.BOT_NAME, true).get(0)).complete();
                         } catch (Exception ex) {
                             sendErrorMessage("An error occured!");
+                            Main.getMySQL().updateGuildValue(e.getGuild(), "portal", "closed");
                             return;
                         }
                         TextChannel channel = e.getGuild().getTextChannelsByName("rubicon-portal", false).get(0);
                         EmbedBuilder builder = new EmbedBuilder();
                         builder.setAuthor(e.getGuild().getName() + "'s portal opened", null, e.getGuild().getIconUrl());
                         builder.setDescription("Searching other open portal...");
-                        channel.sendMessage(builder.build()).queue();
-                    } else if(args.length == 2) {
+                        builder.setColor(Colors.COLOR_NOT_IMPLEMENTED);
+                        searchMessage = channel.sendMessage(builder.build()).complete();
+                        Main.getMySQL().updateGuildValue(e.getGuild(), "portal", "waiting:" + searchMessage.getId());
+
+                        List<Guild> openGuilds = Main.getMySQL().getGuildsByContainingValue("portal", "waiting");
+                        Guild foundGuild = null;
+                        if (openGuilds.size() != 0) {
+                            for (Guild g : openGuilds) {
+                                if (!g.getId().equals(e.getGuild().getId())) foundGuild = g;
+                            }
+                            if (foundGuild == null) {
+                                return;
+                            }
+                            try {
+                                TextChannel otherChannel = foundGuild.getTextChannelsByName("rubicon-portal", true).get(0);
+                                builder.setAuthor("Portal created!", null, e.getGuild().getIconUrl());
+                                builder.setDescription("@here Created Portal to " + e.getGuild().getName());
+                                builder.setColor(Colors.COLOR_PRIMARY);
+                                otherChannel.editMessageById(Main.getMySQL().getGuildValue(openGuilds.get(0), "portal").split(":")[1], builder.build()).queue();
+                                e.getGuild().getTextChannelsByName("rubicon-portal", true).get(0).editMessageById(searchMessage.getId(), builder.setDescription("@here Created Portal to " + foundGuild.getName()).build()).queue();
+                            } catch (Exception ex) {
+                                sendErrorMessage("An error occured!");
+                                Main.getMySQL().updateGuildValue(e.getGuild(), "portal", "closed");
+                                return;
+                            }
+                        }
+
+                    } else if (args.length == 2) {
                         //Direct Portal
                     } else {
                         sendUsageMessage();
@@ -65,7 +102,19 @@ public class CommandPortal extends Command {
                 }
                 break;
             case "close":
+                cancelPortal();
                 break;
+        }
+    }
+
+    private void cancelPortal() {
+        Main.getMySQL().updateGuildValue(e.getGuild(), "portal", "closed");
+        TextChannel tc = null;
+        try {
+            e.getGuild().getTextChannelsByName("rubicon-portal", true).get(0);
+            tc.delete().queue();
+        } catch (Exception ex) {
+
         }
     }
 
@@ -76,7 +125,7 @@ public class CommandPortal extends Command {
 
     @Override
     public String getUsage() {
-        return "portal open [guildid]" +
+        return "portal open [guildid]\n" +
                 "portal close";
     }
 
