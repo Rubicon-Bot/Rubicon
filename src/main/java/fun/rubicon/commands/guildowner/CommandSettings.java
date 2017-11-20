@@ -32,7 +32,6 @@ public class CommandSettings extends Command {
         if (!Main.getMySQL().ifGuildExits(e.getGuild())){
             Main.getMySQL().createGuildServer(e.getGuild());
         }
-        //Permission here
         String joinmessage = Main.getMySQL().getGuildValue(guild, "joinmsg");
         switch (args[0].toLowerCase()) {
             case "prefix":
@@ -50,7 +49,7 @@ public class CommandSettings extends Command {
                 }
                 String txt = e.getMessage().getMentionedChannels().get(0).getId();
                 Main.getMySQL().updateGuildValue(guild, "logchannel", txt);
-                sendEmbededMessage(":white_check_mark: Succesfully set the LogChannel!");
+                sendEmbededMessage(":white_check_mark: Successfully set the LogChannel!");
                 break;
             case "joinmessage":
                 if (args.length < 2) {
@@ -98,7 +97,7 @@ public class CommandSettings extends Command {
                 }
                 String ch = e.getMessage().getMentionedChannels().get(0).getId();
                 Main.getMySQL().updateGuildValue(guild, "channel", ch);
-                sendEmbededMessage(":white_check_mark: Succesfully set the Joinmessagechannel!");
+                sendEmbededMessage(":white_check_mark: Successfully set the Joinmessagechannel!");
                 break;
             case "welcomemsg":
                 if (args.length<2){
@@ -110,7 +109,7 @@ public class CommandSettings extends Command {
                 }else {
                     Main.getMySQL().updateGuildValue(guild, "welmsg", "0");
                 }
-                sendEmbededMessage(":white_check_mark: Succesfully toggled the PNWelcomeMessage!");
+                sendEmbededMessage(":white_check_mark: Successfully toggled the PNWelcomeMessage!");
                 break;
         }
     }
