@@ -1,1 +1,0 @@
-screen -r rubicon -X quit
