@@ -12,6 +12,7 @@ public class Setup {
      * @copyright Rubicon Dev Team 2017
      * @license MIT License <http://rubicon.fun/license>
      * @package fun.rubicon.util
+     *
      */
 
     private static final BufferedReader sys_in;
