@@ -122,11 +122,11 @@ public class CommandSettings extends Command {
     @Override
     public String getUsage() {
         return
-                "settings logchannel <Mention channel> (Set the logchannel | 0 for no Channel.)\n" +
-                "settings prefix <NEWPREFIX> (Set the new Bot Prefix for this Guild)\n" +
-                "settings autorole <ROLENAME> (Set the Autorole at UserJoin | 0 for no Role.)\n" +
-                "settings joinmessage <Message> (%user% for the Username %guild% for Guildname) (0 for no message)\n" +
-                "settings channel <Channel> (Set the Channel for Join Messages |Mention the channel for the Joinmessage)\n"+
+                "settings logchannel <Mention channel> (Set the logchannel | 0 for no Channel.)\n\n" +
+                "settings prefix <NEWPREFIX> (Set the new Bot Prefix for this Guild)\n\n" +
+                "settings autorole <ROLENAME/ROLEMENTION> (Set the Autorole at UserJoin | 0 for no Role.)\n\n" +
+                "settings joinmessage <Message> (%user% for the Username %guild% for Guildname) (0 for no message)\n\n" +
+                "settings channel <Channel> (Set the Channel for Join Messages |Mention the channel for the Joinmessage)\n\n"+
                 "settings welcomemsg (Toggles the Private Welcome Message)";
     }
 
