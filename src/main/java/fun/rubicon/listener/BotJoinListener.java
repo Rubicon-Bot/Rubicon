@@ -30,7 +30,7 @@ public class BotJoinListener extends ListenerAdapter {
     public void onGuildJoin(GuildJoinEvent e) {
         try {
             Guild g = e.getGuild();
-            if (Main.getMySQL().ifGuildExits(e.getGuild())) {
+            if (!Main.getMySQL().ifGuildExits(e.getGuild())) {
                 Main.getMySQL().createGuildServer(g);
             }
         } catch (Exception ex) {
@@ -43,14 +43,20 @@ public class BotJoinListener extends ListenerAdapter {
         Category category = null;
         TextChannel logChannel = null;
         TextChannel commandChannel = null;
+        TextChannel channel = null;
         try {
             category = e.getGuild().getCategoriesByName(Info.BOT_NAME, true).get(0);
+            logChannel = (TextChannel) e.getGuild().getTextChannelsByName("r-log", true).get(0);
+            commandChannel = (TextChannel) e.getGuild().getTextChannelsByName("r-commands", true).get(0);
+            channel = (TextChannel) e.getGuild().getTextChannelsByName("r-stuff", true).get(0);
         } catch (Exception ex) {
             e.getGuild().getController().createCategory(Info.BOT_NAME).complete();
             category = e.getGuild().getCategoriesByName(Info.BOT_NAME, true).get(0);
             logChannel = (TextChannel) e.getGuild().getController().createTextChannel("r-log").setParent(category).complete();
             commandChannel = (TextChannel) e.getGuild().getController().createTextChannel("r-commands").setParent(category).complete();
+            channel = (TextChannel) e.getGuild().getController().createTextChannel("r-stuff").setParent(category).complete();
         }
         Main.getMySQL().updateGuildValue(e.getGuild(), "logchannel", logChannel.getId());
+        Main.getMySQL().updateGuildValue(e.getGuild(), "channel", channel.getId());
     }
 }
