@@ -79,6 +79,18 @@ public class CommandSettings extends Command {
                 Main.getMySQL().updateGuildValue(guild, "channel", ch);
                 sendEmbededMessage(":white_check_mark: Succesfully set the Joinmessagechannel!");
                 break;
+            case "welcomemsg":
+                if (args.length<2){
+                    e.getTextChannel().sendMessage(getUsage());
+                    return;
+                }
+                if (Main.getMySQL().getGuildValue(guild, "welmsg").equals("0")){
+                    Main.getMySQL().updateGuildValue(guild, "welmsg", "1");
+                }else {
+                    Main.getMySQL().updateGuildValue(guild, "welmsg", "0");
+                }
+                sendEmbededMessage(":white_check_mark: Succesfully toggled the PNWelcomeMessage!");
+                break;
         }
     }
 
@@ -94,7 +106,8 @@ public class CommandSettings extends Command {
                 "settings prefix <NEWPREFIX> (Set the new Bot Prefix for this Guild)\n" +
                 "settings autorole <ROLENAME> (Set the Autorole at UserJoin | 0 for no Role.)\n" +
                 "settings joinmessage <Message> (%user% for the Username %guild% for Guildname) (0 for no message)\n" +
-                "settings channel <Channel> (Mention the channel for the Joinmessage)";
+                "settings channel <Channel> (Set the Channel for Join Messages |Mention the channel for the Joinmessage)\n"+
+                "settings welcomemsg (Toggles the Private Welcome Message)";
     }
 
     @Override

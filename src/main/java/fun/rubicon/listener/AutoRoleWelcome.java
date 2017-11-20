@@ -24,6 +24,7 @@ public class AutoRoleWelcome extends ListenerAdapter {
         MySQL SQL = Main.getMySQL();
         Guild guild = event.getGuild();
         if (event.getMember().getUser().isBot()) return;
+        if (SQL.getGuildValue(event.getGuild(), "welmsg").equals("0")) return;
         PrivateChannel pc = event.getMember().getUser().openPrivateChannel().complete();
         if (SQL.getGuildValue(event.getGuild(), "autorole").equals("0")) {
             pc.sendMessage(
