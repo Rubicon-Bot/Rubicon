@@ -29,28 +29,30 @@ import java.util.concurrent.TimeUnit;
 public class BotJoinListener extends ListenerAdapter {
     public void onGuildJoin(GuildJoinEvent e) {
         try {
-            Guild g = e.getGuild();
-            if (Main.getMySQL().ifGuildExits(e.getGuild())) {
-                Main.getMySQL().createGuildServer(g);
-            }
+            Main.getMySQL().createGuildServer(e.getGuild());
         } catch (Exception ex) {
 
         }
-        if (!e.getGuild().getMember(e.getJDA().getSelfUser()).getPermissions().contains(Permission.MANAGE_CHANNEL)) {
-            e.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("The bot needs the MANAGE_CHANNEL permissions to work correctly!\nUse rc!rebuild when the bot has the permissions!").queue());
-            return;
-        }
-        Category category = null;
-        TextChannel logChannel = null;
-        TextChannel commandChannel = null;
-        try {
-            category = e.getGuild().getCategoriesByName(Info.BOT_NAME, true).get(0);
-        } catch (Exception ex) {
-            e.getGuild().getController().createCategory(Info.BOT_NAME).complete();
-            category = e.getGuild().getCategoriesByName(Info.BOT_NAME, true).get(0);
-            logChannel = (TextChannel) e.getGuild().getController().createTextChannel("r-log").setParent(category).complete();
-            commandChannel = (TextChannel) e.getGuild().getController().createTextChannel("r-commands").setParent(category).complete();
-        }
-        Main.getMySQL().updateGuildValue(e.getGuild(), "logchannel", logChannel.getId());
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (!e.getGuild().getMember(e.getJDA().getSelfUser()).getPermissions().contains(Permission.MANAGE_CHANNEL)) {
+                    e.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("The bot needs the MANAGE_CHANNEL permissions to work correctly!\nUse rc!rebuild when the bot has the permissions!").queue());
+                    return;
+                }
+                Category category = null;
+                TextChannel logChannel = null;
+                TextChannel commandChannel = null;
+                try {
+                    category = e.getGuild().getCategoriesByName(Info.BOT_NAME, true).get(0);
+                } catch (Exception ex) {
+                    e.getGuild().getController().createCategory(Info.BOT_NAME).complete();
+                    category = e.getGuild().getCategoriesByName(Info.BOT_NAME, true).get(0);
+                    logChannel = (TextChannel) e.getGuild().getController().createTextChannel("r-log").setParent(category).complete();
+                    commandChannel = (TextChannel) e.getGuild().getController().createTextChannel("r-commands").setParent(category).complete();
+                }
+                Main.getMySQL().updateGuildValue(e.getGuild(), "logchannel", e.getGuild().getTextChannelsByName("r-log", false).get(0).getId());
+            }
+        }, 500);
     }
 }
