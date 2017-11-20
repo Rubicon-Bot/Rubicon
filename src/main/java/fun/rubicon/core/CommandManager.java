@@ -62,7 +62,7 @@ public class CommandManager {
 
         //Guildowner
         CommandHandler.addCommand(new CommandSettings("settings", CommandCategory.GUILD_OWNER));
-        //CommandHandler.addCommand(new CommandRebuild("rebuild", CommandCategory.GUILD_OWNER));
+        CommandHandler.addCommand(new CommandRebuild("rebuild", CommandCategory.GUILD_OWNER));
 
         //Tools
         CommandHandler.addCommand(new CommandClear("clear", CommandCategory.TOOLS).addAliases("purge"));
