@@ -33,10 +33,10 @@ public class AutoRoleWelcome extends ListenerAdapter {
             ).queue();
         } else {
             try {
-                event.getGuild().getController().addRolesToMember(event.getMember(), event.getGuild().getRolesByName(SQL.getGuildValue(event.getGuild(), "autorole"), true)).queue();
+                event.getGuild().getController().addRolesToMember(event.getMember(), event.getGuild().getRoleById(SQL.getGuildValue(event.getGuild(), "autorole"))).queue();
                 pc.sendMessage(
                         "**Hey,** " + event.getMember().getAsMention() + " and welcome on " + event.getGuild().getName() + " :wave:\n\n" +
-                                "You automatically got the Role `" + SQL.getGuildValue(event.getGuild(), "autorole") + "` \n" +
+                                "You automatically got the Role `" + event.getGuild().getRoleById(SQL.getGuildValue(event.getGuild(), "autorole")).getName() + "` \n" +
                                 "Now, have a nice day and a lot of fun on the server! ;)"
                 ).queue();
             } catch (Exception e) {
