@@ -23,7 +23,10 @@ public class CommandSettings extends Command {
 
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
-
+        if(args.length == 0) {
+            sendUsageMessage();
+            return;
+        }
         Guild guild = e.getGuild();
         MessageChannel channel = e.getTextChannel();
         if (!Main.getMySQL().ifGuildExits(e.getGuild())){
