@@ -309,6 +309,7 @@ public class MySQL {
             ps.setString(2, value);
             List<Guild> guilds = new ArrayList<>();
             ResultSet rs = ps.executeQuery();
+<<<<<<< HEAD
             while (rs.next()) {
                 guilds.add(DiscordCore.getJDA().getGuildById(rs.getString(type)));
             }
@@ -317,6 +318,11 @@ public class MySQL {
             Logger.error(ex);
         }
         return null;
+=======
+        } catch (SQLException ex) {
+            Logger.error(ex);
+        }
+>>>>>>> master
     }
 
     public boolean ifGuildExits(Guild guild) {
