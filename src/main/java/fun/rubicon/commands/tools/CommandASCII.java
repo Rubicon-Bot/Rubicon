@@ -75,7 +75,7 @@ public class CommandASCII extends Command {
 
     @Override
     public String getUsage() {
-        return Info.BOT_DEFAULT_PREFIX + "ascii <string>\n" + Info.BOT_DEFAULT_PREFIX + "ascii code <ASCII-Code>";
+        return "ascii <string>\nascii code <ASCII-Code>";
     }
 
     @Override
