@@ -58,7 +58,6 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandSpeedTest("speedtest", CommandCategory.GENERAL).addAliases("st"));
         CommandHandler.addCommand(new CommandStatistics("statistics", CommandCategory.GENERAL).addAliases("stats"));
         CommandHandler.addCommand(new CommandInvite("invite", CommandCategory.GENERAL).addAliases("inv"));
-        CommandHandler.addCommand(new CommandUptime("uptime", CommandCategory.GENERAL).addAliases("up"));
 
 
         //Guildowner
@@ -73,5 +72,6 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandUserInfo("userinfo", CommandCategory.TOOLS).addAliases("whois"));
         CommandHandler.addCommand(new CommandSay("say", CommandCategory.TOOLS));
         CommandHandler.addCommand(new CommandVote("vote", CommandCategory.TOOLS).addAliases("v"));
+        CommandHandler.addCommand(new CommandASCII("ascii", CommandCategory.TOOLS));
     }
 }

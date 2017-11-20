@@ -1,5 +1,6 @@
 package fun.rubicon.util;
 
+import fun.rubicon.core.DiscordCore;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -8,6 +9,8 @@ import net.dv8tion.jda.core.entities.User;
 
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Rubicon Discord bot
@@ -32,15 +35,13 @@ public class MySQL {
     }
 
     /**
-     *
      * @param host
      * @param port
      * @param user
      * @param password
      * @param dbname
-     *
      */
-    public MySQL(String host, String port, String user, String password, String dbname){
+    public MySQL(String host, String port, String user, String password, String dbname) {
         this.host = host;
         this.port = port;
         this.user = user;
@@ -49,24 +50,24 @@ public class MySQL {
     }
 
     /**
-     *
      * @return MySQL connection
      */
-    public MySQL connect(){
+    public MySQL connect() {
         try {
             connection = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database, this.user, this.password);
             Logger.info("MySQL connection success");
-        } catch (SQLException e){
+        } catch (SQLException e) {
             Logger.error("MySQL connection failed");
             e.printStackTrace();
         }
         return this;
     }
-    public MySQL disconnect(){
+
+    public MySQL disconnect() {
         try {
             connection.close();
             System.out.println("disconnected from MYSQL");
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return this;
@@ -79,7 +80,7 @@ public class MySQL {
      * @param wherevalue
      * @return Value of the given key
      */
-    public String getString(String table, String key,String where, String wherevalue) {
+    public String getString(String table, String key, String where, String wherevalue) {
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM ? WHERE ?=?");
             ps.setString(1, table);
@@ -88,14 +89,13 @@ public class MySQL {
             ResultSet rs = ps.executeQuery();
             while (rs.next())
                 return rs.getString(key);
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
 
     /**
-     *
      * @param table
      * @param key
      * @param value
@@ -103,7 +103,7 @@ public class MySQL {
      * @param wherevalue
      * @return null
      */
-    public MySQL setString(String table, String key, String value, String where, String wherevalue){
+    public MySQL setString(String table, String key, String value, String where, String wherevalue) {
         try {
             PreparedStatement ps = connection.prepareStatement("UPDATE ? SET ?=? WHERE ?=?");
             ps.setString(1, table);
@@ -111,14 +111,14 @@ public class MySQL {
             ps.setString(3, value);
             ps.setString(4, where);
             ps.setString(5, wherevalue);
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
         return this;
     }
 
-    public MySQL executePreparedStatement(PreparedStatement ps){
+    public MySQL executePreparedStatement(PreparedStatement ps) {
         try {
             ps.execute();
         } catch (SQLException e) {
@@ -134,46 +134,49 @@ public class MySQL {
             ps.setString(1, role.getId());
             ResultSet rs = ps.executeQuery();
             return rs.next();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
-    public void updateRoleValue(Role role, String type, String value){
-        try{
-            if(connection.isClosed())
+
+    public void updateRoleValue(Role role, String type, String value) {
+        try {
+            if (connection.isClosed())
                 connect();
-            if(!ifRoleExist(role))
+            if (!ifRoleExist(role))
                 createRole(role);
             PreparedStatement ps = connection.prepareStatement("UPDATE roles SET " + type + " = '" + value + "' WHERE role = '" + role.getId());
             ps.execute();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
     public String getRoleValue(Role role, String type) {
-        try{
-            if(connection.isClosed())
+        try {
+            if (connection.isClosed())
                 connect();
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM roles WHERE `roleid` = ?");
             ps.setString(1, role.getId());
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 return rs.getString(type);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
+
     public void createRole(Role role) {
-        try{
-            if(connection.isClosed())
+        try {
+            if (connection.isClosed())
                 connect();
             PreparedStatement ps = connection.prepareStatement("INSERT INTO `roles`(`roleid`, `permissions`) VALUES (?, '')");
             ps.setString(1, String.valueOf(role.getId()));
             ps.execute();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -186,47 +189,50 @@ public class MySQL {
             ps.setString(2, member.getGuild().getId());
             ResultSet rs = ps.executeQuery();
             return rs.next();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
-    public void updateMemberValue(Member member, String type, String value){
-        try{
-            if(connection.isClosed())
+
+    public void updateMemberValue(Member member, String type, String value) {
+        try {
+            if (connection.isClosed())
                 connect();
-            if(!ifMemberExist(member))
+            if (!ifMemberExist(member))
                 createMember(member);
             PreparedStatement ps = connection.prepareStatement("UPDATE member SET " + type + " = '" + value + "' WHERE userid = '" + member.getUser().getId() + "' AND guildid = '" + member.getGuild().getId() + "'");
             ps.execute();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    public String getMemberValue(Member member, String type){
-        try{
-            if(connection.isClosed())
+
+    public String getMemberValue(Member member, String type) {
+        try {
+            if (connection.isClosed())
                 connect();
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM member WHERE `userid` = ? AND `guildid` = ?");
             ps.setString(1, member.getUser().getId());
             ps.setString(2, member.getGuild().getId());
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 return rs.getString(type);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
+
     public void createMember(Member member) {
-        try{
-            if(connection.isClosed())
+        try {
+            if (connection.isClosed())
                 connect();
             String permLevel;
-            if(member.isOwner()) {
+            if (member.isOwner()) {
                 permLevel = "3";
-            } else if(member.getPermissions().contains(Permission.ADMINISTRATOR)) {
+            } else if (member.getPermissions().contains(Permission.ADMINISTRATOR)) {
                 permLevel = "2";
             } else {
                 permLevel = "1";
@@ -236,7 +242,7 @@ public class MySQL {
             ps.setString(2, String.valueOf(member.getGuild().getId()));
             ps.setString(3, String.valueOf(permLevel));
             ps.execute();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -248,97 +254,130 @@ public class MySQL {
             ps.setString(1, user.getId());
             ResultSet rs = ps.executeQuery();
             return rs.next();
-        } catch (SQLException  | NullPointerException e){
+        } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
         }
         return false;
     }
-    public void updateUserValue(User user, String type, String value){
-        try{
-            if(connection.isClosed())
+
+    public void updateUserValue(User user, String type, String value) {
+        try {
+            if (connection.isClosed())
                 connect();
-            if(!ifUserExist(user))
+            if (!ifUserExist(user))
                 createUser(user);
             PreparedStatement ps = connection.prepareStatement("UPDATE user SET " + type + " = '" + value + "' WHERE userid = " + user.getId());
             ps.execute();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    public String getUserValue(User user, String type){
-        try{
-            if(connection.isClosed())
+
+    public String getUserValue(User user, String type) {
+        try {
+            if (connection.isClosed())
                 connect();
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM user WHERE `userid` = ?");
             ps.setString(1, user.getId());
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 return rs.getString(type);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
+
     public void createUser(User user) {
-        try{
-            if(connection.isClosed())
+        try {
+            if (connection.isClosed())
                 connect();
             PreparedStatement ps = connection.prepareStatement("INSERT INTO `user`(`userid`, `bio`, `bday`, `level`, `points`, `money`) VALUES (?, 0, 0, 0, 0, 0)");
             ps.setString(1, String.valueOf(user.getIdLong()));
             ps.execute();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     //Guild Stuff
-    public boolean ifGuildExits(Guild guild){
+    public List<Guild> getGuildsByValue(String type, String value) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT serverid FROM guilds where ? = ?");
+            ps.setString(1, type);
+            ps.setString(2, value);
+            List<Guild> guilds = new ArrayList<>();
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                guilds.add(DiscordCore.getJDA().getGuildById(rs.getString(type)));
+            }
+            return guilds;
+        } catch (SQLException ex) {
+            Logger.error(ex);
+        }
+        return null;
+    }
+
+    public boolean ifGuildExits(Guild guild) {
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM guilds where serverid =?");
             ps.setString(1, guild.getId());
             ResultSet rs = ps.executeQuery();
             return rs.next();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
-    public void updateGuildValue(Guild guild, String type, String value){
-        try{
-            if(connection.isClosed())
+
+    public void updateGuildValue(Guild guild, String type, String value) {
+        try {
+            if (connection.isClosed())
                 connect();
-            if(!ifGuildExits(guild))
+            if (!ifGuildExits(guild))
                 createGuildServer(guild);
             PreparedStatement ps = connection.prepareStatement("UPDATE guilds SET " + type + " = '" + value + "' WHERE serverid = " + guild.getId());
             ps.execute();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    public String getGuildValue(Guild guild, String type){
-        try{
-            if(connection.isClosed())
+
+    public String getGuildValue(Guild guild, String type) {
+        try {
+            if (connection.isClosed())
                 connect();
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM guilds WHERE `serverid` = ?");
             ps.setString(1, guild.getId());
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 return rs.getString(type);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
+
     public void createGuildServer(Guild guild) {
-        try{
-            if(connection.isClosed())
+        try {
+            if (connection.isClosed())
                 connect();
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO `guilds`(`serverid`, `channel`, `prefix`, `joinmsg`, `leavemsg`, `logchannel`, `autorole`, `portal`) VALUES (?, '0', 'rc!', 'Welcome %user% on %guild%', 'Bye %user%', '0', '0', 'closed')");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO `guilds`(`serverid`, `channel`, `prefix`, `joinmsg`, `leavemsg`, `logchannel`, `autorole`, `portal`, `welmsg`) VALUES (?, '0', 'rc!', 'Welcome %user% on %guild%', 'Bye %user%', '0', '0', 'closed', '0')");
             ps.setString(1, String.valueOf(guild.getIdLong()));
             ps.execute();
-        } catch (SQLException e){
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteGuild(Guild guild) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM `guilds` WHERE `serverid` = ?");
+            ps.setString(1, guild.getId());
+            ps.execute();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
