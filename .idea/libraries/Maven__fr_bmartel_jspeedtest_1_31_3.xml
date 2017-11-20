@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: fr.bmartel:jspeedtest:1.31.3">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/fr/bmartel/jspeedtest/1.31.3/jspeedtest-1.31.3.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/fr/bmartel/jspeedtest/1.31.3/jspeedtest-1.31.3-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/fr/bmartel/jspeedtest/1.31.3/jspeedtest-1.31.3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
