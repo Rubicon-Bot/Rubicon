@@ -2,17 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="af2a5fb8-12f5-4326-b9ae-7a9e9e4620a4" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/fun/CommandPortal.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/fun/CommandPortal.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/general/CommandHelp.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/general/CommandHelp.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/guildowner/CommandRebuild.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/guildowner/CommandRebuild.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/guildowner/CommandSettings.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/guildowner/CommandSettings.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/core/CommandManager.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/core/CommandManager.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/core/ListenerManager.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/core/ListenerManager.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/listener/AutoRoleWelcome.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/listener/AutoRoleWelcome.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/listener/BotJoinListener.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/listener/BotJoinListener.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/listener/ChannelDeleteListener.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/listener/ChannelDeleteListener.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/util/MySQL.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/util/MySQL.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/util/Setup.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/util/Setup.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/latest.log" afterPath="$PROJECT_DIR$/latest.log" />
@@ -28,11 +18,31 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="CommandFeedback.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/fun/rubicon/commands/general/CommandFeedback.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="555">
+              <caret line="37" column="55" lean-forward="false" selection-start-line="37" selection-start-column="55" selection-end-line="37" selection-end-column="55" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#526#527#0" expanded="true" />
+                <element signature="e#566#567#0" expanded="true" />
+                <element signature="e#1701#1702#0" expanded="true" />
+                <element signature="e#1728#1729#0" expanded="true" />
+                <element signature="e#1774#1775#0" expanded="true" />
+                <element signature="e#1801#1802#0" expanded="true" />
+                <element signature="e#1854#1855#0" expanded="true" />
+                <element signature="e#1878#1879#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="6" column="8" lean-forward="false" selection-start-line="6" selection-start-column="8" selection-end-line="6" selection-end-column="8" />
+            <state relative-caret-position="120">
+              <caret line="8" column="7" lean-forward="false" selection-start-line="8" selection-start-column="7" selection-end-line="8" selection-end-column="7" />
               <folding />
             </state>
           </provider>
@@ -105,8 +115,9 @@
         <option value="$PROJECT_DIR$/src/main/java/fun/rubicon/util/MySQL.java" />
         <option value="$PROJECT_DIR$/src/main/java/fun/rubicon/listener/AutoRoleWelcome.java" />
         <option value="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/guildowner/CommandSettings.java" />
-        <option value="$PROJECT_DIR$/src/main/java/fun/rubicon/core/CommandManager.java" />
         <option value="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/general/CommandBug.java" />
+        <option value="$PROJECT_DIR$/src/main/java/fun/rubicon/core/CommandManager.java" />
+        <option value="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/general/CommandFeedback.java" />
         <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
@@ -184,6 +195,25 @@
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="rubicon" type="462c0819:PsiDirectoryNode" />
               <item name="commands" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="rubiconBot" type="b2602c69:ProjectViewProjectNode" />
+              <item name="RubiCon" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="rubicon" type="462c0819:PsiDirectoryNode" />
+              <item name="commands" type="462c0819:PsiDirectoryNode" />
+              <item name="general" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="rubiconBot" type="b2602c69:ProjectViewProjectNode" />
+              <item name="RubiCon" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="rubicon" type="462c0819:PsiDirectoryNode" />
+              <item name="core" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -368,7 +398,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/de/rubicon/listener/GuildJoinListener.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/de/rubicon/listener/GuildMemberJoinListener.java" />
     <entry file="jar://$MAVEN_REPOSITORY$/net/dv8tion/JDA/3.3.1_305/JDA-3.3.1_305.jar!/net/dv8tion/jda/core/hooks/ListenerAdapter.class">
       <provider selected="true" editor-type-id="text-editor">
@@ -666,32 +695,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/fun/rubicon/commands/general/CommandBug.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="264">
-          <caret line="37" column="56" lean-forward="false" selection-start-line="37" selection-start-column="56" selection-end-line="37" selection-end-column="56" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#516#517#0" expanded="true" />
-            <element signature="e#556#557#0" expanded="true" />
-            <element signature="e#1663#1664#0" expanded="true" />
-            <element signature="e#1690#1691#0" expanded="true" />
-            <element signature="e#1736#1737#0" expanded="true" />
-            <element signature="e#1763#1764#0" expanded="true" />
-            <element signature="e#1816#1817#0" expanded="true" />
-            <element signature="e#1840#1841#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/fun/rubicon/core/CommandManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="206">
-          <caret line="60" column="79" lean-forward="false" selection-start-line="60" selection-start-column="79" selection-end-line="60" selection-end-column="79" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/net/dv8tion/JDA/3.3.1_305/JDA-3.3.1_305.jar!/net/dv8tion/jda/core/EmbedBuilder.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="217">
@@ -711,10 +714,46 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/fun/rubicon/commands/general/CommandBug.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="367">
+          <caret line="40" column="75" lean-forward="true" selection-start-line="19" selection-start-column="8" selection-end-line="40" selection-end-column="75" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/fun/rubicon/core/CommandManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="61" column="110" lean-forward="false" selection-start-line="61" selection-start-column="110" selection-end-line="61" selection-end-column="110" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/fun/rubicon/commands/general/CommandFeedback.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="555">
+          <caret line="37" column="55" lean-forward="false" selection-start-line="37" selection-start-column="55" selection-end-line="37" selection-end-column="55" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#526#527#0" expanded="true" />
+            <element signature="e#566#567#0" expanded="true" />
+            <element signature="e#1701#1702#0" expanded="true" />
+            <element signature="e#1728#1729#0" expanded="true" />
+            <element signature="e#1774#1775#0" expanded="true" />
+            <element signature="e#1801#1802#0" expanded="true" />
+            <element signature="e#1854#1855#0" expanded="true" />
+            <element signature="e#1878#1879#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="8" lean-forward="false" selection-start-line="6" selection-start-column="8" selection-end-line="6" selection-end-column="8" />
+        <state relative-caret-position="120">
+          <caret line="8" column="7" lean-forward="false" selection-start-line="8" selection-start-column="7" selection-end-line="8" selection-end-column="7" />
           <folding />
         </state>
       </provider>

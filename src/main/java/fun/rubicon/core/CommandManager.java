@@ -59,6 +59,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandStatistics("statistics", CommandCategory.GENERAL).addAliases("stats"));
         CommandHandler.addCommand(new CommandInvite("invite", CommandCategory.GENERAL).addAliases("inv"));
         CommandHandler.addCommand(new CommandBug("bug", CommandCategory.GENERAL));
+        CommandHandler.addCommand(new CommandFeedback("feedback", CommandCategory.GENERAL).addAliases("fedback"));
 
 
         //Guildowner

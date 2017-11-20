@@ -5,6 +5,8 @@
 .idea
 .idea/*
 target/*
+/target/*
+/target
 rubiconBot.iml
 rubicon.iml
 /config.json
