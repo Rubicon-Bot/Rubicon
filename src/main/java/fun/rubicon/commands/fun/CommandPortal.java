@@ -102,7 +102,7 @@ public class CommandPortal extends Command {
                 otherChannel.editMessageById(Main.getMySQL().getGuildValue(openGuilds.get(0), "portal").split(":")[1], builder.build()).queue();
                 e.getGuild().getTextChannelsByName("rubicon-portal", true).get(0).editMessageById(searchMessage.getId(), builder.setDescription("@here Created Portal to " + foundGuild.getName()).build()).queue();
                 Main.getMySQL().updateGuildValue(e.getGuild(), "portal", "connected:" + foundGuild.getId() + ":" + otherChannel.getId());
-                Main.getMySQL().updateGuildValue(foundGuild, "portal", "connected:" + e.getGuild() + ":" + channel.getId());
+                Main.getMySQL().updateGuildValue(foundGuild, "portal", "connected:" + e.getGuild().getId() + ":" + channel.getId());
             } catch (Exception ex) {
                 sendErrorMessage("An error occured!");
                 Main.getMySQL().updateGuildValue(e.getGuild(), "portal", "closed");
