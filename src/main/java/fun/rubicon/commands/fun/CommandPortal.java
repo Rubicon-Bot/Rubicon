@@ -80,7 +80,7 @@ public class CommandPortal extends Command {
 
     @Override
     public String getUsage() {
-        return "portal open [guildid]\n" +
+        return "portal open [guildid]" +
                 "portal close";
     }
 
