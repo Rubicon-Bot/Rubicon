@@ -2,8 +2,10 @@ package fun.rubicon.commands.tools;
 
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
+import fun.rubicon.util.Colors;
 import fun.rubicon.util.Info;
 
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 /**
@@ -63,7 +65,10 @@ public class CommandASCII extends Command {
             }
             output.append(text.toString()).append("`\n");
             output.append(asciiBuilder.toString()).append("`");
-            sendEmbededMessage(output.toString());
+            EmbedBuilder builder = new EmbedBuilder()
+                    .setDescription(output.toString())
+                    .setColor(Colors.COLOR_PRIMARY);
+            e.getTextChannel().sendMessage(builder.build()).queue();
         } else
             sendUsageMessage();
     }
