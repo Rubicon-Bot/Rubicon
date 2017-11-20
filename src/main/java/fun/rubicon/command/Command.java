@@ -135,7 +135,7 @@ public abstract class Command {
         return category;
     }
 
-    public Command addAliases(String ... a) {
+    public Command addAliases(String... a) {
         this.aliases = a;
         return this;
     }

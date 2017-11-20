@@ -304,13 +304,29 @@ public class MySQL {
     //Guild Stuff
     public List<Guild> getGuildsByValue(String type, String value) {
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT serverid FROM guilds where ? = ?");
-            ps.setString(1, type);
-            ps.setString(2, value);
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM guilds where `" + type + "` = ?");
+            ps.setString(1, value);
             List<Guild> guilds = new ArrayList<>();
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                guilds.add(DiscordCore.getJDA().getGuildById(rs.getString(type)));
+                guilds.add(DiscordCore.getJDA().getGuildById(rs.getString("serverid")));
+            }
+            return guilds;
+        } catch (SQLException ex) {
+            Logger.error(ex);
+        }
+        return null;
+    }
+
+    public List<Guild> getGuildsByContainingValue(String type, String value) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM guilds");
+            List<Guild> guilds = new ArrayList<>();
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                if (rs.getString(type).contains(value)) {
+                    guilds.add(DiscordCore.getJDA().getGuildById(rs.getString("serverid")));
+                }
             }
             return guilds;
         } catch (SQLException ex) {
