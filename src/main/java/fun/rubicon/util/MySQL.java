@@ -8,6 +8,8 @@ import net.dv8tion.jda.core.entities.User;
 
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Rubicon Discord bot
@@ -299,6 +301,18 @@ public class MySQL {
     }
 
     //Guild Stuff
+    public List<Guild> getGuildsByValue(String type, String value) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT serverid FROM guilds where ? = ?");
+            ps.setString(1, type);
+            ps.setString(2, value);
+            List<Guild> guilds = new ArrayList<>();
+            ResultSet rs = ps.executeQuery();
+        } catch (SQLException ex) {
+            Logger.error(ex);
+        }
+    }
+
     public boolean ifGuildExits(Guild guild) {
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM guilds where serverid =?");
