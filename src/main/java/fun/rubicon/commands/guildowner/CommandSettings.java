@@ -23,7 +23,7 @@ public class CommandSettings extends Command {
 
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
-        if(args.length == 0) {
+        if(args.length < 2) {
             sendUsageMessage();
             return;
         }
@@ -33,7 +33,6 @@ public class CommandSettings extends Command {
             Main.getMySQL().createGuildServer(e.getGuild());
         }
         //Permission here
-        if (args.length < 2) e.getChannel().sendMessage(getUsage());
         String joinmessage = Main.getMySQL().getGuildValue(guild, "joinmsg");
         switch (args[0].toLowerCase()) {
             case "prefix":
