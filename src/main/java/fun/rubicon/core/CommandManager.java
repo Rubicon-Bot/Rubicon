@@ -48,6 +48,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandShort("short", CommandCategory.TOOLS));
         CommandHandler.addCommand(new CommandPortal("portal", CommandCategory.FUN).addAliases("mirror"));
         CommandHandler.addCommand(new CommandShort("short", CommandCategory.FUN));
+        CommandHandler.addCommand(new CommandRip("rip", CommandCategory.FUN).addAliases("tombstone"));
 
 
         //general
@@ -72,7 +73,6 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandUserInfo("userinfo", CommandCategory.TOOLS).addAliases("whois"));
         CommandHandler.addCommand(new CommandSay("say", CommandCategory.TOOLS));
         CommandHandler.addCommand(new CommandVote("vote", CommandCategory.TOOLS).addAliases("v"));
-        CommandHandler.addCommand(new CommandASCII("ascii", CommandCategory.TOOLS));
-        CommandHandler.addCommand(new CommandBrainfuck("brainfuck", CommandCategory.TOOLS).addAliases("bf"));
+        CommandHandler.addCommand(new CommandVote("vote", CommandCategory.TOOLS).addAliases("poll", "v", "p"));
     }
 }
