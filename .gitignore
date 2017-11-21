@@ -25,3 +25,4 @@ SERVER_SETTINGS/380415148545802250/vote.dat^
 config.json
 *.dat
 target/classes/fun/rubicon/core/CommandManager.class
+.idea/workspace.xml
