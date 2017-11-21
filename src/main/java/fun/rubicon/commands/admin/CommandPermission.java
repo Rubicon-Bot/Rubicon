@@ -127,6 +127,9 @@ public class CommandPermission extends Command {
                     builder.setFooter("Allowed Commands: " + getAmountOfAllowedCommands(member), null);
                     message.editMessage(builder.build()).queue(msg -> msg.delete().queueAfter(defaultDeleteSeconds, TimeUnit.SECONDS));
                     break;
+                default:
+                    sendUsageMessage();
+                    return;
             }
         }
     }

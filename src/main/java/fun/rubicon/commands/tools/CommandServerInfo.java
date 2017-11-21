@@ -34,7 +34,7 @@ public class CommandServerInfo extends Command{
         serverinfo.setThumbnail(guild.getIconUrl());
         serverinfo.addField("ID", "`" + guild.getId() + "`", false);
         serverinfo.addField("Guildname", "`" + guild.getName() + "`", false);
-        serverinfo.addField("Server region", guild.getRegionRaw(), false);
+        serverinfo.addField("Server region", guild.getRegion().toString(), false);
         serverinfo.addField("Members", String.valueOf(guild.getMembers().size()), false);
         serverinfo.addField("Textchannels", String.valueOf(guild.getTextChannels().size()), false);
         serverinfo.addField("Voicechannels", String.valueOf(guild.getVoiceChannels().size()), false);

@@ -26,8 +26,11 @@ public class ListenerManager {
         b.addEventListener(new SelfMentionListener());
         b.addEventListener(new SQLPreventDisconnect());
         b.addEventListener(new AutoRoleWelcome());
-        b.addEventListener(new JoinSQL());
+        b.addEventListener(new BotJoinListener());
         b.addEventListener(new Leveler());
         b.addEventListener(new AdminListener());
+        b.addEventListener(new ChannelDeleteListener());
+        b.addEventListener(new BotLeaveListener());
+        b.addEventListener(new ReactionListener());
     }
 }

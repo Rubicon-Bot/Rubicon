@@ -37,7 +37,6 @@ public class GameAnimator {
             Info.BOT_NAME + " " + Info.BOT_VERSION,
             "Generating new features...",
             CommandHandler.getCommands().size() + " Commands loaded",
-            "Created by" + " Foryasee, Schlaubi, Lee, xEiisKeksx, ...",
             "Blowing stuff up!",
     };
 

@@ -31,7 +31,6 @@ public class DiscordCore {
         } catch (LoginException | InterruptedException | RateLimitedException e) {
             Logger.error(e.getMessage());
         }
-        Info.init();
         GameAnimator.start();
     }
 

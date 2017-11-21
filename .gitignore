@@ -4,10 +4,13 @@
 /.idea/
 .idea
 .idea/*
-target/
+target/*
 rubiconBot.iml
 /.gitignore
 out/*
 src/META-INF/MANIFEST.MF
 rubiconBot (1).iml
 rubiconBot (2).iml
+SERVER_SETTINGS/380415148545802250/vote.dat^
+config.json
+*.dat

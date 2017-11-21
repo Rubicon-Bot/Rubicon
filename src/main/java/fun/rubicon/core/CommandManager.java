@@ -1,6 +1,5 @@
 package fun.rubicon.core;
 
-import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.commands.admin.CommandPermission;
@@ -11,7 +10,6 @@ import fun.rubicon.commands.botowner.CommandStop;
 import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.guildowner.CommandSettings;
-import fun.rubicon.commands.guildowner.CommandStartup;
 import fun.rubicon.commands.tools.*;
 
 /**
@@ -40,13 +38,17 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandEval("eval", CommandCategory.BOT_OWNER).addAliases("e"));
 
         //Fun
-        CommandHandler.addCommand(new CommandJoke("joke", CommandCategory.FUN));
+        //CommandHandler.addCommand(new CommandJoke("joke", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandLmgtfy("lmgtfy", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandRoll("roll", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandColor("color", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandChoose("choose", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandLevel("rank", CommandCategory.FUN).addAliases("lvl"));
         CommandHandler.addCommand(new CommandBday("birthday", CommandCategory.FUN).addAliases("bday"));
+        CommandHandler.addCommand(new CommandShort("short", CommandCategory.TOOLS));
+        CommandHandler.addCommand(new CommandPortal("portal", CommandCategory.FUN).addAliases("mirror"));
+        CommandHandler.addCommand(new CommandShort("short", CommandCategory.FUN));
+
 
         //general
         CommandHandler.addCommand(new CommandHelp("help", CommandCategory.GENERAL).addAliases("h"));
@@ -55,12 +57,12 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandSpeedTest("speedtest", CommandCategory.GENERAL).addAliases("st"));
         CommandHandler.addCommand(new CommandStatistics("statistics", CommandCategory.GENERAL).addAliases("stats"));
         CommandHandler.addCommand(new CommandInvite("invite", CommandCategory.GENERAL).addAliases("inv"));
-        CommandHandler.addCommand(new CommandUptime("uptime", CommandCategory.GENERAL).addAliases("up"));
+        CommandHandler.addCommand(new CommandBug("bug", CommandCategory.GENERAL));
 
 
         //Guildowner
         CommandHandler.addCommand(new CommandSettings("settings", CommandCategory.GUILD_OWNER));
-        CommandHandler.addCommand(new CommandStartup("startup", CommandCategory.GUILD_OWNER));
+        //CommandHandler.addCommand(new CommandRebuild("rebuild", CommandCategory.GUILD_OWNER));
 
         //Tools
         CommandHandler.addCommand(new CommandClear("clear", CommandCategory.TOOLS).addAliases("purge"));
@@ -69,6 +71,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandServerInfo("serverinfo", CommandCategory.TOOLS).addAliases("guild","guildinfo"));
         CommandHandler.addCommand(new CommandUserInfo("userinfo", CommandCategory.TOOLS).addAliases("whois"));
         CommandHandler.addCommand(new CommandSay("say", CommandCategory.TOOLS));
+        CommandHandler.addCommand(new CommandVote("vote", CommandCategory.TOOLS).addAliases("v"));
         CommandHandler.addCommand(new CommandVote("vote", CommandCategory.TOOLS).addAliases("poll", "v", "p"));
     }
 }
