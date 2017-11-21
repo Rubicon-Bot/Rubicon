@@ -48,6 +48,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandShort("short", CommandCategory.TOOLS));
         CommandHandler.addCommand(new CommandPortal("portal", CommandCategory.FUN).addAliases("mirror"));
         CommandHandler.addCommand(new CommandShort("short", CommandCategory.FUN));
+        CommandHandler.addCommand(new CommandRip("rip", CommandCategory.FUN).addAliases("tombstone"));
 
 
         //general
