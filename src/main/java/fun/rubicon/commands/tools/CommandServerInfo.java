@@ -40,7 +40,7 @@ public class CommandServerInfo extends Command{
         serverinfo.addField("Voicechannels", String.valueOf(guild.getVoiceChannels().size()), false);
         serverinfo.addField("Roles", String.valueOf(guild.getRoles().size()) + "\n ```" + roles.toString() + "```", false);
         serverinfo.addField("AFK Timeout", guild.getAfkTimeout().toString(), false);
-        serverinfo.addField("Server owner", guild.getOwner().getUser().getName() + guild.getOwner().getUser().getDiscriminator(), false);
+        serverinfo.addField("Server owner", guild.getOwner().getUser().getName() + "#" + guild.getOwner().getUser().getDiscriminator(), false);
         serverinfo.addField("Server icon url", guild.getIconUrl(), false);
         channel.sendMessage(serverinfo.build()).queue();
 
