@@ -283,7 +283,7 @@ public class CommandVote extends Command implements Serializable{
             }, 1000);
             return;
         }
-        String emoji = event.getReaction().getEmote().getName();
+        String emoji = event.getReaction().getReactionEmote().getName();
 
         poll.votes.put(event.getUser().getId(), poll.reacts.get(emoji));
         polls.replace(event.getGuild(), poll);
