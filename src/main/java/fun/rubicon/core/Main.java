@@ -1,5 +1,6 @@
 package fun.rubicon.core;
 
+import fun.rubicon.commands.tools.CommandVote;
 import fun.rubicon.util.*;
 
 
@@ -10,7 +11,7 @@ public class Main {
 
     private static DiscordCore discordCore;
     private static MySQL mySQL;
-    public final static String[] CONFIG_KEYS = {"token","mysql_host","mysql_port","mysql_database","mysql_password","mysql_user","bitlytoken"};
+    public final static String[] CONFIG_KEYS = {"token","mysql_host","mysql_port","mysql_database","mysql_password","mysql_user","bitlytoken","darksky_token","mapstoken"};
 
 
     private static Configuration configuration;
@@ -28,6 +29,7 @@ public class Main {
         discordCore.start();
         mySQL = new MySQL(Info.MYSQL_HOST, Info.MYSQL_PORT, Info.MYSQL_USER, Info.MYSQL_PASSWORD, Info.MYSQL_DATABASE);
         mySQL.connect();
+
     }
 
     public static DiscordCore getDiscordCore() {
