@@ -1,5 +1,6 @@
 package fun.rubicon.core;
 
+import fun.rubicon.commands.tools.CommandVote;
 import fun.rubicon.util.Info;
 
 import fun.rubicon.util.Logger;
@@ -32,6 +33,7 @@ public class DiscordCore {
             Logger.error(e.getMessage());
         }
         GameAnimator.start();
+        CommandVote.loadPolls(jda);
     }
 
     public static JDA getJDA() {

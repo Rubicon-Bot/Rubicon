@@ -1,5 +1,6 @@
 package fun.rubicon.core;
 
+import fun.rubicon.commands.tools.CommandVote;
 import fun.rubicon.util.*;
 
 
@@ -28,6 +29,7 @@ public class Main {
         discordCore.start();
         mySQL = new MySQL(Info.MYSQL_HOST, Info.MYSQL_PORT, Info.MYSQL_USER, Info.MYSQL_PASSWORD, Info.MYSQL_DATABASE);
         mySQL.connect();
+
     }
 
     public static DiscordCore getDiscordCore() {
