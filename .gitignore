@@ -1,10 +1,13 @@
 # Created by .ignore support plugin (hsz.mobi)
-.idea/
+/.idea/*
+.idea
 .idea/workspace.xml
 /.idea/
-.idea
+.idea/
 .idea/*
 target/*
+/target/*
+/target
 rubiconBot.iml
 rubicon.iml
 /config.json
@@ -21,3 +24,4 @@ rubiconBot (2).iml
 SERVER_SETTINGS/380415148545802250/vote.dat^
 config.json
 *.dat
+target/classes/fun/rubicon/core/CommandManager.class
