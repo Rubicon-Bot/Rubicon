@@ -35,27 +35,15 @@ public class CommandSettings extends Command {
         String joinmessage = Main.getMySQL().getGuildValue(guild, "joinmsg");
         switch (args[0].toLowerCase()) {
             case "prefix":
-                if (args.length < 2) {
-                    e.getChannel().sendMessage(getUsage());
-                    return;
-                }
                 Main.getMySQL().updateGuildValue(guild, "prefix", args[1]);
                 sendEmbededMessage(":white_check_mark: Succesfully set the Prefix!");
                 break;
             case "logchannel":
-                if (args.length < 2) {
-                    e.getChannel().sendMessage(getUsage());
-                    return;
-                }
                 String txt = e.getMessage().getMentionedChannels().get(0).getId();
                 Main.getMySQL().updateGuildValue(guild, "logchannel", txt);
                 sendEmbededMessage(":white_check_mark: Successfully set the LogChannel!");
                 break;
             case "joinmessage":
-                if (args.length < 2) {
-                    e.getChannel().sendMessage(getUsage() + "\n(watch for large and lower case\n)");
-                    return;
-                }
                 String temp = "";
                 for(int i = 1; i < args.length; i++){
                     temp += " " + args[i];
@@ -65,10 +53,6 @@ public class CommandSettings extends Command {
                 sendEmbededMessage(":white_check_mark:  Successfully set joinmessage to `" + up + "`!");
                 break;
             case "autorole":
-                if (args.length < 2) {
-                    e.getTextChannel().sendMessage(getUsage() + "\n(watch for large and lower case\n)");
-                    return;
-                }
                 if (e.getMessage().getMentionedRoles().size()<1){
                     try {
                         Role role = e.getGuild().getRolesByName(args[1], true).get(0);
@@ -91,25 +75,26 @@ public class CommandSettings extends Command {
                 sendEmbededMessage(":white_check_mark: Succesfully set the Autorole!");
                 break;
             case "channel":
-                if (args.length < 2) {
-                    e.getChannel().sendMessage(getUsage() + "\n(watch for large and lower case\n)");
-                    return;
-                }
                 String ch = e.getMessage().getMentionedChannels().get(0).getId();
                 Main.getMySQL().updateGuildValue(guild, "channel", ch);
                 sendEmbededMessage(":white_check_mark: Successfully set the Joinmessagechannel!");
                 break;
             case "welcomemsg":
-                if (args.length<2){
-                    e.getTextChannel().sendMessage(getUsage());
-                    return;
-                }
                 if (Main.getMySQL().getGuildValue(guild, "welmsg").equals("0")){
                     Main.getMySQL().updateGuildValue(guild, "welmsg", "1");
                 }else {
                     Main.getMySQL().updateGuildValue(guild, "welmsg", "0");
                 }
                 sendEmbededMessage(":white_check_mark: Successfully toggled the PNWelcomeMessage!");
+                break;
+            case "autochannel":
+                //autochannel add channel_name
+                //autochannel remove channel_name
+                //autochannel list
+                if(args.length < 2) {
+                    sendUsageMessage();
+                    return;
+                }
                 break;
         }
     }
