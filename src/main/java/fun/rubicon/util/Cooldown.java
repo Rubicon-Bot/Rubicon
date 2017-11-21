@@ -11,17 +11,13 @@ import java.util.ArrayList;
  * @package fun.rubicon.util
  */
 public class Cooldown {
-    //Cooldown for Leveler
+    /**
+     * Cooldown for Leveler
+     */
     public static ArrayList<String> ids = new ArrayList<>();
 
-
     public static boolean has(String id) {
-        if (ids.contains(id)) {
-            return true;
-        }else {
-            return false;
-        }
-
+        return ids.contains(id);
     }
 
     public static void add(String id) {

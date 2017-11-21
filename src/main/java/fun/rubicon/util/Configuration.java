@@ -122,8 +122,8 @@ public class Configuration {
     public  String getString(final String key){
         try{
             return this.json.get(key).getAsString();
-        } catch (Exception fuckyou){
-            fuckyou.printStackTrace();
+        } catch (Exception e){
+            e.printStackTrace();
         }
         return "";
     }

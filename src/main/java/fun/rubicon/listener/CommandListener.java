@@ -2,7 +2,6 @@ package fun.rubicon.listener;
 
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.core.Main;
-import fun.rubicon.core.permission.PermissionManager;
 import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -57,7 +56,7 @@ public class CommandListener extends ListenerAdapter {
                     fuck.printStackTrace();
                 }
             }
-            if (e.getMessage().getContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()) && !e.getMessage().getContent().toLowerCase().startsWith(prefix.toLowerCase().toString())) {
+            if (e.getMessage().getContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()) && !e.getMessage().getContent().toLowerCase().startsWith(prefix.toLowerCase())) {
                 //Above for not dubble
                 if (e.getMessage().getContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()) && e.getMessage().getAuthor().getId() != e.getJDA().getSelfUser().getId()) {
                     try {

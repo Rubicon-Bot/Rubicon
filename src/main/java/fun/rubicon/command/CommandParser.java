@@ -1,6 +1,7 @@
 package fun.rubicon.command;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import fun.rubicon.core.Main;
 import fun.rubicon.util.Info;
@@ -8,35 +9,31 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class CommandParser {
 
-    public CommandContainer parse(String rw, MessageReceivedEvent e) {
-
-        ArrayList<String> split = new ArrayList<>();
-
-        String raw = rw;
+    //TODO rework
+    public CommandContainer parse(String raw, MessageReceivedEvent e) {
+        // cut off command prefix
         String beheaded = raw.substring(Main.getMySQL().getGuildValue(e.getGuild(), "prefix").length(), raw.length());
+
+        // split arguments
         String[] splitBeheaded = beheaded.split(" ");
+        ArrayList<String> split = new ArrayList<>();
+        Collections.addAll(split, splitBeheaded);
 
-        for (String s : splitBeheaded) {
-            split.add(s);
-        }
-
+        // extract invoker argument
         String invoke = split.get(0);
         String[] args = new String[split.size()-1];
         split.subList(1, split.size()).toArray(args);
 
         return new CommandContainer(raw, beheaded, splitBeheaded, invoke, args, e);
     }
-    public CommandContainer parsep(String rw, MessageReceivedEvent e) {
 
-
-
+    public CommandContainer parsep(String raw, MessageReceivedEvent e) {
         ArrayList<String> split = new ArrayList<>();
 
         if (Main.getMySQL().getGuildValue(e.getGuild(),"prefix").equals(Info.BOT_DEFAULT_PREFIX)){
-
+            //TODO?
         }
 
-        String raw = rw;
         String beheaded = raw.substring(Info.BOT_DEFAULT_PREFIX.length(), raw.length());
         String[] splitBeheaded = beheaded.split(" ");
 

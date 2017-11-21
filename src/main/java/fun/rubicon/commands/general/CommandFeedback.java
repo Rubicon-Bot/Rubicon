@@ -22,8 +22,8 @@ public class CommandFeedback extends Command{
             return;
         }
         String text = "";
-        for(int i = 0; i < args.length; i++) {
-            text += args[i] + " ";
+        for (String arg : args) {
+            text += arg + " ";
         }
 
         try {

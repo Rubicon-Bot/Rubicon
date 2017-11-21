@@ -6,8 +6,6 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-import java.awt.*;
-
 /**
  * Rubicon Discord bot
  *
@@ -29,8 +27,8 @@ public class CommandLmgtfy extends Command{
 
         if(args.length > 0){
             String query = "";
-            for(int i = 0; i < args.length; i++){
-                query += " " + args[i];
+            for (String arg : args) {
+                query += " " + arg;
             }
             String url = "http://lmgtfy.com/?iie=1&q=" + query.replace( " ", "%20");
 

@@ -13,7 +13,6 @@ import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class CommandRoll extends Command{
@@ -23,27 +22,25 @@ public class CommandRoll extends Command{
 
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
-        int randomnumber, lownumber, highnumber;
-        if(args.length<=1)
-        {
+        int randomNumber, lowNumber, highNumber;
+        if(args.length <= 1) {
             sendUsageMessage();
             return;
         }
         try {
-            lownumber = Integer.parseInt(args[0]);
-            highnumber = Integer.parseInt(args[1]);
-        }catch (NumberFormatException exception){
-            lownumber = highnumber = 0;
+            lowNumber = Integer.parseInt(args[0]);
+            highNumber = Integer.parseInt(args[1]);
+        } catch (NumberFormatException exception) {
             sendErrorMessage("Only numbers allowed.");
             sendUsageMessage();
             return;
         }
-        if(lownumber>highnumber) {
-            randomnumber = ThreadLocalRandom.current().nextInt(highnumber, lownumber + 1);
-            sendEmbededMessage(e.getAuthor().getAsMention() + " rolls a " + randomnumber);
-        }else {
-            randomnumber = ThreadLocalRandom.current().nextInt(lownumber, highnumber + 1);
-            sendEmbededMessage(e.getAuthor().getAsMention() + " rolls a " + randomnumber);
+        if(lowNumber > highNumber) {
+            randomNumber = ThreadLocalRandom.current().nextInt(highNumber, lowNumber + 1);
+            sendEmbededMessage(e.getAuthor().getAsMention() + " rolls a " + randomNumber);
+        } else {
+            randomNumber = ThreadLocalRandom.current().nextInt(lowNumber, highNumber + 1);
+            sendEmbededMessage(e.getAuthor().getAsMention() + " rolls a " + randomNumber);
         }
     }
 
@@ -58,6 +55,6 @@ public class CommandRoll extends Command{
 
     @Override
     public int getPermissionLevel() {
-        return 0;
+        return 0; //TODO? or JavaDocs
     }
 }

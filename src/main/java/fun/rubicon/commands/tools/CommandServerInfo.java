@@ -9,8 +9,6 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-import java.awt.*;
-
 public class CommandServerInfo extends Command{
     public CommandServerInfo(String command, CommandCategory category) {
         super(command, category);
@@ -21,28 +19,26 @@ public class CommandServerInfo extends Command{
         Guild guild = e.getGuild();
         TextChannel channel = e.getTextChannel();
 
-        StringBuilder rolesraw = new StringBuilder();
-        guild.getRoles().forEach(r -> {
-            rolesraw.append(r.getName()).append(", ");
-        });
-        StringBuilder roles = new StringBuilder(rolesraw.toString());
-        roles.replace(rolesraw.lastIndexOf(","), roles.lastIndexOf(",") + 1, "" );
-        EmbedBuilder serverinfo = new EmbedBuilder();
-        serverinfo.setColor(Colors.COLOR_PRIMARY);
-        serverinfo.setFooter(Info.EMBED_FOOTER, Info.ICON_URL);
-        serverinfo.setTitle(":desktop: Serverinfo of " + guild.getName());
-        serverinfo.setThumbnail(guild.getIconUrl());
-        serverinfo.addField("ID", "`" + guild.getId() + "`", false);
-        serverinfo.addField("Guildname", "`" + guild.getName() + "`", false);
-        serverinfo.addField("Server region", guild.getRegion().toString(), false);
-        serverinfo.addField("Members", String.valueOf(guild.getMembers().size()), false);
-        serverinfo.addField("Textchannels", String.valueOf(guild.getTextChannels().size()), false);
-        serverinfo.addField("Voicechannels", String.valueOf(guild.getVoiceChannels().size()), false);
-        serverinfo.addField("Roles", String.valueOf(guild.getRoles().size()) + "\n ```" + roles.toString() + "```", false);
-        serverinfo.addField("AFK Timeout", guild.getAfkTimeout().toString(), false);
-        serverinfo.addField("Server owner", guild.getOwner().getUser().getName() + "#" + guild.getOwner().getUser().getDiscriminator(), false);
-        serverinfo.addField("Server icon url", guild.getIconUrl(), false);
-        channel.sendMessage(serverinfo.build()).queue();
+        StringBuilder rawRoles = new StringBuilder();
+        guild.getRoles().forEach(r -> rawRoles.append(r.getName()).append(", "));
+        StringBuilder roles = new StringBuilder(rawRoles.toString());
+        roles.replace(rawRoles.lastIndexOf(","), roles.lastIndexOf(",") + 1, "" );
+        EmbedBuilder serverInfo = new EmbedBuilder();
+        serverInfo.setColor(Colors.COLOR_PRIMARY);
+        serverInfo.setFooter(Info.EMBED_FOOTER, Info.ICON_URL);
+        serverInfo.setTitle(":desktop: Serverinfo of " + guild.getName());
+        serverInfo.setThumbnail(guild.getIconUrl());
+        serverInfo.addField("ID", "`" + guild.getId() + "`", false);
+        serverInfo.addField("Guildname", "`" + guild.getName() + "`", false);
+        serverInfo.addField("Server region", guild.getRegion().toString(), false);
+        serverInfo.addField("Members", String.valueOf(guild.getMembers().size()), false);
+        serverInfo.addField("Textchannels", String.valueOf(guild.getTextChannels().size()), false);
+        serverInfo.addField("Voicechannels", String.valueOf(guild.getVoiceChannels().size()), false);
+        serverInfo.addField("Roles", String.valueOf(guild.getRoles().size()) + "\n ```" + roles.toString() + "```", false);
+        serverInfo.addField("AFK Timeout", guild.getAfkTimeout().toString(), false);
+        serverInfo.addField("Server owner", guild.getOwner().getUser().getName() + "#" + guild.getOwner().getUser().getDiscriminator(), false);
+        serverInfo.addField("Server icon url", guild.getIconUrl(), false);
+        channel.sendMessage(serverInfo.build()).queue();
 
 
     }
