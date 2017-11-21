@@ -1,4 +1,4 @@
-package fun.rubicon.commands.fun;
+package fun.rubicon.commands.admin;
 
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
@@ -58,6 +58,8 @@ public class CommandPortal extends Command {
             case "close":
                 closePortal();
                 break;
+            default:
+                sendUsageMessage();
         }
     }
 
@@ -154,7 +156,7 @@ public class CommandPortal extends Command {
 
     @Override
     public String getUsage() {
-        return "portal open [guildid]\n" +
+        return "portal open\n" +
                 "portal close";
     }
 

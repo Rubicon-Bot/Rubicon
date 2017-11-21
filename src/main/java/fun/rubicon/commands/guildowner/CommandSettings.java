@@ -87,15 +87,8 @@ public class CommandSettings extends Command {
                 }
                 sendEmbededMessage(":white_check_mark: Successfully toggled the PNWelcomeMessage!");
                 break;
-            case "autochannel":
-                //autochannel add channel_name
-                //autochannel remove channel_name
-                //autochannel list
-                if(args.length < 2) {
-                    sendUsageMessage();
-                    return;
-                }
-                break;
+            default:
+                sendUsageMessage();
         }
     }
 

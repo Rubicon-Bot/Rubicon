@@ -2,13 +2,16 @@ package fun.rubicon.core;
 
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
+import fun.rubicon.commands.admin.CommandAutochannel;
 import fun.rubicon.commands.admin.CommandPermission;
+import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.botowner.CommandBroadcast;
 import fun.rubicon.commands.botowner.CommandEval;
 import fun.rubicon.commands.botowner.CommandRestart;
 import fun.rubicon.commands.botowner.CommandStop;
 import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
+import fun.rubicon.commands.guildowner.CommandRebuild;
 import fun.rubicon.commands.guildowner.CommandSettings;
 import fun.rubicon.commands.tools.*;
 
@@ -30,6 +33,8 @@ public class CommandManager {
     private void initCommands() {
         //Admin
         CommandHandler.addCommand(new CommandPermission("permission", CommandCategory.ADMIN).addAliases("permission", "perm", "perms"));
+        CommandHandler.addCommand(new CommandPortal("portal", CommandCategory.ADMIN).addAliases("mirror"));
+        CommandHandler.addCommand(new CommandAutochannel("autochannel", CommandCategory.ADMIN).addAliases("ac", "autoc"));
 
         //BotOwner
         CommandHandler.addCommand(new CommandBroadcast("broadcast", CommandCategory.BOT_OWNER).addAliases("sayb","bsay", "br"));
@@ -46,7 +51,6 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandLevel("rank", CommandCategory.FUN).addAliases("lvl"));
         CommandHandler.addCommand(new CommandBday("birthday", CommandCategory.FUN).addAliases("bday"));
         CommandHandler.addCommand(new CommandShort("short", CommandCategory.TOOLS));
-        CommandHandler.addCommand(new CommandPortal("portal", CommandCategory.FUN).addAliases("mirror"));
         CommandHandler.addCommand(new CommandShort("short", CommandCategory.FUN));
 
 

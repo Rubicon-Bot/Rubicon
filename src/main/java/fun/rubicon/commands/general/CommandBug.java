@@ -43,12 +43,12 @@ public class CommandBug extends Command{
 
     @Override
     public String getDescription() {
-        return null;
+        return "Report a bug to the developers.";
     }
 
     @Override
     public String getUsage() {
-        return null;
+        return "bug [message] (min. 3 args)";
     }
 
     @Override
