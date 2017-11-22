@@ -2,13 +2,18 @@ package fun.rubicon.util;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.apache.commons.io.IOUtils;
+// import org.apache.commons.io.IOUtils;
 
+<<<<<<< HEAD
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Scanner;
+=======
+import java.io.*;
+import java.util.stream.Collectors;
+>>>>>>> origin/zekro
 
 public class Configuration {
     /**
@@ -28,8 +33,13 @@ public class Configuration {
 
         try {
             if(file.exists()){
+<<<<<<< HEAD
                 Scanner scanner = new Sca
                 cont = IOUtils.toString(new BufferedInputStream(new FileInputStream(this.file)), "UTF-8");
+=======
+                cont = new BufferedReader(new FileReader(this.file)).lines().collect(Collectors.joining("\n"));
+                //cont = IOUtils.toString(new BufferedInputStream(new FileInputStream(this.file)), "UTF-8");
+>>>>>>> origin/zekro
             }
         } catch (Exception e){
             e.printStackTrace();
@@ -106,7 +116,11 @@ public class Configuration {
                 {
                     this.file.createNewFile();
                 }
-                IOUtils.write(json.toString(), new FileOutputStream(this.file), "UTF-8");
+
+                BufferedWriter br = new BufferedWriter(new FileWriter(this.file));
+                br.write(json.toString());
+                br.close();
+                //IOUtils.write(json.toString(), new FileOutputStream(this.file), "UTF-8");
             }
         }
         catch(Exception e)
