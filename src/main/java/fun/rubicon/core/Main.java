@@ -8,7 +8,7 @@ import java.io.File;
 public class Main {
     private static DiscordCore discordCore; //TODO remove redundant instance. DiscordCore only has static attributes and methods
     private static MySQL mySQL;
-    public final static String[] CONFIG_KEYS = {"token","mysql_host","mysql_port","mysql_database","mysql_password","mysql_user","bitlytoken","darksky_token","mapstoken"};
+    public final static String[] CONFIG_KEYS = {"token","mysql_host","mysql_port","mysql_database","mysql_password","mysql_user","bitlytoken"};
 
 
     private static Configuration configuration;
