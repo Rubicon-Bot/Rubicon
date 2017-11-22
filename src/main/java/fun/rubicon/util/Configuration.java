@@ -8,6 +8,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.Scanner;
 
 public class Configuration {
     /**
@@ -27,6 +28,7 @@ public class Configuration {
 
         try {
             if(file.exists()){
+                Scanner scanner = new Sca
                 cont = IOUtils.toString(new BufferedInputStream(new FileInputStream(this.file)), "UTF-8");
             }
         } catch (Exception e){
