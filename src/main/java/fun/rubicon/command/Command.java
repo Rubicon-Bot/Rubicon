@@ -51,6 +51,9 @@ public abstract class Command {
     public void call(String[] args, MessageReceivedEvent e) throws ParseException {
         this.args = args;
         this.e = e;
+        //if(!BotPermissionChecker.hasAllPermissions(e)) {
+        //    return;
+        //}
         this.permissionManager = new PermissionManager(e.getMember(), this);
         if (permissionManager.hasPermission()) {
             execute(args, e);
@@ -117,8 +120,7 @@ public abstract class Command {
 
     protected void sendNotImplementedMessage() {
         EmbedBuilder builder = new EmbedBuilder();
-        builder.setAuthor("Command ", null, e.getJDA().getSelfUser().getEffectiveAvatarUrl());
-        builder.setDescription(getUsage());
+        builder.setDescription("Command is not implemented yet!");
         builder.setColor(Colors.COLOR_NOT_IMPLEMENTED);
         builder.setFooter(generateTimeStamp(), null);
         e.getTextChannel().sendMessage(builder.build()).queue(msg -> msg.delete().queueAfter(defaultDeleteSeconds, TimeUnit.SECONDS));
@@ -146,6 +148,18 @@ public abstract class Command {
 
         }
         return null;
+    }
+
+    public String getFormattedAliases() {
+        String s = "[";
+        for (int i = 0; i < aliases.length; i++) {
+            if (i != aliases.length - 1)
+                s += aliases[i] + ",";
+            else
+                s += aliases[i];
+        }
+        s += "]";
+        return s;
     }
 
     public abstract String getDescription();

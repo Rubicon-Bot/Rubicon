@@ -1,4 +1,4 @@
-package fun.rubicon.commands.fun;
+package fun.rubicon.commands.admin;
 
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
@@ -36,7 +36,7 @@ public class CommandPortal extends Command {
             return;
         }
 
-        switch (args[0]) {
+        switch (args[0].toLowerCase()) {
             case "open":
             case "o":
             case "create":
@@ -45,6 +45,7 @@ public class CommandPortal extends Command {
                         createPortalWithRandomGuild();
                     } else if (args.length == 2) {
                         //Direct Portal
+                        sendNotImplementedMessage();
                     } else {
                         sendUsageMessage();
                         return;
@@ -57,14 +58,15 @@ public class CommandPortal extends Command {
             case "close":
                 closePortal();
                 break;
+            default:
+                sendUsageMessage();
         }
     }
 
     private void createPortalWithRandomGuild() {
-        Category cat; //TODO unused -> remove?
         Message searchMessage;
         try {
-            cat = e.getGuild().getCategoriesByName(Info.BOT_NAME, true).get(0);
+            e.getGuild().getCategoriesByName(Info.BOT_NAME, true).get(0);
         } catch (IndexOutOfBoundsException ex) {
             sendErrorMessage("You deleted or renamed the rubicon category! Please use " + Main.getMySQL().getGuildValue(e.getGuild(), "prefix") + "rebuild");
             return;
@@ -101,7 +103,7 @@ public class CommandPortal extends Command {
                 otherChannel.editMessageById(Main.getMySQL().getGuildValue(openGuilds.get(0), "portal").split(":")[1], builder.build()).queue();
                 e.getGuild().getTextChannelsByName("rubicon-portal", true).get(0).editMessageById(searchMessage.getId(), builder.setDescription("@here Created Portal to " + foundGuild.getName()).build()).queue();
                 Main.getMySQL().updateGuildValue(e.getGuild(), "portal", "connected:" + foundGuild.getId() + ":" + otherChannel.getId());
-                Main.getMySQL().updateGuildValue(foundGuild, "portal", "connected:" + e.getGuild() + ":" + channel.getId());
+                Main.getMySQL().updateGuildValue(foundGuild, "portal", "connected:" + e.getGuild().getId() + ":" + channel.getId());
             } catch (Exception ex) {
                 sendErrorMessage("An error occurred!");
                 Main.getMySQL().updateGuildValue(e.getGuild(), "portal", "closed");
@@ -152,7 +154,7 @@ public class CommandPortal extends Command {
 
     @Override
     public String getUsage() {
-        return "portal open [guildid]\n" +
+        return "portal open\n" +
                 "portal close";
     }
 

@@ -31,12 +31,12 @@ public class CommandLevel extends Command{
 
     @Override
     public String getDescription() {
-        return null;
+        return "Get your level, points and ruby's.";
     }
 
     @Override
     public String getUsage() {
-        return null;
+        return "rank";
     }
 
     @Override
