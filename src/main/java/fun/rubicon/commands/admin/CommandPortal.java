@@ -63,10 +63,9 @@ public class CommandPortal extends Command {
     }
 
     private void createPortalWithRandomGuild() {
-        Category cat; //TODO unused -> remove?
         Message searchMessage;
         try {
-            cat = e.getGuild().getCategoriesByName(Info.BOT_NAME, true).get(0);
+            e.getGuild().getCategoriesByName(Info.BOT_NAME, true).get(0);
         } catch (IndexOutOfBoundsException ex) {
             sendErrorMessage("You deleted or renamed the rubicon category! Please use " + Main.getMySQL().getGuildValue(e.getGuild(), "prefix") + "rebuild");
             return;

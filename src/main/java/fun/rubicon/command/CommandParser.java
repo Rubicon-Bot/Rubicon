@@ -29,10 +29,6 @@ public class CommandParser {
      */
     @Deprecated
     public static CommandContainer parsep(String raw, MessageReceivedEvent event) {
-        if (Main.getMySQL().getGuildValue(event.getGuild(),"prefix").equals(Info.BOT_DEFAULT_PREFIX)){
-            //TODO if prefix is default prefix then ? --> unused -> remove
-        }
-
         return parse(raw, Info.BOT_DEFAULT_PREFIX, event);
     }
 
