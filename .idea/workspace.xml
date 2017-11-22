@@ -2,11 +2,68 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="af2a5fb8-12f5-4326-b9ae-7a9e9e4620a4" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/raw-red.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/red-gradient-shadow-BG.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rubiconBot.iml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rubiconBot.iml~HEAD" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/admin/CommandAutochannel.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/listener/PortalListener.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/rubicon.iml" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.gitignore" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/dependency-reduced-pom.xml" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/fun/CommandPortal.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/admin/CommandPortal.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config.json" afterPath="$PROJECT_DIR$/config.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/admin/CommandGivaway.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/admin/CommandGivaway.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/command/Command.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/command/Command.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/command/CommandHandler.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/command/CommandHandler.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/command/CommandParser.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/command/CommandParser.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/admin/CommandPermission.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/admin/CommandPermission.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/botowner/CommandBroadcast.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/botowner/CommandBroadcast.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/botowner/CommandEval.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/botowner/CommandEval.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/botowner/CommandRestart.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/botowner/CommandRestart.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/fun/CommandBday.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/fun/CommandBday.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/fun/CommandChoose.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/fun/CommandChoose.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/fun/CommandColor.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/fun/CommandColor.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/fun/CommandLevel.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/fun/CommandLevel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/fun/CommandLmgtfy.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/fun/CommandLmgtfy.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/fun/CommandRip.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/fun/CommandRip.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/fun/CommandRoll.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/fun/CommandRoll.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/fun/CommandShort.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/fun/CommandShort.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/general/CommandBug.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/general/CommandBug.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/general/CommandFeedback.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/general/CommandFeedback.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/general/CommandHelp.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/general/CommandHelp.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/general/CommandInfo.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/general/CommandInfo.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/general/CommandInvite.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/general/CommandInvite.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/general/CommandStatistics.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/general/CommandStatistics.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/guildowner/CommandRebuild.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/guildowner/CommandRebuild.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/guildowner/CommandSettings.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/guildowner/CommandSettings.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/tools/CommandASCII.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/tools/CommandASCII.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/tools/CommandClear.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/tools/CommandClear.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/tools/CommandGoogle.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/tools/CommandGoogle.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/tools/CommandSay.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/tools/CommandSay.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/tools/CommandSearch.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/tools/CommandSearch.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/tools/CommandServerInfo.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/tools/CommandServerInfo.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/tools/CommandUserInfo.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/tools/CommandUserInfo.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/tools/CommandVote.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/tools/CommandVote.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/core/CommandManager.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/core/CommandManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/listener/ReactionListener.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/listener/ReactionListener.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/core/DiscordCore.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/core/DiscordCore.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/core/GameAnimator.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/core/GameAnimator.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/core/ListenerManager.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/core/ListenerManager.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/core/Main.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/core/Main.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/core/permission/PermissionManager.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/core/permission/PermissionManager.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/listener/BotJoinListener.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/listener/BotJoinListener.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/listener/ChannelDeleteListener.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/listener/ChannelDeleteListener.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/listener/CommandListener.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/listener/CommandListener.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/listener/Leveler.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/listener/Leveler.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/listener/SQLPreventDisconnect.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/listener/SQLPreventDisconnect.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/util/Bitly.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/util/Bitly.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/util/ChannelLog.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/util/ChannelLog.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/util/Configuration.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/util/Configuration.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/util/Cooldown.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/util/Cooldown.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/util/MySQL.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/util/MySQL.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/util/Setup.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/util/Setup.java" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -149,7 +206,7 @@
       </MavenImportingSettings>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="1">
+  <component name="ProjectFrameBounds">
     <option name="y" value="23" />
     <option name="width" value="1280" />
     <option name="height" value="773" />
@@ -181,60 +238,6 @@
             <path>
               <item name="RubiCon" type="b2602c69:ProjectViewProjectNode" />
               <item name="RubiCon" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="RubiCon" type="b2602c69:ProjectViewProjectNode" />
-              <item name="RubiCon" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="RubiCon" type="b2602c69:ProjectViewProjectNode" />
-              <item name="RubiCon" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="RubiCon" type="b2602c69:ProjectViewProjectNode" />
-              <item name="RubiCon" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="RubiCon" type="b2602c69:ProjectViewProjectNode" />
-              <item name="RubiCon" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="rubicon" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="RubiCon" type="b2602c69:ProjectViewProjectNode" />
-              <item name="RubiCon" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="rubicon" type="462c0819:PsiDirectoryNode" />
-              <item name="commands" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="RubiCon" type="b2602c69:ProjectViewProjectNode" />
-              <item name="RubiCon" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="rubicon" type="462c0819:PsiDirectoryNode" />
-              <item name="commands" type="462c0819:PsiDirectoryNode" />
-              <item name="admin" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="RubiCon" type="b2602c69:ProjectViewProjectNode" />
-              <item name="RubiCon" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="rubicon" type="462c0819:PsiDirectoryNode" />
-              <item name="listener" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -315,6 +318,18 @@
       <envs />
       <patterns />
     </configuration>
+    <configuration default="true" type="JetRunConfigurationType" factoryName="Kotlin">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="rubiconBot (1)" />
+      <envs />
+    </configuration>
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
       <module name="" />
       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
@@ -379,8 +394,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1280" height="773" extended-state="1" />
-    <editor active="true" />
+    <frame x="0" y="23" width="1280" height="773" extended-state="0" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32890856" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -395,7 +409,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32890856" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27059773" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27059773" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24959612" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />

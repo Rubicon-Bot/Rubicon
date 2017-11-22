@@ -87,7 +87,8 @@ public class MySQL {
             ps.setString(2, where);
             ps.setString(3, wherevalue);
             ResultSet rs = ps.executeQuery();
-            while (rs.next())
+            // Only returning one result
+            if (rs.next())
                 return rs.getString(key);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -160,7 +161,8 @@ public class MySQL {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM roles WHERE `roleid` = ?");
             ps.setString(1, role.getId());
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
+            // Only returning one result
+            if (rs.next()) {
                 return rs.getString(type);
             }
         } catch (SQLException e) {
@@ -216,7 +218,8 @@ public class MySQL {
             ps.setString(1, member.getUser().getId());
             ps.setString(2, member.getGuild().getId());
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
+            // Only returning one result
+            if (rs.next()) {
                 return rs.getString(type);
             }
         } catch (SQLException e) {
@@ -280,7 +283,8 @@ public class MySQL {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM user WHERE `userid` = ?");
             ps.setString(1, user.getId());
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
+            // Only returning one result
+            if (rs.next()) {
                 return rs.getString(type);
             }
         } catch (SQLException e) {
@@ -367,7 +371,8 @@ public class MySQL {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM guilds WHERE `serverid` = ?");
             ps.setString(1, guild.getId());
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
+            // Only returning one result
+            if (rs.next()) {
                 return rs.getString(type);
             }
         } catch (SQLException e) {
@@ -380,7 +385,7 @@ public class MySQL {
         try {
             if (connection.isClosed())
                 connect();
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO `guilds`(`serverid`, `channel`, `prefix`, `joinmsg`, `leavemsg`, `logchannel`, `autorole`, `portal`, `welmsg`) VALUES (?, '0', 'rc!', 'Welcome %user% on %guild%', 'Bye %user%', '0', '0', 'closed', '0')");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO `guilds`(`serverid`, `channel`, `prefix`, `joinmsg`, `leavemsg`, `logchannel`, `autorole`, `portal`, `welmsg`, `autochannels`) VALUES (?, '0', 'rc!', 'Welcome %user% on %guild%', 'Bye %user%', '0', '0', 'closed', '0', '')");
             ps.setString(1, String.valueOf(guild.getIdLong()));
             ps.execute();
         } catch (SQLException e) {

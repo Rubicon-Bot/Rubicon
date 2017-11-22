@@ -32,5 +32,6 @@ public class ListenerManager {
         b.addEventListener(new ChannelDeleteListener());
         b.addEventListener(new BotLeaveListener());
         b.addEventListener(new ReactionListener());
+        b.addEventListener(new PortalListener());
     }
 }

@@ -30,9 +30,9 @@ public class Leveler extends ListenerAdapter{
         if (LVL.ifUserExist(event.getAuthor())) {
             //Point System
             int current = Integer.parseInt(LVL.getUserValue(event.getAuthor(), "points"));
-            int zufallszahl = (int) ((Math.random() * 10) + 10);
-            String point = String.valueOf(current + zufallszahl);
-            int points = current + zufallszahl;
+            int randomNumber = (int) ((Math.random() * 10) + 10);
+            String point = String.valueOf(current + randomNumber);
+            int points = current + randomNumber;
             LVL.updateUserValue(event.getAuthor(), "points", point);
             //Cooldown
             Cooldown.add(event.getAuthor().getId());
@@ -63,7 +63,7 @@ public class Leveler extends ListenerAdapter{
                 int Low = 10;
                 int High = 100;
                 int Result = r.nextInt(High - Low) + Low;
-                int ran = (int) Math.round(Result);
+                int ran = Math.round(Result);
                 int foa = foo * 2 / 3 + ran;
                 String m = String.valueOf(foa);
                 LVL.updateUserValue(event.getAuthor(), "money", m);

@@ -4,18 +4,9 @@ import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.core.Main;
 import fun.rubicon.util.Info;
-import fun.rubicon.util.MySQL;
-import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Category;
-import net.dv8tion.jda.core.entities.Channel;
-import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.managers.GuildController;
-
-import java.util.Arrays;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Rubicon Discord bot
@@ -32,21 +23,20 @@ public class CommandRebuild extends Command {
 
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
-        Category category = null;
-        TextChannel logChannel = null;
-        TextChannel commandChannel = null;
-        TextChannel channel = null;
+        Category category;
+        TextChannel logChannel;
+        TextChannel channel;
         try {
             category = e.getGuild().getCategoriesByName(Info.BOT_NAME, true).get(0);
-            channel = (TextChannel) e.getGuild().getTextChannelsByName("r-messages", true).get(0);
-            logChannel = (TextChannel) e.getGuild().getTextChannelsByName("r-log", true).get(0);
-            commandChannel = (TextChannel) e.getGuild().getTextChannelsByName("r-commands", true).get(0);
+            channel = e.getGuild().getTextChannelsByName("r-messages", true).get(0);
+            logChannel = e.getGuild().getTextChannelsByName("r-log", true).get(0);
+            e.getGuild().getTextChannelsByName("r-commands", true).get(0);
         } catch (Exception ex) {
             e.getGuild().getController().createCategory(Info.BOT_NAME).complete();
             category = e.getGuild().getCategoriesByName(Info.BOT_NAME, true).get(0);
             channel = (TextChannel) e.getGuild().getController().createTextChannel("r-messages").setParent(category).complete();
             logChannel = (TextChannel) e.getGuild().getController().createTextChannel("r-log").setParent(category).complete();
-            commandChannel = (TextChannel) e.getGuild().getController().createTextChannel("r-commands").setParent(category).complete();
+            e.getGuild().getController().createTextChannel("r-commands").setParent(category).complete();
         }
         Main.getMySQL().updateGuildValue(e.getGuild(), "logchannel", logChannel.getId());
         Main.getMySQL().updateGuildValue(e.getGuild(), "channel", channel.getId());
@@ -55,7 +45,7 @@ public class CommandRebuild extends Command {
 
     @Override
     public String getDescription() {
-        return "Starts the bot on a guild, if the category gets deleted or something got fucked up!";
+        return "Rebuilds the rubicon category.";
     }
 
     @Override

@@ -6,8 +6,6 @@ import fun.rubicon.util.Colors;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * Rubicon Discord bot
  *
