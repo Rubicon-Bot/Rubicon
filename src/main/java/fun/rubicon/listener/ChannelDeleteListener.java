@@ -33,8 +33,6 @@ public class ChannelDeleteListener extends ListenerAdapter {
 
                 }
             } else if (stat.contains("connected")) {
-<<<<<<< HEAD
-=======
                 Main.getMySQL().updateGuildValue(e.getGuild(), "portal", "closed");
                 TextChannel textChannel;
                 try {
@@ -44,22 +42,12 @@ public class ChannelDeleteListener extends ListenerAdapter {
                 } catch (Exception ignored) {
 
                 }
->>>>>>> master
                 Guild otherGuild = e.getJDA().getGuildById(stat.split(":")[1]);
                 otherGuild.getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Portal was closed from the other owner!").queue());
                 Main.getMySQL().updateGuildValue(otherGuild, "portal", "closed");
                 try {
                     otherGuild.getTextChannelsByName("rubicon-portal", true).get(0).delete().queue();
                 } catch (Exception ignored) {
-
-                }
-                Main.getMySQL().updateGuildValue(e.getGuild(), "portal", "closed");
-                TextChannel tcc = null;
-                try {
-                    tcc = e.getGuild().getTextChannelsByName("rubicon-portal", true).get(0);
-                    tcc.delete().queue();
-                    e.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Portal successfully closed!").queue());
-                } catch (Exception ex) {
 
                 }
             }
