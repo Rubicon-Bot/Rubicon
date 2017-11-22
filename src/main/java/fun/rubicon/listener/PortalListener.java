@@ -1,6 +1,7 @@
 package fun.rubicon.listener;
 
 import fun.rubicon.core.Main;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
@@ -23,10 +24,14 @@ public class PortalListener extends ListenerAdapter {
                 String status = Main.getMySQL().getGuildValue(e.getGuild(), "portal");
                 if (status.contains("connected")) {
                     TextChannel otherChannel = e.getJDA().getTextChannelById(status.split(":")[2]);
-                    EmbedBuilder builder = new EmbedBuilder();
-                    builder.setAuthor(e.getAuthor().getName(), null, e.getAuthor().getEffectiveAvatarUrl());
-                    builder.setDescription(e.getMessage().getContent());
-                    otherChannel.sendMessage(builder.build()).queue();
+                    try {
+                        EmbedBuilder builder = new EmbedBuilder();
+                        builder.setAuthor(e.getAuthor().getName(), null, e.getAuthor().getEffectiveAvatarUrl());
+                        builder.setDescription(e.getMessage().getContent());
+                        otherChannel.sendMessage(builder.build()).queue();
+                    }catch (NullPointerException fuck){
+                        fuck.printStackTrace();
+                    }
                 }
             }
         }
