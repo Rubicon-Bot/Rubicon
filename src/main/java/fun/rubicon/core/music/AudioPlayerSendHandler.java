@@ -5,20 +5,19 @@ import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
 import net.dv8tion.jda.core.audio.AudioSendHandler;
 
 /**
- * Created by zekro on 22.11.2017 / 15:57
+ * Created by zekro on 22.11.2017 / 17:30
  * rubiconBot.fun.rubicon.core.music
  * dev.zekro.de - github.zekro.de
  * © zekro 2017
  */
 
 
-public class PlayerSendHandler implements AudioSendHandler {
-
+public class AudioPlayerSendHandler implements AudioSendHandler {
 
     private final AudioPlayer audioPlayer;
     private AudioFrame lastFrame;
 
-    public PlayerSendHandler(AudioPlayer audioPlayer) {
+    public AudioPlayerSendHandler(AudioPlayer audioPlayer) {
         this.audioPlayer = audioPlayer;
     }
 
@@ -47,5 +46,4 @@ public class PlayerSendHandler implements AudioSendHandler {
     public boolean isOpus() {
         return true;
     }
-
 }

@@ -4,29 +4,29 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.core.entities.Member;
 
 /**
- * Created by zekro on 22.11.2017 / 14:46
+ * Created by zekro on 22.11.2017 / 17:30
  * rubiconBot.fun.rubicon.core.music
  * dev.zekro.de - github.zekro.de
  * © zekro 2017
  */
 
 
-public class Track {
+public class AudioInfo {
 
-    private AudioTrack TRACK;
-    private Member AUTHOR;
+    private final AudioTrack track;
+    private final Member author;
 
-    public Track(AudioTrack track, Member author) {
-        this.TRACK = track;
-        this.AUTHOR = author;
+    AudioInfo(AudioTrack track, Member author) {
+        this.track = track;
+        this.author = author;
     }
 
     public AudioTrack getTrack() {
-        return TRACK;
+        return track;
     }
 
     public Member getAuthor() {
-        return AUTHOR;
+        return author;
     }
 
 }
