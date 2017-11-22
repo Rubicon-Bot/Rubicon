@@ -24,23 +24,33 @@ public class ChannelDeleteListener extends ListenerAdapter {
             String stat = Main.getMySQL().getGuildValue(e.getGuild(), "portal");
             if (stat.contains("waiting")) {
                 Main.getMySQL().updateGuildValue(e.getGuild(), "portal", "closed");
-                TextChannel tc = null;
+                TextChannel textChannel;
                 try {
-                    tc = e.getGuild().getTextChannelsByName("rubicon-portal", true).get(0);
-                    tc.delete().queue();
+                    textChannel = e.getGuild().getTextChannelsByName("rubicon-portal", true).get(0);
+                    textChannel.delete().queue();
                     e.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Portal successfully closed!").queue());
-                } catch (Exception ex) {
+                } catch (Exception ignored) {
 
                 }
             } else if (stat.contains("connected")) {
+<<<<<<< HEAD
+=======
+                Main.getMySQL().updateGuildValue(e.getGuild(), "portal", "closed");
+                TextChannel textChannel;
+                try {
+                    textChannel = e.getGuild().getTextChannelsByName("rubicon-portal", true).get(0);
+                    textChannel.delete().queue();
+                    e.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Portal successfully closed!").queue());
+                } catch (Exception ignored) {
+
+                }
+>>>>>>> master
                 Guild otherGuild = e.getJDA().getGuildById(stat.split(":")[1]);
                 otherGuild.getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Portal was closed from the other owner!").queue());
                 Main.getMySQL().updateGuildValue(otherGuild, "portal", "closed");
-                TextChannel tc = null;
                 try {
-                    tc = otherGuild.getTextChannelsByName("rubicon-portal", true).get(0);
-                    tc.delete().queue();
-                } catch (Exception ex) {
+                    otherGuild.getTextChannelsByName("rubicon-portal", true).get(0).delete().queue();
+                } catch (Exception ignored) {
 
                 }
                 Main.getMySQL().updateGuildValue(e.getGuild(), "portal", "closed");

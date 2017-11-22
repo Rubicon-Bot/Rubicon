@@ -36,7 +36,7 @@ public class CommandSettings extends Command {
         switch (args[0].toLowerCase()) {
             case "prefix":
                 Main.getMySQL().updateGuildValue(guild, "prefix", args[1]);
-                sendEmbededMessage(":white_check_mark: Succesfully set the Prefix!");
+                sendEmbededMessage(":white_check_mark: Successfully set the prefix!");
                 break;
             case "logchannel":
                 String txt = e.getMessage().getMentionedChannels().get(0).getId();

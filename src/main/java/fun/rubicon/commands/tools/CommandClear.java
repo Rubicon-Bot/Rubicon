@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static javax.swing.UIManager.getInt;
-
 /**
  * Rubicon Discord bot
  *
@@ -42,13 +40,13 @@ public class CommandClear extends Command{
         if(numb>= 2 && numb<=100){
             try{
                 MessageHistory history = new MessageHistory(e.getChannel());
-                List<Message> msgs;
-                msgs = history.retrievePast(numb).complete();
-                e.getTextChannel().deleteMessages(msgs).queue();
-                int numba = numb-1;
+                List<Message> messages;
+                messages = history.retrievePast(numb).complete();
+                e.getTextChannel().deleteMessages(messages).queue();
+                int number = numb-1;
                 Message msg = e.getChannel().sendMessage(new EmbedBuilder()
                         .setColor(Colors.COLOR_PRIMARY)
-                        .setDescription(":bomb: Deleted " + numba + " Messages!")
+                        .setDescription(":bomb: Deleted " + number + " Messages!")
                         .build()
                 ).complete();
 

@@ -32,8 +32,8 @@ public class CommandGoogle extends Command{
     protected void execute(String[] args, MessageReceivedEvent e) {
         if (args.length < 1) {e.getTextChannel().sendMessage(getUsage()); return;}
         String query = "";
-        for(int i = 0; i < args.length; i++){
-            query += " " + args[i];
+        for (String arg : args) {
+            query += " " + arg;
         }
         String google = "http://www.google.com/search?q=";
         String search = query;
@@ -45,6 +45,7 @@ public class CommandGoogle extends Command{
             links = Jsoup.connect(google + URLEncoder.encode(search, charset)).userAgent(userAgent).get().select(".g>.r>a");
         } catch (IOException e1) {
             e1.printStackTrace();
+            //TODO error handling. links cant be processed if they dont exist.
         }
 
         for (Element link : links) {
@@ -60,7 +61,7 @@ public class CommandGoogle extends Command{
                 continue; // Ads/news/etc.
             }
 
-            ttemp = ttemp + link.text().toString() + link.baseUri() +  "\n";
+            ttemp = ttemp + link.text() + link.baseUri() +  "\n";
 
         }
         sendEmbededMessage("Search Results for **" + query + "**:\n" + ttemp);

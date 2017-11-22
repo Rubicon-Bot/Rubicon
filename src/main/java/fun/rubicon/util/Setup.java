@@ -24,11 +24,11 @@ public class Setup {
     public static String prompt(String req) {
         String token;
 
-        /* prompt for token */
+        // prompt for token
         System.out.println("Enter you'r "+req+":");
 
         try {
-            /* read and trim line */
+            // read and trim line
             String line = sys_in.readLine();
             token = line.trim();
 
@@ -36,7 +36,7 @@ public class Setup {
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
-        /* RAGEQUIT */
+        // RAGEQUIT
         System.out.println("Exiting");
         Runtime.getRuntime().exit(1);
         return null;

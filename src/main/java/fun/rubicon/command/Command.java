@@ -2,7 +2,6 @@ package fun.rubicon.command;
 
 import fun.rubicon.core.permission.PermissionManager;
 import fun.rubicon.util.Colors;
-import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -60,7 +59,7 @@ public abstract class Command {
         }
         try {
             e.getMessage().delete().queue();
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
 
         }
     }
@@ -143,7 +142,7 @@ public abstract class Command {
     public List<String> getAliases() {
         try {
             return Arrays.asList(aliases);
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
 
         }
         return null;

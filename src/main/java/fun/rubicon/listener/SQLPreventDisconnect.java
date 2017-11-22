@@ -22,7 +22,7 @@ public class SQLPreventDisconnect extends ListenerAdapter{
     private boolean check = false;
     public void onMessageReceived(MessageReceivedEvent event) {
 
-        if (check = false){
+        if (check = false){ //TODO maybe check == false? this wont do anything. Also, check is never changed outside this block.
             MySQL s = Main.getMySQL();
             check= true;
             String d=s.getGuildValue(event.getGuild(), "prefix");
