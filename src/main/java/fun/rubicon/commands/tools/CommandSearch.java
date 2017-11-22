@@ -25,8 +25,8 @@ public class CommandSearch extends Command {
             return;
         }
         StringBuilder query = new StringBuilder();
-        for(int i = 0; i < args.length; i++){
-            query.append(args[i]);
+        for (String arg : args) {
+            query.append(arg);
         }
 
         StringBuilder textchannels = new StringBuilder();
@@ -72,7 +72,7 @@ public class CommandSearch extends Command {
                     .addField("**Roles**", roles.toString(), false);
             mymsg.editMessage(results.build()).queue();
         } catch (IllegalArgumentException ex){
-            mymsg.editMessage(new EmbedBuilder().setDescription(":warning: TO MANY RESULT HEEEEEELP!").build()).queue();
+            mymsg.editMessage(new EmbedBuilder().setDescription(":warning: TO MANY RESULTS HEEEEEELP!").build()).queue();
         }
 
     }

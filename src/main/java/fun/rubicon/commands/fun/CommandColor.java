@@ -37,12 +37,12 @@ public class CommandColor extends Command{
 
     @Override
     public String getDescription() {
-        return null;
+        return "Generates a random color.";
     }
 
     @Override
     public String getUsage() {
-        return null;
+        return "color";
     }
 
     @Override

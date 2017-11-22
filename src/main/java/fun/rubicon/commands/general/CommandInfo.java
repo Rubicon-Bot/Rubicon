@@ -42,7 +42,7 @@ public class CommandInfo extends Command {
         builder.addField("Github Link", "[Github Link](" + Info.BOT_GITHUB + ")", true);
         builder.addField("Patreon Link", "[Rubicon Dev Team](https://www.patreon.com/rubiconbot)", true);
         builder.addField("Authors", authors, true);
-        String dependecies = "" +
+        String dependencies = "" +
                 "[json.org](http://json.org/)\n" +
                 "[JDA](https://github.com/DV8FromTheWorld/JDA)\n" +
                 "[mysql-connector](https://mvnrepository.com/artifact/mysql/mysql-connector-java)\n" +
@@ -51,7 +51,7 @@ public class CommandInfo extends Command {
                 "[gson](https://github.com/google/gson)\n" +
                 "[apache-commons-io](https://commons.apache.org/proper/commons-io/)\n" +
                 "[jsoup](https://jsoup.org/)";
-        builder.addField("Dependencies", dependecies, false);
+        builder.addField("Dependencies", dependencies, false);
 
         e.getTextChannel().sendMessage(builder.build()).queue(msg -> msg.delete().queueAfter(120, TimeUnit.SECONDS));
     }

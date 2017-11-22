@@ -22,8 +22,8 @@ public class CommandFeedback extends Command{
             return;
         }
         String text = "";
-        for(int i = 0; i < args.length; i++) {
-            text += args[i] + " ";
+        for (String arg : args) {
+            text += arg + " ";
         }
 
         try {
@@ -43,12 +43,12 @@ public class CommandFeedback extends Command{
 
     @Override
     public String getDescription() {
-        return null;
+        return "Send feedback to the developer.";
     }
 
     @Override
     public String getUsage() {
-        return null;
+        return "feedback <message>";
     }
 
     @Override

@@ -29,8 +29,6 @@ public class Info {
     public final static String EMBED_FOOTER = "© 2017 Rubicon Dev Team";
     public final static String ICON_URL = "https://images-ext-2.discordapp.net/external/Xae9oFQTIRhV7V21twWufcxtdcxhmW6NFNatN8cyxz8/https/cdn.discordapp.com/icons/380415148545802250/579ee17b8de4d027c98853606567d760.jpg?width=72&height=72";
     public final static String BITLY_TOKEN = cfg.getString("bitlytoken");
-    public final static String DARKSKY_TOKEN = cfg.getString("darksky_token");
-    public final static String GOOGLEMAPS_TOKEN = cfg.getString("mapstoken");
     public static Date lastRestart;
 
     public final static User[] BOT_AUTHORS = {
@@ -39,7 +37,7 @@ public class Info {
             DiscordCore.getJDA().getUserById(318773753796624394L), //Scryptex
             DiscordCore.getJDA().getUserById(138014719582797824L), //Eiskeks
             DiscordCore.getJDA().getUserById(264048760580079616L), //Schlaubi
-            DiscordCore.getJDA().getUserById(148905646715043841L), //Robert
+            DiscordCore.getJDA().getUserById(221905671296253953L), //Zekro
             DiscordCore.getJDA().getUserById(224528662710452224L) //ForMoJa
     };
     /* MySQL login */
@@ -48,7 +46,4 @@ public class Info {
     public final static String MYSQL_USER = cfg.getString("mysql_user");
     public final static String MYSQL_PASSWORD = cfg.getString("mysql_password");
     public final static String MYSQL_DATABASE = cfg.getString("mysql_database");
-
-
-
 }

@@ -12,7 +12,6 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -52,7 +51,7 @@ public class CommandPermission extends Command {
 
         if (member != null) {
             int nameLength = member.getEffectiveName().split(" ").length;
-            String operator = null;
+            String operator;
             String command = null;
             try {
                 operator = args[nameLength].toLowerCase();
@@ -62,7 +61,7 @@ public class CommandPermission extends Command {
             }
             try {
                 command = args[nameLength + 1].toLowerCase();
-            } catch (ArrayIndexOutOfBoundsException ex) {
+            } catch (ArrayIndexOutOfBoundsException ignored) {
 
             }
 
@@ -129,7 +128,6 @@ public class CommandPermission extends Command {
                     break;
                 default:
                     sendUsageMessage();
-                    return;
             }
         }
     }
@@ -139,8 +137,8 @@ public class CommandPermission extends Command {
         String allPermissions = perm.getAllAllowedCommands();
         String[] arr = allPermissions.split(",");
         String res = "";
-        for (int i = 0; i < arr.length; i++) {
-            res += ":small_blue_diamond: **" + arr[i] + "**\n";
+        for (String anArr : arr) {
+            res += ":small_blue_diamond: **" + anArr + "**\n";
         }
         return res;
     }
