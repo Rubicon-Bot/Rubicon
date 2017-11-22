@@ -37,7 +37,7 @@ public class CommandRip extends Command{
             for(int i = 1;i < args.length; i++){
                 query.append(args[i]).append(" ");
             }
-            List<String> lines = new ArrayList<String>();
+            List<String> lines = new ArrayList<>();
             int index = 0;
             while (index < query.length()) {
                 lines.add(query.substring(index, Math.min(index + 25,query.length())));
@@ -45,7 +45,12 @@ public class CommandRip extends Command{
             }
             InputStream image = null;
             try {
-                image = new URL("http://www.tombstonebuilder.com/generate.php?top1=R.I.P.&top2=" + args[0].replace(" ", "%20").replace("@", "") + "&top3=" + lines.get(0).replace(" ", "%20") + "&top4=" + lines.get(1).replace(" ", "%20")+ "&sp=").openStream();
+                if(query.length() > 25) {
+                    image = new URL("http://www.tombstonebuilder.com/generate.php?top1=R.I.P.&top2=" + args[0].replace(" ", "%20").replace("@", "") + "&top3=" + lines.get(0).replace(" ", "%20") + "&top4=" + lines.get(1).replace(" ", "%20") + "&sp=").openStream();
+                } else {
+                    image = new URL("http://www.tombstonebuilder.com/generate.php?top1=R.I.P.&top2=" + args[0].replace(" ", "%20").replace("@", "") + "&top3=" + lines.get(0).replace(" ", "%20") + "&top4=&sp=").openStream();
+                }
+
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
