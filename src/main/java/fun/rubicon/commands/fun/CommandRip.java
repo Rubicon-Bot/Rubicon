@@ -7,7 +7,6 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -32,7 +31,7 @@ public class CommandRip extends Command{
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) throws ParseException {
         if(args.length > 1){
-            Message mymsg = e.getTextChannel().sendMessage(new EmbedBuilder().setColor(Colors.COLOR_SECONDARY).setDescription("Generating tombstone ...").build()).complete();
+            Message message = e.getTextChannel().sendMessage(new EmbedBuilder().setColor(Colors.COLOR_SECONDARY).setDescription("Generating tombstone ...").build()).complete();
             StringBuilder query = new StringBuilder();
             for(int i = 1;i < args.length; i++){
                 query.append(args[i]).append(" ");
@@ -53,8 +52,9 @@ public class CommandRip extends Command{
 
             } catch (IOException e1) {
                 e1.printStackTrace();
+                //TODO error handling. image can not be sent if it does not exist.
             }
-            mymsg.delete().queue();
+            message.delete().queue();
             e.getTextChannel().sendFile(image, "rip.png", null).queue();
         } else {
             sendUsageMessage();

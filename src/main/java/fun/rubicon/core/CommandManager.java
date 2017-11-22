@@ -1,8 +1,11 @@
 package fun.rubicon.core;
 
+import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
+import fun.rubicon.commands.admin.CommandAutochannel;
 import fun.rubicon.commands.admin.CommandPermission;
+import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.botowner.CommandBroadcast;
 import fun.rubicon.commands.botowner.CommandEval;
 import fun.rubicon.commands.botowner.CommandRestart;
@@ -31,6 +34,8 @@ public class CommandManager {
     private void initCommands() {
         //Admin
         CommandHandler.addCommand(new CommandPermission("permission", CommandCategory.ADMIN).addAliases("permission", "perm", "perms"));
+        CommandHandler.addCommand(new CommandPortal("portal", CommandCategory.ADMIN).addAliases("mirror"));
+        CommandHandler.addCommand(new CommandAutochannel("autochannel", CommandCategory.ADMIN).addAliases("ac", "autoc"));
 
         //BotOwner
         CommandHandler.addCommand(new CommandBroadcast("broadcast", CommandCategory.BOT_OWNER).addAliases("sayb","bsay", "br"));
@@ -44,10 +49,9 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandRoll("roll", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandColor("color", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandChoose("choose", CommandCategory.FUN));
-        CommandHandler.addCommand(new CommandLevel("rank", CommandCategory.FUN).addAliases("lvl"));
+        CommandHandler.addCommand(new CommandLevel("rank", CommandCategory.FUN).addAliases("lvl", "level"));
         CommandHandler.addCommand(new CommandBday("birthday", CommandCategory.FUN).addAliases("bday"));
         CommandHandler.addCommand(new CommandShort("short", CommandCategory.TOOLS));
-        CommandHandler.addCommand(new CommandPortal("portal", CommandCategory.FUN).addAliases("mirror"));
         CommandHandler.addCommand(new CommandShort("short", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandRip("rip", CommandCategory.FUN).addAliases("tombstone"));
 
@@ -61,6 +65,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandInvite("invite", CommandCategory.GENERAL).addAliases("inv"));
         CommandHandler.addCommand(new CommandBug("bug", CommandCategory.GENERAL));
         CommandHandler.addCommand(new CommandFeedback("feedback", CommandCategory.GENERAL).addAliases("fedback"));
+        //CommandHandler.addCommand(new CommandMusic("music", CommandCategory.GENERAL).addAliases("m"));
 
 
         //Guildowner
@@ -75,6 +80,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandUserInfo("userinfo", CommandCategory.TOOLS).addAliases("whois"));
         CommandHandler.addCommand(new CommandSay("say", CommandCategory.TOOLS));
         CommandHandler.addCommand(new CommandVote("vote", CommandCategory.TOOLS).addAliases("v"));
-        CommandHandler.addCommand(new CommandVote("vote", CommandCategory.TOOLS).addAliases("poll", "v", "p"));
+        CommandHandler.addCommand(new CommandASCII("ascii", CommandCategory.TOOLS));
+        //CommandHandler.addCommand(new CommandBrainfuck("brainfuck", CommandCategory.TOOLS).addAliases("bf"));
     }
 }

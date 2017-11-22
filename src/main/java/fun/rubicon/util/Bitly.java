@@ -1,7 +1,6 @@
 package fun.rubicon.util;
 
 import de.foryasee.httprequest.HttpRequest;
-import de.foryasee.httprequest.RequestResult;
 import org.json.JSONObject;
 
 public class Bitly {

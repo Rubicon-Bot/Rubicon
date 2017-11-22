@@ -10,8 +10,6 @@ import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.User;
 
 import java.util.*;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 /**
  * Rubicon Discord bot
@@ -61,7 +59,7 @@ public class PermissionManager {
                 if (member.isOwner())
                     return true;
             }
-        } catch (NullPointerException ex) {
+        } catch (NullPointerException ignored) {
 
         }
         return false;
@@ -73,7 +71,7 @@ public class PermissionManager {
 
     public int getPermissionLevel() {
         String s = Main.getMySQL().getMemberValue(member, "permissionlevel");
-        int i = 0;
+        int i;
         try {
             i = Integer.parseInt(s);
         } catch (NumberFormatException ex) {
@@ -84,7 +82,7 @@ public class PermissionManager {
     }
 
     public String getAllAllowedCommands() {
-        List<Command> allCommands = new ArrayList<Command>(CommandHandler.getCommands().values());
+        List<Command> allCommands = new ArrayList<>(CommandHandler.getCommands().values());
         String res = "";
         for(Command cmd : allCommands) {
             PermissionManager p = new PermissionManager(member, cmd);
@@ -108,8 +106,6 @@ public class PermissionManager {
     }
 
     public boolean containsPermission(String command) {
-        if(getPermissionsAsString().contains(command))
-            return true;
-        return false;
+        return getPermissionsAsString().contains(command);
     }
 }

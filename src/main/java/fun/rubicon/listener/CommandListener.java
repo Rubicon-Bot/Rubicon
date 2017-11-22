@@ -1,8 +1,8 @@
 package fun.rubicon.listener;
 
 import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandParser;
 import fun.rubicon.core.Main;
-import fun.rubicon.core.permission.PermissionManager;
 import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -52,16 +52,16 @@ public class CommandListener extends ListenerAdapter {
             String prefix = Main.getMySQL().getGuildValue(g, "prefix");
             if (e.getMessage().getContent().toLowerCase().startsWith(prefix.toLowerCase()) && e.getMessage().getAuthor().getId() != e.getJDA().getSelfUser().getId()) {
                 try {
-                    CommandHandler.handleCommand(CommandHandler.parser.parse(e.getMessage().getContent(), e));
+                    CommandHandler.handleCommand(CommandParser.parse(e.getMessage().getContent(), e));
                 } catch (Exception fuck) {
                     fuck.printStackTrace();
                 }
             }
-            if (e.getMessage().getContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()) && !e.getMessage().getContent().toLowerCase().startsWith(prefix.toLowerCase().toString())) {
+            if (e.getMessage().getContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()) && !e.getMessage().getContent().toLowerCase().startsWith(prefix.toLowerCase())) {
                 //Above for not dubble
                 if (e.getMessage().getContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()) && e.getMessage().getAuthor().getId() != e.getJDA().getSelfUser().getId()) {
                     try {
-                        CommandHandler.handleCommand(CommandHandler.parser.parsep(e.getMessage().getContent(), e));
+                        CommandHandler.handleCommand(CommandParser.parsep(e.getMessage().getContent(), e));
                     } catch (Exception fuck) {
                         fuck.printStackTrace();
                     }

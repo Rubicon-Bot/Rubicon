@@ -39,7 +39,7 @@ public class CommandShort extends Command{
 
     @Override
     public String getDescription() {
-        return "Shorts a URL with schlb.pw";
+        return "Shorts a URL with schlb.pw"; //TODO schlb.pw is not used?
     }
 
     @Override

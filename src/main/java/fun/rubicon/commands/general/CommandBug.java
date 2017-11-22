@@ -22,8 +22,8 @@ public class CommandBug extends Command{
             return;
         }
         String text = "";
-        for(int i = 0; i < args.length; i++) {
-            text += args[i] + " ";
+        for (String arg : args) {
+            text += arg + " ";
         }
 
         try {
@@ -43,12 +43,12 @@ public class CommandBug extends Command{
 
     @Override
     public String getDescription() {
-        return null;
+        return "Report a bug to the developers.";
     }
 
     @Override
     public String getUsage() {
-        return null;
+        return "bug [message] (min. 3 args)";
     }
 
     @Override
