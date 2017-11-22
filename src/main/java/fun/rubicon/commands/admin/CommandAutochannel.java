@@ -2,6 +2,7 @@ package fun.rubicon.commands.admin;
 
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
+import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.text.ParseException;
@@ -14,6 +15,25 @@ public class CommandAutochannel extends Command {
 
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) throws ParseException {
+        if(args.length != 2) {
+            switch (args[0]) {
+                case "add":
+                    break;
+                case "remove":
+                    break;
+                default:
+                    sendUsageMessage();
+                    break;
+            }
+        } else
+            sendUsageMessage();
+    }
+
+    private void addChannel(VoiceChannel ch) {
+
+    }
+
+    private void removeChannel(VoiceChannel ch) {
 
     }
 
@@ -24,10 +44,8 @@ public class CommandAutochannel extends Command {
 
     @Override
     public String getUsage() {
-        return "autochannel create [channelname] | New Channel\n" +
-                "autochannel add [channelname] | Existing Channel\n" +
-                "autochannel remove [channelname] | Remove Channel from autochannels\n" +
-                "autochannel delete [channelname] | Deltes Channel";
+        return "autochannel add [channelname] | Existing Channel\n" +
+                "autochannel remove [channelname] | Remove Channel from autochannels";
     }
 
     @Override
