@@ -43,12 +43,12 @@ public class CommandFeedback extends Command{
 
     @Override
     public String getDescription() {
-        return null;
+        return "Send feedback to the developer.";
     }
 
     @Override
     public String getUsage() {
-        return null;
+        return "feedback <message>";
     }
 
     @Override
