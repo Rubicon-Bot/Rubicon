@@ -137,6 +137,7 @@ public class CommandMusic extends Command {
                         @Override
                         public void trackLoaded(AudioTrack track) {
                             getManager().queue(track, author);
+                            createPlayerMessage();
                         }
 
                         @Override
@@ -157,7 +158,7 @@ public class CommandMusic extends Command {
                         }
                     });
 
-                    createPlayerMessage();
+
                 }
 
                 break;
