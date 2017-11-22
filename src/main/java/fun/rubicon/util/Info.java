@@ -39,7 +39,7 @@ public class Info {
             DiscordCore.getJDA().getUserById(318773753796624394L), //Scryptex
             DiscordCore.getJDA().getUserById(138014719582797824L), //Eiskeks
             DiscordCore.getJDA().getUserById(264048760580079616L), //Schlaubi
-            DiscordCore.getJDA().getUserById(148905646715043841L), //Robert
+            DiscordCore.getJDA().getUserById(221905671296253953L), //Zekro
             DiscordCore.getJDA().getUserById(224528662710452224L) //ForMoJa
     };
     /* MySQL login */
@@ -48,7 +48,4 @@ public class Info {
     public final static String MYSQL_USER = cfg.getString("mysql_user");
     public final static String MYSQL_PASSWORD = cfg.getString("mysql_password");
     public final static String MYSQL_DATABASE = cfg.getString("mysql_database");
-
-
-
 }

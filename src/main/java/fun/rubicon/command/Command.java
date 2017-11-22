@@ -51,6 +51,9 @@ public abstract class Command {
     public void call(String[] args, MessageReceivedEvent e) throws ParseException {
         this.args = args;
         this.e = e;
+        //if(!BotPermissionChecker.hasAllPermissions(e)) {
+        //    return;
+        //}
         this.permissionManager = new PermissionManager(e.getMember(), this);
         if (permissionManager.hasPermission()) {
             execute(args, e);
@@ -149,8 +152,8 @@ public abstract class Command {
 
     public String getFormattedAliases() {
         String s = "[";
-        for(int i = 0; i < aliases.length; i++) {
-            if(i != aliases.length - 1)
+        for (int i = 0; i < aliases.length; i++) {
+            if (i != aliases.length - 1)
                 s += aliases[i] + ",";
             else
                 s += aliases[i];
