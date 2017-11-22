@@ -17,7 +17,7 @@ import java.util.*;
 
 public class CommandGivaway extends Command implements Serializable{
     private static boolean running = false;
-    private static String emote= "\\ud83c\\udfc6";
+    private static String emote= "\ud83c\udfc6";
     public static ArrayList<String> idioten = new ArrayList<>();
     public CommandGivaway(String command, CommandCategory category) {
         super(command, category);
@@ -42,7 +42,7 @@ public class CommandGivaway extends Command implements Serializable{
                         .setColor(Colors.COLOR_NO_PERMISSION)
                         .setDescription(voteargs)
                         .build()).complete();
-                msg.addReaction("\\uD83C\\uDFC6").queue();
+                msg.addReaction("\uD83C\uDFC6").queue();
                 running = true;
                 int min = Integer.parseInt(args[1]);
                 Timer timer = new Timer();

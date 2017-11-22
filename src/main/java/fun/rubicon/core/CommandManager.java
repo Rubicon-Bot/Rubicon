@@ -2,11 +2,8 @@ package fun.rubicon.core;
 
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
-<<<<<<< HEAD
 import fun.rubicon.commands.admin.CommandGivaway;
-=======
 import fun.rubicon.commands.admin.CommandAutochannel;
->>>>>>> master
 import fun.rubicon.commands.admin.CommandPermission;
 import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.botowner.CommandBroadcast;
@@ -37,12 +34,9 @@ public class CommandManager {
     private void initCommands() {
         //Admin
         CommandHandler.addCommand(new CommandPermission("permission", CommandCategory.ADMIN).addAliases("permission", "perm", "perms"));
-<<<<<<< HEAD
         CommandHandler.addCommand(new CommandGivaway("giveaway", CommandCategory.ADMIN).addAliases("g"));
-=======
         CommandHandler.addCommand(new CommandPortal("portal", CommandCategory.ADMIN).addAliases("mirror"));
         CommandHandler.addCommand(new CommandAutochannel("autochannel", CommandCategory.ADMIN).addAliases("ac", "autoc"));
->>>>>>> master
 
         //BotOwner
         CommandHandler.addCommand(new CommandBroadcast("broadcast", CommandCategory.BOT_OWNER).addAliases("sayb","bsay", "br"));
