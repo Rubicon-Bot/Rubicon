@@ -37,10 +37,20 @@ public class AutochannelListener extends ListenerAdapter {
             VoiceChannel newChannel = (VoiceChannel) e.getGuild().getController().createCopyOfChannel(ch).setName(ch.getName() + " [AC]").complete();
             e.getGuild().getController().moveVoiceMember(e.getMember(), newChannel).queue();
         }
+        if(e.getChannelLeft().getMembers().size() == 0) {
+            if (e.getChannelLeft().getName().contains("[AC]")) {
+                e.getChannelLeft().delete().queue();
+            }
+        }
     }
 
     @Override
     public void onGuildVoiceLeave(GuildVoiceLeaveEvent e) {
+        if(e.getChannelLeft().getMembers().size() == 0) {
+            if (e.getChannelLeft().getName().contains("[AC]")) {
+                e.getChannelLeft().delete().queue();
+            }
+        }
     }
 
     private boolean isAutoChannel(Guild g, Channel ch) {
