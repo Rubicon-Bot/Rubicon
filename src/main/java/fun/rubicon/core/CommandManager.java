@@ -2,6 +2,7 @@ package fun.rubicon.core;
 
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
+import fun.rubicon.commands.admin.CommandGivaway;
 import fun.rubicon.commands.admin.CommandPermission;
 import fun.rubicon.commands.botowner.CommandBroadcast;
 import fun.rubicon.commands.botowner.CommandEval;
@@ -31,6 +32,7 @@ public class CommandManager {
     private void initCommands() {
         //Admin
         CommandHandler.addCommand(new CommandPermission("permission", CommandCategory.ADMIN).addAliases("permission", "perm", "perms"));
+        CommandHandler.addCommand(new CommandGivaway("giveaway", CommandCategory.ADMIN).addAliases("g"));
 
         //BotOwner
         CommandHandler.addCommand(new CommandBroadcast("broadcast", CommandCategory.BOT_OWNER).addAliases("sayb","bsay", "br"));
