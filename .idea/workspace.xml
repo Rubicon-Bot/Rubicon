@@ -5,65 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="13797deb-1cd0-4fff-abca-1570abf1e0cf" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/latest.log" afterPath="$PROJECT_DIR$/latest.log" />
       <change beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/admin/CommandGivaway.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/admin/CommandGivaway.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/fun/rubicon/core/CommandManager.java" afterPath="$PROJECT_DIR$/src/main/java/fun/rubicon/core/CommandManager.java" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/command/Command.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/command/Command.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/command/CommandHandler.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/command/CommandHandler.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/command/CommandParser$CommandContainer.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/command/CommandParser$CommandContainer.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/command/CommandParser.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/command/CommandParser.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/admin/CommandGivaway.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/admin/CommandGivaway.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/admin/CommandPermission.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/admin/CommandPermission.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/botowner/CommandBroadcast.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/botowner/CommandBroadcast.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/botowner/CommandEval.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/botowner/CommandEval.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/botowner/CommandRestart.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/botowner/CommandRestart.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/fun/CommandBday$1.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/fun/CommandBday$1.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/fun/CommandBday.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/fun/CommandBday.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/fun/CommandChoose.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/fun/CommandChoose.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/fun/CommandColor.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/fun/CommandColor.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/fun/CommandLevel.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/fun/CommandLevel.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/fun/CommandLmgtfy.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/fun/CommandLmgtfy.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/fun/CommandRip.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/fun/CommandRip.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/fun/CommandRoll.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/fun/CommandRoll.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/general/CommandBug.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/general/CommandBug.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/general/CommandFeedback.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/general/CommandFeedback.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/general/CommandHelp.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/general/CommandHelp.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/general/CommandInfo.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/general/CommandInfo.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/general/CommandInvite.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/general/CommandInvite.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/general/CommandUptime.class" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/guildowner/CommandRebuild.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/guildowner/CommandRebuild.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/guildowner/CommandSettings.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/guildowner/CommandSettings.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/guildowner/CommandStartup.class" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/tools/CommandASCII.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/tools/CommandASCII.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/tools/CommandClear$1.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/tools/CommandClear$1.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/tools/CommandClear.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/tools/CommandClear.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/tools/CommandGoogle.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/tools/CommandGoogle.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/tools/CommandSay.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/tools/CommandSay.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/tools/CommandSearch.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/tools/CommandSearch.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/tools/CommandServerInfo.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/tools/CommandServerInfo.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/tools/CommandUserInfo.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/tools/CommandUserInfo.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/tools/CommandVote$1.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/tools/CommandVote$1.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/tools/CommandVote$2.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/tools/CommandVote$2.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/tools/CommandVote$3.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/tools/CommandVote$3.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/tools/CommandVote.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/commands/tools/CommandVote.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/core/CommandManager.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/core/CommandManager.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/core/DiscordCore.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/core/DiscordCore.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/core/ListenerManager.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/core/ListenerManager.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/core/Main.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/core/Main.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/core/permission/PermissionManager.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/core/permission/PermissionManager.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/listener/BotJoinListener.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/listener/BotJoinListener.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/listener/ChannelDeleteListener.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/listener/ChannelDeleteListener.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/listener/CommandListener.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/listener/CommandListener.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/listener/JoinSQL$1.class" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/listener/JoinSQL$2.class" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/listener/JoinSQL.class" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/listener/Leveler.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/listener/Leveler.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/util/Bitly.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/util/Bitly.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/util/ChannelLog.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/util/ChannelLog.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/util/Configuration.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/util/Configuration.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/util/Cooldown.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/util/Cooldown.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/fun/rubicon/util/MySQL.class" afterPath="$PROJECT_DIR$/target/classes/fun/rubicon/util/MySQL.class" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -74,42 +17,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="CommandGivaway.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/fun/rubicon/commands/admin/CommandGivaway.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="409">
-              <caret line="44" column="40" lean-forward="false" selection-start-line="44" selection-start-column="40" selection-end-line="44" selection-end-column="40" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CommandManager.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/fun/rubicon/core/CommandManager.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="259">
-              <caret line="46" column="13" lean-forward="false" selection-start-line="46" selection-start-column="13" selection-end-line="46" selection-end-column="13" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="pom.xml" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/pom.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="157">
-              <caret line="30" column="20" lean-forward="false" selection-start-line="30" selection-start-column="20" selection-end-line="30" selection-end-column="20" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -135,7 +43,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/de/rubicon/core/ListenerManager.java" />
         <option value="$PROJECT_DIR$/src/main/java/de/rubicon/listener/SelfMentionListener.java" />
         <option value="$PROJECT_DIR$/src/main/java/de/rubicon/commands/botowner/CommandPing.java" />
         <option value="$PROJECT_DIR$/src/main/java/de/rubicon/command/Command.java" />
@@ -183,9 +90,10 @@
         <option value="$PROJECT_DIR$/src/main/java/fun/rubicon/listener/ReactionListener.java" />
         <option value="$PROJECT_DIR$/src/main/java/fun/rubicon/util/Cooldown.java" />
         <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/admin/CommandGivaway.java" />
         <option value="$PROJECT_DIR$/src/main/java/fun/rubicon/core/CommandManager.java" />
         <option value="$PROJECT_DIR$/config.json" />
+        <option value="$PROJECT_DIR$/src/main/java/fun/rubicon/util/FunctionSammlung.java" />
+        <option value="$PROJECT_DIR$/src/main/java/fun/rubicon/commands/admin/CommandGivaway.java" />
       </list>
     </option>
   </component>
@@ -270,6 +178,15 @@
               <item name="rubicon" type="462c0819:PsiDirectoryNode" />
               <item name="commands" type="462c0819:PsiDirectoryNode" />
               <item name="admin" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="RubiCon" type="b2602c69:ProjectViewProjectNode" />
+              <item name="RubiCon" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="rubicon" type="462c0819:PsiDirectoryNode" />
+              <item name="util" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -433,7 +350,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -443,7 +359,7 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32969153" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32965517" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32965517" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32965517" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32965517" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -490,20 +406,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/fun/rubicon/commands/botowner/CommandStop.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="13" column="29" lean-forward="false" selection-start-line="13" selection-start-column="29" selection-end-line="13" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/fun/rubicon/commands/general/CommandInvite.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="14" column="28" lean-forward="false" selection-start-line="14" selection-start-column="28" selection-end-line="14" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/fun/rubicon/commands/general/CommandPing.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
@@ -802,13 +704,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/fun/rubicon/commands/admin/CommandGivaway.java">
+    <entry file="file://$PROJECT_DIR$/config.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="409">
-          <caret line="44" column="40" lean-forward="false" selection-start-line="44" selection-start-column="40" selection-end-line="44" selection-end-column="40" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="0">
+          <caret line="0" column="69" lean-forward="false" selection-start-line="0" selection-start-column="69" selection-end-line="0" selection-end-column="69" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -822,19 +722,37 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="69" lean-forward="false" selection-start-line="0" selection-start-column="69" selection-end-line="0" selection-end-column="69" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="157">
           <caret line="30" column="20" lean-forward="false" selection-start-line="30" selection-start-column="20" selection-end-line="30" selection-end-column="20" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/fun/rubicon/util/StringUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="276">
+          <caret line="19" column="13" lean-forward="false" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/fun/rubicon/listener/PortalListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="239">
+          <caret line="28" column="0" lean-forward="false" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/fun/rubicon/commands/admin/CommandGivaway.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="137">
+          <caret line="55" column="39" lean-forward="false" selection-start-line="55" selection-start-column="39" selection-end-line="55" selection-end-column="39" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
