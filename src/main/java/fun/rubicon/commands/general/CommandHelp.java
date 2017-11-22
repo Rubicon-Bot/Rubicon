@@ -38,6 +38,7 @@ public class CommandHelp extends Command {
             builder.setColor(Colors.COLOR_PRIMARY);
             builder.addField("Description", CommandHandler.getCommands().get(args[0].toLowerCase()).getDescription(), false);
             builder.addField("Usage", SQL.getGuildValue(e.getGuild(), "prefix") + CommandHandler.getCommands().get(args[0].toLowerCase()).getUsage(), false);
+            builder.addField("Aliases", CommandHandler.getCommands().get(args[0].toLowerCase()).getFormattedAliases(), false);
             e.getTextChannel().sendMessage(builder.build()).queue(msg -> msg.delete().queueAfter(3, TimeUnit.MINUTES));
         } else {
             StringBuilder sbGeneral = new StringBuilder();

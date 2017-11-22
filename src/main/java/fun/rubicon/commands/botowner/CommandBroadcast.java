@@ -30,8 +30,8 @@ public class CommandBroadcast extends Command {
             return;
         }
 
-        for(int i = 0; i < args.length; i++){
-            b_message += args[i].toString() + " ";
+        for (String arg : args) {
+            b_message += arg + " ";
         }
         for (Guild g : e.getJDA().getGuilds() ) {
             PrivateChannel pc = g.getOwner().getUser().openPrivateChannel().complete();

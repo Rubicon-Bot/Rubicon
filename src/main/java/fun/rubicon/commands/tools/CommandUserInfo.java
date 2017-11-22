@@ -31,12 +31,10 @@ public class CommandUserInfo extends Command{
         }
 
         Member user = e.getGuild().getMember(info);
-        StringBuilder rolesraw = new StringBuilder();
-        user.getRoles().forEach(r ->{
-            rolesraw.append(r.getName()).append(", ");
-        });
-        StringBuilder roles = new StringBuilder(rolesraw.toString());
-        roles.replace(rolesraw.lastIndexOf(","), roles.lastIndexOf(",") + 1, "" );
+        StringBuilder rawRoles = new StringBuilder();
+        user.getRoles().forEach(r -> rawRoles.append(r.getName()).append(", "));
+        StringBuilder roles = new StringBuilder(rawRoles.toString());
+        roles.replace(rawRoles.lastIndexOf(","), roles.lastIndexOf(",") + 1, "" );
         EmbedBuilder userinfo = new EmbedBuilder();
         userinfo.setColor(Colors.COLOR_PRIMARY);
         userinfo.setTitle("User information of " + user.getUser().getName());

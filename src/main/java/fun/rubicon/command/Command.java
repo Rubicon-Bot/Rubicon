@@ -2,7 +2,6 @@ package fun.rubicon.command;
 
 import fun.rubicon.core.permission.PermissionManager;
 import fun.rubicon.util.Colors;
-import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -60,7 +59,7 @@ public abstract class Command {
         }
         try {
             e.getMessage().delete().queue();
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
 
         }
     }
@@ -118,8 +117,7 @@ public abstract class Command {
 
     protected void sendNotImplementedMessage() {
         EmbedBuilder builder = new EmbedBuilder();
-        builder.setAuthor("Command ", null, e.getJDA().getSelfUser().getEffectiveAvatarUrl());
-        builder.setDescription(getUsage());
+        builder.setDescription("Command is not implemented yet!");
         builder.setColor(Colors.COLOR_NOT_IMPLEMENTED);
         builder.setFooter(generateTimeStamp(), null);
         e.getTextChannel().sendMessage(builder.build()).queue(msg -> msg.delete().queueAfter(defaultDeleteSeconds, TimeUnit.SECONDS));
@@ -143,10 +141,22 @@ public abstract class Command {
     public List<String> getAliases() {
         try {
             return Arrays.asList(aliases);
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
 
         }
         return null;
+    }
+
+    public String getFormattedAliases() {
+        String s = "[";
+        for(int i = 0; i < aliases.length; i++) {
+            if(i != aliases.length - 1)
+                s += aliases[i] + ",";
+            else
+                s += aliases[i];
+        }
+        s += "]";
+        return s;
     }
 
     public abstract String getDescription();
