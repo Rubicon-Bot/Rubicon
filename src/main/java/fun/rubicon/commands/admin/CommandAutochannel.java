@@ -2,6 +2,9 @@ package fun.rubicon.commands.admin;
 
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
+import fun.rubicon.core.Main;
+import fun.rubicon.util.Colors;
+import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -15,11 +18,21 @@ public class CommandAutochannel extends Command {
 
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) throws ParseException {
-        if(args.length != 2) {
-            switch (args[0]) {
-                case "add":
-                    break;
-                case "remove":
+        if(args.length == 1) {
+            if(args[0].equalsIgnoreCase("list")) {
+                String entry = Main.getMySQL().getGuildValue(e.getGuild(), "autochannels");
+                String out = "";
+                for(String s : entry.split(",")) {
+                    out += e.getJDA().getVoiceChannelById(s).getName() + "\n";
+                }
+                sendEmbededMessage(e.getTextChannel(),  "Autochannels", Colors.COLOR_PRIMARY, out);
+            } else
+                sendUsageMessage();
+        } else if (args.length == 2) {
+            switch (args[0].toLowerCase()) {
+                case "create":
+                case "c":
+                    createChannel(args[1]);
                     break;
                 default:
                     sendUsageMessage();
@@ -29,12 +42,12 @@ public class CommandAutochannel extends Command {
             sendUsageMessage();
     }
 
-    private void addChannel(VoiceChannel ch) {
-
-    }
-
-    private void removeChannel(VoiceChannel ch) {
-
+    private void createChannel(String name) {
+        Channel channel = e.getGuild().getController().createVoiceChannel(name).complete();
+        String oldEntry = Main.getMySQL().getGuildValue(e.getGuild(), "autochannels");
+        String newEntry = oldEntry + channel.getId() + ",";
+        Main.getMySQL().updateGuildValue(e.getGuild(), "autochannels", newEntry);
+        sendEmbededMessage(e.getTextChannel(), "Created Autochannel", Colors.COLOR_PRIMARY, "Successfully created autochannel -> " + channel.getName() + "");
     }
 
     @Override
@@ -44,8 +57,8 @@ public class CommandAutochannel extends Command {
 
     @Override
     public String getUsage() {
-        return "autochannel add [channelname] | Existing Channel\n" +
-                "autochannel remove [channelname] | Remove Channel from autochannels";
+        return "autochannel create [channelname]\n" +
+                "autochannel list";
     }
 
     @Override
