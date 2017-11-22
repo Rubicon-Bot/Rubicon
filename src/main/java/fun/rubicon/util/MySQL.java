@@ -403,8 +403,4 @@ public class MySQL {
         }
     }
 
-    public void createTables(){
-        
-    }
-
 }
