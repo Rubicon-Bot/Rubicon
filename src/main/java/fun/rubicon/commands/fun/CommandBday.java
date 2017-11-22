@@ -4,7 +4,6 @@ import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.core.Main;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -42,7 +41,7 @@ public class CommandBday extends Command{
         switch (args[0]) {
             case "set":
                 Main.getMySQL().setString("user", "bday", args[0], "userid", e.getAuthor().getId());
-                sendEmbededMessage("Sucesfully set your Birthday!");
+                sendEmbededMessage("Successfully set your Birthday!");
                 return;
         }
         User user = e.getAuthor();

@@ -12,16 +12,18 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 import javax.security.auth.login.LoginException;
 
+/**
+ * Core class holding the JDA object statically
+ */
 public class DiscordCore {
-
     private static JDA jda;
-    private static String token;
 
+    /**
+     * Initializes the static JDA bot instance and starts listeners.
+     */
     public static void start() {
-        token = Main.getConfiguration().getString("token");
-
         JDABuilder builder = new JDABuilder(AccountType.BOT);
-        builder.setToken(token);
+        builder.setToken(Main.getConfiguration().getString("token"));
         builder.setGame(Game.of(Info.BOT_NAME + " " + Info.BOT_VERSION));
 
         new ListenerManager(builder);
@@ -36,6 +38,9 @@ public class DiscordCore {
         CommandVote.loadPolls(jda);
     }
 
+    /**
+     * @return the static JDA instance. May be null if DiscordCore.start() was not called before.
+     */
     public static JDA getJDA() {
         return jda;
     }

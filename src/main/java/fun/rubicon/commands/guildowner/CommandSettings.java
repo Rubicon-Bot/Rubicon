@@ -40,7 +40,7 @@ public class CommandSettings extends Command {
                     return;
                 }
                 Main.getMySQL().updateGuildValue(guild, "prefix", args[1]);
-                sendEmbededMessage(":white_check_mark: Succesfully set the Prefix!");
+                sendEmbededMessage(":white_check_mark: Successfully set the prefix!");
                 break;
             case "logchannel":
                 if (args.length < 2) {

@@ -6,7 +6,6 @@ import fun.rubicon.core.DiscordCore;
 import fun.rubicon.core.Main;
 import fun.rubicon.util.MySQL;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 /**
  * Rubicon Discord bot

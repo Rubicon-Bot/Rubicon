@@ -44,8 +44,8 @@ public class CommandVote extends Command implements Serializable{
         }
         switch (args[0]){
             case "create":
-                String[] voteargs = e.getMessage().getContent().split("\\|");
-                if(voteargs.length < 2){
+                String[] voteArgs = e.getMessage().getContent().split("\\|");
+                if(voteArgs.length < 2){
                     sendUsageMessage();
                     return;
                 }
@@ -212,7 +212,7 @@ public class CommandVote extends Command implements Serializable{
 
         HashMap<String, Integer> reactions = new HashMap<>();
         final AtomicInteger count = new AtomicInteger();
-        toAddEmojis = new ArrayList<String>(Arrays.asList(EMOTI));
+        toAddEmojis = new ArrayList<>(Arrays.asList(EMOTI));
         answers.forEach(a ->{
             reactions.put(toAddEmojis.get(0), count.get() + 1);
             toAddEmojis.remove(0);
@@ -226,9 +226,7 @@ public class CommandVote extends Command implements Serializable{
             @Override
             public void run() {
                 pollmessage.editMessage(getParsedPoll(poll, e.getGuild()).build()).complete();
-                poll.reacts.keySet().forEach(r -> {
-                    pollmessage.addReaction(r).queue();
-                });
+                poll.reacts.keySet().forEach(r -> pollmessage.addReaction(r).queue());
             }
         }, 500);
     }

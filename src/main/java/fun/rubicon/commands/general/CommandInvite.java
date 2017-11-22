@@ -2,10 +2,8 @@ package fun.rubicon.commands.general;
 
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
-import fun.rubicon.core.DiscordCore;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.Info;
-import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 /**

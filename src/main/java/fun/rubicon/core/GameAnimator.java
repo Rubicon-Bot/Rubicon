@@ -32,7 +32,7 @@ public class GameAnimator {
 
     private static String[] gameAnimations = {
             "Running on " + DiscordCore.getJDA().getGuilds().size() + " servers!",
-            "Helping " + DiscordCore.getJDA().getUsers().stream().filter(u -> u.isBot() == false).collect(Collectors.toList()).size() + " users!",
+            "Helping " + DiscordCore.getJDA().getUsers().stream().filter(u -> !u.isBot()).collect(Collectors.toList()).size() + " users!",
             "JDA squad!",
             Info.BOT_NAME + " " + Info.BOT_VERSION,
             "Generating new features...",
