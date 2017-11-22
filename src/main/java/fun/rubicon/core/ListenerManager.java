@@ -33,5 +33,6 @@ public class ListenerManager {
         b.addEventListener(new BotLeaveListener());
         b.addEventListener(new ReactionListener());
         b.addEventListener(new PortalListener());
+        b.addEventListener(new AutochannelListener());
     }
 }

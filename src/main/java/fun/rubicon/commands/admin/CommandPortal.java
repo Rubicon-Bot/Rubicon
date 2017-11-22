@@ -36,7 +36,7 @@ public class CommandPortal extends Command {
             return;
         }
 
-        switch (args[0]) {
+        switch (args[0].toLowerCase()) {
             case "open":
             case "o":
             case "create":
@@ -45,6 +45,7 @@ public class CommandPortal extends Command {
                         createPortalWithRandomGuild();
                     } else if (args.length == 2) {
                         //Direct Portal
+                        sendNotImplementedMessage();
                     } else {
                         sendUsageMessage();
                         return;
