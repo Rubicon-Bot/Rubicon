@@ -1,5 +1,6 @@
 package fun.rubicon.core;
 
+import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.commands.admin.CommandGivaway;
@@ -66,6 +67,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandInvite("invite", CommandCategory.GENERAL).addAliases("inv"));
         CommandHandler.addCommand(new CommandBug("bug", CommandCategory.GENERAL));
         CommandHandler.addCommand(new CommandFeedback("feedback", CommandCategory.GENERAL).addAliases("fedback"));
+        //CommandHandler.addCommand(new CommandMusic("music", CommandCategory.GENERAL).addAliases("m"));
 
 
         //Guildowner

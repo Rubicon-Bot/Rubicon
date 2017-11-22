@@ -1,5 +1,6 @@
 package fun.rubicon.core;
 
+import fun.rubicon.core.music.MusicReactionListener;
 import fun.rubicon.listener.*;
 import net.dv8tion.jda.core.JDABuilder;
 
@@ -32,6 +33,7 @@ public class ListenerManager {
         b.addEventListener(new ChannelDeleteListener());
         b.addEventListener(new BotLeaveListener());
         b.addEventListener(new ReactionListener());
+        b.addEventListener(new MusicReactionListener());
         b.addEventListener(new PortalListener());
         b.addEventListener(new AutochannelListener());
     }
