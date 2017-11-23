@@ -1,48 +1,36 @@
+/*
+ * Copyright (c) 2017 Rubicon Dev Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.core;
 
-import fun.rubicon.util.*;
+import fun.rubicon.RubiconBot;
 
-
-import java.io.File;
-
+/**
+ * Rubicon's former main class.
+ * @deprecated Use the Rubicon class instead.
+ * @see RubiconBot
+ */
 public class Main {
-    private static DiscordCore discordCore; //TODO remove redundant instance. DiscordCore only has static attributes and methods
-    private static MySQL mySQL;
-    public final static String[] CONFIG_KEYS = {"token","mysql_host","mysql_port","mysql_database","mysql_password","mysql_user","bitlytoken"};
-
-
-    private static Configuration configuration;
-
-    public static void main(String[] args) {
-        Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, new File("latest.log"));
-        configuration = new Configuration(new File(Info.CONFIG_FILE));
-        for (String configKey : CONFIG_KEYS) {
-            if(!configuration.has(configKey)){
-                String input = Setup.prompt(configKey);
-                configuration.set(configKey, input);
-            }
-        }
-        discordCore = new DiscordCore();
-        //noinspection AccessStaticViaInstance TODO see attribute discordCore
-        discordCore.start();
-        mySQL = new MySQL(Info.MYSQL_HOST, Info.MYSQL_PORT, Info.MYSQL_USER, Info.MYSQL_PASSWORD, Info.MYSQL_DATABASE);
-        mySQL.connect();
-
+    /**
+     * @return the MySQL adapter.
+     * @deprecated Use Rubicon.getMySQL() instead.
+     * @see RubiconBot
+     */
+    @Deprecated
+    public static fun.rubicon.util.MySQL getMySQL() {
+        return RubiconBot.getMySQL();
     }
 
-    public static DiscordCore getDiscordCore() {
-        return discordCore;
+    /**
+     * @return the configuration.
+     * @deprecated Use Rubicon.getConfiguration() instead.
+     * @see RubiconBot
+     */
+    @Deprecated
+    public static fun.rubicon.util.Configuration getConfiguration() {
+        return RubiconBot.getConfiguration();
     }
-
-    public static MySQL getMySQL() {
-        return mySQL;
-    }
-
-    public static Configuration getConfiguration() {
-        return configuration;
-    }
-
-
-    }
-
-
+}

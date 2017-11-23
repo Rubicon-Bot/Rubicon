@@ -10,9 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="Rubicon" target="1.8" />
       <module name="rubicon-bot" target="1.8" />
-      <module name="rubiconBot" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
