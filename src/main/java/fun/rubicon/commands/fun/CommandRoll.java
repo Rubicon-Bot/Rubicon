@@ -1,13 +1,10 @@
-package fun.rubicon.commands.fun;
-
-/**
- * Rubicon Discord bot
+/*
+ * Copyright (c) 2017 Rubicon Dev Team
  *
- * @author xEiisKeksx
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.command
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
  */
+
+package fun.rubicon.commands.fun;
 
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
