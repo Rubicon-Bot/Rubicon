@@ -35,13 +35,13 @@ public class CommandBroadcast extends Command {
         }
         for (Guild g : e.getJDA().getGuilds() ) {
             PrivateChannel pc = g.getOwner().getUser().openPrivateChannel().complete();
-            sendEmbededMessage(pc,"Message from Rubicon Dev-Team", Colors.COLOR_ERROR, b_message);
+            sendEmbededMessage(pc,"Message from RubiconBot Dev-Team", Colors.COLOR_ERROR, b_message);
         }
     }
 
     @Override
     public String getDescription() {
-        return "Inform all serverowner.";
+        return "Message to all botowners.";
     }
 
     @Override
