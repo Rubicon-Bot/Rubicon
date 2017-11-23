@@ -6,12 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Rubicon" />
-        <module name="rubiconBot" />
+        <module name="rubicon-bot" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="Rubicon" target="1.8" />
+      <module name="rubicon-bot" target="1.8" />
       <module name="rubiconBot" target="1.8" />
     </bytecodeTargetLevel>
   </component>

@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Rubicon.iml" filepath="$PROJECT_DIR$/.idea/Rubicon.iml" />
-      <module fileurl="file://$PROJECT_DIR$/rubiconBot.iml" filepath="$PROJECT_DIR$/rubiconBot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rubicon-bot.iml" filepath="$PROJECT_DIR$/rubicon-bot.iml" />
     </modules>
   </component>
 </project>
