@@ -110,7 +110,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fun.rubicon.core.Main</mainClass>
+                            <mainClass>fun.rubicon.RubiconBot</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
