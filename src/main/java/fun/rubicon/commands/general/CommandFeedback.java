@@ -7,8 +7,10 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.PermissionException;
+import org.omg.PortableInterceptor.ServerIdHelper;
 
 import java.text.ParseException;
+import java.util.concurrent.TimeUnit;
 
 public class CommandFeedback extends Command{
     public CommandFeedback(String command, CommandCategory category) {
@@ -35,9 +37,10 @@ public class CommandFeedback extends Command{
         DiscordCore.getJDA().getTextChannelById("381424816575610880").sendMessage(
                 new EmbedBuilder()
                         .setAuthor(e.getAuthor().getName()+"#"+e.getAuthor().getDiscriminator(), null, e.getAuthor().getAvatarUrl())
-                        .setDescription("**New Feedback!**\n```fix\n" + text + "```")
+                        .setDescription("**New Feedback from Server: " + e.getGuild().getName() + " [" + e.getGuild().getId() +"]!**\n```fix\n" + text + "```")
                         .build()
         ).queue();
+        e.getTextChannel().sendMessage(e.getAuthor().getAsMention()).queue(msg -> msg.delete().queueAfter(defaultDeleteSeconds, TimeUnit.SECONDS));
         sendEmbededMessage("Successfully send the Feedback to Community Server");
     }
 
