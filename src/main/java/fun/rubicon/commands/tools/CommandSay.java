@@ -34,8 +34,8 @@ public class CommandSay extends Command {
         }
 
         String text = "";
-        for(int i = 1; i < args.length; i++) {
-            text += args[i];
+        for(int i = e.getMessage().getMentionedChannels().get(0).getAsMention().split(" ").length; i < args.length; i++) {
+            text += args[i] + " ";
         }
         EmbedBuilder builder = new EmbedBuilder();
         builder.setAuthor(e.getMember().getEffectiveName() + "'s Commands", null, e.getMember().getUser().getEffectiveAvatarUrl());

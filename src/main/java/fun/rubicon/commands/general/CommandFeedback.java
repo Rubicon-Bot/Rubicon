@@ -40,7 +40,6 @@ public class CommandFeedback extends Command{
                         .setDescription("**New Feedback from Server: " + e.getGuild().getName() + " [" + e.getGuild().getId() +"]!**\n```fix\n" + text + "```")
                         .build()
         ).queue();
-        e.getTextChannel().sendMessage(e.getAuthor().getAsMention()).queue(msg -> msg.delete().queueAfter(defaultDeleteSeconds, TimeUnit.SECONDS));
         sendEmbededMessage("Successfully send the Feedback to Community Server");
     }
 
