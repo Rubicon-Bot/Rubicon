@@ -138,3 +138,7 @@ buildNumber.properties
 src/META-INF/MANIFEST.MF
 config.json
 *.dat
+.idea/artifacts/rubiconBot_jar.xml
+.idea/copyright/Yannick_Seeger.xml
+.idea/play2_compiler_settings.xml
+rubicon-bot.iml
