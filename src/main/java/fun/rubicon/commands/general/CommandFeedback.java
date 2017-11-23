@@ -35,7 +35,7 @@ public class CommandFeedback extends Command{
         DiscordCore.getJDA().getTextChannelById("381424816575610880").sendMessage(
                 new EmbedBuilder()
                         .setAuthor(e.getAuthor().getName()+"#"+e.getAuthor().getDiscriminator(), null, e.getAuthor().getAvatarUrl())
-                        .setDescription("**New Feedback!**\n```fix\n" + text + "```")
+                        .setDescription("**New Feedback!(from Server: " + e.getGuild().getName() + " [" + e.getGuild().getId() +"])**\n```fix\n" + text + "```")
                         .build()
         ).queue();
         sendEmbededMessage("Successfully send the Feedback to Community Server");
