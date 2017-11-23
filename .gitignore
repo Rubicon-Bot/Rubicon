@@ -56,7 +56,6 @@ cmake-build-debug/
 
 # IntelliJ
 out/
-.idea/
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
@@ -138,9 +137,4 @@ buildNumber.properties
 ### Rubicon specific ignores
 src/META-INF/MANIFEST.MF
 config.json
-*.dat
-classes/artifacts/rubiconBot_jar/rubiconBot.jar
-=======
-target/classes/fun/rubicon/core/CommandManager.class
-=======
 *.dat
