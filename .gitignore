@@ -142,5 +142,3 @@ config.json
 classes/artifacts/rubiconBot_jar/rubiconBot.jar
 =======
 target/classes/fun/rubicon/core/CommandManager.class
-=======
-*.dat

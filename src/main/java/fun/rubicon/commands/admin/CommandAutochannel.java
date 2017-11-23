@@ -9,6 +9,7 @@ import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.text.ParseException;
+import java.util.List;
 
 public class CommandAutochannel extends Command {
 
@@ -28,11 +29,15 @@ public class CommandAutochannel extends Command {
                 sendEmbededMessage(e.getTextChannel(),  "Autochannels", Colors.COLOR_PRIMARY, out);
             } else
                 sendUsageMessage();
-        } else if (args.length == 2) {
+        } else if (args.length >= 2) {
             switch (args[0].toLowerCase()) {
                 case "create":
                 case "c":
                     createChannel(args[1]);
+                    break;
+                case "add":
+                case "set":
+                    setChannel(args[1]);
                     break;
                 default:
                     sendUsageMessage();
@@ -43,11 +48,25 @@ public class CommandAutochannel extends Command {
     }
 
     private void createChannel(String name) {
+        System.out.println("HI");
         Channel channel = e.getGuild().getController().createVoiceChannel(name).complete();
         String oldEntry = Main.getMySQL().getGuildValue(e.getGuild(), "autochannels");
         String newEntry = oldEntry + channel.getId() + ",";
         Main.getMySQL().updateGuildValue(e.getGuild(), "autochannels", newEntry);
         sendEmbededMessage(e.getTextChannel(), "Created Autochannel", Colors.COLOR_PRIMARY, "Successfully created autochannel -> " + channel.getName() + "");
+    }
+
+    private void setChannel(String name){
+        List<VoiceChannel> results = e.getGuild().getVoiceChannels();
+        if(results.size() > 0){
+
+        } else {
+            VoiceChannel channel = results.get(0);
+            String oldEntry = Main.getMySQL().getGuildValue(e.getGuild(), "autochannels");
+            String newEntry = oldEntry + channel.getId() + ",";
+            Main.getMySQL().updateGuildValue(e.getGuild(), "autochannels", newEntry);
+            sendEmbededMessage(e.getTextChannel(), "Created Autochannel", Colors.COLOR_PRIMARY, "Successfully created autochannel -> " + channel.getName() + "");
+        }
     }
 
     @Override
@@ -58,7 +77,8 @@ public class CommandAutochannel extends Command {
     @Override
     public String getUsage() {
         return "autochannel create [channelname]\n" +
-                "autochannel list";
+                "autochannel list\n" +
+                "autochannels add [channelname]";
     }
 
     @Override

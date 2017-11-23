@@ -34,13 +34,12 @@ public class PermissionManager {
         try {
             int lvl = getPermissionLevel();
             int cmdLvl = command.getPermissionLevel();
-
             for (User user : Arrays.asList(Info.BOT_AUTHORS)) {
                 if (user.getId().equalsIgnoreCase(member.getUser().getId())) {
                     return true;
                 }
             }
-            if (getPermissionLevel() > cmdLvl) {
+            if (getPermissionLevel() >= cmdLvl) {
                 return true;
             }
             if(containsPermission(command.getCommand())) {

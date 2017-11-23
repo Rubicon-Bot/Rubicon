@@ -53,7 +53,6 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandChoose("choose", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandLevel("rank", CommandCategory.FUN).addAliases("lvl", "level"));
         CommandHandler.addCommand(new CommandBday("birthday", CommandCategory.FUN).addAliases("bday"));
-        CommandHandler.addCommand(new CommandShort("short", CommandCategory.TOOLS));
         CommandHandler.addCommand(new CommandShort("short", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandRip("rip", CommandCategory.FUN).addAliases("tombstone"));
 
