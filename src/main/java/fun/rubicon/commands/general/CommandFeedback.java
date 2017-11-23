@@ -34,7 +34,7 @@ public class CommandFeedback extends Command{
             PrivateChannel pc = e.getGuild().getOwner().getUser().openPrivateChannel().complete();
             pc.sendMessage("Please give me MESSAGE_MANAGE permissions!").queue();
         }
-        DiscordCore.getJDA().getTextChannelById("381424816575610880").sendMessage(
+        DiscordCore.getJDA().getTextChannelById("383324255380701194").sendMessage(
                 new EmbedBuilder()
                         .setAuthor(e.getAuthor().getName()+"#"+e.getAuthor().getDiscriminator(), null, e.getAuthor().getAvatarUrl())
                         .setDescription("**New Feedback from Server: " + e.getGuild().getName() + " [" + e.getGuild().getId() +"]!**\n```fix\n" + text + "```")
