@@ -15,6 +15,8 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
  * @copyright Rubicon Dev Team 2017
  * @license MIT License <http://rubicon.fun/license>
  * @package fun.rubicon.commands.guildowner
+ *
+ * @deprecated
  */
 public class CommandRebuild extends Command {
     public CommandRebuild(String command, CommandCategory category) {

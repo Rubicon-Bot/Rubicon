@@ -13,6 +13,7 @@ import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 import javax.security.auth.login.LoginException;
@@ -71,6 +72,12 @@ public class RubiconBot {
         }
         GameAnimator.start();
         CommandVote.loadPolls(jda);
+
+        String runningOnServers = "Running on following guilds:\n";
+        for (Guild guild : jda.getGuilds()) {
+            runningOnServers += "\t- " + guild.getName() + "(" + guild.getId() + ")\n";
+        }
+        Logger.info(runningOnServers);
     }
 
     public static MySQL getMySQL() {

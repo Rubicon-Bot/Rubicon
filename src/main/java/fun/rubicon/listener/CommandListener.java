@@ -49,7 +49,7 @@ public class CommandListener extends ListenerAdapter {
             }
             String prefix = RubiconBot.getMySQL().getGuildValue(g, "prefix");
             String messageContent = e.getMessage().getContent().toLowerCase();
-            Logger.debug(e.getGuild().getName() + " -> " + prefix);
+            Logger.debug(e.getGuild().getName() + " -> " + prefix); //TODO Debug Message
             if (!e.getAuthor().getId().equals(e.getJDA().getSelfUser().getId())) {
                 if (messageContent.startsWith(prefix.toLowerCase()) || messageContent.startsWith(Info.BOT_DEFAULT_PREFIX)) {
                     try {
