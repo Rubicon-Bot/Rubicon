@@ -1,5 +1,6 @@
 package fun.rubicon.listener;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.core.Main;
 import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Guild;
@@ -63,10 +64,11 @@ public class AutochannelListener extends ListenerAdapter {
     }
 
     private boolean isAutoChannel(Guild g, Channel ch) {
-        String oldEntry = Main.getMySQL().getGuildValue(g, "autochannels");
-        if(oldEntry.contains(ch.getId())) {
-            return true;
-        }
+        String oldEntry = RubiconBot.getMySQL().getGuildValue(g, "autochannels");
+        if (oldEntry != null)
+            if(oldEntry.contains(ch.getId())) {
+                return true;
+            }
         return false;
     }
 }
