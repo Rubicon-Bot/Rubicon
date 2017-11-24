@@ -24,11 +24,12 @@ public class AutochannelListener extends ListenerAdapter {
 
     @Override
     public void onVoiceChannelDelete(VoiceChannelDeleteEvent e) {
-        String oldEntry = Main.getMySQL().getGuildValue(e.getGuild(), "autochannels");
-        if(oldEntry.contains(e.getChannel().getId())) {
-            String newEntry = oldEntry.replace(e.getChannel().getId() + ",", "");
-            Main.getMySQL().updateGuildValue(e.getGuild(), "autochannels", newEntry);
-        }
+        String oldEntry = RubiconBot.getMySQL().getGuildValue(e.getGuild(), "autochannels");
+        if (oldEntry != null)
+            if(oldEntry.contains(e.getChannel().getId())) {
+                String newEntry = oldEntry.replace(e.getChannel().getId() + ",", "");
+                RubiconBot.getMySQL().updateGuildValue(e.getGuild(), "autochannels", newEntry);
+            }
     }
 
     @Override
