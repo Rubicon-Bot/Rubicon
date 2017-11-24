@@ -28,8 +28,12 @@ public class AutoroleExecutor extends ListenerAdapter {
         Guild guild = e.getGuild();
         String roleEntry = RubiconBot.getMySQL().getGuildValue(guild, "autorole");
 
-        if (e.getMember().getUser().isBot()) return;
-        if (roleEntry.equalsIgnoreCase("0")) return;
+        try {
+            if (e.getMember().getUser().isBot()) return;
+            if (roleEntry.equalsIgnoreCase("0")) return;
+        } catch (Exception ignored) {
+
+        }
 
         try {
             e.getGuild().getController().addRolesToMember(e.getMember(), e.getGuild().getRoleById(roleEntry)).queue();

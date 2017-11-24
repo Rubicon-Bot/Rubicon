@@ -5,7 +5,6 @@ import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.core.Main;
 import fun.rubicon.util.Colors;
-import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
@@ -66,16 +65,10 @@ public class CommandPortal extends Command {
     private void createPortalWithRandomGuild() {
         Message searchMessage;
         try {
-            e.getGuild().getCategoriesByName(Info.BOT_NAME, true).get(0);
-        } catch (IndexOutOfBoundsException ex) {
-            sendErrorMessage("You deleted or renamed the rubicon category! Please use " + Main.getMySQL().getGuildValue(e.getGuild(), "prefix") + "rebuild");
-            return;
-        }
-        try {
-            e.getGuild().getController().createTextChannel("rubicon-portal").setParent(e.getGuild().getCategoriesByName(Info.BOT_NAME, true).get(0)).complete();
+            e.getGuild().getController().createTextChannel("rubicon-portal").complete();
         } catch (Exception ex) {
             sendErrorMessage("An error occurred!");
-            Main.getMySQL().updateGuildValue(e.getGuild(), "portal", "closed");
+            RubiconBot.getMySQL().updateGuildValue(e.getGuild(), "portal", "closed");
             return;
         }
         TextChannel channel = e.getGuild().getTextChannelsByName("rubicon-portal", false).get(0);
@@ -102,20 +95,20 @@ public class CommandPortal extends Command {
                 builder.setColor(Colors.COLOR_PRIMARY);
                 otherChannel.editMessageById(Main.getMySQL().getGuildValue(openGuilds.get(0), "portal").split(":")[1], builder.build()).queue();
                 e.getGuild().getTextChannelsByName("rubicon-portal", true).get(0).editMessageById(searchMessage.getId(), builder.setDescription("@here Created Portal to " + foundGuild.getName()).build()).queue();
-                Main.getMySQL().updateGuildValue(e.getGuild(), "portal", "connected:" + foundGuild.getId() + ":" + otherChannel.getId());
-                Main.getMySQL().updateGuildValue(foundGuild, "portal", "connected:" + e.getGuild().getId() + ":" + channel.getId());
+                RubiconBot.getMySQL().updateGuildValue(e.getGuild(), "portal", "connected:" + foundGuild.getId() + ":" + otherChannel.getId());
+                RubiconBot.getMySQL().updateGuildValue(foundGuild, "portal", "connected:" + e.getGuild().getId() + ":" + channel.getId());
             } catch (Exception ex) {
                 sendErrorMessage("An error occurred!");
-                Main.getMySQL().updateGuildValue(e.getGuild(), "portal", "closed");
+                RubiconBot.getMySQL().updateGuildValue(e.getGuild(), "portal", "closed");
             }
         }
 
     }
 
     private void closePortal() {
-        String stat = Main.getMySQL().getGuildValue(e.getGuild(), "portal");
+        String stat = RubiconBot.getMySQL().getGuildValue(e.getGuild(), "portal");
         if (stat.contains("waiting")) {
-            Main.getMySQL().updateGuildValue(e.getGuild(), "portal", "closed");
+            RubiconBot.getMySQL().updateGuildValue(e.getGuild(), "portal", "closed");
             TextChannel textChannel;
             try {
                 textChannel = e.getGuild().getTextChannelsByName("rubicon-portal", true).get(0);
@@ -125,7 +118,7 @@ public class CommandPortal extends Command {
 
             }
         } else if (stat.contains("connected")) {
-            Main.getMySQL().updateGuildValue(e.getGuild(), "portal", "closed");
+            RubiconBot.getMySQL().updateGuildValue(e.getGuild(), "portal", "closed");
             TextChannel textChannel;
             try {
                 textChannel = e.getGuild().getTextChannelsByName("rubicon-portal", true).get(0);
@@ -136,7 +129,7 @@ public class CommandPortal extends Command {
             }
             Guild otherGuild = e.getJDA().getGuildById(stat.split(":")[1]);
             otherGuild.getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Portal was closed from the other owner!").queue());
-            Main.getMySQL().updateGuildValue(otherGuild, "portal", "closed");
+            RubiconBot.getMySQL().updateGuildValue(otherGuild, "portal", "closed");
             TextChannel textChannel2;
             try {
                 textChannel2 = otherGuild.getTextChannelsByName("rubicon-portal", true).get(0);
