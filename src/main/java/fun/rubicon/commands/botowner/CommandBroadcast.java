@@ -4,7 +4,7 @@ package fun.rubicon.commands.botowner;
  * Rubicon Discord bot
  *
  * @author xEiisKeksx
- * @copyright Rubicon Dev Team 2017
+ * @copyright RubiconBot Dev Team 2017
  * @license MIT License <http://rubicon.fun/license>
  * @package fun.rubicon.command
  */

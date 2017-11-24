@@ -18,22 +18,23 @@ import java.util.TimerTask;
  */
 
 
-public class SQLPreventDisconnect extends ListenerAdapter{
+public class SQLPreventDisconnect extends ListenerAdapter {
     private boolean check = false;
+
     public void onMessageReceived(MessageReceivedEvent event) {
 
-        if (check = false){ //TODO maybe check == false? this wont do anything. Also, check is never changed outside this block.
+        if (check = false) { //TODO maybe check == false? this wont do anything. Also, check is never changed outside this block.
             MySQL s = Main.getMySQL();
-            check= true;
-            String d=s.getGuildValue(event.getGuild(), "prefix");
+            check = true;
+            String d = s.getGuildValue(event.getGuild(), "prefix");
             System.out.println("Prevented Disconnect" + d);
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                check=false;
+                    check = false;
                 }
-            },3600000);
+            }, 3600000);
         }
 
     }
