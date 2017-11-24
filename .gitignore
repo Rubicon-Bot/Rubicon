@@ -25,6 +25,10 @@ $RECYCLE.BIN/
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
+# Completely ignore IntelliJ project data:
+.idea/
+*.iml
+
 # User-specific stuff:
 .idea/**/workspace.xml
 .idea/**/tasks.xml
@@ -56,7 +60,6 @@ cmake-build-debug/
 
 # IntelliJ
 out/
-.idea/
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
@@ -138,9 +141,4 @@ buildNumber.properties
 ### Rubicon specific ignores
 src/META-INF/MANIFEST.MF
 config.json
-*.dat
-classes/artifacts/rubiconBot_jar/rubiconBot.jar
-=======
-target/classes/fun/rubicon/core/CommandManager.class
-=======
 *.dat

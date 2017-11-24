@@ -1,9 +1,11 @@
 package fun.rubicon.listener;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandParser;
 import fun.rubicon.core.Main;
 import fun.rubicon.util.Info;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.User;
@@ -13,8 +15,8 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 /**
  * Rubicon Discord bot
  *
- * @author Leon Kappes / Lee
- * @copyright Rubicon Dev Team 2017
+ * @author Yannick Seeger / ForYaSee
+ * @copyright RubiconBot Dev Team 2017
  * @license MIT License <http://rubicon.fun/license>
  * @package listener
  */
@@ -24,51 +26,41 @@ public class CommandListener extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent e) {
         try {
             Guild g = e.getGuild();
-            if (!Main.getMySQL().ifUserExist(e.getAuthor())) {
-                Main.getMySQL().createUser(e.getAuthor());
-                return;
+            if (g == null) return;
+            if (!RubiconBot.getMySQL().ifUserExist(e.getAuthor())) {
+                RubiconBot.getMySQL().createUser(e.getAuthor());
             }
-            if (!Main.getMySQL().ifGuildExits(g)) {
-                Main.getMySQL().createGuildServer(g);
-                return;
+            if (!RubiconBot.getMySQL().ifGuildExits(g)) {
+                RubiconBot.getMySQL().createGuildServer(g);
             }
-            if (!Main.getMySQL().ifMemberExist(e.getMember())) {
-                Main.getMySQL().createMember(e.getMember());
-                return;
+            if (RubiconBot.getMySQL().ifMemberExist(e.getMember())) {
+                RubiconBot.getMySQL().createMember(e.getMember());
             }
             if (e.getMessage().getMentionedUsers().size() > 0) {
                 for (User user : e.getMessage().getMentionedUsers()) {
                     Member member = g.getMember(user);
-                    if (!Main.getMySQL().ifMemberExist(member)) {
-                        Main.getMySQL().createMember(member);
-                        return;
+                    if (!RubiconBot.getMySQL().ifMemberExist(member)) {
+                        RubiconBot.getMySQL().createMember(member);
                     }
-                    if (!Main.getMySQL().ifUserExist(user)) {
-                        Main.getMySQL().createUser(user);
-                        return;
+                    if (!RubiconBot.getMySQL().ifUserExist(user)) {
+                        RubiconBot.getMySQL().createUser(user);
                     }
                 }
             }
-            String prefix = Main.getMySQL().getGuildValue(g, "prefix");
-            if (e.getMessage().getContent().toLowerCase().startsWith(prefix.toLowerCase()) && e.getMessage().getAuthor().getId() != e.getJDA().getSelfUser().getId()) {
-                try {
-                    CommandHandler.handleCommand(CommandParser.parse(e.getMessage().getContent(), e));
-                } catch (Exception fuck) {
-                    fuck.printStackTrace();
-                }
-            }
-            if (e.getMessage().getContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()) && !e.getMessage().getContent().toLowerCase().startsWith(prefix.toLowerCase())) {
-                //Above for not dubble
-                if (e.getMessage().getContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()) && e.getMessage().getAuthor().getId() != e.getJDA().getSelfUser().getId()) {
+            String prefix = RubiconBot.getMySQL().getGuildValue(g, "prefix");
+            String messageContent = e.getMessage().getContent().toLowerCase();
+            Logger.debug(e.getGuild().getName() + " -> " + prefix);
+            if (!e.getAuthor().getId().equals(e.getJDA().getSelfUser().getId())) {
+                if (messageContent.startsWith(prefix.toLowerCase()) || messageContent.startsWith(Info.BOT_DEFAULT_PREFIX)) {
                     try {
-                        CommandHandler.handleCommand(CommandParser.parsep(e.getMessage().getContent(), e));
-                    } catch (Exception fuck) {
-                        fuck.printStackTrace();
+                        CommandHandler.handleCommand(CommandParser.parse(e.getMessage().getContent(), e));
+                    } catch (Exception ex) {
+                        Logger.error(ex);
                     }
                 }
             }
         } catch (NullPointerException ex) {
-            //No Guild -> Private Message
+            Logger.error(ex);
         }
     }
 }

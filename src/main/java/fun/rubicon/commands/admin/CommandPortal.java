@@ -1,12 +1,12 @@
 package fun.rubicon.commands.admin;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.core.Main;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Category;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -40,7 +40,7 @@ public class CommandPortal extends Command {
             case "open":
             case "o":
             case "create":
-                if (Main.getMySQL().getGuildValue(e.getGuild(), "portal").equals("closed")) {
+                if (RubiconBot.getMySQL().getGuildValue(e.getGuild(), "portal").equals("closed")) {
                     if (args.length == 1) {
                         createPortalWithRandomGuild();
                     } else if (args.length == 2) {

@@ -12,12 +12,16 @@ import java.util.ArrayList;
  */
 public class Cooldown {
     /**
-     * Cooldown for Leveler
+     * Cooldown for MemberLevelListener
      */
     public static ArrayList<String> ids = new ArrayList<>();
 
     public static boolean has(String id) {
-        return ids.contains(id);
+        if (ids.contains(id)) {
+                        return true;
+                    }else {
+                        return false;
+                    }
     }
 
     public static void add(String id) {

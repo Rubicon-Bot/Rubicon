@@ -10,6 +10,15 @@ import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
+/**
+ * Rubicon Discord bot
+ *
+ * @author Yannick Seeger / ForYaSee
+ * @copyright RubiconBot Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package fun.rubicon.listener
+ */
+
 public class AutochannelListener extends ListenerAdapter {
 
     @Override

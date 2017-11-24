@@ -44,7 +44,12 @@ public class CommandRip extends Command{
             }
             InputStream image = null;
             try {
-                image = new URL("http://www.tombstonebuilder.com/generate.php?top1=R.I.P.&top2=" + args[0].replace(" ", "%20").replace("@", "") + "&top3=" + lines.get(0).replace(" ", "%20") + "&top4=" + lines.get(1).replace(" ", "%20")+ "&sp=").openStream();
+                if(query.length() > 25) {
+                    image = new URL("http://www.tombstonebuilder.com/generate.php?top1=R.I.P.&top2=" + args[0].replace(" ", "%20").replace("@", "") + "&top3=" + lines.get(0).replace(" ", "%20") + "&top4=" + lines.get(1).replace(" ", "%20") + "&sp=").openStream();
+                } else {
+                    image = new URL("http://www.tombstonebuilder.com/generate.php?top1=R.I.P.&top2=" + args[0].replace(" ", "%20").replace("@", "") + "&top3=" + lines.get(0).replace(" ", "%20") + "&top4=&sp=").openStream();
+                }
+
             } catch (IOException e1) {
                 e1.printStackTrace();
                 //TODO error handling. image can not be sent if it does not exist.

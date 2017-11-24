@@ -1,47 +1,38 @@
+/*
+ * Copyright (c) 2017 RubiconBot Dev Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.core;
 
-import fun.rubicon.commands.tools.CommandVote;
-import fun.rubicon.util.Info;
-
-import fun.rubicon.util.Logger;
-import net.dv8tion.jda.core.AccountType;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.exceptions.RateLimitedException;
-
-import javax.security.auth.login.LoginException;
+import fun.rubicon.RubiconBot;
 
 /**
- * Core class holding the JDA object statically
+ * Former core class holding the JDA object statically.
+ * @deprecated Use the Rubicon class instead.
+ * @see RubiconBot
  */
+@Deprecated
 public class DiscordCore {
-    private static JDA jda;
 
     /**
      * Initializes the static JDA bot instance and starts listeners.
+     * @deprecated Use Rubicon.initJDA() instead.
+     * @see RubiconBot
      */
+    @Deprecated
     public static void start() {
-        JDABuilder builder = new JDABuilder(AccountType.BOT);
-        builder.setToken(Main.getConfiguration().getString("token"));
-        builder.setGame(Game.of(Info.BOT_NAME + " " + Info.BOT_VERSION));
-
-        new ListenerManager(builder);
-        new CommandManager();
-
-        try {
-            jda = builder.buildBlocking();
-        } catch (LoginException | InterruptedException | RateLimitedException e) {
-            Logger.error(e.getMessage());
-        }
-        GameAnimator.start();
-        CommandVote.loadPolls(jda);
+        RubiconBot.initJDA();
     }
 
     /**
      * @return the static JDA instance. May be null if DiscordCore.start() was not called before.
+     * @deprecated Use Rubicon.getJDA() instead.
+     * @see RubiconBot
      */
-    public static JDA getJDA() {
-        return jda;
+    @Deprecated
+    public static net.dv8tion.jda.core.JDA getJDA() {
+        return RubiconBot.getJDA();
     }
 }

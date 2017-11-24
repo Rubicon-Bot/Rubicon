@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2017 RubiconBot Dev Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.core.permission;
 
 import fun.rubicon.command.Command;
@@ -7,19 +13,14 @@ import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.User;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Rubicon Discord bot
- *
- * @author Yannick Seeger / ForYaSee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.core.permission
+ * Can test a member's permissions to a command.
+ * @author ForYaSee, tr808axm
  */
-
 public class PermissionManager {
 
     private Member member;
@@ -34,12 +35,12 @@ public class PermissionManager {
         try {
             int lvl = getPermissionLevel();
             int cmdLvl = command.getPermissionLevel();
+            Logger.info("permission. needed: " + cmdLvl + " has: " + lvl + "| member is null? " + (member == null));
 
-            for (User user : Arrays.asList(Info.BOT_AUTHORS)) {
-                if (user.getId().equalsIgnoreCase(member.getUser().getId())) {
+            for (long authorId : Info.BOT_AUTHOR_IDS)
+                if (authorId == member.getUser().getIdLong())
                     return true;
-                }
-            }
+
             if (getPermissionLevel() > cmdLvl) {
                 return true;
             }
@@ -59,8 +60,8 @@ public class PermissionManager {
                 if (member.isOwner())
                     return true;
             }
-        } catch (NullPointerException ignored) {
-
+        } catch (NullPointerException e) {
+            Logger.error(e);
         }
         return false;
     }
