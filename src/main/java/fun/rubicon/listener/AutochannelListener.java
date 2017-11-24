@@ -1,5 +1,6 @@
 package fun.rubicon.listener;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.core.Main;
 import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Guild;
@@ -23,11 +24,12 @@ public class AutochannelListener extends ListenerAdapter {
 
     @Override
     public void onVoiceChannelDelete(VoiceChannelDeleteEvent e) {
-        String oldEntry = Main.getMySQL().getGuildValue(e.getGuild(), "autochannels");
-        if(oldEntry.contains(e.getChannel().getId())) {
-            String newEntry = oldEntry.replace(e.getChannel().getId() + ",", "");
-            Main.getMySQL().updateGuildValue(e.getGuild(), "autochannels", newEntry);
-        }
+        String oldEntry = RubiconBot.getMySQL().getGuildValue(e.getGuild(), "autochannels");
+        if (oldEntry != null)
+            if(oldEntry.contains(e.getChannel().getId())) {
+                String newEntry = oldEntry.replace(e.getChannel().getId() + ",", "");
+                RubiconBot.getMySQL().updateGuildValue(e.getGuild(), "autochannels", newEntry);
+            }
     }
 
     @Override
@@ -63,10 +65,11 @@ public class AutochannelListener extends ListenerAdapter {
     }
 
     private boolean isAutoChannel(Guild g, Channel ch) {
-        String oldEntry = Main.getMySQL().getGuildValue(g, "autochannels");
-        if(oldEntry.contains(ch.getId())) {
-            return true;
-        }
+        String oldEntry = RubiconBot.getMySQL().getGuildValue(g, "autochannels");
+        if (oldEntry != null)
+            if(oldEntry.contains(ch.getId())) {
+                return true;
+            }
         return false;
     }
 }
