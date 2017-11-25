@@ -24,17 +24,17 @@ import java.io.File;
  * @author tr808axm
  */
 public class RubiconBot {
-    private static JDA jda;
-    private static MySQL mySQL;
-    private static Configuration configuration;
-    public final static String[] CONFIG_KEYS = {"token","mysql_host","mysql_port","mysql_database","mysql_password","mysql_user","bitlytoken"};
-
+    private static final String[] CONFIG_KEYS = {"token","mysql_host","mysql_port","mysql_database","mysql_password","mysql_user","bitlytoken"};
+    private static RubiconBot instance;
+    private final MySQL mySQL;
+    private final Configuration configuration;
+    private JDA jda;
 
     /**
-     * Initializes the bot.
-     * @param args command line parameters.
+     * Constructs the RubiconBot.
      */
-    public static void main(String[] args) {
+    private RubiconBot() {
+        instance = this;
         // initialize logger
         Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, new File("latest.log"));
 
@@ -55,43 +55,61 @@ public class RubiconBot {
     }
 
     /**
+     * Initializes the bot.
+     * @param args command line parameters.
+     */
+    public static void main(String[] args) {
+        if(instance != null)
+            throw new RuntimeException("RubiconBot has already been initialized in this VM.");
+        new RubiconBot();
+    }
+
+    /**
      * Initializes the JDA instance.
      */
     public static void initJDA() {
+        if(instance == null)
+            throw new NullPointerException("RubiconBot has not been initialized yet.");
+
         JDABuilder builder = new JDABuilder(AccountType.BOT);
-        builder.setToken(configuration.getString("token"));
+        builder.setToken(instance.configuration.getString("token"));
         builder.setGame(Game.of(Info.BOT_NAME + " " + Info.BOT_VERSION));
 
         new ListenerManager(builder);
         new CommandManager();
 
         try {
-            jda = builder.buildBlocking();
+            instance.jda = builder.buildBlocking();
         } catch (LoginException | InterruptedException | RateLimitedException e) {
             Logger.error(e.getMessage());
         }
         GameAnimator.start();
-        CommandVote.loadPolls(jda);
+        CommandVote.loadPolls(instance.jda);
 
-        String runningOnServers = "Running on following guilds:\n";
-        for (Guild guild : jda.getGuilds()) {
-            runningOnServers += "\t- " + guild.getName() + "(" + guild.getId() + ")\n";
-        }
-        Logger.info(runningOnServers);
-    }
-
-    public static MySQL getMySQL() {
-        return mySQL;
-    }
-
-    public static Configuration getConfiguration() {
-        return configuration;
+        StringBuilder runningOnServers = new StringBuilder("Running on following guilds:\n");
+        for (Guild guild : instance.jda.getGuilds())
+            runningOnServers.append("\t- ").append(guild.getName()).append("(").append(guild.getId()).append(")\n");
+        Logger.info(runningOnServers.toString());
     }
 
     /**
-     * @return the static JDA instance. May be null if DiscordCore.start() was not called before.
+     * @return the MySQL adapter.
+     */
+    public static MySQL getMySQL() {
+        return instance == null ? null : instance.mySQL;
+    }
+
+    /**
+     * @return the bot configuration.
+     */
+    public static Configuration getConfiguration() {
+        return instance == null ? null : instance.configuration;
+    }
+
+    /**
+     * @return the JDA instance.
      */
     public static JDA getJDA() {
-        return jda;
+        return instance == null ? null : instance.jda;
     }
 }
