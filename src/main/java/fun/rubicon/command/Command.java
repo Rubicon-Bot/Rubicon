@@ -67,6 +67,10 @@ public abstract class Command {
         }
     }
 
+    /**
+     * @param message
+     * @deprecated
+     */
     protected void sendEmbededMessage(String message) {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setDescription(message);
@@ -74,6 +78,13 @@ public abstract class Command {
         e.getTextChannel().sendMessage(builder.build()).queue(msg -> msg.delete().queueAfter(defaultDeleteSeconds, TimeUnit.SECONDS));
     }
 
+    /**
+     *
+     * @param ch
+     * @param title
+     * @param color
+     * @deprecated
+     */
     protected void sendEmbededMessage(TextChannel ch, String title, Color color, String message) {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setAuthor(title, null, e.getJDA().getSelfUser().getEffectiveAvatarUrl());
@@ -82,6 +93,14 @@ public abstract class Command {
         ch.sendMessage(builder.build()).queue(msg -> msg.delete().queueAfter(defaultDeleteSeconds, TimeUnit.SECONDS));
     }
 
+    /**
+     *
+     * @param pc
+     * @param title
+     * @param color
+     * @param message
+     * @deprecated
+     */
     protected void sendEmbededMessage(PrivateChannel pc, String title, Color color, String message) {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setAuthor(title, null, e.getJDA().getSelfUser().getEffectiveAvatarUrl());
@@ -151,6 +170,7 @@ public abstract class Command {
     }
 
     public String getFormattedAliases() {
+        if(aliases == null) return "No Aliases";
         String s = "[";
         for (int i = 0; i < aliases.length; i++) {
             if (i != aliases.length - 1)

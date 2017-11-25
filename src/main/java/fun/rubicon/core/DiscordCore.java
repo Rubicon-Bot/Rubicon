@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Rubicon Dev Team
+ * Copyright (c) 2017 RubiconBot Dev Team
  *
  * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
  */

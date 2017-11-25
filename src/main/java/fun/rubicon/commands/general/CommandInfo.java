@@ -49,7 +49,6 @@ public class CommandInfo extends Command {
                 "[slf4j-simple](https://mvnrepository.com/artifact/org.slf4j/slf4j-simple)\n" +
                 "[json-simple](https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple)\n" +
                 "[gson](https://github.com/google/gson)\n" +
-                "[apache-commons-io](https://commons.apache.org/proper/commons-io/)\n" +
                 "[jsoup](https://jsoup.org/)";
         builder.addField("Dependencies", dependencies, false);
 
