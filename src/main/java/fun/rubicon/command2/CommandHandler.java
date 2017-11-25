@@ -7,9 +7,11 @@
 package fun.rubicon.command2;
 
 import fun.rubicon.RubiconBot;
+import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandParser;
 import fun.rubicon.util.Colors;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
@@ -31,6 +33,7 @@ public abstract class CommandHandler {
 
     private final CommandCategory category;
     private final int requiredPermissionLevel;
+
     protected CommandHandler(String[] invokeAliases, CommandCategory category, int requiredPermissionLevel) {
         this.invokeAliases = invokeAliases;
         this.category = category;
@@ -39,8 +42,7 @@ public abstract class CommandHandler {
 
     /**
      * Checks permission, safely calls the execute method and ensures response.
-     * @param args the command arguments with prefix and command head removed.
-     * @param event the invoking event.
+     * @param parsedCommandInvocation the parsed command invocation.
      */
     public void call(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         // TODO permission checks
@@ -50,22 +52,25 @@ public abstract class CommandHandler {
         try {
             response = execute(parsedCommandInvocation);
         } catch (Exception e) { // catch exceptions in command and provide an answer
+            Logger.error("Unknown error during the execution of the '" + parsedCommandInvocation.invocationCommand + "' command. ");
+            Logger.error(e);
             response = new MessageBuilder().setEmbed(new EmbedBuilder()
                     .setAuthor("Error", null, RubiconBot.getJDA().getSelfUser().getEffectiveAvatarUrl())
-                    .setDescription("An error occured while executing your command.")
+                    .setDescription("An unknown error occured while executing your command.")
                     .setColor(Colors.COLOR_ERROR)
                     .setFooter(timeStampFormat.format(new Date()), null)
                     .build()).build();
         }
 
-        // send response message and delete it after defaultDeleteIntervalSeconds
-        parsedCommandInvocation.invocationMessage.getChannel().sendMessage(response)
-                .queue(msg -> msg.delete().queueAfter(defaultDeleteIntervalSeconds, TimeUnit.SECONDS));
+        if(response != null)
+            // send response message and delete it after defaultDeleteIntervalSeconds
+            parsedCommandInvocation.invocationMessage.getChannel().sendMessage(response)
+                    .queue(msg -> msg.delete().queueAfter(defaultDeleteIntervalSeconds, TimeUnit.SECONDS));
     }
 
     /**
      * Method to be implemented by actual command handlers.
-     * @param args the command arguments with prefix and command head removed.
+     * @param parsedCommandInvocation the command arguments with prefix and command head removed.
      * @return a response that will be sent and deleted by the caller.
      */
     protected abstract Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation);

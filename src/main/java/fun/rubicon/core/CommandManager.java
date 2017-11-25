@@ -1,6 +1,12 @@
+/*
+ * Copyright (C) 2017 Polyfox - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Polyfox <tr808axm@gmail.com>
+ */
+
 package fun.rubicon.core;
 
-import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.commands.admin.CommandGivaway;
@@ -14,19 +20,16 @@ import fun.rubicon.commands.botowner.CommandStop;
 import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.guildowner.CommandPrefix;
-import fun.rubicon.commands.guildowner.CommandRebuild;
 import fun.rubicon.commands.guildowner.CommandSettings;
 import fun.rubicon.commands.tools.*;
 
 /**
- * Rubicon Discord bot
- *
+ * Old command registration script.
  * @author Yannick Seeger / ForYaSee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.core
+ * @deprecated Register commands in RubiconBot.registerCommandHandlers() instead.
+ * @see fun.rubicon.RubiconBot
  */
-
+@Deprecated
 public class CommandManager {
 
     public CommandManager() {

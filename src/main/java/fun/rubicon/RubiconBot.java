@@ -28,6 +28,7 @@ public class RubiconBot {
     private static RubiconBot instance;
     private final MySQL mySQL;
     private final Configuration configuration;
+    private final fun.rubicon.command2.CommandManager commandManager;
     private JDA jda;
 
     /**
@@ -40,11 +41,15 @@ public class RubiconBot {
 
         // load configuration and obtain missing config values
         configuration = new Configuration(new File(Info.CONFIG_FILE));
-        for (String configKey : CONFIG_KEYS)
-            if(!configuration.has(configKey)){
+        for (String configKey : CONFIG_KEYS) {
+            if (!configuration.has(configKey)) {
                 String input = Setup.prompt(configKey);
                 configuration.set(configKey, input);
             }
+        }
+
+        commandManager = new fun.rubicon.command2.CommandManager();
+        registerCommandHandlers();
 
         // init JDA
         initJDA();
@@ -75,8 +80,10 @@ public class RubiconBot {
         builder.setToken(instance.configuration.getString("token"));
         builder.setGame(Game.of(Info.BOT_NAME + " " + Info.BOT_VERSION));
 
+        // Register command manager (chat listener)
+        builder.addEventListener(instance.commandManager);
+
         new ListenerManager(builder);
-        new CommandManager();
 
         try {
             instance.jda = builder.buildBlocking();
@@ -90,6 +97,19 @@ public class RubiconBot {
         for (Guild guild : instance.jda.getGuilds())
             runningOnServers.append("\t- ").append(guild.getName()).append("(").append(guild.getId()).append(")\n");
         Logger.info(runningOnServers.toString());
+    }
+
+    /**
+     * Registers all command handlers used in this project.
+     * @see fun.rubicon.command2.CommandManager
+     */
+    private void registerCommandHandlers() {
+        // Usage: commandManager.registerCommandHandler(yourCommandHandler...);
+
+
+        // also register commands from the old framework
+        //noinspection deprecation
+        new CommandManager();
     }
 
     /**
@@ -111,5 +131,12 @@ public class RubiconBot {
      */
     public static JDA getJDA() {
         return instance == null ? null : instance.jda;
+    }
+
+    /**
+     * @return the CommandManager.
+     */
+    public static fun.rubicon.command2.CommandManager getCommandManager() {
+        return instance == null ? null : instance.commandManager;
     }
 }

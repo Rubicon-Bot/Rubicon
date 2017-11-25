@@ -9,7 +9,9 @@ package fun.rubicon.command2;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandParser;
 import fun.rubicon.core.Main;
+import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
+import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -25,7 +27,6 @@ public class CommandManager extends ListenerAdapter {
     private final Map<String, CommandHandler> commandAssociations = new HashMap<>();
 
     public CommandManager() {
-        RubiconBot.getJDA().addEventListener(this);
     }
 
     public void registerCommandHandlers(CommandHandler... commandHandlers) {
@@ -53,14 +54,19 @@ public class CommandManager extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent event) {
         super.onMessageReceived(event);
         ParsedCommandInvocation commandInvocation = parse(event.getMessage());
-        if(commandInvocation != null)
+        if(commandInvocation != null) // if it is a command invocation
             call(commandInvocation);
     }
 
+    /**
+     * Call the CommandHandler for commandInvocation.
+     * @param commandInvocation the parsed message.
+     */
     public void call(ParsedCommandInvocation commandInvocation) {
         CommandHandler commandHandler = commandAssociations.get(commandInvocation.invocationCommand);
         if(commandHandler != null)
             commandHandler.call(commandInvocation);
+        //TODO else unknown command message
     }
 
     /**
@@ -71,7 +77,9 @@ public class CommandManager extends ListenerAdapter {
      */
     private static ParsedCommandInvocation parse(Message message) {
         // get server prefix
-        String prefix = RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix");
+        String prefix = message.getChannelType() == ChannelType.TEXT
+                ? RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix")
+                : Info.BOT_DEFAULT_PREFIX;
 
         // resolve messages with '<server-bot-prefix>majorcommand [arguments...]'
         if(message.getContent().startsWith(prefix)) {
@@ -88,6 +96,21 @@ public class CommandManager extends ListenerAdapter {
         // TODO resolve messages with '@botmention majorcommand [arguments...]'
         // return null if no strategy could parse a command.
         return null;
+    }
+
+    /**
+     * @param invocationAlias the key property to the CommandHandler.
+     * @return the associated CommandHandler or null if none is associated.
+     */
+    public CommandHandler getCommandHandler(String invocationAlias) {
+        return commandAssociations.get(invocationAlias);
+    }
+
+    /**
+     * @return a clone of all registered command associations.
+     */
+    public Map<String, CommandHandler> getCommandAssociations() {
+        return new HashMap<>(commandAssociations);
     }
 
     public static final class ParsedCommandInvocation {
