@@ -39,7 +39,7 @@ public abstract class Command {
     protected MessageReceivedEvent e;
     protected CommandCategory category;
     protected PermissionManager permissionManager;
-    protected String[] aliases;
+    protected String[] aliases = new String[0];
 
     public Command(String command, CommandCategory category) {
         this.command = command;
