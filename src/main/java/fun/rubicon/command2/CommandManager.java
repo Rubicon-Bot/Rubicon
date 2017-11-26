@@ -69,8 +69,9 @@ public class CommandManager extends ListenerAdapter {
         if (commandHandler == null)
             response = new MessageBuilder().setEmbed(new EmbedBuilder()
                     .setAuthor("Unknown command", null, RubiconBot.getJDA().getSelfUser().getEffectiveAvatarUrl())
-                    .setDescription("'" + parsedCommandInvocation.invocationCommand
-                            + "' could not be resolved to a command.\nType 'help' to get a list of all commands.")
+                    .setDescription("'" + parsedCommandInvocation.invocationCommand + parsedCommandInvocation.serverPrefix
+                            + "' could not be resolved to a command.\nType '" + parsedCommandInvocation.serverPrefix
+                            + "help' to get a list of all commands.")
                     .setColor(Colors.COLOR_ERROR)
                     .setFooter(RubiconBot.getNewTimestamp(), null)
                     .build()).build();
@@ -106,7 +107,7 @@ public class CommandManager extends ListenerAdapter {
             String[] args = new String[allArgs.length - 1];
             System.arraycopy(allArgs, 1, args, 0, args.length);
 
-            return new ParsedCommandInvocation(message, allArgs[0], args);
+            return new ParsedCommandInvocation(message, prefix, allArgs[0], args);
         }
         // TODO resolve messages with '@botmention majorcommand [arguments...]'
         // return null if no strategy could parse a command.
@@ -130,11 +131,13 @@ public class CommandManager extends ListenerAdapter {
 
     public static final class ParsedCommandInvocation {
         public final Message invocationMessage;
+        public final String serverPrefix;
         public final String invocationCommand;
         public final String[] args;
 
-        private ParsedCommandInvocation(Message invocationMessage, String invocationCommand, String[] args) {
+        private ParsedCommandInvocation(Message invocationMessage, String serverPrefix, String invocationCommand, String[] args) {
             this.invocationMessage = invocationMessage;
+            this.serverPrefix = serverPrefix;
             this.invocationCommand = invocationCommand;
             this.args = args;
         }
