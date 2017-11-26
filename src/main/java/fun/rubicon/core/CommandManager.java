@@ -1,16 +1,15 @@
 /*
- * Copyright (C) 2017 Polyfox - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Polyfox <tr808axm@gmail.com>
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
  */
 
 package fun.rubicon.core;
 
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
-import fun.rubicon.commands.admin.CommandGivaway;
 import fun.rubicon.commands.admin.CommandAutochannel;
+import fun.rubicon.commands.admin.CommandGivaway;
 import fun.rubicon.commands.admin.CommandPermission;
 import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.botowner.CommandBroadcast;
@@ -76,7 +75,6 @@ public class CommandManager {
 
         //Guildowner
         CommandHandler.addCommand(new CommandSettings("settings", CommandCategory.GUILD_OWNER));
-        //CommandHandler.addCommand(new CommandRebuild("rebuild", CommandCategory.GUILD_OWNER));
 
         //Settings
         CommandHandler.addCommand(new CommandPrefix("prefix", CommandCategory.SETTINGS).addAliases("pref"));
