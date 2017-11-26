@@ -54,7 +54,7 @@ public class MySQL {
      */
     public MySQL connect() {
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database, this.user, this.password);
+            connection = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", this.user, this.password);
             Logger.info("MySQL connection success");
         } catch (SQLException e) {
             Logger.error("MySQL connection failed");

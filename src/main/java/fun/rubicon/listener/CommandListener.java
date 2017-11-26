@@ -27,14 +27,14 @@ public class CommandListener extends ListenerAdapter {
         try {
             Guild g = e.getGuild();
             if (g == null) return;
+            if (!RubiconBot.getMySQL().ifMemberExist(e.getMember())) {
+                RubiconBot.getMySQL().createMember(e.getMember());
+            }
             if (!RubiconBot.getMySQL().ifUserExist(e.getAuthor())) {
                 RubiconBot.getMySQL().createUser(e.getAuthor());
             }
             if (!RubiconBot.getMySQL().ifGuildExits(g)) {
                 RubiconBot.getMySQL().createGuildServer(g);
-            }
-            if (RubiconBot.getMySQL().ifMemberExist(e.getMember())) {
-                RubiconBot.getMySQL().createMember(e.getMember());
             }
             if (e.getMessage().getMentionedUsers().size() > 0) {
                 for (User user : e.getMessage().getMentionedUsers()) {
@@ -49,7 +49,6 @@ public class CommandListener extends ListenerAdapter {
             }
             String prefix = RubiconBot.getMySQL().getGuildValue(g, "prefix");
             String messageContent = e.getMessage().getContent().toLowerCase();
-            Logger.debug(e.getGuild().getName() + " -> " + prefix); //TODO Debug Message
             if (!e.getAuthor().getId().equals(e.getJDA().getSelfUser().getId())) {
                 if (messageContent.startsWith(prefix.toLowerCase()) || messageContent.startsWith(Info.BOT_DEFAULT_PREFIX)) {
                     try {
