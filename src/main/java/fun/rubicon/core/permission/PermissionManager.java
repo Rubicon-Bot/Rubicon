@@ -72,6 +72,7 @@ public class PermissionManager {
 
     public int getPermissionLevel() {
         String s = Main.getMySQL().getMemberValue(member, "permissionlevel");
+        Logger.debug(s);
         int i;
         try {
             i = Integer.parseInt(s);

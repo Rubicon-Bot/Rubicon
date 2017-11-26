@@ -38,6 +38,7 @@ public class BotJoinListener extends ListenerAdapter {
             Guild g = e.getGuild();
             if (!RubiconBot.getMySQL().ifGuildExits(e.getGuild())) {
                 RubiconBot.getMySQL().createGuildServer(g);
+                RubiconBot.getMySQL().createMember(e.getGuild().getOwner());
             }
         } catch (Exception ex) {
             Logger.error(ex);
