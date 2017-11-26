@@ -1,9 +1,16 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.command;
 
 import fun.rubicon.core.permission.PermissionManager;
 import fun.rubicon.util.Colors;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.PrivateChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.awt.*;
@@ -18,11 +25,9 @@ import java.util.concurrent.TimeUnit;
  * Rubicon Discord bot
  *
  * @author Yannick Seeger / ForYaSee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.command
+ * @deprecated Use {@link fun.rubicon.command2.CommandHandler} for command handlers instead.
  */
-
+@Deprecated
 public abstract class Command {
 
     /*

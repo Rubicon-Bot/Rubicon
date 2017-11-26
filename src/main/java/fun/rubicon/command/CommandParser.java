@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.command;
 
 import fun.rubicon.core.Main;
@@ -7,7 +13,9 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 /**
  * Parses command arguments from raw messages.
  * @author LeeDJD, ForYaSee, tr808axm
+ * @deprecated Directly implemented in {@link fun.rubicon.command2.CommandManager}.
  */
+@Deprecated
 public class CommandParser {
 
     /**
