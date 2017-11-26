@@ -16,20 +16,12 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-
 /**
  * Handles a command.
  * @author tr808axm
  */
 public abstract class CommandHandler {
-    private static final SimpleDateFormat timeStampFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-    private static final long defaultDeleteIntervalSeconds = 15;
-
     private final String[] invokeAliases;
-
     private final CommandCategory category;
     private final PermissionRequirements permissionRequirements;
 
@@ -42,41 +34,34 @@ public abstract class CommandHandler {
     /**
      * Checks permission, safely calls the execute method and ensures response.
      * @param parsedCommandInvocation the parsed command invocation.
+     * @return a response that will be sent and deleted by the caller.
      */
-    public void call(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
-        // response container
-        Message response;
+    public Message call(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         UserPermissions userPermissions = new UserPermissions(parsedCommandInvocation.invocationMessage.getAuthor(),
                 parsedCommandInvocation.invocationMessage.getGuild());
         // check permission
         if (permissionRequirements.coveredBy(userPermissions)) {
             // execute command
             try {
-                response = execute(parsedCommandInvocation, userPermissions);
+                return execute(parsedCommandInvocation, userPermissions);
             } catch (Exception e) { // catch exceptions in command and provide an answer
                 Logger.error("Unknown error during the execution of the '" + parsedCommandInvocation.invocationCommand + "' command. ");
                 Logger.error(e);
-                response = new MessageBuilder().setEmbed(new EmbedBuilder()
+                return new MessageBuilder().setEmbed(new EmbedBuilder()
                         .setAuthor("Error", null, RubiconBot.getJDA().getSelfUser().getEffectiveAvatarUrl())
                         .setDescription("An unknown error occured while executing your command.")
                         .setColor(Colors.COLOR_ERROR)
-                        .setFooter(timeStampFormat.format(new Date()), null)
+                        .setFooter(RubiconBot.getNewTimestamp(), null)
                         .build()).build();
             }
         } else
             // respond with 'no-permission'-message
-            response = new MessageBuilder().setEmbed(new EmbedBuilder()
+            return new MessageBuilder().setEmbed(new EmbedBuilder()
                     .setAuthor("Missing permissions", null, RubiconBot.getJDA().getSelfUser().getEffectiveAvatarUrl())
                     .setDescription("You are not permitted to execute this command.")
                     .setColor(Colors.COLOR_NO_PERMISSION)
-                    .setFooter(timeStampFormat.format(new Date()), null)
+                    .setFooter(RubiconBot.getNewTimestamp(), null)
                     .build()).build();
-
-        // respond
-        if(response != null)
-            // send response message and delete it after defaultDeleteIntervalSeconds
-            parsedCommandInvocation.invocationMessage.getChannel().sendMessage(response)
-                    .queue(msg -> msg.delete().queueAfter(defaultDeleteIntervalSeconds, TimeUnit.SECONDS));
     }
 
     /**

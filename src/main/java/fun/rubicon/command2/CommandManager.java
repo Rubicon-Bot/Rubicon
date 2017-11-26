@@ -7,10 +7,11 @@
 package fun.rubicon.command2;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.command.CommandParser;
-import fun.rubicon.core.Main;
+import fun.rubicon.util.Colors;
 import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
+import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -18,16 +19,16 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Maintains command invocation associations.
  * @author tr808axm
  */
 public class CommandManager extends ListenerAdapter {
-    private final Map<String, CommandHandler> commandAssociations = new HashMap<>();
+    private static final long defaultDeleteIntervalSeconds = 15;
 
-    public CommandManager() {
-    }
+    private final Map<String, CommandHandler> commandAssociations = new HashMap<>();
 
     public void registerCommandHandlers(CommandHandler... commandHandlers) {
         for(CommandHandler commandHandler : commandHandlers)
@@ -60,13 +61,27 @@ public class CommandManager extends ListenerAdapter {
 
     /**
      * Call the CommandHandler for commandInvocation.
-     * @param commandInvocation the parsed message.
+     * @param parsedCommandInvocation the parsed message.
      */
-    public void call(ParsedCommandInvocation commandInvocation) {
-        CommandHandler commandHandler = commandAssociations.get(commandInvocation.invocationCommand);
-        if(commandHandler != null)
-            commandHandler.call(commandInvocation);
-        //TODO else unknown command message
+    public void call(ParsedCommandInvocation parsedCommandInvocation) {
+        CommandHandler commandHandler = commandAssociations.get(parsedCommandInvocation.invocationCommand);
+        Message response;
+        if (commandHandler == null)
+            response = new MessageBuilder().setEmbed(new EmbedBuilder()
+                    .setAuthor("Unknown command", null, RubiconBot.getJDA().getSelfUser().getEffectiveAvatarUrl())
+                    .setDescription("'" + parsedCommandInvocation.invocationCommand
+                            + "' could not be resolved to a command.\nType 'help' to get a list of all commands.")
+                    .setColor(Colors.COLOR_ERROR)
+                    .setFooter(RubiconBot.getNewTimestamp(), null)
+                    .build()).build();
+        else
+            response = commandHandler.call(parsedCommandInvocation);
+
+        // respond
+        if (response != null)
+            // send response message and delete it after defaultDeleteIntervalSeconds
+            parsedCommandInvocation.invocationMessage.getChannel().sendMessage(response)
+                    .queue(msg -> msg.delete().queueAfter(defaultDeleteIntervalSeconds, TimeUnit.SECONDS));
     }
 
     /**
