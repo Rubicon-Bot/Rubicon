@@ -19,6 +19,7 @@ import java.util.List;
 
 /**
  * Can test a member's permissions to a command.
+ *
  * @author ForYaSee, tr808axm
  */
 public class PermissionManager {
@@ -44,7 +45,7 @@ public class PermissionManager {
             if (getPermissionLevel() > cmdLvl) {
                 return true;
             }
-            if(containsPermission(command.getCommand())) {
+            if (containsPermission(command.getCommand())) {
                 return true;
             }
 
@@ -72,11 +73,12 @@ public class PermissionManager {
 
     public int getPermissionLevel() {
         String s = Main.getMySQL().getMemberValue(member, "permissionlevel");
+        Logger.debug(s);
         int i;
         try {
             i = Integer.parseInt(s);
         } catch (NumberFormatException ex) {
-            Logger.error(ex);
+            //Member doesn't exist
             return 0;
         }
         return i;
@@ -85,9 +87,9 @@ public class PermissionManager {
     public String getAllAllowedCommands() {
         List<Command> allCommands = new ArrayList<>(CommandHandler.getCommands().values());
         String res = "";
-        for(Command cmd : allCommands) {
+        for (Command cmd : allCommands) {
             PermissionManager p = new PermissionManager(member, cmd);
-            if(p.hasPermission()) {
+            if (p.hasPermission()) {
                 res += cmd.getCommand() + ",";
             }
         }
