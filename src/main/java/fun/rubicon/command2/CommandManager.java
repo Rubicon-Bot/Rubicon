@@ -69,7 +69,7 @@ public class CommandManager extends ListenerAdapter {
         if (commandHandler == null)
             response = new MessageBuilder().setEmbed(new EmbedBuilder()
                     .setAuthor("Unknown command", null, RubiconBot.getJDA().getSelfUser().getEffectiveAvatarUrl())
-                    .setDescription("'" + parsedCommandInvocation.invocationCommand + parsedCommandInvocation.serverPrefix
+                    .setDescription("'" + parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand
                             + "' could not be resolved to a command.\nType '" + parsedCommandInvocation.serverPrefix
                             + "help' to get a list of all commands.")
                     .setColor(Colors.COLOR_ERROR)
