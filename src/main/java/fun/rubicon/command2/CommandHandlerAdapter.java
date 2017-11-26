@@ -1,16 +1,15 @@
 /*
- * Copyright (C) 2017 Polyfox - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Polyfox <tr808axm@gmail.com>
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
  */
 
 package fun.rubicon.command2;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.Command;
-import fun.rubicon.util.Logger;
-import net.dv8tion.jda.core.JDA;
+import fun.rubicon.data.PermissionRequirements;
+import fun.rubicon.data.UserPermissions;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -27,12 +26,12 @@ public class CommandHandlerAdapter extends CommandHandler {
     private final Command oldCommand;
 
     public CommandHandlerAdapter(Command command) {
-        super(allInvocationAliases(command), command.getCategory(), command.getPermissionLevel());
+        super(allInvocationAliases(command), command.getCategory(), new PermissionRequirements(command.getPermissionLevel(), command.getCommand()));
         this.oldCommand = command;
     }
 
     @Override
-    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
+    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions permissions) {
         try {
             // re-create MessageReceivedEvent. response number should not be used in commands and can be set to a
             oldCommand.call(parsedCommandInvocation.args, new MessageReceivedEvent(RubiconBot.getJDA(), -1, parsedCommandInvocation.invocationMessage));
