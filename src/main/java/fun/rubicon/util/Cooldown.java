@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 public class Cooldown {
     /**
-     * Cooldown for Leveler
+     * Cooldown for MemberLevelListener
      */
     public static ArrayList<String> ids = new ArrayList<>();
 

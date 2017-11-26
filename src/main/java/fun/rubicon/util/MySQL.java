@@ -54,7 +54,7 @@ public class MySQL {
      */
     public MySQL connect() {
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database, this.user, this.password);
+            connection = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", this.user, this.password);
             Logger.info("MySQL connection success");
         } catch (SQLException e) {
             Logger.error("MySQL connection failed");
@@ -398,6 +398,9 @@ public class MySQL {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM `guilds` WHERE `serverid` = ?");
             ps.setString(1, guild.getId());
             ps.execute();
+            PreparedStatement ps2 = connection.prepareStatement("DELETE FROM `member` WHERE `guildid` = ?");
+            ps2.setString(1, guild.getId());
+            ps2.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }

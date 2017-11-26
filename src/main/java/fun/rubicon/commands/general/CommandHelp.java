@@ -46,6 +46,7 @@ public class CommandHelp extends Command {
             StringBuilder sbAdmin = new StringBuilder();
             StringBuilder sbGuildOwner = new StringBuilder();
             StringBuilder sbBotOwner = new StringBuilder();
+            StringBuilder sbSettings = new StringBuilder();
             StringBuilder sbTools = new StringBuilder();
 
             String pref = SQL.getGuildValue(e.getGuild(), "prefix");
@@ -63,6 +64,8 @@ public class CommandHelp extends Command {
                     sbGuildOwner.append(pref + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
                 } else if(c.getValue().getCategory().equals(CommandCategory.BOT_OWNER)) {
                     sbBotOwner.append(pref + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
+                } else if(c.getValue().getCategory().equals(CommandCategory.SETTINGS)) {
+                    sbBotOwner.append(pref + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
                 }
             }
 
@@ -76,6 +79,7 @@ public class CommandHelp extends Command {
             builder.addField("Admin", sbAdmin.toString(), false);
             builder.addField("Server Owner", sbGuildOwner.toString(), false);
             builder.addField("Bot Owner", sbBotOwner.toString(), false);
+            builder.addField("Settings", sbSettings.toString(), false);
 
             builder.setFooter("Loaded Commands: " + CommandHandler.getCommands().entrySet().size(), null);
 

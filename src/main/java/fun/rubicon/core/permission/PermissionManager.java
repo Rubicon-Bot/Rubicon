@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2017 RubiconBot Dev Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.core.permission;
 
 import fun.rubicon.command.Command;
@@ -7,19 +13,15 @@ import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.User;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Rubicon Discord bot
+ * Can test a member's permissions to a command.
  *
- * @author Yannick Seeger / ForYaSee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.core.permission
+ * @author ForYaSee, tr808axm
  */
-
 public class PermissionManager {
 
     private Member member;
@@ -34,16 +36,16 @@ public class PermissionManager {
         try {
             int lvl = getPermissionLevel();
             int cmdLvl = command.getPermissionLevel();
+            Logger.info("permission. needed: " + cmdLvl + " has: " + lvl + "| member is null? " + (member == null));
 
-            for (User user : Arrays.asList(Info.BOT_AUTHORS)) {
-                if (user.getId().equalsIgnoreCase(member.getUser().getId())) {
+            for (long authorId : Info.BOT_AUTHOR_IDS)
+                if (authorId == member.getUser().getIdLong())
                     return true;
-                }
-            }
+
             if (getPermissionLevel() > cmdLvl) {
                 return true;
             }
-            if(containsPermission(command.getCommand())) {
+            if (containsPermission(command.getCommand())) {
                 return true;
             }
 
@@ -59,8 +61,8 @@ public class PermissionManager {
                 if (member.isOwner())
                     return true;
             }
-        } catch (NullPointerException ignored) {
-
+        } catch (NullPointerException e) {
+            Logger.error(e);
         }
         return false;
     }
@@ -71,11 +73,12 @@ public class PermissionManager {
 
     public int getPermissionLevel() {
         String s = Main.getMySQL().getMemberValue(member, "permissionlevel");
+        Logger.debug(s);
         int i;
         try {
             i = Integer.parseInt(s);
         } catch (NumberFormatException ex) {
-            Logger.error(ex);
+            //Member doesn't exist
             return 0;
         }
         return i;
@@ -84,9 +87,9 @@ public class PermissionManager {
     public String getAllAllowedCommands() {
         List<Command> allCommands = new ArrayList<>(CommandHandler.getCommands().values());
         String res = "";
-        for(Command cmd : allCommands) {
+        for (Command cmd : allCommands) {
             PermissionManager p = new PermissionManager(member, cmd);
-            if(p.hasPermission()) {
+            if (p.hasPermission()) {
                 res += cmd.getCommand() + ",";
             }
         }
