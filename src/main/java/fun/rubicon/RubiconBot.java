@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Rubicon Dev Team
+ * Copyright (c) 2017 Rubicon Bot Development Team
  *
  * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
  */
@@ -7,7 +7,9 @@
 package fun.rubicon;
 
 import fun.rubicon.commands.tools.CommandVote;
-import fun.rubicon.core.*;
+import fun.rubicon.core.CommandManager;
+import fun.rubicon.core.GameAnimator;
+import fun.rubicon.core.ListenerManager;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -18,12 +20,15 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Rubicon-bot's main class. Initializes all components.
  * @author tr808axm
  */
 public class RubiconBot {
+    private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
     private static final String[] CONFIG_KEYS = {"token","mysql_host","mysql_port","mysql_database","mysql_password","mysql_user","bitlytoken"};
     private static RubiconBot instance;
     private final MySQL mySQL;
@@ -138,5 +143,12 @@ public class RubiconBot {
      */
     public static fun.rubicon.command2.CommandManager getCommandManager() {
         return instance == null ? null : instance.commandManager;
+    }
+
+    /**
+     * @return a freshly generated timestamp.
+     */
+    public static String getNewTimestamp() {
+        return timeStampFormatter.format(new Date());
     }
 }
