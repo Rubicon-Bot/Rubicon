@@ -27,7 +27,6 @@ public class ListenerManager {
         b.addEventListener(new AutoroleExecutor());
         b.addEventListener(new BotJoinListener());
         b.addEventListener(new MemberLevelListener());
-        b.addEventListener(new AdminListener());
         b.addEventListener(new ChannelDeleteListener());
         b.addEventListener(new BotLeaveListener());
         b.addEventListener(new ReactionListener());
