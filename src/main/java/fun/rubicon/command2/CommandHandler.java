@@ -21,12 +21,19 @@ import net.dv8tion.jda.core.entities.Message;
  * @author tr808axm
  */
 public abstract class CommandHandler {
-    private final String[] invokeAliases;
+    private final String[] invocationAliases;
     private final CommandCategory category;
     private final PermissionRequirements permissionRequirements;
 
-    protected CommandHandler(String[] invokeAliases, CommandCategory category, PermissionRequirements permissionRequirements) {
-        this.invokeAliases = invokeAliases;
+    /**
+     * Constructs a new CommandHandler.
+     *
+     * @param invocationAliases      the invocation commands (aliases). First entry is the 'main' alias.
+     * @param category               the {@link CommandCategory} this command belongs to.
+     * @param permissionRequirements all permission requirements a user needs to meet to execute a command.
+     */
+    protected CommandHandler(String[] invocationAliases, CommandCategory category, PermissionRequirements permissionRequirements) {
+        this.invocationAliases = invocationAliases;
         this.category = category;
         this.permissionRequirements = permissionRequirements;
     }
@@ -74,8 +81,17 @@ public abstract class CommandHandler {
 
     /**
      * @return all aliases this CommandHandler wants to listen to.
+     * @deprecated Use getInvocationAliases instead.
      */
+    @Deprecated
     public String[] getInvokeAliases() {
-        return invokeAliases;
+        return invocationAliases;
+    }
+
+    /**
+     * @return all aliases this CommandHandler wants to listen to.
+     */
+    public String[] getInvocationAliases() {
+        return invocationAliases;
     }
 }
