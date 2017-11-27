@@ -64,7 +64,6 @@ public class CommandManager {
         //general
         CommandHandler.addCommand(new CommandHelp("help", CommandCategory.GENERAL).addAliases("h"));
         CommandHandler.addCommand(new CommandInfo("info", CommandCategory.GENERAL).addAliases("inf"));
-        CommandHandler.addCommand(new CommandPing("ping", CommandCategory.GENERAL));
         CommandHandler.addCommand(new CommandSpeedTest("speedtest", CommandCategory.GENERAL).addAliases("st"));
         CommandHandler.addCommand(new CommandStatistics("statistics", CommandCategory.GENERAL).addAliases("stats"));
         CommandHandler.addCommand(new CommandInvite("invite", CommandCategory.GENERAL).addAliases("inv"));
