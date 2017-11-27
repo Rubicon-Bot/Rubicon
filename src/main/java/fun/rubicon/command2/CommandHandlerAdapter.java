@@ -17,24 +17,28 @@ import java.text.ParseException;
 
 /**
  * Adapter to register commands handlers from the old API.
+ *
  * @author tr808axm
- * @see fun.rubicon.command2.CommandHandler
+ * @see CommandHandler
  * @see Command
  */
 @SuppressWarnings("deprecation")
 public class CommandHandlerAdapter extends CommandHandler {
     private final Command oldCommand;
 
-    public CommandHandlerAdapter(Command command) {
-        super(allInvocationAliases(command), command.getCategory(), new PermissionRequirements(command.getPermissionLevel(), command.getCommand()));
-        this.oldCommand = command;
+    public CommandHandlerAdapter(Command oldCommand) {
+        super(allInvocationAliases(oldCommand), oldCommand.getCategory(),
+                new PermissionRequirements(oldCommand.getPermissionLevel(), oldCommand.getCommand()),
+                oldCommand.getDescription(), oldCommand.getUsage());
+        this.oldCommand = oldCommand;
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions permissions) {
         try {
             // re-create MessageReceivedEvent. response number should not be used in commands and can be set to a
-            oldCommand.call(parsedCommandInvocation.args, new MessageReceivedEvent(RubiconBot.getJDA(), -1, parsedCommandInvocation.invocationMessage));
+            oldCommand.call(parsedCommandInvocation.args, new MessageReceivedEvent(RubiconBot.getJDA(),
+                    -1, parsedCommandInvocation.invocationMessage));
         } catch (ParseException e) {
             throw new RuntimeException("Calling an old-API command caused a ParseException", e);
         }
@@ -44,6 +48,7 @@ public class CommandHandlerAdapter extends CommandHandler {
     /**
      * Combine main alias (former 'command') and secondary aliases (former 'aliases') into the invocationAliases
      * String array.
+     *
      * @param command the old command that the aliases are taken from.
      * @return invocationAliases string array.
      */
@@ -53,7 +58,7 @@ public class CommandHandlerAdapter extends CommandHandler {
         else {
             String[] allInvocationAliases = new String[command.getAliases() == null ? 1 : (command.getAliases().size() + 1)];
             allInvocationAliases[0] = command.getCommand();
-            for(int i = 0; i < command.getAliases().size(); i++)
+            for (int i = 0; i < command.getAliases().size(); i++)
                 allInvocationAliases[i + 1] = command.getAliases().get(i);
             return allInvocationAliases;
         }
