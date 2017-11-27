@@ -22,7 +22,6 @@ public class ListenerManager {
     }
 
     private void initListener() {
-        b.addEventListener(new CommandListener());
         b.addEventListener(new SelfMentionListener());
         b.addEventListener(new SQLPreventDisconnect());
         b.addEventListener(new AutoroleExecutor());

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Rubicon Dev Team
+ * Copyright (c) 2017 Rubicon Bot Development Team
  *
  * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
  */
@@ -7,7 +7,9 @@
 package fun.rubicon;
 
 import fun.rubicon.commands.tools.CommandVote;
-import fun.rubicon.core.*;
+import fun.rubicon.core.CommandManager;
+import fun.rubicon.core.GameAnimator;
+import fun.rubicon.core.ListenerManager;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -18,16 +20,20 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Rubicon-bot's main class. Initializes all components.
  * @author tr808axm
  */
 public class RubiconBot {
+    private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
     private static final String[] CONFIG_KEYS = {"token","mysql_host","mysql_port","mysql_database","mysql_password","mysql_user","bitlytoken"};
     private static RubiconBot instance;
     private final MySQL mySQL;
     private final Configuration configuration;
+    private final fun.rubicon.command2.CommandManager commandManager;
     private JDA jda;
 
     /**
@@ -40,11 +46,15 @@ public class RubiconBot {
 
         // load configuration and obtain missing config values
         configuration = new Configuration(new File(Info.CONFIG_FILE));
-        for (String configKey : CONFIG_KEYS)
-            if(!configuration.has(configKey)){
+        for (String configKey : CONFIG_KEYS) {
+            if (!configuration.has(configKey)) {
                 String input = Setup.prompt(configKey);
                 configuration.set(configKey, input);
             }
+        }
+
+        commandManager = new fun.rubicon.command2.CommandManager();
+        registerCommandHandlers();
 
         // init JDA
         initJDA();
@@ -75,8 +85,10 @@ public class RubiconBot {
         builder.setToken(instance.configuration.getString("token"));
         builder.setGame(Game.of(Info.BOT_NAME + " " + Info.BOT_VERSION));
 
+        // Register command manager (chat listener)
+        builder.addEventListener(instance.commandManager);
+
         new ListenerManager(builder);
-        new CommandManager();
 
         try {
             instance.jda = builder.buildBlocking();
@@ -90,6 +102,19 @@ public class RubiconBot {
         for (Guild guild : instance.jda.getGuilds())
             runningOnServers.append("\t- ").append(guild.getName()).append("(").append(guild.getId()).append(")\n");
         Logger.info(runningOnServers.toString());
+    }
+
+    /**
+     * Registers all command handlers used in this project.
+     * @see fun.rubicon.command2.CommandManager
+     */
+    private void registerCommandHandlers() {
+        // Usage: commandManager.registerCommandHandler(yourCommandHandler...);
+
+
+        // also register commands from the old framework
+        //noinspection deprecation
+        new CommandManager();
     }
 
     /**
@@ -111,5 +136,19 @@ public class RubiconBot {
      */
     public static JDA getJDA() {
         return instance == null ? null : instance.jda;
+    }
+
+    /**
+     * @return the CommandManager.
+     */
+    public static fun.rubicon.command2.CommandManager getCommandManager() {
+        return instance == null ? null : instance.commandManager;
+    }
+
+    /**
+     * @return a freshly generated timestamp.
+     */
+    public static String getNewTimestamp() {
+        return timeStampFormatter.format(new Date());
     }
 }
