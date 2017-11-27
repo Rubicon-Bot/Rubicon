@@ -189,8 +189,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "0":
                         if(RandomRouletteNumber == 0){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -200,8 +200,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "1":
                         if(RandomRouletteNumber == 1){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -211,8 +211,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "2":
                         if(RandomRouletteNumber == 2){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -222,8 +222,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "3":
                         if(RandomRouletteNumber == 3){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -233,8 +233,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "4":
                         if(RandomRouletteNumber == 4){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -244,8 +244,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "5":
                         if(RandomRouletteNumber == 5){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -255,8 +255,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "6":
                         if(RandomRouletteNumber == 6){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -266,8 +266,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "7":
                         if(RandomRouletteNumber == 7){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -277,8 +277,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "8":
                         if(RandomRouletteNumber == 8){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -288,8 +288,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "9":
                         if(RandomRouletteNumber == 9){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -299,8 +299,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "10":
                         if(RandomRouletteNumber == 10){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -310,8 +310,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "11":
                         if(RandomRouletteNumber == 11){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -321,8 +321,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "12":
                         if(RandomRouletteNumber == 12){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -332,8 +332,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "13":
                         if(RandomRouletteNumber == 13){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -343,8 +343,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "14":
                         if(RandomRouletteNumber == 14){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -354,8 +354,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "15":
                         if(RandomRouletteNumber == 15){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -365,8 +365,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "16":
                         if(RandomRouletteNumber == 16){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -376,8 +376,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "17":
                         if(RandomRouletteNumber == 17){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -387,8 +387,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "18":
                         if(RandomRouletteNumber == 18){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -398,8 +398,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "19":
                         if(RandomRouletteNumber == 19){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -409,8 +409,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "20":
                         if(RandomRouletteNumber == 20){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -420,8 +420,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "21":
                         if(RandomRouletteNumber == 21){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -431,8 +431,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "22":
                         if(RandomRouletteNumber == 22){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -442,8 +442,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "23":
                         if(RandomRouletteNumber == 23){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -453,8 +453,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "24":
                         if(RandomRouletteNumber == 24){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -464,8 +464,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "25":
                         if(RandomRouletteNumber == 25){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -475,8 +475,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "26":
                         if(RandomRouletteNumber == 26){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -486,8 +486,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "27":
                         if(RandomRouletteNumber == 27){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -497,8 +497,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "28":
                         if(RandomRouletteNumber == 28){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -508,8 +508,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "29":
                         if(RandomRouletteNumber == 29){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -519,8 +519,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "30":
                         if(RandomRouletteNumber == 30){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -530,8 +530,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "31":
                         if(RandomRouletteNumber == 31){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -541,8 +541,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "32":
                         if(RandomRouletteNumber == 32){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -552,8 +552,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "33":
                         if(RandomRouletteNumber == 33){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -563,8 +563,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "34":
                         if(RandomRouletteNumber == 34){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -574,8 +574,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "35":
                         if(RandomRouletteNumber == 35){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
@@ -585,8 +585,8 @@ public class CommandRoulette extends Command {
                         break;
                     case "36":
                         if(RandomRouletteNumber == 36){
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *35) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*35);
+                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money *36) + " Ruby. :tada:");
+                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money)*36);
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(),"money",String.valueOf(new_user_has_money4));
                         }else{
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
