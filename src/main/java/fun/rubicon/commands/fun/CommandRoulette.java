@@ -3,6 +3,7 @@ package fun.rubicon.commands.fun;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
+import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.core.minigames.RouletteNumber;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 

@@ -106,6 +106,8 @@ public class CommandManager extends ListenerAdapter {
                 ? RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix")
                 : Info.BOT_DEFAULT_PREFIX;
 
+
+        //Logger.debug("prefix: " + prefix + " | content: " + message.getContent());
         // resolve messages with '<server-bot-prefix>majorcommand [arguments...]'
         if(message.getContent().startsWith(prefix)) {
             // cut off command prefix
