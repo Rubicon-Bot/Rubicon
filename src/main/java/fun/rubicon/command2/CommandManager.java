@@ -30,6 +30,11 @@ public class CommandManager extends ListenerAdapter {
 
     private final Map<String, CommandHandler> commandAssociations = new HashMap<>();
 
+    /**
+     * Registers multiple CommandHandlers with their invocation aliases.
+     *
+     * @param commandHandlers the CommandHandlers to register.
+     */
     public void registerCommandHandlers(CommandHandler... commandHandlers) {
         for(CommandHandler commandHandler : commandHandlers)
             registerCommandHandler(commandHandler);
@@ -40,7 +45,7 @@ public class CommandManager extends ListenerAdapter {
      * @param commandHandler the {@link CommandHandler} to be registered.
      */
     public void registerCommandHandler(CommandHandler commandHandler) {
-        for(String invokeAlias : commandHandler.getInvokeAliases())
+        for (String invokeAlias : commandHandler.getInvocationAliases())
             // only register if alias is not taken
             if(commandAssociations.containsKey(invokeAlias.toLowerCase()))
                 Logger.error("WARNING: The '" + commandHandler.toString()
@@ -83,6 +88,10 @@ public class CommandManager extends ListenerAdapter {
             // send response message and delete it after defaultDeleteIntervalSeconds
             parsedCommandInvocation.invocationMessage.getChannel().sendMessage(response)
                     .queue(msg -> msg.delete().queueAfter(defaultDeleteIntervalSeconds, TimeUnit.SECONDS));
+
+        // delete invocation message
+        parsedCommandInvocation.invocationMessage.delete().queue(null, msg -> {
+        }); // suppress failure
     }
 
     /**
