@@ -71,7 +71,7 @@ public class Info {
     /**
      * Bot author long ids.
      */
-    public final static long[] BOT_AUTHOR_IDS = {
+    public final static Long[] BOT_AUTHOR_IDS = {
             227817074976751616L, // ForYaSee
             153507094933274624L, // Lee
             318773753796624394L, // Scryptex
