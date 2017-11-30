@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Maintains command invocation associations.
+ *
  * @author tr808axm
  */
 public class CommandManager extends ListenerAdapter {
@@ -31,18 +32,19 @@ public class CommandManager extends ListenerAdapter {
     private final Map<String, CommandHandler> commandAssociations = new HashMap<>();
 
     public void registerCommandHandlers(CommandHandler... commandHandlers) {
-        for(CommandHandler commandHandler : commandHandlers)
+        for (CommandHandler commandHandler : commandHandlers)
             registerCommandHandler(commandHandler);
     }
 
     /**
      * Registers a CommandHandler with it's invocation aliases.
+     *
      * @param commandHandler the {@link CommandHandler} to be registered.
      */
     public void registerCommandHandler(CommandHandler commandHandler) {
-        for(String invokeAlias : commandHandler.getInvokeAliases())
+        for (String invokeAlias : commandHandler.getInvokeAliases())
             // only register if alias is not taken
-            if(commandAssociations.containsKey(invokeAlias.toLowerCase()))
+            if (commandAssociations.containsKey(invokeAlias.toLowerCase()))
                 Logger.error("WARNING: The '" + commandHandler.toString()
                         + "' CommandHandler tried to register the alias '" + invokeAlias
                         + "' which is already taken by the '" + commandAssociations.get(invokeAlias).toString()
@@ -55,12 +57,13 @@ public class CommandManager extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent event) {
         super.onMessageReceived(event);
         ParsedCommandInvocation commandInvocation = parse(event.getMessage());
-        if(commandInvocation != null) // if it is a command invocation
+        if (commandInvocation != null) // if it is a command invocation
             call(commandInvocation);
     }
 
     /**
      * Call the CommandHandler for commandInvocation.
+     *
      * @param parsedCommandInvocation the parsed message.
      */
     public void call(ParsedCommandInvocation parsedCommandInvocation) {
@@ -87,6 +90,7 @@ public class CommandManager extends ListenerAdapter {
 
     /**
      * Parses a raw message into command components.
+     *
      * @param message the discord message to parse.
      * @return a {@link ParsedCommandInvocation} with the parsed arguments or null if the message could not be
      * resolved to a command.
@@ -98,7 +102,7 @@ public class CommandManager extends ListenerAdapter {
                 : Info.BOT_DEFAULT_PREFIX;
 
         // resolve messages with '<server-bot-prefix>majorcommand [arguments...]'
-        if(message.getContent().startsWith(prefix)) {
+        if (message.getContent().startsWith(prefix)) {
             // cut off command prefix
             String beheaded = message.getContent().substring(prefix.length(), message.getContent().length());
             // split arguments

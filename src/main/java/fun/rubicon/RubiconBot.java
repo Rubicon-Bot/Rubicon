@@ -110,8 +110,6 @@ public class RubiconBot {
      */
     private void registerCommandHandlers() {
         // Usage: commandManager.registerCommandHandler(yourCommandHandler...);
-
-
         // also register commands from the old framework
         //noinspection deprecation
         new CommandManager();
