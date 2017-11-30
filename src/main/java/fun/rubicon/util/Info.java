@@ -48,18 +48,6 @@ public class Info {
      * @deprecated use BOT_AUTHOR_IDS for identification instead.
      */
     @Deprecated
-<<<<<<< HEAD
-    public final static User[] BOT_AUTHORS = {
-            DiscordCore.getJDA().getUserById(227817074976751616L), //ForYaSee
-            DiscordCore.getJDA().getUserById(153507094933274624L), //Lee
-            DiscordCore.getJDA().getUserById(318773753796624394L), //Scryptex
-            DiscordCore.getJDA().getUserById(138014719582797824L), //xEiisKeksx
-            DiscordCore.getJDA().getUserById(264048760580079616L), //Schlaubi
-            DiscordCore.getJDA().getUserById(221905671296253953L), //Zekro
-            DiscordCore.getJDA().getUserById(224528662710452224L), //ForMoJa
-            DiscordCore.getJDA().getUserById(137263174675070976L)  //tr808axm
-    };
-=======
     public static User[] BOT_AUTHORS;
 
     // Suppress exceptions that *will* occur if this class is initialized before RubiconBot.initJDA() is called.
@@ -80,7 +68,6 @@ public class Info {
         }
     }
 
->>>>>>> master
     /**
      * Bot author long ids.
      */
@@ -88,7 +75,7 @@ public class Info {
             227817074976751616L, // ForYaSee
             153507094933274624L, // Lee
             318773753796624394L, // Scryptex
-            138014719582797824L, // xEiisKeksx
+            138014719582797824L, // Eiskeks
             264048760580079616L, // Schlaubi
             221905671296253953L, // Zekro
             224528662710452224L, // ForMoJa
