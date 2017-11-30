@@ -47,11 +47,7 @@ public class CommandManager extends ListenerAdapter {
      * @param commandHandler the {@link CommandHandler} to be registered.
      */
     public void registerCommandHandler(CommandHandler commandHandler) {
-<<<<<<< HEAD
-        for (String invokeAlias : commandHandler.getInvokeAliases())
-=======
         for (String invokeAlias : commandHandler.getInvocationAliases())
->>>>>>> master
             // only register if alias is not taken
             if (commandAssociations.containsKey(invokeAlias.toLowerCase()))
                 Logger.error("WARNING: The '" + commandHandler.toString()
