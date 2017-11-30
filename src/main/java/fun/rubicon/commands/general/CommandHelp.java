@@ -1,104 +1,89 @@
-package fun.rubicon.commands.general;
-
-import fun.rubicon.command.Command;
-import fun.rubicon.command.CommandCategory;
-import fun.rubicon.command.CommandHandler;
-import fun.rubicon.core.DiscordCore;
-import fun.rubicon.core.Main;
-import fun.rubicon.util.Colors;
-import fun.rubicon.util.Info;
-import fun.rubicon.util.MySQL;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-/**
- * Rubicon Discord bot
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
  *
- * @author Yannick Seeger / ForYaSee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.commands.general
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
  */
 
-public class CommandHelp extends Command {
+package fun.rubicon.commands.general;
 
-    public CommandHelp(String command, CommandCategory category) {
-        super(command, category);
+import fun.rubicon.RubiconBot;
+import fun.rubicon.command.CommandCategory;
+import fun.rubicon.command2.CommandHandler;
+import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionRequirements;
+import fun.rubicon.data.UserPermissions;
+import fun.rubicon.util.Colors;
+import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Message;
+
+import java.util.*;
+
+/**
+ * Handles the 'help' command which prints command description, aliases and usage.
+ * @author Yannick Seeger / ForYaSee, tr808axm
+ */
+public class CommandHelp extends CommandHandler {
+
+    public CommandHelp() {
+        super(new String[]{"help", "usage", "?", "command", "manual", "man"}, CommandCategory.GENERAL,
+                new PermissionRequirements(0, "command.help"),
+                "Shows the command manual.", "help [command]");
     }
 
     @Override
-    protected void execute(String[] args, MessageReceivedEvent e) {
-        MySQL SQL = Main.getMySQL();
-        if (args.length == 1 && CommandHandler.getCommands().containsKey(args[0].toLowerCase())) {
-            EmbedBuilder builder = new EmbedBuilder();
-            builder.setAuthor("Help - " + CommandHandler.getCommands().get(args[0].toLowerCase()).getCommand(), null, DiscordCore.getJDA().getSelfUser().getEffectiveAvatarUrl());
-            builder.setColor(Colors.COLOR_PRIMARY);
-            builder.addField("Description", CommandHandler.getCommands().get(args[0].toLowerCase()).getDescription(), false);
-            builder.addField("Usage", SQL.getGuildValue(e.getGuild(), "prefix") + CommandHandler.getCommands().get(args[0].toLowerCase()).getUsage(), false);
-            builder.addField("Aliases", CommandHandler.getCommands().get(args[0].toLowerCase()).getFormattedAliases(), false);
-            e.getTextChannel().sendMessage(builder.build()).queue(msg -> msg.delete().queueAfter(3, TimeUnit.MINUTES));
-        } else {
-            StringBuilder sbGeneral = new StringBuilder();
-            StringBuilder sbFun = new StringBuilder();
-            StringBuilder sbAdmin = new StringBuilder();
-            StringBuilder sbGuildOwner = new StringBuilder();
-            StringBuilder sbBotOwner = new StringBuilder();
-            StringBuilder sbSettings = new StringBuilder();
-            StringBuilder sbTools = new StringBuilder();
-
-            String pref = SQL.getGuildValue(e.getGuild(), "prefix");
-
-            for (Map.Entry<String, Command> c : CommandHandler.getCommands().entrySet()) {
-                if(c.getValue().getCategory().equals(CommandCategory.GENERAL)) {
-                    sbGeneral.append(pref + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
-                } else if(c.getValue().getCategory().equals(CommandCategory.FUN)) {
-                    sbFun.append(pref + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
-                } else if(c.getValue().getCategory().equals(CommandCategory.TOOLS)) {
-                    sbTools.append(pref + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
-                } else if(c.getValue().getCategory().equals(CommandCategory.ADMIN)) {
-                    sbAdmin.append(pref + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
-                } else if(c.getValue().getCategory().equals(CommandCategory.GUILD_OWNER)) {
-                    sbGuildOwner.append(pref + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
-                } else if(c.getValue().getCategory().equals(CommandCategory.BOT_OWNER)) {
-                    sbBotOwner.append(pref + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
-                } else if(c.getValue().getCategory().equals(CommandCategory.SETTINGS)) {
-                    sbBotOwner.append(pref + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
-                }
+    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        if (parsedCommandInvocation.args.length == 0) {
+            // show complete command manual
+            EmbedBuilder embedBuilder = new EmbedBuilder()
+                    .setColor(Colors.COLOR_SECONDARY)
+                    .setTitle(":information_source: Rubicon Bot command manual")
+                    .setDescription("Use `" + parsedCommandInvocation.serverPrefix
+                            + parsedCommandInvocation.invocationCommand + " <command>` to get a more detailed command help");
+            Map<CommandCategory, List<CommandHandler>> commandCategoryListMap = new HashMap<>();
+            for (CommandHandler commandHandler : RubiconBot.getCommandManager().getCommandAssociations().values()) {
+                if (!commandCategoryListMap.containsKey(commandHandler.getCategory()))
+                    commandCategoryListMap.put(commandHandler.getCategory(), new ArrayList<>());
+                List<CommandHandler> categoryList = commandCategoryListMap.get(commandHandler.getCategory());
+                if (!categoryList.contains(commandHandler))
+                    categoryList.add(commandHandler);
             }
-
-            EmbedBuilder builder = new EmbedBuilder();
-            builder.setColor(Colors.COLOR_SECONDARY);
-            builder.setAuthor(Info.BOT_NAME + " Help List", null, e.getJDA().getSelfUser().getEffectiveAvatarUrl());
-            builder.setDescription("--- Want more info? Use `" + pref + "help <command>` ---");
-            builder.addField("General", sbGeneral.toString(), false);
-            builder.addField("Fun", sbFun.toString(), false);
-            builder.addField("Tools", sbTools.toString(), false);
-            builder.addField("Admin", sbAdmin.toString(), false);
-            builder.addField("Server Owner", sbGuildOwner.toString(), false);
-            builder.addField("Bot Owner", sbBotOwner.toString(), false);
-            builder.addField("Settings", sbSettings.toString(), false);
-
-            builder.setFooter("Loaded Commands: " + CommandHandler.getCommands().entrySet().size(), null);
-
-            e.getAuthor().openPrivateChannel().queue(ch -> ch.sendMessage(builder.build()).queue());
+            for (Map.Entry<CommandCategory, List<CommandHandler>> categoryEntry : commandCategoryListMap.entrySet()) {
+                StringBuilder builder = new StringBuilder();
+                categoryEntry.getValue().forEach(handler -> builder.append('`').append(parsedCommandInvocation.serverPrefix)
+                        .append(handler.getUsage()).append("` — ").append(handler.getDescription()).append('\n'));
+                embedBuilder.addField(categoryEntry.getKey().getDisplayname() + " — "
+                        + categoryEntry.getValue().size(), builder.toString(), false);
+            }
+            embedBuilder.setFooter("Loaded a total of "
+                    + new HashSet<>(RubiconBot.getCommandManager().getCommandAssociations().values()).size()
+                    + " commands.", null);
+            parsedCommandInvocation.invocationMessage.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(new MessageBuilder().setEmbed(embedBuilder.build()).build()).queue());
+            return new MessageBuilder().setEmbed(new EmbedBuilder()
+                    .setColor(Colors.COLOR_PRIMARY)
+                    .setTitle(":white_check_mark: Command help sent")
+                    .setDescription("Check your private messages <@"
+                            + parsedCommandInvocation.invocationMessage.getAuthor().getId() + ">!")
+                    .build()).build();
+        } else {
+            CommandHandler handler = RubiconBot.getCommandManager().getCommandHandler(parsedCommandInvocation.args[0]);
+            return handler == null
+                    // invalid command
+                    ? new MessageBuilder().setEmbed(new EmbedBuilder()
+                    .setColor(Colors.COLOR_ERROR)
+                    .setTitle(":warning: Invalid command")
+                    .setDescription("There is no command named '" + parsedCommandInvocation.args[0] + "'. Use `"
+                            + parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand
+                            + "` to get a full command list.")
+                    .build()).build()
+                    // show command help for a single command
+                    : new MessageBuilder().setEmbed(new EmbedBuilder()
+                    .setColor(Colors.COLOR_SECONDARY)
+                    .setTitle(":information_source: '" + parsedCommandInvocation.invocationCommand + "' command help")
+                    .setDescription(handler.getDescription())
+                    .addField("Aliases", String.join(", ", handler.getInvocationAliases()), false)
+                    .addField("Usage", handler.getUsage(), false)
+                    .build()).build();
         }
-    }
-
-    @Override
-    public String getDescription() {
-        return "Shows all commands in a list.";
-    }
-
-    @Override
-    public String getUsage() {
-        return "help [command]";
-    }
-
-    @Override
-    public int getPermissionLevel() {
-        return 0;
     }
 }
