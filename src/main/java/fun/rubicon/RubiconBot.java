@@ -7,6 +7,7 @@
 package fun.rubicon;
 
 import fun.rubicon.commands.general.CommandPing;
+import fun.rubicon.commands.tools.CommandShorten;
 import fun.rubicon.commands.tools.CommandVote;
 import fun.rubicon.core.CommandManager;
 import fun.rubicon.core.GameAnimator;
@@ -112,6 +113,7 @@ public class RubiconBot {
     private void registerCommandHandlers() {
         // Usage: commandManager.registerCommandHandler(yourCommandHandler...);
         commandManager.registerCommandHandler(new CommandPing());
+        commandManager.registerCommandHandler(new CommandShorten());
 
         // also register commands from the old framework
         //noinspection deprecation
