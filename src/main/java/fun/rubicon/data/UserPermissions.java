@@ -71,7 +71,10 @@ public class UserPermissions {
         this(user, null);
     }
 
-    private void update() {
+    /**
+     * Updates all permission-related values.
+     */
+    public void update() {
         // prepare data sources
         Member discordMember = getDiscordMember();
 

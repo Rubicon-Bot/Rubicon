@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Rubicon Dev Team
+ * Copyright (c) 2017 Rubicon Bot Development Team
  *
  * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
  */
@@ -17,8 +17,18 @@ import java.util.Date;
  * @author ForYaSee, DerSchlaubi, LeeDJD, tr808axm
  */
 public class Info {
-
+    /**
+     * @deprecated Use Main.getConfiguration() directly instead.
+     */
+    @Deprecated
     static Configuration cfg = Main.getConfiguration();
+    /**
+     * Discord user ID of the bot application.
+     *
+     * @deprecated Bot should work on different applications, use RubiconBot.getJDA().getSelfUser().getIdLong() instead
+     * to resolve such conflicts.
+     */
+    @Deprecated
     public final static String BOT_ID = "380713705073147915";
     public final static String BOT_DEFAULT_PREFIX = "rc!";
     public static int reconnectCount = 0;
@@ -38,20 +48,30 @@ public class Info {
      * @deprecated use BOT_AUTHOR_IDS for identification instead.
      */
     @Deprecated
-    public final static User[] BOT_AUTHORS = {
-            DiscordCore.getJDA().getUserById(227817074976751616L), //ForYaSee
-            DiscordCore.getJDA().getUserById(153507094933274624L), //Lee
-            DiscordCore.getJDA().getUserById(318773753796624394L), //Scryptex
-            DiscordCore.getJDA().getUserById(138014719582797824L), //Eiskeks
-            DiscordCore.getJDA().getUserById(264048760580079616L), //Schlaubi
-            DiscordCore.getJDA().getUserById(221905671296253953L), //Zekro
-            DiscordCore.getJDA().getUserById(224528662710452224L), //ForMoJa
-            DiscordCore.getJDA().getUserById(137263174675070976L)  //tr808axm
-    };
+    public static User[] BOT_AUTHORS;
+
+    // Suppress exceptions that *will* occur if this class is initialized before RubiconBot.initJDA() is called.
+    static {
+        try {
+            BOT_AUTHORS = new User[]{
+                    DiscordCore.getJDA().getUserById(227817074976751616L), //ForYaSee
+                    DiscordCore.getJDA().getUserById(153507094933274624L), //Lee
+                    DiscordCore.getJDA().getUserById(318773753796624394L), //Scryptex
+                    DiscordCore.getJDA().getUserById(138014719582797824L), //Eiskeks
+                    DiscordCore.getJDA().getUserById(264048760580079616L), //Schlaubi
+                    DiscordCore.getJDA().getUserById(221905671296253953L), //Zekro
+                    DiscordCore.getJDA().getUserById(224528662710452224L), //ForMoJa
+                    DiscordCore.getJDA().getUserById(137263174675070976L)  //tr808axm
+            };
+        } catch (NullPointerException e) {
+            Logger.error("WARNING: Suppressed error in static data retrieval of the BOT_AUTHORS field in the Info class.");
+        }
+    }
+
     /**
      * Bot author long ids.
      */
-    public final static long[] BOT_AUTHOR_IDS = {
+    public final static Long[] BOT_AUTHOR_IDS = {
             227817074976751616L, // ForYaSee
             153507094933274624L, // Lee
             318773753796624394L, // Scryptex

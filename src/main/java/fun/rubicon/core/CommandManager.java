@@ -57,15 +57,12 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandChoose("choose", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandLevel("rank", CommandCategory.FUN).addAliases("lvl", "level"));
         CommandHandler.addCommand(new CommandBday("birthday", CommandCategory.FUN).addAliases("bday"));
-        CommandHandler.addCommand(new CommandShort("short", CommandCategory.TOOLS));
-        CommandHandler.addCommand(new CommandShort("short", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandRip("rip", CommandCategory.FUN).addAliases("tombstone"));
 
 
         //general
         CommandHandler.addCommand(new CommandHelp("help", CommandCategory.GENERAL).addAliases("h"));
         CommandHandler.addCommand(new CommandInfo("info", CommandCategory.GENERAL).addAliases("inf"));
-        CommandHandler.addCommand(new CommandPing("ping", CommandCategory.GENERAL));
         CommandHandler.addCommand(new CommandSpeedTest("speedtest", CommandCategory.GENERAL).addAliases("st"));
         CommandHandler.addCommand(new CommandStatistics("statistics", CommandCategory.GENERAL).addAliases("stats"));
         CommandHandler.addCommand(new CommandInvite("invite", CommandCategory.GENERAL).addAliases("inv"));
