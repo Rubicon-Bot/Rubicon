@@ -37,6 +37,10 @@ public class CommandRoulette extends Command {
             int user_set_money = 0;
             try {
                 user_set_money = Integer.parseInt(args[0]);
+                if(user_set_money == 0){
+                    sendErrorMessage(e.getAuthor().getAsMention() + " you have to bet more than 0 Ruby's!");
+                    return;
+                }
             } catch (NumberFormatException exception) {
                 return;
             }

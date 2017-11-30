@@ -42,7 +42,7 @@ public class Info {
             DiscordCore.getJDA().getUserById(227817074976751616L), //ForYaSee
             DiscordCore.getJDA().getUserById(153507094933274624L), //Lee
             DiscordCore.getJDA().getUserById(318773753796624394L), //Scryptex
-            DiscordCore.getJDA().getUserById(138014719582797824L), //Eiskeks
+            DiscordCore.getJDA().getUserById(138014719582797824L), //xEiisKeksx
             DiscordCore.getJDA().getUserById(264048760580079616L), //Schlaubi
             DiscordCore.getJDA().getUserById(221905671296253953L), //Zekro
             DiscordCore.getJDA().getUserById(224528662710452224L), //ForMoJa
@@ -55,7 +55,7 @@ public class Info {
             227817074976751616L, // ForYaSee
             153507094933274624L, // Lee
             318773753796624394L, // Scryptex
-            138014719582797824L, // Eiskeks
+            138014719582797824L, // xEiisKeksx
             264048760580079616L, // Schlaubi
             221905671296253953L, // Zekro
             224528662710452224L, // ForMoJa
