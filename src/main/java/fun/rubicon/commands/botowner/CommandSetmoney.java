@@ -24,13 +24,22 @@ public class CommandSetmoney extends Command {
         if(args.length == 2){
            try {
                user_set_money = Integer.parseInt(args[1]);
+               if(user_set_money >= 0){
+                   RubiconBot.getMySQL().updateUserValue(e.getMessage().getMentionedUsers().get(0),"money",String.valueOf(user_set_money));
+                   sendEmbededMessage("Money of "+ e.getMessage().getMentionedUsers().get(0).getAsMention() + " has been set to " + user_set_money + " Ruby's.");
+                   return;
+               }else{
+                   sendErrorMessage("Money value must be bigger than 0!");
+                   return;
+               }
+
            } catch (NumberFormatException exception) {
-               sendErrorMessage("The second value is not a number!");
+               sendErrorMessage("The second value is not a number or bigger than 2.147.483.647!");
                sendUsageMessage();
                return;
            }
-           RubiconBot.getMySQL().updateUserValue(e.getMessage().getMentionedUsers().get(0),"money",String.valueOf(user_set_money));
-           sendEmbededMessage("Money of "+ e.getMessage().getMentionedUsers().get(0).getAsMention() + " has been set to " + user_set_money + "Ruby's.");
+           //RubiconBot.getMySQL().updateUserValue(e.getMessage().getMentionedUsers().get(0),"money",String.valueOf(user_set_money));
+           //sendEmbededMessage("Money of "+ e.getMessage().getMentionedUsers().get(0).getAsMention() + " has been set to " + user_set_money + " Ruby's.");
        }else{
            sendErrorMessage("Only two arguments are needed!");
            sendUsageMessage();
