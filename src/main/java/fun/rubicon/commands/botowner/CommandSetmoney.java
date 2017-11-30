@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.commands.botowner;
 
 import fun.rubicon.RubiconBot;
@@ -7,14 +13,6 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.text.ParseException;
 
-/**
- * Rubicon Discord bot
- *
- * @author xEiisKeksx
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.commands.botowner
- */
 public class CommandSetmoney extends Command {
     public CommandSetmoney(String command, CommandCategory category) {
         super(command, category);
@@ -52,6 +50,6 @@ public class CommandSetmoney extends Command {
 
     @Override
     public int getPermissionLevel() {
-        return 3;
+        return 4;
     }
 }
