@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
  * @author tr808axm
  */
 public class CommandManager extends ListenerAdapter {
-    private static final long defaultDeleteIntervalSeconds = 15;
+    private static final long defaultDeleteIntervalSeconds = 20;
 
     private final Map<String, CommandHandler> commandAssociations = new HashMap<>();
 

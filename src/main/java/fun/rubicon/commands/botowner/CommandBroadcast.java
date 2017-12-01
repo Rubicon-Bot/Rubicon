@@ -9,48 +9,65 @@ package fun.rubicon.commands.botowner;
  * @package fun.rubicon.command
  */
 
-import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
+import fun.rubicon.command2.CommandHandler;
+import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionRequirements;
+import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
+import fun.rubicon.util.EmbedUtil;
+import fun.rubicon.util.Logger;
+import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.PrivateChannel;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 
-public class CommandBroadcast extends Command {
-    public CommandBroadcast(String command, CommandCategory category) {
-        super(command, category);
+import java.util.HashMap;
+import java.util.Map;
+
+public class CommandBroadcast extends CommandHandler {
+
+    public static Map<Long, String> awaitingConfirm = new HashMap<>();
+
+    public CommandBroadcast() {
+        super(new String[]{"broadcast"}, CommandCategory.BOT_OWNER,
+                new PermissionRequirements(4, "command.broadcast"),
+                "Sends a message to all guild owners.", "broadcast <message>");
     }
 
     @Override
-    protected void execute(String[] args, MessageReceivedEvent e) {
-        String b_message = "";
-        if(args.length<1)
-        {
-            sendUsageMessage();
-            return;
+    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        String[] args = parsedCommandInvocation.args;
+        if (args.length < 3) {
+            return new MessageBuilder().setEmbed(EmbedUtil.error("You have to use more arguments!", "Use at least 3 arguments.").build()).build();
         }
+        String ownerMessage = "";
+        for(String s : args)
+            ownerMessage += s + " ";
+        EmbedBuilder embedBuilder = new EmbedBuilder();
+        embedBuilder.setAuthor("Broadcast - Awaiting Confirmation", null, parsedCommandInvocation.invocationMessage.getJDA().getSelfUser().getEffectiveAvatarUrl());
+        embedBuilder.setDescription(ownerMessage);
+        embedBuilder.setColor(Colors.COLOR_PRIMARY);
+        Message confirmMessage = parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(embedBuilder.build()).complete();
+        confirmMessage.addReaction("✅").queue();
+        awaitingConfirm.put(confirmMessage.getIdLong(), ownerMessage);
+        return null;
+    }
 
-        for (String arg : args) {
-            b_message += arg + " ";
+    public static void handleReaction(MessageReactionAddEvent e) {
+        if(awaitingConfirm.containsKey(e.getMessageIdLong())) {
+            if(e.getReactionEmote().getName().equals("✅") && e.getUser() != e.getJDA().getSelfUser()) {
+                for(Guild guild : e.getJDA().getGuilds()) {
+                    EmbedBuilder embedBuilder = new EmbedBuilder();
+                    embedBuilder.setAuthor("Message from developers!", null, e.getJDA().getSelfUser().getEffectiveAvatarUrl());
+                    embedBuilder.setDescription(awaitingConfirm.get(e.getMessageIdLong()));
+                    embedBuilder.setColor(Colors.COLOR_ERROR);
+                    guild.getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(embedBuilder.build()).queue());
+                }
+                awaitingConfirm.remove(e.getMessageIdLong());
+                e.getTextChannel().deleteMessageById(e.getMessageId()).queue();
+            }
         }
-        for (Guild g : e.getJDA().getGuilds() ) {
-            PrivateChannel pc = g.getOwner().getUser().openPrivateChannel().complete();
-            sendEmbededMessage(pc,"Message from RubiconBot Dev-Team", Colors.COLOR_ERROR, b_message);
-        }
-    }
-
-    @Override
-    public String getDescription() {
-        return "Message to all botowners.";
-    }
-
-    @Override
-    public String getUsage() {
-        return "broadcast <message>";
-    }
-
-    @Override
-    public int getPermissionLevel() {
-        return 4;
     }
 }
