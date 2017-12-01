@@ -60,7 +60,7 @@ public class MemberLevelListener extends ListenerAdapter {
                 String l = (sql.getUserValue(event.getAuthor(), "level"));
                 int foo = Integer.parseInt(l);
                 //Level Up
-                //TODO Delete because spam?
+                //TODO Stop editing my classes
                 /*Message msg = event.getChannel().sendMessage(new EmbedBuilder()
                         .setDescription(event.getAuthor().getAsMention() + " ,wow you got a Level up to Level **" + sql.getUserValue(event.getAuthor(), "level") + "** !")
                         .build()
@@ -70,8 +70,8 @@ public class MemberLevelListener extends ListenerAdapter {
                 int High = 100;
                 int Result = r.nextInt(High - Low) + Low;
                 int ran = Math.round(Result);
-                int foa = foo * 2 / 3 + ran;
-                String m = String.valueOf(foa);
+                int foa = foo * 200 / 3 + ran;
+                String m = String.valueOf(Math.round(foa));
                 sql.updateUserValue(event.getAuthor(), "money", m);
 
                 /*new Timer().schedule(new TimerTask() {
