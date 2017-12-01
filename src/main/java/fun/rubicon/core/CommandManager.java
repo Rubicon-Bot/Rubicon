@@ -15,7 +15,10 @@ import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.botowner.*;
 import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
+<<<<<<< HEAD
 import fun.rubicon.commands.guildowner.CommandSettings;
+=======
+>>>>>>> a7440576e4f710547e44cff8d2d1b2d5f7b2825a
 import fun.rubicon.commands.tools.*;
 
 /**
@@ -39,7 +42,6 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandAutochannel("autochannel", CommandCategory.ADMIN).addAliases("ac", "autoc"));
 
         //BotOwner
-        CommandHandler.addCommand(new CommandRestart("restart", CommandCategory.BOT_OWNER).addAliases("r","re", "rs"));
         CommandHandler.addCommand(new CommandStop("stop", CommandCategory.BOT_OWNER).addAliases("terminate"));
         CommandHandler.addCommand(new CommandEval("eval", CommandCategory.BOT_OWNER).addAliases("e"));
         CommandHandler.addCommand(new CommandSetmoney("setmoney", CommandCategory.BOT_OWNER).addAliases("moneyset"));
@@ -68,8 +70,6 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandDonatemoney("donatemoney", CommandCategory.GENERAL).addAliases("moneydonate", "domo", "modo"));
 
 
-        //Guildowner
-        CommandHandler.addCommand(new CommandSettings("settings", CommandCategory.GUILD_OWNER));
 
 
         //Tools
