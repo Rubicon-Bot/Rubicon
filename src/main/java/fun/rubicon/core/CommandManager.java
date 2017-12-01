@@ -72,8 +72,6 @@ public class CommandManager {
         //Guildowner
         CommandHandler.addCommand(new CommandSettings("settings", CommandCategory.GUILD_OWNER));
 
-        //Settings
-        CommandHandler.addCommand(new CommandPrefix("prefix", CommandCategory.SETTINGS).addAliases("pref"));
 
         //Tools
         CommandHandler.addCommand(new CommandClear("clear", CommandCategory.TOOLS).addAliases("purge"));
