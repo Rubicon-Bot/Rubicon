@@ -12,10 +12,7 @@ import fun.rubicon.commands.admin.CommandAutochannel;
 import fun.rubicon.commands.admin.CommandGivaway;
 import fun.rubicon.commands.admin.CommandPermission;
 import fun.rubicon.commands.admin.CommandPortal;
-import fun.rubicon.commands.botowner.CommandBroadcast;
-import fun.rubicon.commands.botowner.CommandEval;
-import fun.rubicon.commands.botowner.CommandRestart;
-import fun.rubicon.commands.botowner.CommandStop;
+import fun.rubicon.commands.botowner.*;
 import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.guildowner.CommandPrefix;
@@ -47,6 +44,8 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandRestart("restart", CommandCategory.BOT_OWNER).addAliases("r","re", "rs"));
         CommandHandler.addCommand(new CommandStop("stop", CommandCategory.BOT_OWNER).addAliases("terminate"));
         CommandHandler.addCommand(new CommandEval("eval", CommandCategory.BOT_OWNER).addAliases("e"));
+        CommandHandler.addCommand(new CommandSetmoney("setmoney", CommandCategory.BOT_OWNER).addAliases("moneyset"));
+
 
         //Fun
         //CommandHandler.addCommand(new CommandJoke("joke", CommandCategory.FUN));
@@ -57,6 +56,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandLevel("rank", CommandCategory.FUN).addAliases("lvl", "level"));
         CommandHandler.addCommand(new CommandBday("birthday", CommandCategory.FUN).addAliases("bday"));
         CommandHandler.addCommand(new CommandRip("rip", CommandCategory.FUN).addAliases("tombstone"));
+        CommandHandler.addCommand(new CommandRoulette("roulette", CommandCategory.BOT_OWNER).addAliases("roulete","rulette", "roullete"));
 
 
         //general
@@ -67,6 +67,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandBug("bug", CommandCategory.GENERAL));
         CommandHandler.addCommand(new CommandFeedback("feedback", CommandCategory.GENERAL).addAliases("fedback"));
         CommandHandler.addCommand(new CommandMusic("music", CommandCategory.GENERAL).addAliases("m"));
+        CommandHandler.addCommand(new CommandDonatemoney("donatemoney", CommandCategory.GENERAL).addAliases("moneydonate", "domo", "modo"));
 
 
         //Guildowner

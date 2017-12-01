@@ -742,7 +742,7 @@ public class CommandMusic extends Command {
 
     @Override
     public String getDescription() {
-        return null;
+        return "Plays your music from YouTube, SoundCloud, Twitch or BandCamp.";
     }
 
     @Override
