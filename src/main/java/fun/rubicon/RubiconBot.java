@@ -6,6 +6,11 @@
 
 package fun.rubicon;
 
+<<<<<<< HEAD
+=======
+import fun.rubicon.commands.botowner.CommandBroadcast;
+import fun.rubicon.commands.fun.CommandSlot;
+>>>>>>> foryasee2
 import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandPing;
 import fun.rubicon.commands.settings.CommandPrefix;
@@ -117,7 +122,12 @@ public class RubiconBot {
         commandManager.registerCommandHandler(new CommandPing());
         commandManager.registerCommandHandler(new CommandShorten());
         commandManager.registerCommandHandler(new CommandHelp());
+<<<<<<< HEAD
         commandManager.registerCommandHandlers(new CommandPrefix());
+=======
+        commandManager.registerCommandHandler(new CommandSlot());
+        commandManager.registerCommandHandler(new CommandBroadcast());
+>>>>>>> foryasee2
 
         // also register commands from the old framework
         //noinspection deprecation
