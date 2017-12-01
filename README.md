@@ -22,10 +22,11 @@
   - **General**
     - `rc!ping` - Checking Bot ping.
     - `rc!help` - Shows all commands in a list.
-    - `rc!invite` - null
+    - `rc!invite` - Show the Invite for the Bot and his Support Server
     - `rc!speedtest` - Do a Speedtest of the Bot Connection
     - `rc!info` - Shows some information about the bot!
     - `rc!statistics` - Sends bot stats.
+    - `rc!music` - Play Music.Youtube, Soundcloud and InternetRadio supported. 
   - **Fun**
     - `rc!roll` - Roll the dice.
     - `rc!joke` - Sends some (funny) jokes.
@@ -37,11 +38,13 @@
     - `rc!say` - Say some things with the bot!
     - `rc!search` - Searches for users, roles and channels with a specified name.
     - `rc!userinfo` - Returns some information about the specified user
+    - `rc!guildinfo` - Returns some information about the Guild
+    - `rc!vote` -Creates a Vote where you can vote with Reactions.
   - **Admin**
     - `rc!permission` - Manages permissions of a user or a role.
   - **Server owner**
     - `rc!settings` - Set up Guild specific Settings!
-    - `rc!startup` - Starts the Bot on a Guild if the Category gets Deleted or something got fucked up!
+    - `rc!prefix`- Set the Guild Prefix!
   - **Bot owner**
     - `rc!broadcast` - Inform all Serverowner.
     - `rc!restart` - Restarts the Bot and Reconnect the database
