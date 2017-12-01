@@ -36,7 +36,7 @@ public class CommandGoogle extends Command{
         }
 
         if (!e.getTextChannel().isNSFW()) {
-            sendErrorMessage("Sorry. Google-Search is only allowed in Channels with active NSFW filter ");
+            sendErrorMessage("Sorry. Google-Search is only allowed in Channels with active NSFW filter.");
             return;
         }
 

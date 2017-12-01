@@ -57,6 +57,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandBday("birthday", CommandCategory.FUN).addAliases("bday"));
         CommandHandler.addCommand(new CommandRip("rip", CommandCategory.FUN).addAliases("tombstone"));
         CommandHandler.addCommand(new CommandRoulette("roulette", CommandCategory.BOT_OWNER).addAliases("roulete","rulette", "roullete"));
+        CommandHandler.addCommand(new CommandSlot("slot", CommandCategory.BOT_OWNER).addAliases("slots"));
 
 
         //general

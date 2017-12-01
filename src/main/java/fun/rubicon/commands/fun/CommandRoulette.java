@@ -676,13 +676,10 @@ public class CommandRoulette extends Command {
     }
 
     private void sendHelpMessage(MessageReceivedEvent event) {
-
-        String pre = Info.BOT_DEFAULT_PREFIX;
-
-        event.getTextChannel().sendMessage(
+           event.getTextChannel().sendMessage(
                 new EmbedBuilder()
                         .setColor(new Color(22, 138, 233))
-                        .setDescription("__**BETTING OPTIONS FOR ROULETTE**__\n`" + pre +"roulette <money> <bet option>`\n\n\n")
+                        .setDescription("__**BETTING OPTIONS FOR ROULETTE**__\n`" + "roulette <money> <bet option>`\n\n\n")
 
                         .addField("Winning multiplicator: x2",
                                 "`<bet option>:`  **even** - All numbers that are winning with this option:\n" +
