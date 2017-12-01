@@ -747,7 +747,7 @@ public class CommandMusic extends Command {
 
     @Override
     public String getUsage() {
-        return null;
+        return "music";
     }
 
     @Override

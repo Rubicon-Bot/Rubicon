@@ -15,6 +15,10 @@ import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.botowner.*;
 import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
+<<<<<<< HEAD
+import fun.rubicon.commands.guildowner.CommandSettings;
+=======
+>>>>>>> a7440576e4f710547e44cff8d2d1b2d5f7b2825a
 import fun.rubicon.commands.tools.*;
 
 /**
