@@ -30,7 +30,16 @@ public class CommandGoogle extends Command{
     }
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
-        if (args.length < 1) {e.getTextChannel().sendMessage(getUsage()); return;}
+        if (args.length < 1) {
+            e.getTextChannel().sendMessage(getUsage());
+            return;
+        }
+
+        if (!e.getTextChannel().isNSFW()) {
+            sendErrorMessage("Sorry. Google-Search is only allowed in Channels with active NSFW filter.");
+            return;
+        }
+
         String query = "";
         for (String arg : args) {
             query += " " + arg;
@@ -61,9 +70,10 @@ public class CommandGoogle extends Command{
                 continue; // Ads/news/etc.
             }
 
-            ttemp = ttemp + link.text() + link.baseUri() +  "\n";
+            ttemp = ttemp + link.text() + link.baseUri() + "\n";
 
         }
+
         sendEmbededMessage("Search Results for **" + query + "**:\n" + ttemp);
     }
 

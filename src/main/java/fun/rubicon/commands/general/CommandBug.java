@@ -10,14 +10,14 @@ import net.dv8tion.jda.core.exceptions.PermissionException;
 
 import java.text.ParseException;
 
-public class CommandBug extends Command{
+public class CommandBug extends Command {
     public CommandBug(String command, CommandCategory category) {
         super(command, category);
     }
 
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) throws ParseException {
-        if (args.length<3) {
+        if (args.length < 3) {
             sendUsageMessage();
             return;
         }
@@ -28,15 +28,15 @@ public class CommandBug extends Command{
 
         try {
             e.getMessage().delete().queue();
-        }catch (PermissionException er){
-           PrivateChannel pc = e.getGuild().getOwner().getUser().openPrivateChannel().complete();
-           pc.sendMessage("Please give me MESSAGE_MANAGE permissions!").queue();
+        } catch (PermissionException er) {
+            PrivateChannel pc = e.getGuild().getOwner().getUser().openPrivateChannel().complete();
+            pc.sendMessage("Please give me MESSAGE_MANAGE permissions!").queue();
         }
         DiscordCore.getJDA().getTextChannelById("382231366064144384").sendMessage(
                 new EmbedBuilder()
-                .setAuthor(e.getAuthor().getName()+"#"+e.getAuthor().getDiscriminator(), null, e.getAuthor().getAvatarUrl())
-                .setDescription("**New Bug Detected!**\n```fix\n" + text + "```")
-                .build()
+                        .setAuthor(e.getAuthor().getName() + "#" + e.getAuthor().getDiscriminator(), null, e.getAuthor().getAvatarUrl())
+                        .setDescription("**New Bug Detected!**\n```fix\n" + text + "```")
+                        .build()
         ).queue();
         sendEmbededMessage("Successfully send the Bug to Head Developers");
     }

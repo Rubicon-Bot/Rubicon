@@ -1,21 +1,37 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.util;
 
 import java.awt.*;
 
 /**
- * Rubicon Discord bot
+ * Side-colors for embedded messages.
  *
  * @author Yannick Seeger / ForYaSee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.util
  */
-
 public class Colors {
-
+    /**
+     * Standard messages containing information like successful command responses.
+     */
     public static Color COLOR_PRIMARY = new Color(46, 204, 113);
+    /**
+     * For messages containing additional information.
+     */
     public static Color COLOR_SECONDARY = new Color(41, 128, 185);
+    /**
+     * For error messages that are not defined in further purpose.
+     */
     public static Color COLOR_ERROR = new Color(231, 76, 60);
+    /**
+     * For permission-related error messages.
+     */
     public static Color COLOR_NO_PERMISSION = new Color(75, 31, 94);
+    /**
+     * For (yet) unimplemented features.
+     */
     public static Color COLOR_NOT_IMPLEMENTED = new Color(243, 156, 18);
 }
