@@ -155,6 +155,7 @@ public class MySQL {
     }
 
     public String getRoleValue(Role role, String type) {
+        createRoleIfNecessary(role);
         try {
             if (connection.isClosed())
                 connect();
@@ -169,6 +170,15 @@ public class MySQL {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * Creates a Role if it is not already in the database. Used to ensure data.
+     * @param role the Role to check and create.
+     */
+    private void createRoleIfNecessary(Role role) {
+        if(!ifRoleExist(role))
+            createRole(role);
     }
 
     public void createRole(Role role) {
@@ -211,6 +221,7 @@ public class MySQL {
     }
 
     public String getMemberValue(Member member, String type) {
+        createMemberIfNecessary(member);
         try {
             if (connection.isClosed())
                 connect();
@@ -226,6 +237,15 @@ public class MySQL {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * Creates a Member if it is not already in the database. Used to ensure data.
+     * @param member the Member to check and create.
+     */
+    private void createMemberIfNecessary(Member member) {
+        if(!ifMemberExist(member))
+            createMember(member);
     }
 
     public void createMember(Member member) {
@@ -277,6 +297,7 @@ public class MySQL {
     }
 
     public String getUserValue(User user, String type) {
+        createUserIfNecessary(user);
         try {
             if (connection.isClosed())
                 connect();
@@ -291,6 +312,15 @@ public class MySQL {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * Creates a User if it is not already in the database. Used to ensure data.
+     * @param user the User to check and create.
+     */
+    private void createUserIfNecessary(User user) {
+        if(!ifUserExist(user))
+            createUser(user);
     }
 
     public void createUser(User user) {
@@ -365,6 +395,7 @@ public class MySQL {
     }
 
     public String getGuildValue(Guild guild, String type) {
+        createGuildIfNecessary(guild);
         try {
             if (connection.isClosed())
                 connect();
@@ -379,6 +410,15 @@ public class MySQL {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * Creates a guild if it is not already in the database. Used to ensure data.
+     * @param guild the Guild to check and create.
+     */
+    private void createGuildIfNecessary(Guild guild) {
+        if(!ifGuildExits(guild))
+            createGuildServer(guild);
     }
 
     public void createGuildServer(Guild guild) {
