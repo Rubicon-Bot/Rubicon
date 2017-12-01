@@ -19,7 +19,7 @@ public class CommandPrefix extends CommandHandler{
     public CommandPrefix() {
         super(new String[]{"prefix", "pr"}, CommandCategory.SETTINGS,
                 new PermissionRequirements(3, "command.prefix"),
-                "Set the Server Prefix!", "prefix NEWPREFIX");
+                "Set the Server Prefix!", "prefix <prefix>");
     }
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation p, UserPermissions userPermissions) {

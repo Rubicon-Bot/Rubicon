@@ -15,10 +15,6 @@ import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.botowner.*;
 import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
-<<<<<<< HEAD
-import fun.rubicon.commands.guildowner.CommandSettings;
-=======
->>>>>>> a7440576e4f710547e44cff8d2d1b2d5f7b2825a
 import fun.rubicon.commands.tools.*;
 
 /**
@@ -48,13 +44,12 @@ public class CommandManager {
 
 
         //Fun
-        //CommandHandler.addCommand(new CommandJoke("joke", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandLmgtfy("lmgtfy", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandRoll("roll", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandColor("color", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandChoose("choose", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandLevel("rank", CommandCategory.FUN).addAliases("lvl", "level"));
-        CommandHandler.addCommand(new CommandBday("birthday", CommandCategory.FUN).addAliases("bday"));
+        //CommandHandler.addCommand(new CommandBday("birthday", CommandCategory.FUN).addAliases("bday"));
         CommandHandler.addCommand(new CommandRip("rip", CommandCategory.FUN).addAliases("tombstone"));
         CommandHandler.addCommand(new CommandRoulette("roulette", CommandCategory.BOT_OWNER).addAliases("roulete","rulette", "roullete"));
 
