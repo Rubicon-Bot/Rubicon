@@ -43,7 +43,7 @@ public class EmbedUtil {
      * @return the generated EmbedBuilder.
      */
     public static EmbedBuilder error() {
-        return error("Unknown error", "Am unknown error occurred.");
+        return error("Unknown error", "An unknown error occurred.");
     }
 
     /**
