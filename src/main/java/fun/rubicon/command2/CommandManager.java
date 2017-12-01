@@ -107,14 +107,14 @@ public class CommandManager extends ListenerAdapter {
     private static ParsedCommandInvocation parse(Message message) {
         // get server prefix
         String prefix = message.getChannelType() == ChannelType.TEXT
-                ? RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix")
-                : Info.BOT_DEFAULT_PREFIX;
+                ? RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix").toLowerCase()
+                : Info.BOT_DEFAULT_PREFIX.toLowerCase();
 
 
         //Logger.debug("prefix: " + prefix + " | content: " + message.getContent());
         // resolve messages with '<server-bot-prefix>majorcommand [arguments...]'
         
-        if (message.getContent().startsWith(prefix)) {
+        if (message.getContent().toLowerCase().startsWith(prefix.toLowerCase())) {
             // cut off command prefix
             String beheaded = message.getContent().substring(prefix.length(), message.getContent().length());
             // split arguments
