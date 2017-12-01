@@ -1,5 +1,6 @@
 package fun.rubicon.core;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.entities.Game;
@@ -30,23 +31,21 @@ public class GameAnimator {
         return text;
     }
 
-    private static String[] gameAnimations = {
-            "Running on " + DiscordCore.getJDA().getGuilds().size() + " servers!",
-            "Helping " + DiscordCore.getJDA().getUsers().stream().filter(u -> !u.isBot()).collect(Collectors.toList()).size() + " users!",
-            "JDA squad!",
-            Info.BOT_NAME + " " + Info.BOT_VERSION,
-            "Generating new features...",
-            CommandHandler.getCommands().size() + " Commands loaded",
-            "Blowing stuff up!",
-    };
-
     public static synchronized void start() {
         if (!running) {
             t = new Thread(() -> {
                 long last = 0;
                 while (running) {
                     if (System.currentTimeMillis() >= last + 60000) {
-                        DiscordCore.getJDA().getPresence().setGame(Game.of(gameAnimations[currentGame]));
+                        String[] gameAnimations = {
+                                "Running on " + RubiconBot.getJDA().getGuilds().size() + " servers!",
+                                "Helping " + RubiconBot.getJDA().getUsers().stream().filter(u -> !u.isBot()).collect(Collectors.toList()).size() + " users!",
+                                "JDA squad!",
+                                Info.BOT_NAME + " " + Info.BOT_VERSION,
+                                "Generating new features...",
+                                "Blowing stuff up!",
+                        };
+                        RubiconBot.getJDA().getPresence().setGame(Game.of(gameAnimations[currentGame]));
                         last = System.currentTimeMillis();
 
                         if (currentGame == gameAnimations.length - 1)

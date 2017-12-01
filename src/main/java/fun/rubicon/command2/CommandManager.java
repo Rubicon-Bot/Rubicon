@@ -111,6 +111,7 @@ public class CommandManager extends ListenerAdapter {
                 : Info.BOT_DEFAULT_PREFIX;
 
         // resolve messages with '<server-bot-prefix>majorcommand [arguments...]'
+        Logger.debug("Prefix: " + prefix);
         if (message.getContent().startsWith(prefix)) {
             // cut off command prefix
             String beheaded = message.getContent().substring(prefix.length(), message.getContent().length());

@@ -18,7 +18,6 @@ import fun.rubicon.commands.botowner.CommandRestart;
 import fun.rubicon.commands.botowner.CommandStop;
 import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
-import fun.rubicon.commands.guildowner.CommandBackup;
 import fun.rubicon.commands.guildowner.CommandPrefix;
 import fun.rubicon.commands.guildowner.CommandSettings;
 import fun.rubicon.commands.tools.*;
@@ -73,7 +72,6 @@ public class CommandManager {
 
         //Guildowner
         CommandHandler.addCommand(new CommandSettings("settings", CommandCategory.GUILD_OWNER));
-        CommandHandler.addCommand(new CommandBackup("backup", CommandCategory.GUILD_OWNER));
 
         //Settings
         CommandHandler.addCommand(new CommandPrefix("prefix", CommandCategory.SETTINGS).addAliases("pref"));
