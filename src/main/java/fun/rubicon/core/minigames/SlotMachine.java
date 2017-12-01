@@ -13,7 +13,7 @@ public class SlotMachine {
             ":bell:", ":football:", ":soccer:", ":8ball:",                  //trash   *2
             ":green_apple:", ":lemon:", ":strawberry:" , ":watermelon:",    //fruits  *2
             ":heart:", ":yellow_heart:", ":blue_heart:", ":green_heart:",   //hearts  *3
-            ":star2:", ":zap:"                                               //sky     *5
-                                                                            //RUBICON *8
+            ":star2:", ":zap:",                                             //sky     *5
+            ":diamonds:"                                                    //RUBICON *8
     };
 }
