@@ -15,7 +15,6 @@ import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.botowner.*;
 import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
-import fun.rubicon.commands.guildowner.CommandPrefix;
 import fun.rubicon.commands.guildowner.CommandSettings;
 import fun.rubicon.commands.tools.*;
 
