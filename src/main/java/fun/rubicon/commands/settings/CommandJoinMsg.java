@@ -18,12 +18,15 @@ public class CommandJoinMsg extends CommandHandler{
     }
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        //Check for args
         if (parsedCommandInvocation.args.length<=1)
             return new MessageBuilder().setEmbed(new EmbedBuilder().setDescription(getUsage()).build()).build();
+        //Make a String of all Args
         String temp = "";
         for (int i = 1; i < parsedCommandInvocation.args.length; i++) {
             temp += " " + parsedCommandInvocation.args[i];
         }
+        //Update MySql
         RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.invocationMessage.getGuild(), "joinmsg", temp.replaceFirst("null ", ""));
         String up = RubiconBot.getMySQL().getGuildValue(parsedCommandInvocation.invocationMessage.getGuild(), "joinmsg");
         return new MessageBuilder().setEmbed(new EmbedBuilder().setDescription(":white_check_mark:  Successfully set joinmessage to `" + up + "`!").build()).build();

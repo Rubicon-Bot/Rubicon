@@ -22,13 +22,16 @@ public class CommandChoose extends Command {
 
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
+        //Set some Var´s
         int chosenArg;
         String answer;
+        //Check args lenght
         if(args.length < 2)
         {
             sendUsageMessage();
             return;
         }
+        //Chose one of args
         chosenArg = ThreadLocalRandom.current().nextInt(0, args.length);
         answer = args[chosenArg];
         sendEmbededMessage("Rubicon chose ```" + answer + "``` for you.");

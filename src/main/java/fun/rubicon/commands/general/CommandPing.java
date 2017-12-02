@@ -32,6 +32,7 @@ public class CommandPing extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        //Returns a Message with Embed included
         return new MessageBuilder().setEmbed(new EmbedBuilder()
                 .setDescription("Ping: " + RubiconBot.getJDA().getPing() + "ms")
                 .setColor(Colors.COLOR_PRIMARY)

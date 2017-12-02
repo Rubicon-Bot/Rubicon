@@ -30,16 +30,17 @@ public class CommandGoogle extends Command{
     }
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
+        //check args
         if (args.length < 1) {
             e.getTextChannel().sendMessage(getUsage());
             return;
         }
-
+        //TODO check if Result is Nsfw
         if (!e.getTextChannel().isNSFW()) {
             sendErrorMessage("Sorry. Google-Search is only allowed in Channels with active NSFW filter.");
             return;
         }
-
+        //Generate query
         String query = "";
         for (String arg : args) {
             query += " " + arg;
@@ -56,7 +57,7 @@ public class CommandGoogle extends Command{
             e1.printStackTrace();
             //TODO error handling. links cant be processed if they dont exist.
         }
-
+        //Get Results of Serach to String
         for (Element link : links) {
             String title = link.text();
             String url = link.absUrl("href"); // Google returns URLs in format "http://www.google.com/url?q=<url>&sa=U&ei=<someKey>".
@@ -73,7 +74,7 @@ public class CommandGoogle extends Command{
             ttemp = ttemp + link.text() + link.baseUri() + "\n";
 
         }
-
+        //Send results
         sendEmbededMessage("Search Results for **" + query + "**:\n" + ttemp);
     }
 
