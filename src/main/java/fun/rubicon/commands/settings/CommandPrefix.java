@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class CommandPrefix extends CommandHandler{
     public CommandPrefix() {
         super(new String[]{"prefix", "pr"}, CommandCategory.SETTINGS,
-                new PermissionRequirements(3, "command.prefix"),
+                new PermissionRequirements(2, "command.prefix"),
                 "Set the Server Prefix!", "prefix <prefix>");
     }
     @Override
