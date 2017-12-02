@@ -21,7 +21,7 @@ import java.util.*;
 
 /**
  * Handles the 'help' command which prints command description, aliases and usage.
- * @author Yannick Seeger / ForYaSee, tr808axm
+ * @author Yannick Seeger, tr808axm
  */
 public class CommandHelp extends CommandHandler {
 
