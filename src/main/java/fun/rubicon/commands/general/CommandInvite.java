@@ -23,11 +23,14 @@ public class CommandInvite extends Command {
 
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
+        //Create EmbedBuilder
         EmbedBuilder builder = new EmbedBuilder();
+        //Set EmbedBuilder Values
         builder.setColor(Colors.COLOR_SECONDARY);
         builder.setAuthor(Info.BOT_NAME + " - Invite", null, e.getJDA().getSelfUser().getAvatarUrl());
         builder.setDescription("[Invite Rubicon Bot](https://discordapp.com/oauth2/authorize?client_id=380713705073147915&scope=bot&permissions=-1)\n" +
                 "[Join Rubicon Server](https://discord.gg/UrHvXY9)");
+        //Send Message with Embed
         e.getTextChannel().sendMessage(builder.build()).queue();
     }
 

@@ -29,11 +29,14 @@ public class CommandInfo extends Command {
 
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
+        //Set some Var´s
         EmbedBuilder builder = new EmbedBuilder();
         builder.setColor(Colors.COLOR_PRIMARY);
         builder.setAuthor(Info.BOT_NAME + " - Info", "https://rubicon.fun", e.getJDA().getSelfUser().getEffectiveAvatarUrl());
         builder.setThumbnail("https://cdn.discordapp.com/attachments/381176080494624768/381176148828356608/13079-thumb.jpg");
         StringBuilder authors = new StringBuilder();
+
+        //Append Id´s on StringBuilder
         for (long authorId : Info.BOT_AUTHOR_IDS) {
             User authorUser = RubiconBot.getJDA().getUserById(authorId);
             if (authorUser == null) // TODO use alternative way that does not need to have the authors in cache.
@@ -41,6 +44,7 @@ public class CommandInfo extends Command {
             else
                 authors.append(authorUser.getName()).append("#").append(authorUser.getDiscriminator()).append("\n");
         }
+        //Set the Embed Values
         builder.addField("Bot Name", Info.BOT_NAME, true);
         builder.addField("Bot Version", Info.BOT_VERSION, true);
         builder.addField("Website", "[Link](" + Info.BOT_WEBSITE + ")", true);
@@ -57,7 +61,7 @@ public class CommandInfo extends Command {
                 "[gson](https://github.com/google/gson)\n" +
                 "[jsoup](https://jsoup.org/)";
         builder.addField("Dependencies", dependencies, false);
-
+        //Send Message and delete it after 2 Minutes
         e.getTextChannel().sendMessage(builder.build()).queue(msg -> msg.delete().queueAfter(120, TimeUnit.SECONDS));
     }
 

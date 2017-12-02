@@ -106,32 +106,53 @@ public class CommandManager extends ListenerAdapter {
      */
     private static ParsedCommandInvocation parse(Message message) {
         // get server prefix
-        String prefix = message.getChannelType() == ChannelType.TEXT
+        String prefix = "";
+        String Prefix = Info.BOT_DEFAULT_PREFIX.toLowerCase();
+        /*String Prefix = message.getChannelType() == ChannelType.TEXT
                 ? RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix").toLowerCase()
-                : Info.BOT_DEFAULT_PREFIX.toLowerCase();
+                : Info.BOT_DEFAULT_PREFIX.toLowerCase();*/
+        //Get the Prefix from MySql
+        if(message.getChannelType() == ChannelType.TEXT){
+            if (RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix").toLowerCase() != Info.BOT_DEFAULT_PREFIX.toLowerCase()){
+            prefix = RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix").toLowerCase();
+        }else {
+                prefix = Info.BOT_DEFAULT_PREFIX.toLowerCase();
+            }
+
+        }
 
         //Logger.debug("prefix: " + prefix + " | content: " + message.getContent());
         // resolve messages with '<server-bot-prefix>majorcommand [arguments...]'
-        if (message.getContent().startsWith(prefix)) {
-            return buildParsedCommandInvocation(message, prefix);
-        } else if(message.getContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX)) {
-            return buildParsedCommandInvocation(message, Info.BOT_DEFAULT_PREFIX);
+        if (prefix == "")
+            return null;
+        //Parse with ServerPrefix
+        if (message.getContent().toLowerCase().startsWith(prefix.toLowerCase())) {
+            // cut off command prefix
+            String beheaded = message.getContent().substring(prefix.length(), message.getContent().length());
+            // split arguments
+            String[] allArgs = beheaded.split(" ");
+            // create an array of the actual command arguments (exclude invocation arg)
+            String[] args = new String[allArgs.length - 1];
+            System.arraycopy(allArgs, 1, args, 0, args.length);
+
+            return new ParsedCommandInvocation(message, prefix, allArgs[0], args);
         }
+        //Default Prefix
+        if (message.getContent().toLowerCase().startsWith(Prefix.toLowerCase())) {
+            // cut off command prefix
+            String beheaded = message.getContent().substring(Prefix.length(), message.getContent().length());
+            // split arguments
+            String[] allArgs = beheaded.split(" ");
+            // create an array of the actual command arguments (exclude invocation arg)
+            String[] args = new String[allArgs.length - 1];
+            System.arraycopy(allArgs, 1, args, 0, args.length);
+
+            return new ParsedCommandInvocation(message, Prefix, allArgs[0], args);
+        }
+        
         // TODO resolve messages with '@botmention majorcommand [arguments...]'
         // return null if no strategy could parse a command.
         return null;
-    }
-
-    private static ParsedCommandInvocation buildParsedCommandInvocation(Message message, String prefix) {
-        // cut off command prefix
-        String beheaded = message.getContent().substring(prefix.length(), message.getContent().length());
-        // split arguments
-        String[] allArgs = beheaded.split(" ");
-        // create an array of the actual command arguments (exclude invocation arg)
-        String[] args = new String[allArgs.length - 1];
-        System.arraycopy(allArgs, 1, args, 0, args.length);
-
-        return new ParsedCommandInvocation(message, prefix, allArgs[0], args);
     }
 
     /**

@@ -28,11 +28,13 @@ public class CommandSpeedTest extends Command{
 
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
+        //Set some Var´s and delete Message
         SpeedTestSocket DSpeed = new SpeedTestSocket();
         SpeedTestSocket USpeed = new SpeedTestSocket();
         StringBuilder sb = new StringBuilder();
         e.getMessage().delete().queue();
         Message msg = e.getTextChannel().sendMessage(new EmbedBuilder().setDescription("**Speedtest started...**\n\nTesting downstream...").build()).complete();
+        //Test DownStream
         DSpeed.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onCompletion(SpeedTestReport report) {
@@ -51,6 +53,7 @@ public class CommandSpeedTest extends Command{
             }
 
         });
+        //Test Upstream
         USpeed.addSpeedTestListener(new ISpeedTestListener() {
             @Override
             public void onCompletion(SpeedTestReport report) {
@@ -69,7 +72,7 @@ public class CommandSpeedTest extends Command{
             }
 
         });
-
+        //Url from where Test-File is downloaded
         DSpeed.startDownload("http://2.testdebit.info/10M.iso");
     }
 

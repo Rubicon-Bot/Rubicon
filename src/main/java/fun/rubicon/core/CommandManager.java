@@ -38,9 +38,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandAutochannel("autochannel", CommandCategory.ADMIN).addAliases("ac", "autoc"));
 
         //BotOwner
-        CommandHandler.addCommand(new CommandStop("stop", CommandCategory.BOT_OWNER).addAliases("terminate"));
         CommandHandler.addCommand(new CommandEval("eval", CommandCategory.BOT_OWNER).addAliases("e"));
-        CommandHandler.addCommand(new CommandSetmoney("setmoney", CommandCategory.BOT_OWNER).addAliases("moneyset"));
 
 
         //Fun
@@ -62,7 +60,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandBug("bug", CommandCategory.GENERAL));
         CommandHandler.addCommand(new CommandFeedback("feedback", CommandCategory.GENERAL).addAliases("fedback"));
         CommandHandler.addCommand(new CommandMusic("music", CommandCategory.GENERAL).addAliases("m"));
-        CommandHandler.addCommand(new CommandDonatemoney("donatemoney", CommandCategory.GENERAL).addAliases("moneydonate", "domo", "modo"));
+        //CommandHandler.addCommand(new CommandDonatemoney("givemoney", CommandCategory.GENERAL).addAliases("donatemoney", "domo", "modo"));
 
 
 

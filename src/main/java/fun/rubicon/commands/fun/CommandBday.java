@@ -35,6 +35,7 @@ public class CommandBday extends Command{
 
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) throws ParseException {
+        //TODO Recode?
         if (args.length < 1) {sendUsageMessage();
             return;
         }

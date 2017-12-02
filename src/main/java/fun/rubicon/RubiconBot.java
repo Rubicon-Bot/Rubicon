@@ -9,13 +9,13 @@ package fun.rubicon;
 import fun.rubicon.commands.admin.CommandBan;
 import fun.rubicon.commands.admin.CommandKick;
 import fun.rubicon.commands.botowner.CommandBroadcast;
+import fun.rubicon.commands.botowner.CommandSetmoney;
+import fun.rubicon.commands.botowner.CommandStop;
 import fun.rubicon.commands.fun.CommandSlot;
 import fun.rubicon.commands.botowner.CommandRestart;
 import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandPing;
-import fun.rubicon.commands.settings.CommandLogChannel;
-import fun.rubicon.commands.settings.CommandPrefix;
-import fun.rubicon.commands.settings.CommandWelcomeChannel;
+import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.CommandShorten;
 import fun.rubicon.commands.tools.CommandVote;
 import fun.rubicon.core.CommandManager;
@@ -62,7 +62,7 @@ public class RubiconBot {
                         configuration.set(configKey, input);
                     }
                 }
-
+                
         // load MySQL adapter
         mySQL = new MySQL(Info.MYSQL_HOST, Info.MYSQL_PORT, Info.MYSQL_USER, Info.MYSQL_PASSWORD, Info.MYSQL_DATABASE);
         mySQL.connect();
@@ -137,6 +137,10 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(new CommandRestart());
         commandManager.registerCommandHandler(new CommandKick());
         commandManager.registerCommandHandler(new CommandBan());
+        commandManager.registerCommandHandlers(new CommandToggleWelcome());
+        commandManager.registerCommandHandlers(new CommandJoinMsg());
+        commandManager.registerCommandHandlers(new CommandStop());
+        commandManager.registerCommandHandlers(new CommandSetmoney());
 
         // also register commands from the old framework
         //noinspection deprecation

@@ -34,22 +34,26 @@ public class CommandClear extends Command{
     }
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
+        //Delete Message and Get amount of Messages(If no number -> error)
         e.getMessage().delete().queue();
         if (args.length < 1) sendErrorMessage("Please give an amount of Messages!");
         int numb = getInt(args[0]);
+        //Check if amount is Ok for Discord API
         if(numb>= 2 && numb<=100){
             try{
+                //Try to get Messages of Channel
                 MessageHistory history = new MessageHistory(e.getChannel());
                 List<Message> messages;
                 messages = history.retrievePast(numb).complete();
                 e.getTextChannel().deleteMessages(messages).queue();
                 int number = numb-1;
+                //User Feedback
                 Message msg = e.getChannel().sendMessage(new EmbedBuilder()
                         .setColor(Colors.COLOR_PRIMARY)
                         .setDescription(":bomb: Deleted " + number + " Messages!")
                         .build()
                 ).complete();
-
+                //Delete User Feedback
                 new Timer().schedule(new TimerTask() {
                     @Override
                     public void run() {

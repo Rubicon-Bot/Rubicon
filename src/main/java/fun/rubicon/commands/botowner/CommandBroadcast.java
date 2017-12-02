@@ -22,7 +22,9 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CommandBroadcast extends CommandHandler {
@@ -56,13 +58,17 @@ public class CommandBroadcast extends CommandHandler {
 
     public static void handleReaction(MessageReactionAddEvent e) {
         if(awaitingConfirm.containsKey(e.getMessageIdLong())) {
+            List<Long> guildSent = new ArrayList<>();
             if(e.getReactionEmote().getName().equals("✅") && e.getUser() != e.getJDA().getSelfUser()) {
+                EmbedBuilder embedBuilder = new EmbedBuilder();
+                embedBuilder.setAuthor("Message from developers!", null, e.getJDA().getSelfUser().getEffectiveAvatarUrl());
+                embedBuilder.setDescription(awaitingConfirm.get(e.getMessageIdLong()));
+                embedBuilder.setColor(Colors.COLOR_ERROR);
                 for(Guild guild : e.getJDA().getGuilds()) {
-                    EmbedBuilder embedBuilder = new EmbedBuilder();
-                    embedBuilder.setAuthor("Message from developers!", null, e.getJDA().getSelfUser().getEffectiveAvatarUrl());
-                    embedBuilder.setDescription(awaitingConfirm.get(e.getMessageIdLong()));
-                    embedBuilder.setColor(Colors.COLOR_ERROR);
-                    guild.getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(embedBuilder.build()).queue());
+                    if(!guildSent.contains(guild.getIdLong())) {
+                        guild.getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(embedBuilder.build()).queue());
+                        guildSent.add(guild.getIdLong());
+                    }
                 }
                 awaitingConfirm.remove(e.getMessageIdLong());
                 e.getTextChannel().deleteMessageById(e.getMessageId()).queue();
