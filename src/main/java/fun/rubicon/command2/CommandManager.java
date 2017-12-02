@@ -107,6 +107,7 @@ public class CommandManager extends ListenerAdapter {
     private static ParsedCommandInvocation parse(Message message) {
         // get server prefix
         String prefix = "";
+        String Prefix = Info.BOT_DEFAULT_PREFIX.toLowerCase();
         /*String Prefix = message.getChannelType() == ChannelType.TEXT
                 ? RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix").toLowerCase()
                 : Info.BOT_DEFAULT_PREFIX.toLowerCase();*/
@@ -133,6 +134,17 @@ public class CommandManager extends ListenerAdapter {
             System.arraycopy(allArgs, 1, args, 0, args.length);
 
             return new ParsedCommandInvocation(message, prefix, allArgs[0], args);
+        }
+        if (message.getContent().toLowerCase().startsWith(Prefix.toLowerCase())) {
+            // cut off command prefix
+            String beheaded = message.getContent().substring(Prefix.length(), message.getContent().length());
+            // split arguments
+            String[] allArgs = beheaded.split(" ");
+            // create an array of the actual command arguments (exclude invocation arg)
+            String[] args = new String[allArgs.length - 1];
+            System.arraycopy(allArgs, 1, args, 0, args.length);
+
+            return new ParsedCommandInvocation(message, Prefix, allArgs[0], args);
         }
         
         // TODO resolve messages with '@botmention majorcommand [arguments...]'
