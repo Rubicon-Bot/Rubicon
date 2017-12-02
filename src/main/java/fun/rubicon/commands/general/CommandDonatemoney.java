@@ -27,7 +27,7 @@ public class CommandDonatemoney extends Command{
         int user_spend_money = 0;
         if(args.length == 2){
             try {
-                user_spend_money = Integer.parseInt(args[1]);
+                user_spend_money = Integer.parseInt(args[args.length-1]);
                 user1_has_money = Integer.parseInt(RubiconBot.getMySQL().getUserValue(e.getAuthor(),"money"));
                 user2_has_money = Integer.parseInt(RubiconBot.getMySQL().getUserValue(e.getMessage().getMentionedUsers().get(0),"money"));
                 if(user1_has_money < user_spend_money){
