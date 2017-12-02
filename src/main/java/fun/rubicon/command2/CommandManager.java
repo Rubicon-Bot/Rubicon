@@ -72,7 +72,7 @@ public class CommandManager extends ListenerAdapter {
      * @param parsedCommandInvocation the parsed message.
      */
     public void call(ParsedCommandInvocation parsedCommandInvocation) {
-        CommandHandler commandHandler = commandAssociations.get(parsedCommandInvocation.invocationCommand);
+        CommandHandler commandHandler = getCommandHandler(parsedCommandInvocation.invocationCommand);
         Message response;
         if (commandHandler == null)
             response = new MessageBuilder().setEmbed(new EmbedBuilder()
@@ -105,28 +105,19 @@ public class CommandManager extends ListenerAdapter {
      * resolved to a command.
      */
     private static ParsedCommandInvocation parse(Message message) {
-        // get server prefix
-        String prefix = "";
-        String Prefix = Info.BOT_DEFAULT_PREFIX.toLowerCase();
-        /*String Prefix = message.getChannelType() == ChannelType.TEXT
-                ? RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix").toLowerCase()
-                : Info.BOT_DEFAULT_PREFIX.toLowerCase();*/
-        //Get the Prefix from MySql
-        if(message.getChannelType() == ChannelType.TEXT){
-            if (RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix").toLowerCase() != Info.BOT_DEFAULT_PREFIX.toLowerCase()){
-            prefix = RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix").toLowerCase();
-        }else {
-                prefix = Info.BOT_DEFAULT_PREFIX.toLowerCase();
-            }
-
+        String prefix = null;
+        // react to default prefix: 'rc!<majorcommand> [arguments]'
+        if (message.getContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()))
+            prefix = Info.BOT_DEFAULT_PREFIX;
+            // react to custom server prefix: '<custom-server-prefix><majorcommand> [arguments...]'
+        else if (message.getChannelType() == ChannelType.TEXT) { // ensure bot is on a server
+            String serverPrefix = RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix");
+            if (message.getContent().toLowerCase().startsWith(serverPrefix.toLowerCase()))
+                prefix = serverPrefix;
         }
+        //TODO react to mentions: '<bot-mention> majorcommand [arguments]'
 
-        //Logger.debug("prefix: " + prefix + " | content: " + message.getContent());
-        // resolve messages with '<server-bot-prefix>majorcommand [arguments...]'
-        if (prefix == "")
-            return null;
-        //Parse with ServerPrefix
-        if (message.getContent().toLowerCase().startsWith(prefix.toLowerCase())) {
+        if (prefix != null) {
             // cut off command prefix
             String beheaded = message.getContent().substring(prefix.length(), message.getContent().length());
             // split arguments
@@ -137,22 +128,8 @@ public class CommandManager extends ListenerAdapter {
 
             return new ParsedCommandInvocation(message, prefix, allArgs[0], args);
         }
-        //Default Prefix
-        if (message.getContent().toLowerCase().startsWith(Prefix.toLowerCase())) {
-            // cut off command prefix
-            String beheaded = message.getContent().substring(Prefix.length(), message.getContent().length());
-            // split arguments
-            String[] allArgs = beheaded.split(" ");
-            // create an array of the actual command arguments (exclude invocation arg)
-            String[] args = new String[allArgs.length - 1];
-            System.arraycopy(allArgs, 1, args, 0, args.length);
-
-            return new ParsedCommandInvocation(message, Prefix, allArgs[0], args);
-        }
-        
-        // TODO resolve messages with '@botmention majorcommand [arguments...]'
-        // return null if no strategy could parse a command.
-        return null;
+        // else
+        return null; // = message is not a command
     }
 
     /**
@@ -160,7 +137,7 @@ public class CommandManager extends ListenerAdapter {
      * @return the associated CommandHandler or null if none is associated.
      */
     public CommandHandler getCommandHandler(String invocationAlias) {
-        return commandAssociations.get(invocationAlias);
+        return commandAssociations.get(invocationAlias.toLowerCase());
     }
 
     /**
