@@ -1,8 +1,16 @@
 package fun.rubicon.commands.botowner;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
+import fun.rubicon.command2.CommandHandler;
+import fun.rubicon.command2.CommandManager;
 import fun.rubicon.core.Main;
+import fun.rubicon.data.PermissionRequirements;
+import fun.rubicon.data.UserPermissions;
+import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 /**
@@ -14,32 +22,21 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
  * @package commands.botowner
  */
 
-public class CommandStop extends Command {
+public class CommandStop extends CommandHandler {
 
-    public CommandStop(String command, CommandCategory category) {
-        super(command, category);
+    public CommandStop() {
+        super(new String[]{"stop"}, CommandCategory.BOT_OWNER, new PermissionRequirements(4,"command.stop"),"Stops the bot.","stop");
     }
 
     @Override
-    protected void execute(String[] args, MessageReceivedEvent e) {
-        //TODO Saving Stuff?
-        Main.getMySQL().disconnect();
-        sendEmbededMessage(":battery: System Shutdown :battery:");
+    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        if (RubiconBot.getMySQL() != null) {
+            RubiconBot.getMySQL().disconnect();
+        }
+        parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(new EmbedBuilder().setDescription(":battery: System Shutdown :battery:").build()).queue();
         System.exit(0);
+        return null;
     }
 
-    @Override
-    public String getDescription() {
-        return "Stops the bot.";
-    }
 
-    @Override
-    public String getUsage() {
-        return "stop";
-    }
-
-    @Override
-    public int getPermissionLevel() {
-        return 4;
-    }
 }
