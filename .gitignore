@@ -142,3 +142,4 @@ buildNumber.properties
 src/META-INF/MANIFEST.MF
 config.json
 *.dat
+src/main/java/META-INF/MANIFEST.MF
