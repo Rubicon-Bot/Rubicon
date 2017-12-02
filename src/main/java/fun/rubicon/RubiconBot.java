@@ -61,7 +61,7 @@ public class RubiconBot {
                         configuration.set(configKey, input);
                     }
                 }
-                
+
         // load MySQL adapter
         mySQL = new MySQL(Info.MYSQL_HOST, Info.MYSQL_PORT, Info.MYSQL_USER, Info.MYSQL_PASSWORD, Info.MYSQL_DATABASE);
         mySQL.connect();
