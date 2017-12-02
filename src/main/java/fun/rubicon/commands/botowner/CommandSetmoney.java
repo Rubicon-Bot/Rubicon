@@ -21,9 +21,9 @@ public class CommandSetmoney extends Command {
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) throws ParseException {
         int user_set_money = 0;
-        if(args.length == 2){
+        if(args.length >= 2){
            try {
-               user_set_money = Integer.parseInt(args[1]);
+               user_set_money = Integer.parseInt(args[args.length-1]);
                if(user_set_money >= 0){
                    RubiconBot.getMySQL().updateUserValue(e.getMessage().getMentionedUsers().get(0),"money",String.valueOf(user_set_money));
                    sendEmbededMessage("Money of "+ e.getMessage().getMentionedUsers().get(0).getAsMention() + " has been set to " + user_set_money + " Ruby's.");
@@ -34,7 +34,7 @@ public class CommandSetmoney extends Command {
                }
 
            } catch (NumberFormatException exception) {
-               sendErrorMessage("The second value is not a number or bigger than 2.147.483.647!");
+               sendErrorMessage("The last value is not a number or bigger than 2.147.483.647!");
                sendUsageMessage();
                return;
            }
