@@ -10,8 +10,8 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
-public class CommandJoinMsg extends CommandHandler{
-    public CommandJoinMsg(){
+public class CommandJoinMessage extends CommandHandler{
+    public CommandJoinMessage(){
         super(new String[]{"joinmsg", "joinmessage", "joinnachricht"}, CommandCategory.SETTINGS,
                 new PermissionRequirements(2, "command.joinmsg"),
                 "Set the server's message channel (Join & Leave)!", "joinmsg <Message(%user% for username %guild% for guildname)>");
