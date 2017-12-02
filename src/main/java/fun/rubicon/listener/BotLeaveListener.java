@@ -2,6 +2,7 @@ package fun.rubicon.listener;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.Main;
+import fun.rubicon.util.DBLUtil;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -26,6 +27,8 @@ public class BotLeaveListener extends ListenerAdapter {
      */
     @Override
     public void onGuildLeave(GuildLeaveEvent e) {
+        //post statistics to discordbots.org
+        DBLUtil.postStats(e.getJDA());
         try {
             if(RubiconBot.getMySQL().ifGuildExits(e.getGuild())) {
                 RubiconBot.getMySQL().deleteGuild(e.getGuild());

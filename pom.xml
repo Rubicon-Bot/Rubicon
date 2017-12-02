@@ -61,6 +61,11 @@
             <artifactId>lavaplayer</artifactId>
             <version>1.2.42</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.natanbc</groupId>
+            <artifactId>discordbots-api</artifactId>
+            <version>1.2</version>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>

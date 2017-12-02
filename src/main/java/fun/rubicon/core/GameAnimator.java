@@ -24,8 +24,8 @@ public class GameAnimator {
 
     private static String authors(){
         String text ="";
-        for(int i = 1; i < Info.BOT_AUTHORS.length; i++) {
-            text += Info.BOT_AUTHORS[i];
+        for(int i = 1; i < Info.BOT_AUTHOR_IDS.length; i++) {
+            text += Info.BOT_AUTHOR_IDS[i];
         }
 
         return text;
@@ -45,7 +45,7 @@ public class GameAnimator {
                                 "Generating new features...",
                                 "Blowing stuff up!",
                         };
-                        RubiconBot.getJDA().getPresence().setGame(Game.of(gameAnimations[currentGame]));
+                        RubiconBot.getJDA().getPresence().setGame(Game.playing(gameAnimations[currentGame]));
                         last = System.currentTimeMillis();
 
                         if (currentGame == gameAnimations.length - 1)

@@ -6,6 +6,7 @@
 
 package fun.rubicon.util;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.core.DiscordCore;
 import fun.rubicon.core.Main;
 import net.dv8tion.jda.core.entities.User;
@@ -39,34 +40,11 @@ public class Info {
     public final static String CONFIG_FILE = "config.json";
     public final static String EMBED_FOOTER = "© 2017 Rubicon Dev Team";
     public final static String ICON_URL = "https://images-ext-2.discordapp.net/external/Xae9oFQTIRhV7V21twWufcxtdcxhmW6NFNatN8cyxz8/https/cdn.discordapp.com/icons/380415148545802250/579ee17b8de4d027c98853606567d760.jpg?width=72&height=72";
-    public final static String BITLY_TOKEN = cfg.getString("bitlytoken");
+    public final static String BITLY_TOKEN = RubiconBot.getConfiguration().getString("bitlytoken");
+    public final static String DBL_TOKEN = RubiconBot.getConfiguration().getString("dbl_token");
     public static Date lastRestart;
 
-    /**
-     * Bot author user instances. Does not work as these tasks are performed before JDA is instantiated.
-     *
-     * @deprecated use BOT_AUTHOR_IDS for identification instead.
-     */
-    @Deprecated
-    public static User[] BOT_AUTHORS;
 
-    // Suppress exceptions that *will* occur if this class is initialized before RubiconBot.initJDA() is called.
-    static {
-        try {
-            BOT_AUTHORS = new User[]{
-                    DiscordCore.getJDA().getUserById(227817074976751616L), //ForYaSee
-                    DiscordCore.getJDA().getUserById(153507094933274624L), //Lee
-                    DiscordCore.getJDA().getUserById(318773753796624394L), //Scryptex
-                    DiscordCore.getJDA().getUserById(138014719582797824L), //Eiskeks
-                    DiscordCore.getJDA().getUserById(264048760580079616L), //Schlaubi
-                    DiscordCore.getJDA().getUserById(221905671296253953L), //Zekro
-                    DiscordCore.getJDA().getUserById(224528662710452224L), //ForMoJa
-                    DiscordCore.getJDA().getUserById(137263174675070976L)  //tr808axm
-            };
-        } catch (NullPointerException e) {
-            Logger.error("WARNING: Suppressed error in static data retrieval of the BOT_AUTHORS field in the Info class.");
-        }
-    }
 
     /**
      * Bot author long ids.
@@ -83,9 +61,9 @@ public class Info {
     };
 
     /* MySQL login */
-    public final static String MYSQL_HOST = cfg.getString("mysql_host");
-    public final static String MYSQL_PORT = cfg.getString("mysql_port");
-    public final static String MYSQL_USER = cfg.getString("mysql_user");
-    public final static String MYSQL_PASSWORD = cfg.getString("mysql_password");
-    public final static String MYSQL_DATABASE = cfg.getString("mysql_database");
+    public final static String MYSQL_HOST = RubiconBot.getConfiguration().getString("mysql_host");
+    public final static String MYSQL_PORT = RubiconBot.getConfiguration().getString("mysql_port");
+    public final static String MYSQL_USER = RubiconBot.getConfiguration().getString("mysql_user");
+    public final static String MYSQL_PASSWORD = RubiconBot.getConfiguration().getString("mysql_password");
+    public final static String MYSQL_DATABASE = RubiconBot.getConfiguration().getString("mysql_database");
 }

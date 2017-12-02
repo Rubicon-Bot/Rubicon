@@ -38,7 +38,7 @@ import java.util.Date;
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"token","mysql_host","mysql_port","mysql_database","mysql_password","mysql_user","bitlytoken"};
+    private static final String[] CONFIG_KEYS = {"token","mysql_host","mysql_port","mysql_database","mysql_password","mysql_user","bitlytoken","dbl_token"};
     private static RubiconBot instance;
     private final MySQL mySQL;
     private final Configuration configuration;
@@ -52,15 +52,20 @@ public class RubiconBot {
         instance = this;
         // initialize logger
         Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, new File("latest.log"));
-
         // load configuration and obtain missing config values
-        configuration = new Configuration(new File(Info.CONFIG_FILE));
-        for (String configKey : CONFIG_KEYS) {
-            if (!configuration.has(configKey)) {
-                String input = Setup.prompt(configKey);
-                configuration.set(configKey, input);
-            }
-        }
+                configuration = new Configuration(new File(Info.CONFIG_FILE));
+                for (String configKey : CONFIG_KEYS) {
+                    if (!configuration.has(configKey)) {
+                        String input = Setup.prompt(configKey);
+                        configuration.set(configKey, input);
+                    }
+                }
+                
+        // load MySQL adapter
+        mySQL = new MySQL(Info.MYSQL_HOST, Info.MYSQL_PORT, Info.MYSQL_USER, Info.MYSQL_PASSWORD, Info.MYSQL_DATABASE);
+        mySQL.connect();
+
+
 
         commandManager = new fun.rubicon.command2.CommandManager();
         registerCommandHandlers();
@@ -68,9 +73,9 @@ public class RubiconBot {
         // init JDA
         initJDA();
 
-        // load MySQL adapter
-        mySQL = new MySQL(Info.MYSQL_HOST, Info.MYSQL_PORT, Info.MYSQL_USER, Info.MYSQL_PASSWORD, Info.MYSQL_DATABASE);
-        mySQL.connect();
+
+        //post bot statistics to discordbots.org
+        DBLUtil.postStats(getJDA());
     }
 
     /**
