@@ -24,8 +24,8 @@ public class CommandAutorole extends CommandHandler{
     }
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        if (parsedCommandInvocation.args.length < 2) {
-            return new MessageBuilder().setEmbed(EmbedUtil.error(":warning: Error", getUsage()).build()).build();
+        if (parsedCommandInvocation.args.length < 1) {
+            return new MessageBuilder().setEmbed(EmbedUtil.error("Error", getUsage()).build()).build();
         }
         if (parsedCommandInvocation.invocationMessage.getMentionedRoles().size() <1){
             String toset = parsedCommandInvocation.invocationMessage.getGuild().getRolesByName(parsedCommandInvocation.args[0],true).get(0).getId();
@@ -33,6 +33,6 @@ public class CommandAutorole extends CommandHandler{
         }else {
             RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.invocationMessage.getGuild(), "autorole", parsedCommandInvocation.invocationMessage.getMentionedRoles().get(0).getId());
         }
-        return new MessageBuilder().setEmbed(EmbedUtil.success("Sucess",":white_check_mark: Succesfully set the Autorole!").build()).build();
+        return new MessageBuilder().setEmbed(EmbedUtil.success("Succes","Succesfully set the Autorole!").build()).build();
     }
 }
