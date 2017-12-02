@@ -52,15 +52,20 @@ public class RubiconBot {
         instance = this;
         // initialize logger
         Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, new File("latest.log"));
-
         // load configuration and obtain missing config values
-        configuration = new Configuration(new File(Info.CONFIG_FILE));
-        for (String configKey : CONFIG_KEYS) {
-            if (!configuration.has(configKey)) {
-                String input = Setup.prompt(configKey);
-                configuration.set(configKey, input);
-            }
-        }
+                configuration = new Configuration(new File(Info.CONFIG_FILE));
+                for (String configKey : CONFIG_KEYS) {
+                    if (!configuration.has(configKey)) {
+                        String input = Setup.prompt(configKey);
+                        configuration.set(configKey, input);
+                    }
+                }
+                
+        // load MySQL adapter
+        mySQL = new MySQL(Info.MYSQL_HOST, Info.MYSQL_PORT, Info.MYSQL_USER, Info.MYSQL_PASSWORD, Info.MYSQL_DATABASE);
+        mySQL.connect();
+
+
 
         commandManager = new fun.rubicon.command2.CommandManager();
         registerCommandHandlers();
@@ -68,9 +73,6 @@ public class RubiconBot {
         // init JDA
         initJDA();
 
-        // load MySQL adapter
-        mySQL = new MySQL(Info.MYSQL_HOST, Info.MYSQL_PORT, Info.MYSQL_USER, Info.MYSQL_PASSWORD, Info.MYSQL_DATABASE);
-        mySQL.connect();
 
         //post bot statistics to discordbots.org
         DBLUtil.postStats(getJDA());

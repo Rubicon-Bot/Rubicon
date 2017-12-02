@@ -44,31 +44,7 @@ public class Info {
     public final static String DBL_TOKEN = RubiconBot.getConfiguration().getString("dbl_token");
     public static Date lastRestart;
 
-    /**
-     * Bot author user instances. Does not work as these tasks are performed before JDA is instantiated.
-     *
-     * @deprecated use BOT_AUTHOR_IDS for identification instead.
-     */
-    @Deprecated
-    public static User[] BOT_AUTHORS;
 
-    // Suppress exceptions that *will* occur if this class is initialized before RubiconBot.initJDA() is called.
-    static {
-        try {
-            BOT_AUTHORS = new User[]{
-                    DiscordCore.getJDA().getUserById(227817074976751616L), //ForYaSee
-                    DiscordCore.getJDA().getUserById(153507094933274624L), //Lee
-                    DiscordCore.getJDA().getUserById(318773753796624394L), //Scryptex
-                    DiscordCore.getJDA().getUserById(138014719582797824L), //Eiskeks
-                    DiscordCore.getJDA().getUserById(264048760580079616L), //Schlaubi
-                    DiscordCore.getJDA().getUserById(221905671296253953L), //Zekro
-                    DiscordCore.getJDA().getUserById(224528662710452224L), //ForMoJa
-                    DiscordCore.getJDA().getUserById(137263174675070976L)  //tr808axm
-            };
-        } catch (NullPointerException e) {
-            Logger.error("WARNING: Suppressed error in static data retrieval of the BOT_AUTHORS field in the Info class.");
-        }
-    }
 
     /**
      * Bot author long ids.

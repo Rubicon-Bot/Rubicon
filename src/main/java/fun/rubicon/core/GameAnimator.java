@@ -24,8 +24,8 @@ public class GameAnimator {
 
     private static String authors(){
         String text ="";
-        for(int i = 1; i < Info.BOT_AUTHORS.length; i++) {
-            text += Info.BOT_AUTHORS[i];
+        for(int i = 1; i < Info.BOT_AUTHOR_IDS.length; i++) {
+            text += Info.BOT_AUTHOR_IDS[i];
         }
 
         return text;
