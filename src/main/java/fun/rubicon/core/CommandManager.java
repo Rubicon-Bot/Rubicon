@@ -62,7 +62,7 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandBug("bug", CommandCategory.GENERAL));
         CommandHandler.addCommand(new CommandFeedback("feedback", CommandCategory.GENERAL).addAliases("fedback"));
         CommandHandler.addCommand(new CommandMusic("music", CommandCategory.GENERAL).addAliases("m"));
-        CommandHandler.addCommand(new CommandDonatemoney("donatemoney", CommandCategory.GENERAL).addAliases("moneydonate", "domo", "modo"));
+        //CommandHandler.addCommand(new CommandDonatemoney("givemoney", CommandCategory.GENERAL).addAliases("donatemoney", "domo", "modo"));
 
 
 

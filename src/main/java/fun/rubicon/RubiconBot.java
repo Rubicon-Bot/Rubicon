@@ -11,6 +11,7 @@ import fun.rubicon.commands.fun.CommandSlot;
 import fun.rubicon.commands.botowner.CommandRestart;
 import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandPing;
+import fun.rubicon.commands.settings.CommandJoinMessage;
 import fun.rubicon.commands.settings.CommandLogChannel;
 import fun.rubicon.commands.settings.CommandPrefix;
 import fun.rubicon.commands.settings.CommandWelcomeChannel;
@@ -133,7 +134,7 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(new CommandLogChannel());
         commandManager.registerCommandHandlers(new CommandWelcomeChannel());
         commandManager.registerCommandHandlers(new CommandRestart());
-
+        commandManager.registerCommandHandler(new CommandJoinMessage());
         // also register commands from the old framework
         //noinspection deprecation
         new CommandManager();
