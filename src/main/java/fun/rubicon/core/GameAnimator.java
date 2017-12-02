@@ -45,7 +45,7 @@ public class GameAnimator {
                                 "Generating new features...",
                                 "Blowing stuff up!",
                         };
-                        RubiconBot.getJDA().getPresence().setGame(Game.of(gameAnimations[currentGame]));
+                        RubiconBot.getJDA().getPresence().setGame(Game.playing(gameAnimations[currentGame]));
                         last = System.currentTimeMillis();
 
                         if (currentGame == gameAnimations.length - 1)

@@ -2,6 +2,7 @@ package fun.rubicon.listener;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.Main;
+import fun.rubicon.util.DBLUtil;
 import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.Permission;
@@ -34,6 +35,8 @@ public class BotJoinListener extends ListenerAdapter {
      */
     @Override
     public void onGuildJoin(GuildJoinEvent e) {
+        //post statistics to discordbots.org
+        DBLUtil.postStats(e.getJDA());
         try {
             Guild g = e.getGuild();
             if (!RubiconBot.getMySQL().ifGuildExits(e.getGuild())) {
