@@ -71,7 +71,6 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandSearch("search", CommandCategory.TOOLS));
         CommandHandler.addCommand(new CommandServerInfo("serverinfo", CommandCategory.TOOLS).addAliases("guild","guildinfo"));
         CommandHandler.addCommand(new CommandUserInfo("userinfo", CommandCategory.TOOLS).addAliases("whois"));
-        CommandHandler.addCommand(new CommandSay("say", CommandCategory.TOOLS));
         CommandHandler.addCommand(new CommandVote("vote", CommandCategory.TOOLS).addAliases("v"));
         CommandHandler.addCommand(new CommandASCII("ascii", CommandCategory.TOOLS));
         //CommandHandler.addCommand(new CommandBrainfuck("brainfuck", CommandCategory.TOOLS).addAliases("bf"));
