@@ -96,7 +96,6 @@ public class CommandGiveaway extends Command implements Serializable {
             PrivateChannel pc = event.getMember().getUser().openPrivateChannel().complete();
             pc.sendMessage("Yaaaaaaaaaa. You Take part at the Giveaway").queue();
             voteMember.add(event.getMember().getUser().getId());
-            event.getReaction().removeReaction().queue();
         }
     }
 
