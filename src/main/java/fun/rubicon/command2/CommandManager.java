@@ -110,24 +110,28 @@ public class CommandManager extends ListenerAdapter {
                 ? RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix").toLowerCase()
                 : Info.BOT_DEFAULT_PREFIX.toLowerCase();
 
-
         //Logger.debug("prefix: " + prefix + " | content: " + message.getContent());
         // resolve messages with '<server-bot-prefix>majorcommand [arguments...]'
-        
-        if (message.getContent().toLowerCase().startsWith(prefix.toLowerCase())) {
-            // cut off command prefix
-            String beheaded = message.getContent().substring(prefix.length(), message.getContent().length());
-            // split arguments
-            String[] allArgs = beheaded.split(" ");
-            // create an array of the actual command arguments (exclude invocation arg)
-            String[] args = new String[allArgs.length - 1];
-            System.arraycopy(allArgs, 1, args, 0, args.length);
-
-            return new ParsedCommandInvocation(message, prefix, allArgs[0], args);
+        if (message.getContent().startsWith(prefix)) {
+            return buildParsedCommandInvocation(message, prefix);
+        } else if(message.getContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX)) {
+            return buildParsedCommandInvocation(message, Info.BOT_DEFAULT_PREFIX);
         }
         // TODO resolve messages with '@botmention majorcommand [arguments...]'
         // return null if no strategy could parse a command.
         return null;
+    }
+
+    private static ParsedCommandInvocation buildParsedCommandInvocation(Message message, String prefix) {
+        // cut off command prefix
+        String beheaded = message.getContent().substring(prefix.length(), message.getContent().length());
+        // split arguments
+        String[] allArgs = beheaded.split(" ");
+        // create an array of the actual command arguments (exclude invocation arg)
+        String[] args = new String[allArgs.length - 1];
+        System.arraycopy(allArgs, 1, args, 0, args.length);
+
+        return new ParsedCommandInvocation(message, prefix, allArgs[0], args);
     }
 
     /**
