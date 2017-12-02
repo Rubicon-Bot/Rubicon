@@ -16,9 +16,8 @@ public class UserJoinListener extends ListenerAdapter {
                 TextChannel messageChannel = e.getJDA().getTextChannelById(RubiconBot.getMySQL().getGuildValue(e.getGuild(), "channel"));
                 if (messageChannel == null)
                     return;
-                joinMessage = joinMessage
-                        .replace("%user%", e.getMember().getAsMention()
-                                .replace("%guild%", e.getGuild().getName()));
+                joinMessage = joinMessage.replace("%user%", e.getMember().getAsMention());
+                joinMessage = joinMessage.replace("%guild%", e.getGuild().getName());
                 messageChannel.sendMessage(joinMessage).queue();
             }
         } catch (NullPointerException ex) {

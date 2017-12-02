@@ -36,6 +36,7 @@ public class CommandPlay extends CommandHandler {
         }
         if(parsedCommandInvocation.args.length == 0) {
             configuration.set(configKey, "0");
+            return null;
         }
         String message = "";
         for (String s : parsedCommandInvocation.args)

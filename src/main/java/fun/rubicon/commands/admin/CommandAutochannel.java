@@ -192,13 +192,13 @@ public class CommandAutochannel extends Command {
     }
 
     public static void handleReaction(MessageReactionAddEvent event){
-        event.getReaction().removeReaction(event.getUser()).queue();
         if(!searches.containsKey(event.getGuild()))
             return;
         ChannelSearch search = searches.get(event.getGuild());
         if(!event.getMessageId().equals(search.message.getId()))
             return;
         String emote = event.getReactionEmote().getName();
+        event.getReaction().removeReaction(event.getUser()).queue();
         if(!search.channels.containsKey(emote))
             return;
         if(search.delete) {
