@@ -137,7 +137,6 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(new CommandRestart());
         commandManager.registerCommandHandler(new CommandKick());
         commandManager.registerCommandHandler(new CommandBan());
-        commandManager.registerCommandHandlers(new CommandToggleWelcome());
         commandManager.registerCommandHandlers(new CommandJoinMsg());
         commandManager.registerCommandHandlers(new CommandStop());
         commandManager.registerCommandHandlers(new CommandSetmoney());
