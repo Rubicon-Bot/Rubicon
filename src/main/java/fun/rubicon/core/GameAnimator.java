@@ -32,26 +32,34 @@ public class GameAnimator {
     }
 
     public static synchronized void start() {
+        if(!RubiconBot.getConfiguration().has("playingStatus")) {
+            RubiconBot.getConfiguration().set("playingStatus", "0");
+        }
         if (!running) {
             t = new Thread(() -> {
                 long last = 0;
                 while (running) {
-                    if (System.currentTimeMillis() >= last + 60000) {
-                        String[] gameAnimations = {
-                                "Running on " + RubiconBot.getJDA().getGuilds().size() + " servers!",
-                                "Helping " + RubiconBot.getJDA().getUsers().stream().filter(u -> !u.isBot()).collect(Collectors.toList()).size() + " users!",
-                                "JDA squad!",
-                                Info.BOT_NAME + " " + Info.BOT_VERSION,
-                                "Generating new features...",
-                                "Blowing stuff up!",
-                        };
-                        RubiconBot.getJDA().getPresence().setGame(Game.playing(gameAnimations[currentGame]));
-                        last = System.currentTimeMillis();
+                    if (System.currentTimeMillis() >= last + 30000) {
+                        String playStat = RubiconBot.getConfiguration().getString("playingStatus");
+                        if (!playStat.equals("0")) {
+                            RubiconBot.getJDA().getPresence().setGame(Game.playing(playStat));
+                        } else {
+                            String[] gameAnimations = {
+                                    "Running on " + RubiconBot.getJDA().getGuilds().size() + " servers!",
+                                    "Helping " + RubiconBot.getJDA().getUsers().stream().filter(u -> !u.isBot()).collect(Collectors.toList()).size() + " users!",
+                                    "JDA squad!",
+                                    Info.BOT_NAME + " " + Info.BOT_VERSION,
+                                    "Generating new features...",
+                                    "Blowing stuff up!",
+                            };
+                            RubiconBot.getJDA().getPresence().setGame(Game.playing(gameAnimations[currentGame]));
+                            last = System.currentTimeMillis();
 
-                        if (currentGame == gameAnimations.length - 1)
-                            currentGame = 0;
-                        else
-                            currentGame += 1;
+                            if (currentGame == gameAnimations.length - 1)
+                                currentGame = 0;
+                            else
+                                currentGame += 1;
+                        }
                     }
                 }
             });
