@@ -95,7 +95,7 @@ public class CommandBday extends Command{
 
     @Override
     public String getUsage() {
-        return "bday set dd:MM (example: 19:12)";
+        return "bday <set> <dd:MM> (example: 19:12)";
     }
 
     @Override

@@ -9,7 +9,7 @@ package fun.rubicon.core;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.commands.admin.CommandAutochannel;
-import fun.rubicon.commands.admin.CommandGivaway;
+import fun.rubicon.commands.admin.CommandGiveaway;
 import fun.rubicon.commands.admin.CommandPermission;
 import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.botowner.*;
@@ -33,7 +33,7 @@ public class CommandManager {
     private void initCommands() {
         //Admin
         CommandHandler.addCommand(new CommandPermission("permission", CommandCategory.ADMIN).addAliases("permission", "perm", "perms"));
-        CommandHandler.addCommand(new CommandGivaway("giveaway", CommandCategory.ADMIN).addAliases("g"));
+        CommandHandler.addCommand(new CommandGiveaway("giveaway", CommandCategory.ADMIN).addAliases("g"));
         CommandHandler.addCommand(new CommandPortal("portal", CommandCategory.ADMIN).addAliases("mirror"));
         CommandHandler.addCommand(new CommandAutochannel("autochannel", CommandCategory.ADMIN).addAliases("ac", "autoc"));
 
@@ -44,13 +44,12 @@ public class CommandManager {
 
 
         //Fun
-        //CommandHandler.addCommand(new CommandJoke("joke", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandLmgtfy("lmgtfy", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandRoll("roll", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandColor("color", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandChoose("choose", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandLevel("rank", CommandCategory.FUN).addAliases("lvl", "level"));
-        CommandHandler.addCommand(new CommandBday("birthday", CommandCategory.FUN).addAliases("bday"));
+        //CommandHandler.addCommand(new CommandBday("birthday", CommandCategory.FUN).addAliases("bday"));
         CommandHandler.addCommand(new CommandRip("rip", CommandCategory.FUN).addAliases("tombstone"));
         CommandHandler.addCommand(new CommandRoulette("roulette", CommandCategory.BOT_OWNER).addAliases("roulete","rulette", "roullete"));
 

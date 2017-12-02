@@ -45,7 +45,7 @@ public class CommandLmgtfy extends Command{
 
     @Override
     public String getUsage() {
-        return "lmgtfy <Querry>";
+        return "lmgtfy <query>";
     }
 
     @Override
