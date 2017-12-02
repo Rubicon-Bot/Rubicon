@@ -137,10 +137,10 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(new CommandRestart());
         commandManager.registerCommandHandler(new CommandKick());
         commandManager.registerCommandHandler(new CommandBan());
-        commandManager.registerCommandHandlers(new CommandJoinMessage());
         commandManager.registerCommandHandlers(new CommandStop());
         commandManager.registerCommandHandlers(new CommandSetmoney());
         commandManager.registerCommandHandler(new CommandJoinMessage());
+        commandManager.registerCommandHandlers(new CommandAutorole());
 
         // also register commands from the old framework
         //noinspection deprecation
