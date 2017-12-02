@@ -1,9 +1,17 @@
 package fun.rubicon.commands.fun;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
+import fun.rubicon.command2.CommandHandler;
+import fun.rubicon.command2.CommandManager;
 import fun.rubicon.core.Main;
+import fun.rubicon.data.PermissionRequirements;
+import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.MySQL;
+import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.text.ParseException;
@@ -16,31 +24,16 @@ import java.text.ParseException;
  * @license MIT License <http://rubicon.fun/license>
  * @package fun.rubicon.commands.fun
  */
-public class CommandLevel extends Command{
+public class CommandLevel extends CommandHandler{
 
 
-    public CommandLevel(String command, CommandCategory category) {
-        super(command, category);
+    public CommandLevel() {
+        super(new String[]{"rank","level","money","lvl"},CommandCategory.FUN,new PermissionRequirements(0,"command.rank"),"Get your level, points and ruby's.","rank");
     }
 
     @Override
-    protected void execute(String[] args, MessageReceivedEvent e) throws ParseException {
-        MySQL LVL = Main.getMySQL();
-        sendEmbededMessage("Your current Level: \n" + LVL.getUserValue(e.getAuthor(), "level") + "\n" + "Your current Points: \n" + LVL.getUserValue(e.getAuthor(), "points") + "\n Your Current Ruby´s: \n" + LVL.getUserValue(e.getAuthor(), "money"));
-    }
-
-    @Override
-    public String getDescription() {
-        return "Get your level, points and ruby's.";
-    }
-
-    @Override
-    public String getUsage() {
-        return "rank";
-    }
-
-    @Override
-    public int getPermissionLevel() {
-        return 0;
+    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        MySQL LVL = RubiconBot.getMySQL();
+        return new MessageBuilder().setEmbed(new EmbedBuilder().setDescription("Your current Level: \n" + LVL.getUserValue(parsedCommandInvocation.invocationMessage.getAuthor(), "level") + "\n" + "Your current Points: \n" + LVL.getUserValue(parsedCommandInvocation.invocationMessage.getAuthor(), "points") + "\n Your Current Ruby´s: \n" + LVL.getUserValue(parsedCommandInvocation.invocationMessage.getAuthor(), "money")).build()).build();
     }
 }
