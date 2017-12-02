@@ -125,6 +125,7 @@ public class CommandManager extends ListenerAdapter {
 
             return new ParsedCommandInvocation(message, prefix, allArgs[0], args);
         }
+        
         // TODO resolve messages with '@botmention majorcommand [arguments...]'
         // return null if no strategy could parse a command.
         return null;
