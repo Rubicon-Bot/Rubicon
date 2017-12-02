@@ -6,6 +6,8 @@
 
 package fun.rubicon;
 
+import fun.rubicon.commands.admin.CommandBan;
+import fun.rubicon.commands.admin.CommandKick;
 import fun.rubicon.commands.botowner.CommandBroadcast;
 import fun.rubicon.commands.botowner.CommandSetmoney;
 import fun.rubicon.commands.botowner.CommandStop;
@@ -133,6 +135,8 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(new CommandLogChannel());
         commandManager.registerCommandHandlers(new CommandWelcomeChannel());
         commandManager.registerCommandHandlers(new CommandRestart());
+        commandManager.registerCommandHandler(new CommandKick());
+        commandManager.registerCommandHandler(new CommandBan());
         commandManager.registerCommandHandlers(new CommandToggleWelcome());
         commandManager.registerCommandHandlers(new CommandJoinMsg());
         commandManager.registerCommandHandlers(new CommandStop());
