@@ -111,6 +111,7 @@ public class CommandManager extends ListenerAdapter {
         /*String Prefix = message.getChannelType() == ChannelType.TEXT
                 ? RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix").toLowerCase()
                 : Info.BOT_DEFAULT_PREFIX.toLowerCase();*/
+        //Get the Prefix from MySql
         if(message.getChannelType() == ChannelType.TEXT){
             if (RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix").toLowerCase() != Info.BOT_DEFAULT_PREFIX.toLowerCase()){
             prefix = RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix").toLowerCase();
@@ -124,6 +125,7 @@ public class CommandManager extends ListenerAdapter {
         // resolve messages with '<server-bot-prefix>majorcommand [arguments...]'
         if (prefix == "")
             return null;
+        //Parse with ServerPrefix
         if (message.getContent().toLowerCase().startsWith(prefix.toLowerCase())) {
             // cut off command prefix
             String beheaded = message.getContent().substring(prefix.length(), message.getContent().length());
@@ -135,6 +137,7 @@ public class CommandManager extends ListenerAdapter {
 
             return new ParsedCommandInvocation(message, prefix, allArgs[0], args);
         }
+        //Default Prefix
         if (message.getContent().toLowerCase().startsWith(Prefix.toLowerCase())) {
             // cut off command prefix
             String beheaded = message.getContent().substring(Prefix.length(), message.getContent().length());
