@@ -21,7 +21,7 @@ public class UserJoinListener extends ListenerAdapter{
         if (event.getGuild().getId().equals("307084334198816769")) return;
         PrivateChannel pc = event.getMember().getUser().openPrivateChannel().complete();
         if(SQL.getGuildValue(event.getGuild(), "autorole").equals("0")) {
-            if (SQL.getGuildValue(event.getGuild(),"welmsg").equals("1"))
+            if (SQL.getGuildValue(event.getGuild(),"welmsg").equals("0"))
                 return;
             pc.sendMessage(
                     "**Hey,** " + event.getMember().getAsMention() + " and welcome on " + event.getGuild().getName() + " :wave:\n\n" +
