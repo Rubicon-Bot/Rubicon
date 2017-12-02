@@ -213,73 +213,73 @@ public class CommandMusic extends Command {
                                         "`INPUT:`  YouTube/SoundCloud/Twitch/BandCamp - URL of track or playlist\n\n" +
                                         "*If queue is empty:*  Starts the player with the entered track / playlist.\n" +
                                         "*If queue is playing:*  Attaches the entered track or playlist at the end of the queue.\n" +
-                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ",  false)
+                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ", false)
 
                         .addField(pre + "m ytplay <INPUT>",
                                 "`SHORT:`  **" + pre + "m yp <INPUT>**\n" +
                                         "`INPUT:`  Search query string for YouTube\n\n" +
                                         "*If queue is empty:*  Starts the player with the first result of the search.\n" +
                                         "*If queue is playing:*  Attaches the first result of the search at the end of the queue.\n" +
-                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ",  false)
+                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ", false)
 
                         .addField(pre + "m playshuffle <INPUT>",
                                 "`SHORT:`  **" + pre + "m ps <INPUT>**\n" +
                                         "`INPUT:`  YouTube/SoundCloud/Twitch/BandCamp - URL of track or playlist\n\n" +
                                         "Same behaviour like play, but shuffleing the whole queue after attaching.\n" +
-                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ",  false)
+                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ", false)
 
                         .addField(pre + "m playnext <INPUT>",
                                 "`SHORT:`  **" + pre + "m pn <INPUT>**\n" +
                                         "`INPUT:`  YouTube/SoundCloud/Twitch/BandCamp - URL of track or playlist\n\n" +
                                         "Enqueues the entered track/playlist after the now playing track without reset of the default queue.\n" +
-                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ",  false)
+                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ", false)
 
                         .addField(pre + "m skip <OPTIONAL INPUT>",
                                 "`SHORT:`  **" + pre + "m s <OPTIONAL INPUT>**\n" +
                                         "`OPTIONAL INPUT:`  Count to skip. *Without:* Skips current playing track.\n\n" +
                                         "Skip current or multiple tracks in queue.\n" +
-                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ",  false)
+                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ", false)
 
                         .addField(pre + "m now",
                                 "`SHORT:`  **" + pre + "m n**\n\n" +
                                         "Shows information about the current playing track and shows the next track in queue.\n" +
-                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ",  false)
+                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ", false)
 
                         .addField(pre + "m stop",
                                 "Stops the current playing. The current queue will be reset after this!\n" +
-                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ",  false)
+                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ", false)
 
                         .addField(pre + "m queue <OPTIONAL INPUT>",
-                                "`OPTIONAL INPUT:`  Side of list.\n\n" +
-                                        "\nShows the current queue. Displays only 20 tracks on one side. Use Optional input to switch between sides.\n" +
-                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ",  false)
+                                "`OPTIONAL INPUT:`  Page of list.\n\n" +
+                                        "\nShows the current queue. Displays only 20 tracks on one page. Use Optional input to switch between pages.\n" +
+                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ", false)
 
                         .addBlankField(false)
                         .addField(pre + "m save <INPUT>",
                                 "`INPUT:`  Custom name of the save.\n\n" +
                                         "Saves the last attached track/playlist URL to a save with a custom name.\n" +
-                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ",  false)
+                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ", false)
 
                         .addField(pre + "m list",
                                 "Displays a list of the names of all saved tracks/playlists.\n" +
-                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ",  false)
+                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ", false)
 
                         .addField(pre + "m load <INPUT>",
                                 "`INPUT:`  Name of an existing save.\n\n" +
                                         "Adds or starts playing the saves track/playlist.\n" +
-                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ",  false)
+                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ", false)
 
                         .addBlankField(false)
                         .addField(pre + "m channel <INPUT>",
                                 "`INPUT:`  Text channel name.\n\n" +
                                         "Set the channel where now playing will shown. \n" +
                                         "*Hint: Use a channel that does not exist to disable this function*\n" +
-                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ",  false)
+                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ", false)
 
                         .addField(pre + "m lockchannel <INPUT>",
                                 "`INPUT:`  'true' / 'false'\n\n" +
                                         "Only allow members to use music commands in the set music channel.\n" +
-                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ",  false)
+                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ", false)
 
 
                         .build()
@@ -464,7 +464,7 @@ public class CommandMusic extends Command {
                             queue.forEach(audioInfo -> tracks.add(buildQueueMessage(audioInfo)));
 
                             if (tracks.size() > 20)
-                                tracksSublist = tracks.subList((SideNumbInput-1)*20, (SideNumbInput-1)*20+20);
+                                tracksSublist = tracks.subList((SideNumbInput - 1) * 20, (SideNumbInput - 1) * 20 + 20);
                             else
                                 tracksSublist = tracks;
 
@@ -474,7 +474,7 @@ public class CommandMusic extends Command {
 
                             eb.setColor(Color.GREEN).setDescription(
                                     NOTE + "**QUEUE**\n\n" +
-                                            "*[" + queue.size() + " Tracks | Side " + sideNumb + "/" + sideNumbAll + "]*\n\n" +
+                                            "*[" + queue.size() + " Tracks | Page " + sideNumb + "/" + sideNumbAll + "]*\n\n" +
                                             sb
                             );
 
