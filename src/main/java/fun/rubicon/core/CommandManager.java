@@ -34,7 +34,6 @@ public class CommandManager {
         //Admin
         CommandHandler.addCommand(new CommandPermission("permission", CommandCategory.ADMIN).addAliases("permission", "perm", "perms"));
         CommandHandler.addCommand(new CommandGiveaway("giveaway", CommandCategory.ADMIN).addAliases("g"));
-        CommandHandler.addCommand(new CommandPortal("portal", CommandCategory.ADMIN).addAliases("mirror"));
         CommandHandler.addCommand(new CommandAutochannel("autochannel", CommandCategory.ADMIN).addAliases("ac", "autoc"));
 
         //BotOwner
@@ -46,7 +45,6 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandRoll("roll", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandColor("color", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandChoose("choose", CommandCategory.FUN));
-        //CommandHandler.addCommand(new CommandBday("birthday", CommandCategory.FUN).addAliases("bday"));
         CommandHandler.addCommand(new CommandRip("rip", CommandCategory.FUN).addAliases("tombstone"));
         CommandHandler.addCommand(new CommandRoulette("roulette", CommandCategory.BOT_OWNER).addAliases("roulete","rulette", "roullete"));
 

@@ -48,7 +48,7 @@ public class CommandInfo extends Command {
         builder.addField("Bot Name", Info.BOT_NAME, true);
         builder.addField("Bot Version", Info.BOT_VERSION, true);
         builder.addField("Website", "[Link](" + Info.BOT_WEBSITE + ")", true);
-        builder.addField("Bot Invite", "[Invite Rubicon](https://discordapp.com/oauth2/authorize?client_id=380713705073147915&scope=bot&permissions=2146958591)", true);
+        builder.addField("Bot Invite", "[Invite Rubicon](https://discordapp.com/oauth2/authorize?client_id=380713705073147915&scope=bot&permissions=1898982486)", true);
         builder.addField("Github Link", "[Github Link](" + Info.BOT_GITHUB + ")", true);
         builder.addField("Patreon Link", "[Rubicon Dev Team](https://www.patreon.com/rubiconbot)", true);
         builder.addField("Authors", authors.toString(), true);

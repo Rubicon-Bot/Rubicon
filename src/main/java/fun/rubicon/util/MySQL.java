@@ -2,10 +2,7 @@ package fun.rubicon.util;
 
 import fun.rubicon.core.DiscordCore;
 import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
 
 
 import java.sql.*;
@@ -97,9 +94,9 @@ public class MySQL {
     }
 
     /**
-     * @param table
-     * @param key
-     * @param value
+     * @param table Tablename
+     * @param key column name
+     * @param value value
      * @param where
      * @param wherevalue
      * @return null
@@ -131,7 +128,7 @@ public class MySQL {
     //Role Stuff
     public boolean ifRoleExist(Role role) {
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM roles where roleid = ?");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM roles WHERE roleid = ?");
             ps.setString(1, role.getId());
             ResultSet rs = ps.executeQuery();
             return rs.next();
@@ -174,10 +171,11 @@ public class MySQL {
 
     /**
      * Creates a Role if it is not already in the database. Used to ensure data.
+     *
      * @param role the Role to check and create.
      */
     private void createRoleIfNecessary(Role role) {
-        if(!ifRoleExist(role))
+        if (!ifRoleExist(role))
             createRole(role);
     }
 
@@ -196,7 +194,7 @@ public class MySQL {
     //Member Stuff
     public boolean ifMemberExist(Member member) {
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM member where userid = ? AND guildid = ?");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM member WHERE userid = ? AND guildid = ?");
             ps.setString(1, member.getUser().getId());
             ps.setString(2, member.getGuild().getId());
             ResultSet rs = ps.executeQuery();
@@ -241,10 +239,11 @@ public class MySQL {
 
     /**
      * Creates a Member if it is not already in the database. Used to ensure data.
+     *
      * @param member the Member to check and create.
      */
     private void createMemberIfNecessary(Member member) {
-        if(!ifMemberExist(member))
+        if (!ifMemberExist(member))
             createMember(member);
     }
 
@@ -270,10 +269,66 @@ public class MySQL {
         }
     }
 
+    //Portal Stuff
+    public boolean ifPortalExist(Guild guild) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM portal WHERE guildid = ?");
+            ps.setString(1, guild.getId());
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void updatePortalValue(Guild guild, String type, String value) {
+        try {
+            if (connection.isClosed())
+                connect();
+            PreparedStatement ps = connection.prepareStatement("UPDATE portal SET " + type + " = '" + value + "' WHERE guildid = ?");
+            ps.setString(1, guild.getId());
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getPortalValue(Guild guild, String type) {
+        try {
+            if (connection.isClosed())
+                connect();
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM portal WHERE `guildid` = ?");
+            ps.setString(1, guild.getId());
+            ResultSet rs = ps.executeQuery();
+            // Only returning one result
+            if (rs.next()) {
+                return rs.getString(type);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void createPortal(Guild guild, Guild otherguild, TextChannel channel) {
+        try {
+            if (connection.isClosed())
+                connect();
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO `portal`(`guildid`, `partnerid`, `channelid`) VALUES (?, ?,?)");
+            ps.setString(1, String.valueOf(guild.getId()));
+            ps.setString(2, String.valueOf(otherguild.getId()));
+            ps.setString(3, String.valueOf(channel.getId()));
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     //User Stuff
     public boolean ifUserExist(User user) {
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM user where userid =?");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM user WHERE userid = ?");
             ps.setString(1, user.getId());
             ResultSet rs = ps.executeQuery();
             return rs.next();
@@ -289,7 +344,8 @@ public class MySQL {
                 connect();
             if (!ifUserExist(user))
                 createUser(user);
-            PreparedStatement ps = connection.prepareStatement("UPDATE user SET " + type + " = '" + value + "' WHERE userid = " + user.getId());
+            PreparedStatement ps = connection.prepareStatement("UPDATE user SET " + type + " = '" + value + "' WHERE userid = ?");
+            ps.setString(1, user.getId());
             ps.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -316,10 +372,11 @@ public class MySQL {
 
     /**
      * Creates a User if it is not already in the database. Used to ensure data.
+     *
      * @param user the User to check and create.
      */
     private void createUserIfNecessary(User user) {
-        if(!ifUserExist(user))
+        if (!ifUserExist(user))
             createUser(user);
     }
 
@@ -371,7 +428,7 @@ public class MySQL {
 
     public boolean ifGuildExits(Guild guild) {
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM guilds where serverid =?");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM guilds WHERE serverid =?");
             ps.setString(1, guild.getId());
             ResultSet rs = ps.executeQuery();
             return rs.next();
@@ -387,7 +444,8 @@ public class MySQL {
                 connect();
             if (!ifGuildExits(guild))
                 createGuildServer(guild);
-            PreparedStatement ps = connection.prepareStatement("UPDATE guilds SET " + type + " = '" + value + "' WHERE serverid = " + guild.getId());
+            PreparedStatement ps = connection.prepareStatement("UPDATE guilds SET " + type + " = '" + value + "' WHERE serverid = ?");
+            ps.setString(1, guild.getId());
             ps.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -414,10 +472,11 @@ public class MySQL {
 
     /**
      * Creates a guild if it is not already in the database. Used to ensure data.
+     *
      * @param guild the Guild to check and create.
      */
     private void createGuildIfNecessary(Guild guild) {
-        if(!ifGuildExits(guild))
+        if (!ifGuildExits(guild))
             createGuildServer(guild);
     }
 
@@ -445,9 +504,4 @@ public class MySQL {
             e.printStackTrace();
         }
     }
-
-    public void createTables(){
-        
-    }
-
 }

@@ -73,7 +73,7 @@ public class CommandRoulette extends Command {
                             RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money));
                         }
                         break;
-                    case "evan":
+                    case "even":
                         sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
                         if (Integer.valueOf(RandomRouletteNumber) % 2 == 0) {
                             sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 2) + " Ruby. :tada:");

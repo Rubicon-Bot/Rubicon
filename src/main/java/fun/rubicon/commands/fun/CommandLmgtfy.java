@@ -16,7 +16,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
  * @license MIT License <http://rubicon.fun/license>
  * @package commands.fun
  */
-public class CommandLmgtfy extends Command{
+public class CommandLmgtfy extends Command {
     public CommandLmgtfy(String command, CommandCategory category) {
         super(command, category);
     }
@@ -26,16 +26,17 @@ public class CommandLmgtfy extends Command{
         Message message = e.getMessage();
         MessageChannel channel = e.getTextChannel();
 
-        if(args.length > 0){
+        if (args.length > 0) {
             String query = "";
             for (String arg : args) {
                 query += " " + arg;
             }
             Bitly bitly = new Bitly(Info.BITLY_TOKEN);
-            String url = bitly.generateShortLink("http://lmgtfy.com/?iie=1&q=" + query.replace( " ", "%20"));
+            String url = bitly.generateShortLink("http://lmgtfy.com/?iie=1&q=" + query.replace(" ", "%20"));
 
             sendEmbededMessage("Link created send the following link to the person which needs help " + url);
-        }}
+        }
+    }
 
 
     @Override
