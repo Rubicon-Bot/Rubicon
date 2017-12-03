@@ -7,11 +7,9 @@
 package fun.rubicon.command2;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.util.Colors;
+import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -19,7 +17,6 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Maintains command invocation associations.
@@ -27,8 +24,6 @@ import java.util.concurrent.TimeUnit;
  * @author tr808axm
  */
 public class CommandManager extends ListenerAdapter {
-    private static final long defaultDeleteIntervalSeconds = 20;
-
     private final Map<String, CommandHandler> commandAssociations = new HashMap<>();
 
     /**
@@ -75,22 +70,15 @@ public class CommandManager extends ListenerAdapter {
         CommandHandler commandHandler = getCommandHandler(parsedCommandInvocation.invocationCommand);
         Message response;
         if (commandHandler == null)
-            response = new MessageBuilder().setEmbed(new EmbedBuilder()
-                    .setAuthor("Unknown command", null, RubiconBot.getJDA().getSelfUser().getEffectiveAvatarUrl())
-                    .setDescription("'" + parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand
-                            + "' could not be resolved to a command.\nType '" + parsedCommandInvocation.serverPrefix
-                            + "help' to get a list of all commands.")
-                    .setColor(Colors.COLOR_ERROR)
-                    .setFooter(RubiconBot.getNewTimestamp(), null)
-                    .build()).build();
+            response = EmbedUtil.message(EmbedUtil.withTimestamp(EmbedUtil.error("Unknown command", "'" + parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand
+                    + "' could not be resolved to a command.\nType '" + parsedCommandInvocation.serverPrefix
+                    + "help' to get a list of all commands.")));
         else
             response = commandHandler.call(parsedCommandInvocation);
 
         // respond
         if (response != null)
-            // send response message and delete it after defaultDeleteIntervalSeconds
-            parsedCommandInvocation.invocationMessage.getChannel().sendMessage(response)
-                    .queue(msg -> msg.delete().queueAfter(defaultDeleteIntervalSeconds, TimeUnit.SECONDS));
+            EmbedUtil.sendAndDeleteOnGuilds(parsedCommandInvocation.invocationMessage.getChannel(), response);
 
         // delete invocation message
         parsedCommandInvocation.invocationMessage.delete().queue(null, msg -> {
