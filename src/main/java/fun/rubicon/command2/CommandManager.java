@@ -7,11 +7,9 @@
 package fun.rubicon.command2;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.util.Colors;
+import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -19,7 +17,6 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Maintains command invocation associations.
@@ -27,8 +24,6 @@ import java.util.concurrent.TimeUnit;
  * @author tr808axm
  */
 public class CommandManager extends ListenerAdapter {
-    private static final long defaultDeleteIntervalSeconds = 20;
-
     private final Map<String, CommandHandler> commandAssociations = new HashMap<>();
 
     /**
@@ -72,25 +67,18 @@ public class CommandManager extends ListenerAdapter {
      * @param parsedCommandInvocation the parsed message.
      */
     public void call(ParsedCommandInvocation parsedCommandInvocation) {
-        CommandHandler commandHandler = commandAssociations.get(parsedCommandInvocation.invocationCommand);
+        CommandHandler commandHandler = getCommandHandler(parsedCommandInvocation.invocationCommand);
         Message response;
         if (commandHandler == null)
-            response = new MessageBuilder().setEmbed(new EmbedBuilder()
-                    .setAuthor("Unknown command", null, RubiconBot.getJDA().getSelfUser().getEffectiveAvatarUrl())
-                    .setDescription("'" + parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand
-                            + "' could not be resolved to a command.\nType '" + parsedCommandInvocation.serverPrefix
-                            + "help' to get a list of all commands.")
-                    .setColor(Colors.COLOR_ERROR)
-                    .setFooter(RubiconBot.getNewTimestamp(), null)
-                    .build()).build();
+            response = EmbedUtil.message(EmbedUtil.withTimestamp(EmbedUtil.error("Unknown command", "'" + parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand
+                    + "' could not be resolved to a command.\nType '" + parsedCommandInvocation.serverPrefix
+                    + "help' to get a list of all commands.")));
         else
             response = commandHandler.call(parsedCommandInvocation);
 
         // respond
         if (response != null)
-            // send response message and delete it after defaultDeleteIntervalSeconds
-            parsedCommandInvocation.invocationMessage.getChannel().sendMessage(response)
-                    .queue(msg -> msg.delete().queueAfter(defaultDeleteIntervalSeconds, TimeUnit.SECONDS));
+            EmbedUtil.sendAndDeleteOnGuilds(parsedCommandInvocation.invocationMessage.getChannel(), response);
 
         // delete invocation message
         parsedCommandInvocation.invocationMessage.delete().queue(null, msg -> {
@@ -105,28 +93,19 @@ public class CommandManager extends ListenerAdapter {
      * resolved to a command.
      */
     private static ParsedCommandInvocation parse(Message message) {
-        // get server prefix
-        String prefix = "";
-        String Prefix = Info.BOT_DEFAULT_PREFIX.toLowerCase();
-        /*String Prefix = message.getChannelType() == ChannelType.TEXT
-                ? RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix").toLowerCase()
-                : Info.BOT_DEFAULT_PREFIX.toLowerCase();*/
-        //Get the Prefix from MySql
-        if(message.getChannelType() == ChannelType.TEXT){
-            if (RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix").toLowerCase() != Info.BOT_DEFAULT_PREFIX.toLowerCase()){
-            prefix = RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix").toLowerCase();
-        }else {
-                prefix = Info.BOT_DEFAULT_PREFIX.toLowerCase();
-            }
-
+        String prefix = null;
+        // react to default prefix: 'rc!<majorcommand> [arguments]'
+        if (message.getContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()))
+            prefix = Info.BOT_DEFAULT_PREFIX;
+            // react to custom server prefix: '<custom-server-prefix><majorcommand> [arguments...]'
+        else if (message.getChannelType() == ChannelType.TEXT) { // ensure bot is on a server
+            String serverPrefix = RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix");
+            if (message.getContent().toLowerCase().startsWith(serverPrefix.toLowerCase()))
+                prefix = serverPrefix;
         }
+        //TODO react to mentions: '<bot-mention> majorcommand [arguments]'
 
-        //Logger.debug("prefix: " + prefix + " | content: " + message.getContent());
-        // resolve messages with '<server-bot-prefix>majorcommand [arguments...]'
-        if (prefix == "")
-            return null;
-        //Parse with ServerPrefix
-        if (message.getContent().toLowerCase().startsWith(prefix.toLowerCase())) {
+        if (prefix != null) {
             // cut off command prefix
             String beheaded = message.getContent().substring(prefix.length(), message.getContent().length());
             // split arguments
@@ -137,22 +116,8 @@ public class CommandManager extends ListenerAdapter {
 
             return new ParsedCommandInvocation(message, prefix, allArgs[0], args);
         }
-        //Default Prefix
-        if (message.getContent().toLowerCase().startsWith(Prefix.toLowerCase())) {
-            // cut off command prefix
-            String beheaded = message.getContent().substring(Prefix.length(), message.getContent().length());
-            // split arguments
-            String[] allArgs = beheaded.split(" ");
-            // create an array of the actual command arguments (exclude invocation arg)
-            String[] args = new String[allArgs.length - 1];
-            System.arraycopy(allArgs, 1, args, 0, args.length);
-
-            return new ParsedCommandInvocation(message, Prefix, allArgs[0], args);
-        }
-        
-        // TODO resolve messages with '@botmention majorcommand [arguments...]'
-        // return null if no strategy could parse a command.
-        return null;
+        // else
+        return null; // = message is not a command
     }
 
     /**
@@ -160,7 +125,7 @@ public class CommandManager extends ListenerAdapter {
      * @return the associated CommandHandler or null if none is associated.
      */
     public CommandHandler getCommandHandler(String invocationAlias) {
-        return commandAssociations.get(invocationAlias);
+        return commandAssociations.get(invocationAlias.toLowerCase());
     }
 
     /**
