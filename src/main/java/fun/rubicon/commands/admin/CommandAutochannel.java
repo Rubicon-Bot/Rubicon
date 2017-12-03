@@ -107,7 +107,13 @@ public class CommandAutochannel extends Command {
                 autochannels.add(c);
         });
         if(autochannels.isEmpty()){
-            e.getTextChannel().sendMessage(EmbedUtil.error("Unknown Channel", ":warning: There is now channel with this name").build()).queue();
+            Message mymsg = e.getTextChannel().sendMessage(EmbedUtil.error("Unknown Channel", ":warning: There is now channel with this name").build()).complete();
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    mymsg.delete().queue();
+                }
+            },5000);
             return;
         }
         if(autochannels.size() > 1){
@@ -232,6 +238,16 @@ public class CommandAutochannel extends Command {
         name = names.replace(name.lastIndexOf(" "),name.lastIndexOf(" ") + 1, "").toString();
         List<VoiceChannel> channels = e.getGuild().getVoiceChannelsByName(name, false);
         String oldEntry = RubiconBot.getMySQL().getGuildValue(e.getGuild(), "autochannels");
+        if(channels.isEmpty()){
+            Message mymsg = e.getTextChannel().sendMessage(EmbedUtil.error("Not found","There is no Channel with the specified name").build()).complete();
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    mymsg.delete().queue();
+                }
+            },5000);
+            return;
+        }
         if(channels.size() > 1){
             ChannelSearch search = genChannelSearch(channels, oldEntry, false);
             searches.put(e.getGuild(), search);

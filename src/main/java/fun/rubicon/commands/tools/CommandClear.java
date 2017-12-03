@@ -2,8 +2,14 @@ package fun.rubicon.commands.tools;
 
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
+import fun.rubicon.command2.CommandHandler;
+import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionRequirements;
+import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
+import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageHistory;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -20,7 +26,7 @@ import java.util.TimerTask;
  * @license MIT License <http://rubicon.fun/license>
  * @package commands.tools
  */
-public class CommandClear extends Command{
+public class CommandClear extends CommandHandler{
     private int getInt(String string){
         try {
             return Integer.parseInt(string);
@@ -29,26 +35,28 @@ public class CommandClear extends Command{
             return 0;
         }
     }
-    public CommandClear(String command, CommandCategory category) {
-        super(command, category);
+    public CommandClear() {
+        super(new String[]{"clear","purge"},CommandCategory.ADMIN,new PermissionRequirements(1,"command.clear"),"","clear <amountofmessages>");
     }
+
     @Override
-    protected void execute(String[] args, MessageReceivedEvent e) {
+    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         //Delete Message and Get amount of Messages(If no number -> error)
-        e.getMessage().delete().queue();
-        if (args.length < 1) sendErrorMessage("Please give an amount of Messages!");
-        int numb = getInt(args[0]);
+        parsedCommandInvocation.invocationMessage.delete().queue();
+        if (parsedCommandInvocation.args.length < 1)
+            return new MessageBuilder().setEmbed(EmbedUtil.error("", "Please give an amount of Messages!").build()).build();
+        int numb = getInt(parsedCommandInvocation.args[0]);
         //Check if amount is Ok for Discord API
-        if(numb>= 2 && numb<=100){
-            try{
+        if (numb >= 2 && numb <= 100) {
+            try {
                 //Try to get Messages of Channel
-                MessageHistory history = new MessageHistory(e.getChannel());
+                MessageHistory history = new MessageHistory(parsedCommandInvocation.invocationMessage.getChannel());
                 List<Message> messages;
                 messages = history.retrievePast(numb).complete();
-                e.getTextChannel().deleteMessages(messages).queue();
-                int number = numb-1;
+                parsedCommandInvocation.invocationMessage.getTextChannel().deleteMessages(messages).queue();
+                int number = numb - 1;
                 //User Feedback
-                Message msg = e.getChannel().sendMessage(new EmbedBuilder()
+                Message msg = parsedCommandInvocation.invocationMessage.getChannel().sendMessage(new EmbedBuilder()
                         .setColor(Colors.COLOR_PRIMARY)
                         .setDescription(":bomb: Deleted " + number + " Messages!")
                         .build()
@@ -60,26 +68,12 @@ public class CommandClear extends Command{
                         msg.delete().queue();
                     }
                 }, 3000);
-            }catch (Exception fuck){
+            } catch (Exception fuck) {
                 fuck.printStackTrace();
             }
-        }else {
-            sendUsageMessage();
+        } else {
+            return new MessageBuilder().setEmbed(EmbedUtil.error("", getUsage()).build()).build();
         }
-    }
 
-    @Override
-    public String getDescription() {
-        return "Clears the given amount of messages.";
-    }
-
-    @Override
-    public String getUsage() {
-        return "clear <amountofmessages>";
-    }
-
-    @Override
-    public int getPermissionLevel() {
-        return 1;
-    }
-}
+        return null;
+    }}
