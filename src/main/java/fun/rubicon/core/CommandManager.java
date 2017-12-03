@@ -12,7 +12,7 @@ import fun.rubicon.commands.admin.CommandAutochannel;
 import fun.rubicon.commands.admin.CommandGiveaway;
 import fun.rubicon.commands.admin.CommandPermission;
 import fun.rubicon.commands.admin.CommandPortal;
-import fun.rubicon.commands.botowner.*;
+import fun.rubicon.commands.botowner.CommandEval;
 import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.tools.*;
@@ -41,7 +41,6 @@ public class CommandManager {
 
 
         //Fun
-        CommandHandler.addCommand(new CommandLmgtfy("lmgtfy", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandRoll("roll", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandColor("color", CommandCategory.FUN));
         CommandHandler.addCommand(new CommandChoose("choose", CommandCategory.FUN));
@@ -55,7 +54,6 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandStatistics("statistics", CommandCategory.GENERAL).addAliases("stats"));
         CommandHandler.addCommand(new CommandInvite("invite", CommandCategory.GENERAL).addAliases("inv"));
         CommandHandler.addCommand(new CommandBug("bug", CommandCategory.GENERAL));
-        CommandHandler.addCommand(new CommandFeedback("feedback", CommandCategory.GENERAL).addAliases("fedback"));
         CommandHandler.addCommand(new CommandMusic("music", CommandCategory.GENERAL).addAliases("m"));
         //CommandHandler.addCommand(new CommandDonatemoney("givemoney", CommandCategory.GENERAL).addAliases("donatemoney", "domo", "modo"));
 
