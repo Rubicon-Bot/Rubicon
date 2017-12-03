@@ -1,55 +1,47 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.commands.fun;
 
-import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
+import fun.rubicon.command2.CommandHandler;
+import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionRequirements;
+import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Bitly;
 import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+
+import static fun.rubicon.util.EmbedUtil.message;
+import static fun.rubicon.util.EmbedUtil.success;
 
 /**
- * Rubicon Discord bot
- *
- * @author Leon Kappes / Lee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package commands.fun
+ * Handles the 'lmgtfy' command which creates google search links using lmgtfy.com.
+ * @author LeeDJD, tr808axm
  */
-public class CommandLmgtfy extends Command{
-    public CommandLmgtfy(String command, CommandCategory category) {
-        super(command, category);
+public class CommandLmgtfy extends CommandHandler {
+    private final Bitly bitlyAPI;
+
+    /**
+     * Constructs this command handler.
+     */
+    public CommandLmgtfy() {
+        super(new String[]{"lmgtfy", "letmegooglethatforyou", "let-me-google-that-for-you"}, CommandCategory.TOOLS,
+                new PermissionRequirements(0, "command.lmgtfy"),
+                "Creates a let-me-google-that-for-you link.", "<search query...>");
+        bitlyAPI = new Bitly(Info.BITLY_TOKEN);
     }
 
     @Override
-    protected void execute(String[] args, MessageReceivedEvent e) {
-        Message message = e.getMessage();
-        MessageChannel channel = e.getTextChannel();
-
-        if(args.length > 0){
-            String query = "";
-            for (String arg : args) {
-                query += " " + arg;
-            }
-            Bitly bitly = new Bitly(Info.BITLY_TOKEN);
-            String url = bitly.generateShortLink("http://lmgtfy.com/?iie=1&q=" + query.replace( " ", "%20"));
-
-            sendEmbededMessage("Link created send the following link to the person which needs help " + url);
-        }}
-
-
-    @Override
-    public String getDescription() {
-        return "Creates a Lmgtfy link for a person which who not wants to google himself.";
-    }
-
-    @Override
-    public String getUsage() {
-        return "lmgtfy <query>";
-    }
-
-    @Override
-    public int getPermissionLevel() {
-        return 0;
+    protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions permissions) {
+        if (invocation.args.length == 0)
+            return createHelpMessage(invocation);
+        else
+            return message(success("Created lmgtfy link",
+                    "Send this link to the person who seems to need it:\n"
+                            + "https://lmgtfy.com/?iie=1&q=" + String.join("%20", invocation.args).replace("+", "%2B")));
     }
 }

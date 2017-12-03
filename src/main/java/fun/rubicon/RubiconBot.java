@@ -9,6 +9,7 @@ package fun.rubicon;
 import fun.rubicon.commands.admin.*;
 import fun.rubicon.commands.botowner.*;
 import fun.rubicon.commands.fun.CommandLevel;
+import fun.rubicon.commands.fun.CommandLmgtfy;
 import fun.rubicon.commands.fun.CommandSlot;
 import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandPing;
@@ -143,6 +144,7 @@ public class RubiconBot {
         commandManager.registerCommandHandler(new CommandMute());
         commandManager.registerCommandHandler(new CommandUnmute());
         commandManager.registerCommandHandlers(new CommandWarn());
+        commandManager.registerCommandHandlers(new CommandLmgtfy());
 
         // also register commands from the old framework
         //noinspection deprecation
