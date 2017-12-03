@@ -463,12 +463,13 @@ public class MySQL {
             e.printStackTrace();
         }
     }
-    public String getWarning(User guild, String type) {
+    public String getWarning(User user, Guild guild, String type) {
         try {
             if (connection.isClosed())
                 connect();
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM guilds WHERE `userid` = ?");
-            ps.setString(1, guild.getId());
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM warnings WHERE `userid` = ? AND `serverid` = ?");
+            ps.setString(1, user.getId());
+            ps.setString(2,guild.getId());
             ResultSet rs = ps.executeQuery();
             // Only returning one result
             if (rs.next()) {
@@ -479,5 +480,26 @@ public class MySQL {
         }
         return null;
     }
-
+    public boolean ifWarning(User user, Guild guild) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM warnings where userid = ? AND serverid = ?");
+            ps.setString(1, user.getId());
+            ps.setString(2,guild.getId());
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public void deleteWarning(User user, Guild g) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM `warnings` WHERE `userid` = ? AND `serverid` = ?");
+            ps.setString(1, user.getId());
+            ps.setString(2, g.getId());
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
