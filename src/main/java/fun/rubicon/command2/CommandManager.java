@@ -69,11 +69,12 @@ public class CommandManager extends ListenerAdapter {
     public void call(ParsedCommandInvocation parsedCommandInvocation) {
         CommandHandler commandHandler = getCommandHandler(parsedCommandInvocation.invocationCommand);
         Message response;
-        if (commandHandler == null)
-            response = EmbedUtil.message(EmbedUtil.withTimestamp(EmbedUtil.error("Unknown command", "'" + parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand
+        if (commandHandler == null) {
+            /*response = EmbedUtil.message(EmbedUtil.withTimestamp(EmbedUtil.error("Unknown command", "'" + parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand
                     + "' could not be resolved to a command.\nType '" + parsedCommandInvocation.serverPrefix
-                    + "help' to get a list of all commands.")));
-        else
+                    + "help' to get a list of all commands.")));*/
+            return;
+        }else
             response = commandHandler.call(parsedCommandInvocation);
 
         // respond
