@@ -2,8 +2,14 @@ package fun.rubicon.commands.fun;
 
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
+import fun.rubicon.command2.CommandHandler;
+import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionRequirements;
+import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
+import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -22,19 +28,21 @@ import java.util.List;
  * @license MIT License <http://rubicon.fun/license>
  * @package fun.rubicon.commands.fun
  */
-public class CommandRip extends Command{
+public class CommandRip extends CommandHandler{
 
-    public CommandRip(String command, CommandCategory category) {
-        super(command, category);
+    public CommandRip() {
+        super(new String[]{"rip","tombstone"},CommandCategory.FUN,new PermissionRequirements(0,"command.rip"),"Creates a tombstone for you","rip <name> <text>");
     }
 
+
+
     @Override
-    protected void execute(String[] args, MessageReceivedEvent e) throws ParseException {
-        if(args.length > 1){
-            Message message = e.getTextChannel().sendMessage(new EmbedBuilder().setColor(Colors.COLOR_SECONDARY).setDescription("Generating tombstone ...").build()).complete();
+    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        if(parsedCommandInvocation.args.length > 1){
+            Message message = parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(new EmbedBuilder().setColor(Colors.COLOR_SECONDARY).setDescription("Generating tombstone ...").build()).complete();
             StringBuilder query = new StringBuilder();
-            for(int i = 1;i < args.length; i++){
-                query.append(args[i]).append(" ");
+            for(int i = 1;i < parsedCommandInvocation.args.length; i++){
+                query.append(parsedCommandInvocation.args[i]).append(" ");
             }
             List<String> lines = new ArrayList<>();
             int index = 0;
@@ -45,9 +53,9 @@ public class CommandRip extends Command{
             InputStream image = null;
             try {
                 if(query.length() > 25) {
-                    image = new URL("http://www.tombstonebuilder.com/generate.php?top1=R.I.P.&top2=" + args[0].replace(" ", "%20").replace("@", "") + "&top3=" + lines.get(0).replace(" ", "%20") + "&top4=" + lines.get(1).replace(" ", "%20") + "&sp=").openStream();
+                    image = new URL("http://www.tombstonebuilder.com/generate.php?top1=R.I.P.&top2=" + parsedCommandInvocation.args[0].replace(" ", "%20").replace("@", "") + "&top3=" + lines.get(0).replace(" ", "%20") + "&top4=" + lines.get(1).replace(" ", "%20") + "&sp=").openStream();
                 } else {
-                    image = new URL("http://www.tombstonebuilder.com/generate.php?top1=R.I.P.&top2=" + args[0].replace(" ", "%20").replace("@", "") + "&top3=" + lines.get(0).replace(" ", "%20") + "&top4=&sp=").openStream();
+                    image = new URL("http://www.tombstonebuilder.com/generate.php?top1=R.I.P.&top2=" + parsedCommandInvocation.args[0].replace(" ", "%20").replace("@", "") + "&top3=" + lines.get(0).replace(" ", "%20") + "&top4=&sp=").openStream();
                 }
 
             } catch (IOException e1) {
@@ -55,24 +63,10 @@ public class CommandRip extends Command{
                 //TODO error handling. image can not be sent if it does not exist.
             }
             message.delete().queue();
-            e.getTextChannel().sendFile(image, "rip.png", null).queue();
+            parsedCommandInvocation.invocationMessage.getTextChannel().sendFile(image, "rip.png", null).queue();
         } else {
-            sendUsageMessage();
+            return new MessageBuilder().setEmbed(EmbedUtil.error("",getUsage()).build()).build();
         }
-    }
-
-    @Override
-    public String getDescription() {
-        return "Creates a tombstone for you";
-    }
-
-    @Override
-    public String getUsage() {
-        return "rip <name> <text>";
-    }
-
-    @Override
-    public int getPermissionLevel() {
-        return 0;
+        return null;
     }
 }

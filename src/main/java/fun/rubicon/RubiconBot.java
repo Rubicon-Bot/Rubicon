@@ -13,6 +13,7 @@ import fun.rubicon.commands.fun.CommandSlot;
 import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandPing;
 import fun.rubicon.commands.settings.*;
+import fun.rubicon.commands.tools.CommandASCII;
 import fun.rubicon.commands.tools.CommandShorten;
 import fun.rubicon.commands.tools.CommandVote;
 import fun.rubicon.core.CommandManager;
@@ -147,6 +148,8 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(new CommandWarn());
         commandManager.registerCommandHandlers(new CommandUnWarn());
         commandManager.registerCommandHandlers(new CommandGetWarn());
+        commandManager.registerCommandHandlers(new CommandEval());
+        commandManager.registerCommandHandlers(new CommandASCII());
 
         // also register commands from the old framework
         //noinspection deprecation
