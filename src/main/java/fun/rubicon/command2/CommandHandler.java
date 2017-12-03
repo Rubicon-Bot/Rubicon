@@ -11,10 +11,14 @@ import fun.rubicon.command.CommandCategory;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
+import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
+
+import static fun.rubicon.util.EmbedUtil.info;
+import static fun.rubicon.util.EmbedUtil.message;
 
 /**
  * Handles a command.
@@ -26,7 +30,7 @@ public abstract class CommandHandler {
     private final CommandCategory category;
     private final PermissionRequirements permissionRequirements;
     private final String description;
-    private final String usage;
+    private final String parameterUsage;
 
     /**
      * Constructs a new CommandHandler.
@@ -50,15 +54,15 @@ public abstract class CommandHandler {
      * @param category               the {@link CommandCategory} this command belongs to.
      * @param permissionRequirements all permission requirements a user needs to meet to execute a command.
      * @param description            a short command description.
-     * @param usage                  the usage message.
+     * @param parameterUsage         the usage message.
      */
     protected CommandHandler(String[] invocationAliases, CommandCategory category,
-                             PermissionRequirements permissionRequirements, String description, String usage) {
+                             PermissionRequirements permissionRequirements, String description, String parameterUsage) {
         this.invocationAliases = invocationAliases;
         this.category = category;
         this.permissionRequirements = permissionRequirements;
         this.description = description;
-        this.usage = usage;
+        this.parameterUsage = parameterUsage;
     }
 
     /**
@@ -143,8 +147,50 @@ public abstract class CommandHandler {
 
     /**
      * @return the usage message of this command.
+     * @deprecated Use createHelpMessage instead.
      */
+    @Deprecated
     public String getUsage() {
-        return usage;
+        return invocationAliases[0] + ' ' + parameterUsage;
+    }
+
+    /**
+     * Use createHelpMessage for a full help message.
+     *
+     * @return the parameter usage String.
+     */
+    public String getParameterUsage() {
+        return parameterUsage;
+    }
+
+    /**
+     * Generates a usage message for this command with the default prefix and alias.
+     *
+     * @return the generated Message.
+     */
+    public Message createHelpMessage() {
+        return createHelpMessage(Info.BOT_DEFAULT_PREFIX, invocationAliases[0]);
+    }
+
+    /**
+     * Generates a usage message for this command.
+     *
+     * @param invocation data source for prefix and alias to use in the Message.
+     * @return the generated Message.
+     */
+    public Message createHelpMessage(CommandManager.ParsedCommandInvocation invocation) {
+        return createHelpMessage(invocation.serverPrefix, invocation.invocationCommand);
+    }
+
+    /**
+     * Generates a usage message for this command.
+     *
+     * @param serverPrefix which prefix should be used in this message?
+     * @param aliasToUse   which alias should be used in this message?
+     */
+    public Message createHelpMessage(String serverPrefix, String aliasToUse) {
+        return message(info('\'' + aliasToUse + "' command help", getDescription())
+                .addField("Aliases", String.join(", ", getInvocationAliases()), false)
+                .addField("Usage", serverPrefix + aliasToUse + ' ' + getParameterUsage(), false));
     }
 }
