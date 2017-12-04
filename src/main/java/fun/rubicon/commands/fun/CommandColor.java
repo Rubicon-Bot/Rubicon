@@ -24,6 +24,7 @@ public class CommandColor extends Command{
 
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
+        //gen
         Random randomGenerator = new Random();
         int red = randomGenerator.nextInt(256);
         int green = randomGenerator.nextInt(256);

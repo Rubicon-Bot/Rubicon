@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 RubiconBot Dev Team
+ * Copyright (c) 2017 Rubicon Bot Development Team
  *
  * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
  */
@@ -36,7 +36,6 @@ public class PermissionManager {
         try {
             int lvl = getPermissionLevel();
             int cmdLvl = command.getPermissionLevel();
-            Logger.info("permission. needed: " + cmdLvl + " has: " + lvl + "| member is null? " + (member == null));
 
             for (long authorId : Info.BOT_AUTHOR_IDS)
                 if (authorId == member.getUser().getIdLong())
@@ -73,7 +72,6 @@ public class PermissionManager {
 
     public int getPermissionLevel() {
         String s = Main.getMySQL().getMemberValue(member, "permissionlevel");
-        Logger.debug(s);
         int i;
         try {
             i = Integer.parseInt(s);

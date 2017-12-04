@@ -13,6 +13,7 @@ import fun.rubicon.command2.CommandManager;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
+import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
@@ -77,13 +78,7 @@ public class CommandHelp extends CommandHandler {
                             + "` to get a full command list.")
                     .build()).build()
                     // show command help for a single command
-                    : new MessageBuilder().setEmbed(new EmbedBuilder()
-                    .setColor(Colors.COLOR_SECONDARY)
-                    .setTitle(":information_source: '" + parsedCommandInvocation.invocationCommand + "' command help")
-                    .setDescription(handler.getDescription())
-                    .addField("Aliases", String.join(", ", handler.getInvocationAliases()), false)
-                    .addField("Usage", handler.getUsage(), false)
-                    .build()).build();
+                    : handler.createHelpMessage(Info.BOT_DEFAULT_PREFIX, parsedCommandInvocation.args[0]);
         }
     }
 }

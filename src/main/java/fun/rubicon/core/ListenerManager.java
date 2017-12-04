@@ -28,5 +28,6 @@ public class ListenerManager {
         b.addEventListener(new ReactionListener());
         b.addEventListener(new PortalListener());
         b.addEventListener(new AutochannelListener());
+        b.addEventListener(new UserJoinListener());
     }
 }

@@ -28,11 +28,14 @@ public class CommandStatistics extends Command {
 
     @Override
     protected void execute(String[] args, MessageReceivedEvent e) {
+        //Set EmbedBuilder
         EmbedBuilder builder = new EmbedBuilder();
+        //Set EmbedBuilder Values
         builder.setColor(Colors.COLOR_PRIMARY);
         builder.setAuthor(Info.BOT_NAME + " Statistics", null, e.getJDA().getSelfUser().getEffectiveAvatarUrl());
         builder.addField("Total servers", e.getJDA().getGuilds().size() + " Server", false);
         builder.addField("Total users", DiscordCore.getJDA().getUsers().stream().filter(u -> !u.isBot()).collect(Collectors.toList()).size() + " User", false);
+        //Send Message with EmbedBuilder and delete it after a Minute
         e.getTextChannel().sendMessage(builder.build()).queue(message -> message.delete().queueAfter(60, TimeUnit.SECONDS));
     }
 

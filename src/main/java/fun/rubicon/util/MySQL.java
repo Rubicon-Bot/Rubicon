@@ -449,5 +449,57 @@ public class MySQL {
     public void createTables(){
         
     }
-
+    public void createWarning(Guild guild,User target, User author,String reason) {
+        try {
+            if (connection.isClosed())
+                connect();
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO `warnings`(`serverid`,`userid`,`authorid`,`reason`) VALUES (?,?,?,?)");
+            ps.setString(1, String.valueOf(guild.getIdLong()));
+            ps.setString(2,String.valueOf(target.getId()));
+            ps.setString(3,String.valueOf(author.getId()));
+            ps.setString(4,reason);
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public String getWarning(User user, Guild guild, String type) {
+        try {
+            if (connection.isClosed())
+                connect();
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM warnings WHERE `userid` = ? AND `serverid` = ?");
+            ps.setString(1, user.getId());
+            ps.setString(2,guild.getId());
+            ResultSet rs = ps.executeQuery();
+            // Only returning one result
+            if (rs.next()) {
+                return rs.getString(type);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public boolean ifWarning(User user, Guild guild) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM warnings where userid = ? AND serverid = ?");
+            ps.setString(1, user.getId());
+            ps.setString(2,guild.getId());
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public void deleteWarning(User user, Guild g) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM `warnings` WHERE `userid` = ? AND `serverid` = ?");
+            ps.setString(1, user.getId());
+            ps.setString(2, g.getId());
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

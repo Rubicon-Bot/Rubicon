@@ -6,14 +6,15 @@
 
 package fun.rubicon;
 
-import fun.rubicon.commands.botowner.CommandBroadcast;
+import fun.rubicon.commands.admin.*;
+import fun.rubicon.commands.botowner.*;
+import fun.rubicon.commands.fun.CommandLevel;
 import fun.rubicon.commands.fun.CommandSlot;
-import fun.rubicon.commands.botowner.CommandRestart;
+import fun.rubicon.commands.general.CommandFeedback;
 import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandPing;
-import fun.rubicon.commands.settings.CommandLogChannel;
-import fun.rubicon.commands.settings.CommandPrefix;
-import fun.rubicon.commands.settings.CommandWelcomeChannel;
+import fun.rubicon.commands.settings.*;
+import fun.rubicon.commands.tools.CommandLmgtfy;
 import fun.rubicon.commands.tools.CommandShorten;
 import fun.rubicon.commands.tools.CommandVote;
 import fun.rubicon.core.CommandManager;
@@ -34,11 +35,12 @@ import java.util.Date;
 
 /**
  * Rubicon-bot's main class. Initializes all components.
+ *
  * @author tr808axm
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"token","mysql_host","mysql_port","mysql_database","mysql_password","mysql_user","bitlytoken","dbl_token"};
+    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token"};
     private static RubiconBot instance;
     private final MySQL mySQL;
     private final Configuration configuration;
@@ -53,18 +55,17 @@ public class RubiconBot {
         // initialize logger
         Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, new File("latest.log"));
         // load configuration and obtain missing config values
-                configuration = new Configuration(new File(Info.CONFIG_FILE));
-                for (String configKey : CONFIG_KEYS) {
-                    if (!configuration.has(configKey)) {
-                        String input = Setup.prompt(configKey);
-                        configuration.set(configKey, input);
-                    }
-                }
-                
+        configuration = new Configuration(new File(Info.CONFIG_FILE));
+        for (String configKey : CONFIG_KEYS) {
+            if (!configuration.has(configKey)) {
+                String input = Setup.prompt(configKey);
+                configuration.set(configKey, input);
+            }
+        }
+
         // load MySQL adapter
         mySQL = new MySQL(Info.MYSQL_HOST, Info.MYSQL_PORT, Info.MYSQL_USER, Info.MYSQL_PASSWORD, Info.MYSQL_DATABASE);
         mySQL.connect();
-
 
 
         commandManager = new fun.rubicon.command2.CommandManager();
@@ -80,10 +81,11 @@ public class RubiconBot {
 
     /**
      * Initializes the bot.
+     *
      * @param args command line parameters.
      */
     public static void main(String[] args) {
-        if(instance != null)
+        if (instance != null)
             throw new RuntimeException("RubiconBot has already been initialized in this VM.");
         new RubiconBot();
     }
@@ -92,7 +94,7 @@ public class RubiconBot {
      * Initializes the JDA instance.
      */
     public static void initJDA() {
-        if(instance == null)
+        if (instance == null)
             throw new NullPointerException("RubiconBot has not been initialized yet.");
 
         JDABuilder builder = new JDABuilder(AccountType.BOT);
@@ -120,19 +122,54 @@ public class RubiconBot {
 
     /**
      * Registers all command handlers used in this project.
+     *
      * @see fun.rubicon.command2.CommandManager
      */
     private void registerCommandHandlers() {
         // Usage: commandManager.registerCommandHandler(yourCommandHandler...);
-        commandManager.registerCommandHandler(new CommandPing());
-        commandManager.registerCommandHandler(new CommandShorten());
-        commandManager.registerCommandHandler(new CommandHelp());
-        commandManager.registerCommandHandlers(new CommandPrefix());
-        commandManager.registerCommandHandler(new CommandSlot());
-        commandManager.registerCommandHandler(new CommandBroadcast());
-        commandManager.registerCommandHandlers(new CommandLogChannel());
-        commandManager.registerCommandHandlers(new CommandWelcomeChannel());
-        commandManager.registerCommandHandlers(new CommandRestart());
+
+        // admin commands package
+        commandManager.registerCommandHandlers(
+                new CommandBan(),
+                new CommandGetWarn(),
+                new CommandKick(),
+                new CommandMute(),
+                new CommandUnmute(),
+                new CommandUnWarn(),
+                new CommandWarn()
+        );
+        // botowner commands package
+        commandManager.registerCommandHandlers(
+                new CommandBroadcast(),
+                new CommandPlay(),
+                new CommandRestart(),
+                new CommandSetmoney(),
+                new CommandStop()
+        );
+        // fun commands package
+        commandManager.registerCommandHandlers(
+                new CommandLevel(),
+                new CommandSlot()
+        );
+        // general commands package
+        commandManager.registerCommandHandlers(
+                new CommandHelp(),
+                new CommandFeedback(),
+                new CommandPing()
+        );
+        // settings commands package
+        commandManager.registerCommandHandlers(
+                new CommandAutorole(),
+                new CommandJoinMessage(),
+                new CommandLogChannel(),
+                new CommandPrefix(),
+                new CommandWelcomeChannel()
+        );
+        // tools commands package
+        commandManager.registerCommandHandlers(
+                new CommandLmgtfy(),
+                new CommandShorten()
+        );
 
         // also register commands from the old framework
         //noinspection deprecation
