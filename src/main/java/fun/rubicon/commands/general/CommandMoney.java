@@ -13,6 +13,7 @@ import fun.rubicon.command2.CommandManager;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Info;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.Message;
 import java.util.Arrays;
 
@@ -30,10 +31,11 @@ public class CommandMoney extends CommandHandler {
         int user1_has_money = 0;
         int user2_has_money = 0;
         int user_spend_money = 0;
+        Logger.debug("Argumente: " + parsedCommandInvocation.args.length + " --- " + parsedCommandInvocation.invocationMessage.getRawContent());
         switch (parsedCommandInvocation.args[0]){
             case "give":
                 String Author = "";
-                if (parsedCommandInvocation.args.length == 4) try {
+                if (parsedCommandInvocation.args.length == 3) try {
                     user_spend_money = Integer.parseInt(parsedCommandInvocation.args[parsedCommandInvocation.args.length - 1]);
                     //Problem User kann nicht benutzt werden weil sonst der Name über mehrere Args geht die Mention aber nicht!
                  /* for(int i = 1; i <= (parsedCommandInvocation.args.length-1); i++){
@@ -57,7 +59,7 @@ public class CommandMoney extends CommandHandler {
                 }
             case "set":
                 if(Arrays.asList(Info.BOT_AUTHOR_IDS).contains(parsedCommandInvocation.invocationMessage.getAuthor().getId())) {
-                    if (parsedCommandInvocation.args.length == 4) {
+                    if (parsedCommandInvocation.args.length == 3) {
                         try {
                             user_spend_money = Integer.parseInt(parsedCommandInvocation.args[parsedCommandInvocation.args.length - 1]);
                             if (user_spend_money == 0) {
@@ -81,7 +83,7 @@ public class CommandMoney extends CommandHandler {
                 int max_money = 2147483647;
                 user2_has_money = Integer.parseInt(RubiconBot.getMySQL().getUserValue(parsedCommandInvocation.invocationMessage.getMentionedUsers().get(0), "money"));
                 if(Arrays.asList(Info.BOT_AUTHOR_IDS).contains(parsedCommandInvocation.invocationMessage.getAuthor().getId())) {
-                    if (parsedCommandInvocation.args.length == 4) {
+                    if (parsedCommandInvocation.args.length == 3) {
                         try {
                             user_spend_money = Integer.parseInt(parsedCommandInvocation.args[parsedCommandInvocation.args.length - 1]);
                             if (user_spend_money >= 0) {
@@ -105,7 +107,7 @@ public class CommandMoney extends CommandHandler {
             case "remove":
                 user2_has_money = Integer.parseInt(RubiconBot.getMySQL().getUserValue(parsedCommandInvocation.invocationMessage.getMentionedUsers().get(0), "money"));
                 if(Arrays.asList(Info.BOT_AUTHOR_IDS).contains(parsedCommandInvocation.invocationMessage.getAuthor().getId())) {
-                    if (parsedCommandInvocation.args.length == 4) {
+                    if (parsedCommandInvocation.args.length == 3) {
                         try {
                             user_spend_money = Integer.parseInt(parsedCommandInvocation.args[parsedCommandInvocation.args.length - 1]);
                             if (user_spend_money >= 0) {
