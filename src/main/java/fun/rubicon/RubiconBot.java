@@ -10,9 +10,11 @@ import fun.rubicon.commands.admin.*;
 import fun.rubicon.commands.botowner.*;
 import fun.rubicon.commands.fun.CommandLevel;
 import fun.rubicon.commands.fun.CommandSlot;
+import fun.rubicon.commands.general.CommandFeedback;
 import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandPing;
 import fun.rubicon.commands.settings.*;
+import fun.rubicon.commands.tools.CommandLmgtfy;
 import fun.rubicon.commands.tools.CommandShorten;
 import fun.rubicon.commands.tools.CommandVote;
 import fun.rubicon.core.CommandManager;
@@ -128,28 +130,49 @@ public class RubiconBot {
      */
     private void registerCommandHandlers() {
         // Usage: commandManager.registerCommandHandler(yourCommandHandler...);
-        commandManager.registerCommandHandler(new CommandPing());
-        commandManager.registerCommandHandler(new CommandShorten());
-        commandManager.registerCommandHandler(new CommandHelp());
-        commandManager.registerCommandHandlers(new CommandPrefix());
-        commandManager.registerCommandHandler(new CommandSlot());
-        commandManager.registerCommandHandler(new CommandBroadcast());
-        commandManager.registerCommandHandlers(new CommandLogChannel());
-        commandManager.registerCommandHandlers(new CommandWelcomeChannel());
-        commandManager.registerCommandHandlers(new CommandRestart());
-        commandManager.registerCommandHandler(new CommandKick());
-        commandManager.registerCommandHandler(new CommandBan());
-        commandManager.registerCommandHandlers(new CommandStop());
-        commandManager.registerCommandHandlers(new CommandSetmoney());
-        commandManager.registerCommandHandler(new CommandJoinMessage());
-        commandManager.registerCommandHandlers(new CommandAutorole());
-        commandManager.registerCommandHandler(new CommandPlay());
-        commandManager.registerCommandHandlers(new CommandLevel());
-        commandManager.registerCommandHandler(new CommandMute());
-        commandManager.registerCommandHandler(new CommandUnmute());
-        commandManager.registerCommandHandlers(new CommandWarn());
-        commandManager.registerCommandHandlers(new CommandUnWarn());
-        commandManager.registerCommandHandlers(new CommandGetWarn());
+
+        // admin commands package
+        commandManager.registerCommandHandlers(
+                new CommandBan(),
+                new CommandGetWarn(),
+                new CommandKick(),
+                new CommandMute(),
+                new CommandUnmute(),
+                new CommandUnWarn(),
+                new CommandWarn()
+        );
+        // botowner commands package
+        commandManager.registerCommandHandlers(
+                new CommandBroadcast(),
+                new CommandPlay(),
+                new CommandRestart(),
+                new CommandSetmoney(),
+                new CommandStop()
+        );
+        // fun commands package
+        commandManager.registerCommandHandlers(
+                new CommandLevel(),
+                new CommandSlot()
+        );
+        // general commands package
+        commandManager.registerCommandHandlers(
+                new CommandHelp(),
+                new CommandFeedback(),
+                new CommandPing()
+        );
+        // settings commands package
+        commandManager.registerCommandHandlers(
+                new CommandAutorole(),
+                new CommandJoinMessage(),
+                new CommandLogChannel(),
+                new CommandPrefix(),
+                new CommandWelcomeChannel()
+        );
+        // tools commands package
+        commandManager.registerCommandHandlers(
+                new CommandLmgtfy(),
+                new CommandShorten()
+        );
 
         // also register commands from the old framework
         //noinspection deprecation
