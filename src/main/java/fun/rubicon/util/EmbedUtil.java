@@ -71,6 +71,16 @@ public class EmbedUtil {
     }
 
     /**
+     * Creates an embedded no permissions message.
+     *
+     * @return the generated EmbedBuilder.
+     */
+    public static EmbedBuilder no_permissions() {
+        return embed(":warning: " + "No permissions", "You don't have the permission to execute this command!").setColor(Colors.COLOR_NO_PERMISSION);
+    }
+
+
+    /**
      * Creates an embedded message.
      *
      * @param title       the title of the embedded.

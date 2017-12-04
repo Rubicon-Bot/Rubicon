@@ -12,6 +12,7 @@ import fun.rubicon.commands.fun.CommandLevel;
 import fun.rubicon.commands.fun.CommandSlot;
 import fun.rubicon.commands.general.CommandFeedback;
 import fun.rubicon.commands.general.CommandHelp;
+import fun.rubicon.commands.general.CommandMoney;
 import fun.rubicon.commands.general.CommandPing;
 import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.CommandLmgtfy;
@@ -155,7 +156,8 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(
                 new CommandHelp(),
                 new CommandFeedback(),
-                new CommandPing()
+                new CommandPing(),
+                new CommandMoney()
         );
         // settings commands package
         commandManager.registerCommandHandlers(
