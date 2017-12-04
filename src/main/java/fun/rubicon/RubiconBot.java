@@ -111,6 +111,9 @@ public class RubiconBot {
         }
         GameAnimator.start();
         CommandVote.loadPolls(instance.jda);
+        CommandGiveaway.loadGiveaways(instance.jda.getGuilds());
+        CommandGiveaway.startGiveawayManager();
+
 
         StringBuilder runningOnServers = new StringBuilder("Running on following guilds:\n");
         for (Guild guild : instance.jda.getGuilds())
