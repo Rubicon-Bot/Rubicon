@@ -14,9 +14,7 @@ import fun.rubicon.commands.general.CommandFeedback;
 import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandPing;
 import fun.rubicon.commands.settings.*;
-import fun.rubicon.commands.tools.CommandLmgtfy;
-import fun.rubicon.commands.tools.CommandShorten;
-import fun.rubicon.commands.tools.CommandVote;
+import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.CommandManager;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.ListenerManager;
@@ -171,7 +169,14 @@ public class RubiconBot {
         // tools commands package
         commandManager.registerCommandHandlers(
                 new CommandLmgtfy(),
-                new CommandShorten()
+                new CommandShorten(),
+                new CommandVote(),
+                new CommandUserInfo(),
+                new CommandServerInfo(),
+                new CommandSearch(),
+                new CommandGoogle(),
+                new CommandASCII(),
+                new CommandClear()
         );
 
         // also register commands from the old framework

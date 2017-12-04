@@ -1,12 +1,17 @@
 package fun.rubicon.commands.tools;
 
-import fun.rubicon.command.Command;
-import fun.rubicon.command.CommandCategory;
-import fun.rubicon.util.Colors;
-import fun.rubicon.util.Info;
 
+import fun.rubicon.command.CommandCategory;
+import fun.rubicon.command2.CommandHandler;
+import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionRequirements;
+import fun.rubicon.data.UserPermissions;
+import fun.rubicon.util.Colors;
+
+import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Message;
 
 /**
  * Rubicon Discord bot
@@ -17,14 +22,17 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
  * @package commands.tools
  */
 
-public class CommandASCII extends Command {
+public class CommandASCII extends CommandHandler {
 
-    public CommandASCII(String command, CommandCategory category) {
-        super(command, category);
+
+    public CommandASCII() {
+        super(new String[]{"ascii"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.ascii"), "Convert an ASCII-Code to a char and a char to an ASCII-Code.", "ascii <string>\nascii code <ASCII-Code>");
     }
 
     @Override
-    protected void execute(String[] args, MessageReceivedEvent e) {
+    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissionse) {
+        String[] args = parsedCommandInvocation.args;
+        Message message = parsedCommandInvocation.invocationMessage;
         if (args.length >= 2 && args[0].equalsIgnoreCase("code")) {
             StringBuilder output = new StringBuilder();
             StringBuilder asciiBuilder = new StringBuilder("ASCII-Code: `");
@@ -35,17 +43,15 @@ public class CommandASCII extends Command {
                     if (Integer.valueOf(args[i]) <= 127)
                         text.append((char) ((int) Integer.valueOf(args[i])));
                     else {
-                        sendErrorMessage("One of you numbers has a higher value than 127. But this is the highest ASCII-Value.");
-                        return;
+                        return new MessageBuilder().setEmbed(EmbedUtil.error("Invalid value", "One of you numbers has a higher value than 127. But this is the highest ASCII-Value.").build()).build();
                     }
                 } catch (NumberFormatException ex) {
-                    sendErrorMessage("You have to give me numbers!");
-                    return;
+                    return new MessageBuilder().setEmbed(EmbedUtil.error("Invalid value", "You have to give me numbers").build()).build();
                 }
             }
             output.append(asciiBuilder.toString()).append("`\n");
             output.append(text.toString()).append("`");
-            sendEmbededMessage(output.toString());
+            return new MessageBuilder().setEmbed(EmbedUtil.embed("Output", output.toString()).build()).build();
         } else if (args.length > 0) {
             StringBuilder output = new StringBuilder();
             StringBuilder text = new StringBuilder("Text: `");
@@ -68,23 +74,10 @@ public class CommandASCII extends Command {
             EmbedBuilder builder = new EmbedBuilder()
                     .setDescription(output.toString())
                     .setColor(Colors.COLOR_PRIMARY);
-            e.getTextChannel().sendMessage(builder.build()).queue();
+            return new MessageBuilder().setEmbed(builder.build()).build();
         } else
-            sendUsageMessage();
+            return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "ascii <string>\nascii code <ASCII-Code>").build()).build();
     }
 
-    @Override
-    public String getDescription() {
-        return "Convert an ASCII-Code to a char and a char to an ASCII-Code.";
-    }
 
-    @Override
-    public String getUsage() {
-        return "ascii <string>\nascii code <ASCII-Code>";
-    }
-
-    @Override
-    public int getPermissionLevel() {
-        return 0;
-    }
 }
