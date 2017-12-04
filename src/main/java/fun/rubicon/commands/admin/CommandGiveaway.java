@@ -133,35 +133,35 @@ public class CommandGiveaway extends Command implements Serializable{
         });
     }
     public static void startGiveawayManager(){
-       new Timer().schedule(new TimerTask() {
-           @Override
-           public void run() {
-               giveaways.values().forEach(g -> {
-                   Date now = new Date();
-                   try{
-                       Date date = format.parse(g.expiredate);
-                       if(date.after(now)){
-                           TextChannel channel = RubiconBot.getJDA().getGuildById(g.guildid).getTextChannelById(g.channelid);
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                giveaways.values().forEach(g -> {
+                    Date now = new Date();
+                    try{
+                        Date date = format.parse(g.expiredate);
+                        if(date.after(now)){
+                            TextChannel channel = RubiconBot.getJDA().getGuildById(g.guildid).getTextChannelById(g.channelid);
 
-                           if(g.users.isEmpty()){
-                               channel.sendMessage(EmbedUtil.error("No winner c:", "Because nobody reacted nobdoy won the giveaway").build()).queue();
-                               return;
-                           }
-                           int rand = ThreadLocalRandom.current().nextInt(0, g.users.size());
-                           Member member = RubiconBot.getJDA().getGuildById(g.guildid).getMemberById(g.users.get(rand));
-                           channel.sendMessage(new EmbedBuilder().setAuthor("Giveaway is over!", null, null).setColor(Colors.COLOR_NO_PERMISSION).setDescription(member.getAsMention() + " won the Following: ```\n" + g.reward + "```").build()).queue();
-                           giveaways.remove(channel.getGuild());
-                           File file = new File("GIVEAWAYS/" + channel.getGuild().getId() + "/giveaway.dat");
-                           file.delete();
-                       }
-                   } catch (ParseException pe){
-                       pe.printStackTrace();
-                   }
+                            if(g.users.isEmpty()){
+                                channel.sendMessage(EmbedUtil.error("No winner c:", "Because nobody reacted nobdoy won the giveaway").build()).queue();
+                                return;
+                            }
+                            int rand = ThreadLocalRandom.current().nextInt(0, g.users.size());
+                            Member member = RubiconBot.getJDA().getGuildById(g.guildid).getMemberById(g.users.get(rand));
+                            channel.sendMessage(new EmbedBuilder().setAuthor("Giveaway is over!", null, null).setColor(Colors.COLOR_NO_PERMISSION).setDescription(member.getAsMention() + " won the Following: ```\n" + g.reward + "```").build()).queue();
+                            giveaways.remove(channel.getGuild());
+                            File file = new File("GIVEAWAYS/" + channel.getGuild().getId() + "/giveaway.dat");
+                            file.delete();
+                        }
+                    } catch (ParseException pe){
+                        pe.printStackTrace();
+                    }
 
 
-               });
-           }
-       }, 0, 50000);
+                });
+            }
+        }, 0, 50000);
 
     }
 
@@ -183,7 +183,7 @@ public class CommandGiveaway extends Command implements Serializable{
     public static void handleReaction(MessageReactionAddEvent event) {
         String react = event.getReaction().getReactionEmote().getName();
         if (react.equals(emote)) {
-            if (running == false) return;
+            if (!running) return;
             Giveaway giveaway = giveaways.get(event.getGuild());
             if(giveaway.users.contains(event.getUser().getId())) return;
             PrivateChannel pc = event.getMember().getUser().openPrivateChannel().complete();
