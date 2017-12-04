@@ -1,28 +1,35 @@
 package fun.rubicon.commands.tools;
 
-import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
+import fun.rubicon.command2.CommandHandler;
+import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionRequirements;
+import fun.rubicon.data.UserPermissions;
+import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.awt.*;
 
-public class CommandSearch extends Command {
-    public CommandSearch(String command, CommandCategory category) {
-        super(command, category);
+public class CommandSearch extends CommandHandler {
+
+    public CommandSearch() {
+        super(new String[] {"search", "find"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.find"), "Searches for users, roles and channels with a specified name.", "search <query>");
     }
 
     @Override
-    protected void execute(String[] args, MessageReceivedEvent e) {
-        TextChannel channel = e.getTextChannel();
-        Guild guild = e.getGuild();
+    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        Message message = parsedCommandInvocation.invocationMessage;
+        String[] args = parsedCommandInvocation.args;
+        TextChannel channel = message.getTextChannel();
+        Guild guild = message.getGuild();
 
         if(args.length == 0){
-            sendUsageMessage();
-            return;
+            return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "search <query>").build()).build();
         }
         StringBuilder query = new StringBuilder();
         for (String arg : args) {
@@ -64,31 +71,20 @@ public class CommandSearch extends Command {
                 roles.append(i.getName() + "(`" + i.getId() + "`)").append("\n");
         });
         try {
+            mymsg.delete().queue();
             EmbedBuilder results = new EmbedBuilder()
                     .setColor(Color.green)
                     .addField("**Textchannels**", textchannels.toString(), false)
                     .addField("**Voicechannles**", voicechannels.toString(), false)
                     .addField("**Members**", members.toString(), false)
                     .addField("**Roles**", roles.toString(), false);
-            mymsg.editMessage(results.build()).queue();
+            return new MessageBuilder().setEmbed(results.build()).build();
         } catch (IllegalArgumentException ex){
-            mymsg.editMessage(new EmbedBuilder().setDescription(":warning: TO MANY RESULTS HEEEEEELP!").build()).queue();
+            mymsg.delete().queue();
+            return new MessageBuilder().setEmbed(new EmbedBuilder().setDescription(":warning: TO MANY RESULTS HEEEEEELP!").build()).build();
         }
 
     }
 
-    @Override
-    public String getDescription() {
-        return "Searches for users, roles and channels with a specified name.";
-    }
 
-    @Override
-    public String getUsage() {
-        return "search <query>";
-    }
-
-    @Override
-    public int getPermissionLevel() {
-        return 0;
-    }
 }

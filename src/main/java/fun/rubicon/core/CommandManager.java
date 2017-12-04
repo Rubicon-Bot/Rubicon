@@ -62,13 +62,13 @@ public class CommandManager {
 
 
 
-        //Tools
-        CommandHandler.addCommand(new CommandGoogle("google", CommandCategory.TOOLS));
-        CommandHandler.addCommand(new CommandSearch("search", CommandCategory.TOOLS));
-        CommandHandler.addCommand(new CommandServerInfo("serverinfo", CommandCategory.TOOLS).addAliases("guild","guildinfo"));
-        CommandHandler.addCommand(new CommandUserInfo("userinfo", CommandCategory.TOOLS).addAliases("whois"));
-        CommandHandler.addCommand(new CommandVote("vote", CommandCategory.TOOLS).addAliases("v"));
-        CommandHandler.addCommand(new CommandASCII("ascii", CommandCategory.TOOLS));
+        //Tools (Ported into new command framework by Schlaubi :D
+        //CommandHandler.addCommand(new CommandGoogle("google", CommandCategory.TOOLS));
+        //CommandHandler.addCommand(new CommandSearch("search", CommandCategory.TOOLS));
+        //CommandHandler.addCommand(new CommandServerInfo("serverinfo", CommandCategory.TOOLS).addAliases("guild","guildinfo"));
+        //CommandHandler.addCommand(new CommandUserInfo("userinfo", CommandCategory.TOOLS).addAliases("whois"));
+        //CommandHandler.addCommand(new CommandVote("vote", CommandCategory.TOOLS).addAliases("v"));
+        //CommandHandler.addCommand(new CommandASCII("ascii", CommandCategory.TOOLS));
         //CommandHandler.addCommand(new CommandBrainfuck("brainfuck", CommandCategory.TOOLS).addAliases("bf"));
     }
 }
