@@ -96,19 +96,19 @@ public class CommandManager extends ListenerAdapter {
     private static ParsedCommandInvocation parse(Message message) {
         String prefix = null;
         // react to default prefix: 'rc!<majorcommand> [arguments]'
-        if (message.getContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()))
+        if (message.getRawContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()))
             prefix = Info.BOT_DEFAULT_PREFIX;
             // react to custom server prefix: '<custom-server-prefix><majorcommand> [arguments...]'
         else if (message.getChannelType() == ChannelType.TEXT) { // ensure bot is on a server
             String serverPrefix = RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix");
-            if (message.getContent().toLowerCase().startsWith(serverPrefix.toLowerCase()))
+            if (message.getRawContent().toLowerCase().startsWith(serverPrefix.toLowerCase()))
                 prefix = serverPrefix;
         }
         //TODO react to mentions: '<bot-mention> majorcommand [arguments]'
 
         if (prefix != null) {
             // cut off command prefix
-            String beheaded = message.getContent().substring(prefix.length(), message.getContent().length());
+            String beheaded = message.getRawContent().substring(prefix.length(), message.getRawContent().length());
             // split arguments
             String[] allArgs = beheaded.split(" ");
             // create an array of the actual command arguments (exclude invocation arg)
