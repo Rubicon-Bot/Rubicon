@@ -10,9 +10,7 @@ import fun.rubicon.commands.admin.*;
 import fun.rubicon.commands.botowner.*;
 import fun.rubicon.commands.fun.CommandLevel;
 import fun.rubicon.commands.fun.CommandSlot;
-import fun.rubicon.commands.general.CommandFeedback;
-import fun.rubicon.commands.general.CommandHelp;
-import fun.rubicon.commands.general.CommandPing;
+import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.CommandManager;
@@ -156,7 +154,11 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(
                 new CommandHelp(),
                 new CommandFeedback(),
-                new CommandPing()
+                new CommandPing(),
+                new CommandBug(),
+                new CommandInfo(),
+                new CommandInvite(),
+                new CommandSpeedTest()
         );
         // settings commands package
         commandManager.registerCommandHandlers(

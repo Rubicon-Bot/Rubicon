@@ -1,62 +1,49 @@
 package fun.rubicon.commands.general;
 
-import fun.rubicon.command.Command;
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
-import fun.rubicon.core.DiscordCore;
+import fun.rubicon.command2.CommandHandler;
+import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionRequirements;
+import fun.rubicon.data.UserPermissions;
+import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.PrivateChannel;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.exceptions.PermissionException;
+import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Message;
 
-import java.text.ParseException;
 
-public class CommandBug extends Command {
-    public CommandBug(String command, CommandCategory category) {
-        super(command, category);
+public class CommandBug extends CommandHandler {
+
+    public CommandBug() {
+        super(new String[] {"bug"}, CommandCategory.GENERAL, new PermissionRequirements(0, "command.bug"), "Sends a bug to the bot developers", "bug [message] (min. 3 args)");
     }
 
     @Override
-    protected void execute(String[] args, MessageReceivedEvent e) throws ParseException {
+    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        String[] args = parsedCommandInvocation.args;
+        Message message = parsedCommandInvocation.invocationMessage;
         //Check if enough args
         if (args.length < 3) {
-            sendUsageMessage();
-            return;
+            return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "bug [message] (min. 3 args)").build()).build();
         }
         //Make String out of args
         String text = "";
         for (String arg : args) {
             text += arg + " ";
         }
-        //Try do delete Message
-        try {
-            e.getMessage().delete().queue();
-        } catch (PermissionException er) {
-            PrivateChannel pc = e.getGuild().getOwner().getUser().openPrivateChannel().complete();
-            pc.sendMessage("Please give me MESSAGE_MANAGE permissions!").queue();
-        }
+
         //Post Report to Dev Server
-        DiscordCore.getJDA().getTextChannelById("382231366064144384").sendMessage(
+        RubiconBot.getJDA().getTextChannelById("382231366064144384").sendMessage(
                 new EmbedBuilder()
-                        .setAuthor(e.getAuthor().getName() + "#" + e.getAuthor().getDiscriminator(), null, e.getAuthor().getAvatarUrl())
+                        .setAuthor(message.getAuthor().getName() + "#" + message.getAuthor().getDiscriminator(), null, message.getAuthor().getAvatarUrl())
                         .setDescription("**New Bug Detected!**\n```fix\n" + text + "```")
                         .build()
         ).queue();
         //User Feedback
-        sendEmbededMessage("Successfully send the Bug to Head Developers");
+        return new MessageBuilder().setEmbed(EmbedUtil.success("Bug reported", "Successfully send the Bug to Head Developers").build()).build();
     }
 
-    @Override
-    public String getDescription() {
-        return "Report a bug to the developers.";
-    }
 
-    @Override
-    public String getUsage() {
-        return "bug [message] (min. 3 args)";
-    }
 
-    @Override
-    public int getPermissionLevel() {
-        return 0;
-    }
+
 }
