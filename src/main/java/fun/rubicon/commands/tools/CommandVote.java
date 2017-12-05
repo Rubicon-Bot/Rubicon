@@ -1,12 +1,16 @@
 package fun.rubicon.commands.tools;
 
-import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
+import fun.rubicon.command2.CommandHandler;
+import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionRequirements;
+import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
+import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.core.exceptions.ErrorResponseException;
 
@@ -16,7 +20,7 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class CommandVote extends Command implements Serializable{
+public class CommandVote extends CommandHandler implements Serializable {
 
     private static TextChannel channel;
 
@@ -31,71 +35,58 @@ public class CommandVote extends Command implements Serializable{
 
     private List<String> toAddEmojis = new ArrayList<>();
 
-    public CommandVote(String command, CommandCategory category) {
-        super(command, category);
+    public CommandVote() {
+        super(new String[]{"vote", "v"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.vote"), "Create polls on your server", "vote create <question>|<answer1>|...");
     }
 
-    @Override
-    protected void execute(String[] args, MessageReceivedEvent e) {
-        channel = e.getTextChannel();
-        if (args.length < 1) {
-            sendUsageMessage();
-            return;
-        }
-        switch (args[0]){
-            case "create":
-                String[] voteArgs = e.getMessage().getContent().split("\\|");
-                if(voteArgs.length < 2){
-                    sendUsageMessage();
-                    return;
-                }
-                createPoll(args, e);
-                break;
-            case "v":
-                votePoll(args, e);
-                break;
-            case "stats":
-                voteStats(e);
-                break;
-            case "close":
-                closeVote(e);
-                break;
-        }
 
-        polls.forEach((guild, poll) -> {
-            File path = new File("SERVER_SETTINGS/" + guild.getId() + "/");
-            if(!path.exists())
-                path.mkdirs();
-            try {
-                savePoll(guild);
-            } catch (IOException ex) {
-                ex.printStackTrace();
+    @Override
+    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                savePolls();
             }
-        });
-    }
-
-    @Override
-    public String getDescription() {
-        return "Super nice polls on your own guild";
-    }
-
-    @Override
-    public String getUsage() {
-        return
-                "USAGE: \n" +
-                        "`vote create <Title>|<Option1>|<Option2>|...  `  -  create a vote\n" +
+        }, 2500);
+        String[] args = parsedCommandInvocation.args;
+        Message message = parsedCommandInvocation.invocationMessage;
+        channel = message.getTextChannel();
+        if (args.length < 1) {
+            return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "`vote create <Title>|<Option1>|<Option2>|...  `  -  create a vote\n" +
+                    "`vote vote <index of Option>  `  -  vote for a possibility\n" +
+                    "`vote stats  `  -  get stats of a current vote\n" +
+                    "`vote close  `  -  close a current vote").build()).build();
+        }
+        if (args[0].equalsIgnoreCase("create")) {
+            String[] voteArgs = message.getContent().split("\\|");
+            if (voteArgs.length < 2) {
+                return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "`vote create <Title>|<Option1>|<Option2>|...  `  -  create a vote\n" +
                         "`vote vote <index of Option>  `  -  vote for a possibility\n" +
                         "`vote stats  `  -  get stats of a current vote\n" +
-                        "`vote close  `  -  close a current vote"
-                ;
+                        "`vote close  `  -  close a current vote").build()).build();
+            }
+            return createPoll(args, message);
+        } else if (args[0].equalsIgnoreCase("v")) {
+            return votePoll(args, message);
+        } else if (args[0].equalsIgnoreCase("stats")) {
+            return voteStats(message);
+        } else if (args[0].equalsIgnoreCase("close")) {
+            return closeVote(message);
+        }
+
+
+        return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "`vote create <Title>|<Option1>|<Option2>|...  `  -  create a vote\n" +
+                "`vote vote <index of Option>  `  -  vote for a possibility\n" +
+                "`vote stats  `  -  get stats of a current vote\n" +
+                "`vote close  `  -  close a current vote").build()).build();
     }
 
-    @Override
-    public int getPermissionLevel() {
-        return 0;
-    }
 
-    private static class Poll implements Serializable{
+
+
+
+
+    private static class Poll implements Serializable {
         private String creator;
         private String heading;
         private List<String> answers;
@@ -104,7 +95,7 @@ public class CommandVote extends Command implements Serializable{
         private String channel;
         private HashMap<String, Integer> reacts;
 
-        private Poll(Member creator, String heading, List<String> answers, Message pollmsg, TextChannel channel){
+        private Poll(Member creator, String heading, List<String> answers, Message pollmsg, TextChannel channel) {
             this.creator = creator.getUser().getId();
             this.heading = heading;
             this.answers = answers;
@@ -140,12 +131,12 @@ public class CommandVote extends Command implements Serializable{
     }
 
 
-    private static EmbedBuilder getParsedPoll(Poll poll, Guild guild){
+    private static EmbedBuilder getParsedPoll(Poll poll, Guild guild) {
 
         StringBuilder ansSTR = new StringBuilder();
         final AtomicInteger count = new AtomicInteger();
 
-        poll.answers.forEach(s ->{
+        poll.answers.forEach(s -> {
             long votescount = poll.votes.keySet().stream().filter(k -> poll.votes.get(k).equals(count.get() + 1)).count();
             ansSTR.append(EMOTI[count.get()] + " - " + (count.get() + 1) + "  -  " + s + "  -  Votes: `" + votescount + "` \n");
             count.addAndGet(1);
@@ -159,47 +150,44 @@ public class CommandVote extends Command implements Serializable{
 
     }
 
-    private void voteStats(MessageReceivedEvent event){
-        if(!polls.containsKey(event.getGuild())){
-            sendErrorMessage("There is currently no poll running on this guild");
-            return;
+    private Message voteStats(Message message) {
+        Guild guild = message.getGuild();
+        if (!polls.containsKey(guild)) {
+            return new MessageBuilder().setEmbed(EmbedUtil.error("No poll running", "There is currently no poll running on this guild").build()).build();
         }
-        channel.sendMessage(getParsedPoll(polls.get(event.getGuild()), event.getGuild()).build()).queue();
+        return new MessageBuilder().setEmbed(getParsedPoll(polls.get(guild), guild).build()).build();
     }
 
-    private void closeVote(MessageReceivedEvent event){
-        Message message = event.getMessage();
-        User author = event.getAuthor();
-        if(!polls.containsKey(event.getGuild())){
-            sendErrorMessage("There is currently no poll running on this guild");
-            return;
+    private Message closeVote(Message message) {
+        Guild guild = message.getGuild();
+        User author = message.getAuthor();
+        if (!polls.containsKey(guild)) {
+            return new MessageBuilder().setEmbed(EmbedUtil.error("No poll running", "There is currently no poll running on this guild").build()).build();
         }
 
-        Poll poll = polls.get(event.getGuild());
+        Poll poll = polls.get(guild);
 
-        if(e.getAuthor().equals(poll.getCreator(e.getGuild()))){
-            sendErrorMessage(":warning: Only the poll creator can close polls");
-            return;
+        if (message.getAuthor().equals(poll.getCreator(guild))) {
+            return new MessageBuilder().setEmbed(EmbedUtil.error("Error", ":warning: Only the poll creator can close polls").build()).build();
         }
 
-        polls.remove(event.getGuild());
-        channel.sendMessage(getParsedPoll(poll, event.getGuild()).build()).queue();
-        sendEmbededMessage(":white_check_mark: Poll was closed by" + event.getAuthor().getAsMention());
+        polls.remove(guild);
+        channel.sendMessage(getParsedPoll(poll, guild).build()).queue();
         Message pollmsg = channel.getMessageById(String.valueOf(poll.pollmsg)).complete();
         try {
             pollmsg.delete().queue();
-        } catch (ErrorResponseException e){
+        } catch (ErrorResponseException e) {
             //This is an empty Catch Block
         }
+        return new MessageBuilder().setEmbed(EmbedUtil.success("Closed vote", ":white_check_mark: Poll was closed by" + message.getAuthor().getAsMention()).build()).build();
     }
 
-    private void createPoll(String[] args, MessageReceivedEvent event){
-        if(polls.containsKey(event.getGuild())){
-            sendErrorMessage("There is already a poll running on this guild");
-            return;
+    private Message createPoll(String[] args, Message message) {
+        Guild guild = message.getGuild();
+        if (polls.containsKey(guild)) {
+            return new MessageBuilder().setEmbed(EmbedUtil.error("No poll running", "There is currently no poll running on this guild").build()).build();
         }
-        Message message = event.getMessage();
-        User author = event.getAuthor();
+        User author = message.getAuthor();
 
 
         String argsSTRG = String.join(" ", new ArrayList<>(Arrays.asList(args).subList(1, args.length)));
@@ -213,65 +201,65 @@ public class CommandVote extends Command implements Serializable{
         HashMap<String, Integer> reactions = new HashMap<>();
         final AtomicInteger count = new AtomicInteger();
         toAddEmojis = new ArrayList<>(Arrays.asList(EMOTI));
-        answers.forEach(a ->{
+        answers.forEach(a -> {
             reactions.put(toAddEmojis.get(0), count.get() + 1);
             toAddEmojis.remove(0);
             count.addAndGet(1);
         });
-        Poll poll = new Poll(event.getMember(), heading, answers, pollmessage, e.getTextChannel());
-        polls.put(event.getGuild(), poll);
+        Poll poll = new Poll(message.getMember(), heading, answers, pollmessage, message.getTextChannel());
+        polls.put(guild, poll);
         poll.getReacts().putAll(reactions);
 
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                pollmessage.editMessage(getParsedPoll(poll, e.getGuild()).build()).complete();
+                pollmessage.editMessage(getParsedPoll(poll, guild).build()).complete();
                 poll.reacts.keySet().forEach(r -> pollmessage.addReaction(r).queue());
             }
         }, 500);
+
+        return null;
     }
 
-    private void votePoll(String[] args, MessageReceivedEvent event){
-
-        if(!polls.containsKey(event.getGuild())){
-            sendErrorMessage("There is currently no poll running on this guild");
-            return;
+    private Message votePoll(String[] args, Message message) {
+        Guild guild = message.getGuild();
+        if (!polls.containsKey(guild)) {
+            return new MessageBuilder().setEmbed(EmbedUtil.error("No poll running", "There is currently no poll running on this guild").build()).build();
         }
 
-        Poll poll = polls.get(event.getGuild());
+        Poll poll = polls.get(guild);
 
         int vote;
-        try{
+        try {
             vote = Integer.parseInt(args[1]);
-            if(vote > poll.answers.size()){
+            if (vote > poll.answers.size()) {
                 throw new Exception();
             }
-        } catch (Exception e){
-            sendErrorMessage(":warning: You entered an wrong answer!");
-            return;
+        } catch (Exception e) {
+            return new MessageBuilder().setEmbed(EmbedUtil.error("Wrong answer", ":warning: You entered an wrong answer!").build()).build();
         }
 
-        if(poll.votes.containsKey(event.getAuthor().getId())){
-            sendErrorMessage("Sorry, but you can only vote at once for a poll");
-            return;
+        if (poll.votes.containsKey(message.getAuthor().getId())) {
+            return new MessageBuilder().setEmbed(EmbedUtil.error("Error", "Sorry, but you can only vote at once for a poll").build()).build();
         }
 
-        poll.votes.put(event.getAuthor().getId(), vote);
-        polls.replace(event.getGuild(), poll);
-        event.getAuthor().openPrivateChannel().complete().sendMessage("You have successfully voted for option `" + args[1] + "`");
-        Message pollmsg =  channel.getMessageById(String.valueOf(poll.pollmsg)).complete();
-        pollmsg.editMessage(getParsedPoll(poll, event.getGuild()).build()).queue();
+        poll.votes.put(message.getAuthor().getId(), vote);
+        polls.replace(guild, poll);
+        message.getAuthor().openPrivateChannel().complete().sendMessage("You have successfully voted for option `" + args[1] + "`").queue();
+        Message pollmsg = channel.getMessageById(String.valueOf(poll.pollmsg)).complete();
+        pollmsg.editMessage(getParsedPoll(poll, guild).build()).queue();
+        return null;
     }
 
-    public static void reactVote(MessageReactionAddEvent event){
-        if(event.getUser().isBot() || !polls.containsKey(event.getGuild()))
+    public static void reactVote(MessageReactionAddEvent event) {
+        if (event.getUser().isBot() || !polls.containsKey(event.getGuild()))
             return;
         Poll poll = polls.get(event.getGuild());
 
-        if(!poll.pollmsg.equals(event.getMessageId()))
+        if (!poll.pollmsg.equals(event.getMessageId()))
             return;
 
-        if(poll.votes.containsKey(event.getUser().getId())){
+        if (poll.votes.containsKey(event.getUser().getId())) {
             channel.sendMessage(new EmbedBuilder().setColor(Colors.COLOR_ERROR).setDescription("Sorry, but you can only vote at once for a poll").build()).queue();
             new Timer().schedule(new TimerTask() {
                 @Override
@@ -299,7 +287,7 @@ public class CommandVote extends Command implements Serializable{
     }
 
     private void savePoll(Guild guild) throws IOException {
-        if(!polls.containsKey(guild)){
+        if (!polls.containsKey(guild)) {
             return;
         }
 
@@ -311,8 +299,9 @@ public class CommandVote extends Command implements Serializable{
         oos.writeObject(poll);
         oos.close();
     }
+
     private static Poll getPoll(Guild guild) throws IOException, ClassNotFoundException {
-        if(polls.containsKey(guild))
+        if (polls.containsKey(guild))
             return null;
 
         String saveFile = "SERVER_SETTINGS/" + guild.getId() + "/vote.dat";
@@ -323,17 +312,30 @@ public class CommandVote extends Command implements Serializable{
         return out;
     }
 
-    public static void loadPolls(JDA jda){
-        jda.getGuilds().forEach(g ->{
+    public static void loadPolls(JDA jda) {
+        jda.getGuilds().forEach(g -> {
 
             File f = new File("SERVER_SETTINGS/" + g.getId() + "/vote.dat");
-            if(f.exists())
+            if (f.exists())
                 try {
                     polls.put(g, getPoll(g));
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
 
+        });
+    }
+
+    private void savePolls() {
+        polls.forEach((guild, poll) -> {
+            File path = new File("SERVER_SETTINGS/" + guild.getId() + "/");
+            if (!path.exists())
+                path.mkdirs();
+            try {
+                savePoll(guild);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         });
     }
 
