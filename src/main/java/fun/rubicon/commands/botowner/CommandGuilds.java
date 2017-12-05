@@ -31,6 +31,6 @@ public class CommandGuilds extends CommandHandler {
             runningOnServers.append("`\t- ").append(guild.getName()).append("(").append(guild.getId()).append(")`\n");
             count_server++;
         }
-            return message(info("RubiconBot running on following guilds","`This Bot running on " + count_server +" guilds.`\n\n"+runningOnServers.toString()));
+            return message(info("RubiconBot running on following guilds","`Total guilds: " + count_server +"`\n\n"+runningOnServers.toString()));
     }
 }
