@@ -146,7 +146,8 @@ public class RubiconBot {
                 new CommandPlay(),
                 new CommandRestart(),
                 new CommandSetmoney(),
-                new CommandStop()
+                new CommandStop(),
+                new CommandGuilds()
         );
         // fun commands package
         commandManager.registerCommandHandlers(
