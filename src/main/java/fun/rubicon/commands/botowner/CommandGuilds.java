@@ -24,13 +24,14 @@ public class CommandGuilds extends CommandHandler {
     }
 
     @Override
+    // Es muss noch ein Weg gefunden werden das er bei mehr als 200 Zeichen eine neue Seite macht! Plättern mit Reactions und massage don't delete after seconds
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         StringBuilder runningOnServers = new StringBuilder();
-        int count_server = 0;
+        int count_server = 1;
         for (Guild guild : RubiconBot.getJDA().getGuilds()){
-            runningOnServers.append("`\t- ").append(guild.getName()).append("(").append(guild.getId()).append(")`\n");
+            runningOnServers.append("`\t " + count_server +". ").append(guild.getName()).append("(").append(guild.getId()).append(")`\n");
             count_server++;
         }
-            return message(info("RubiconBot running on following guilds","`Total guilds: " + count_server +"`\n\n"+runningOnServers.toString()));
+            return message(info("RubiconBot running on following guilds","`Total guilds: " + (count_server - 1)+"`\n\n"+runningOnServers.toString()));
     }
 }
