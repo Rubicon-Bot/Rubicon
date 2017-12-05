@@ -2,6 +2,13 @@ package fun.rubicon.commands.fun;
 
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
+import fun.rubicon.command2.CommandHandler;
+import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionRequirements;
+import fun.rubicon.data.UserPermissions;
+import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.awt.*;
@@ -17,13 +24,14 @@ import java.util.Random;
  * @package commands.fun
  */
 
-public class CommandColor extends Command{
-    public CommandColor(String command, CommandCategory category) {
-        super(command, category);
+public class CommandColor extends CommandHandler{
+    public CommandColor() {
+        super(new String[]{"color"},CommandCategory.FUN,new PermissionRequirements(0,"command.color"),"Generates a random color.","");
     }
 
+
     @Override
-    protected void execute(String[] args, MessageReceivedEvent e) {
+    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         //gen
         Random randomGenerator = new Random();
         int red = randomGenerator.nextInt(256);
@@ -33,21 +41,6 @@ public class CommandColor extends Command{
         Color randomColour = new Color(red,green,blue);
         String s= "!";
         System.out.println(s.toLowerCase());
-        sendEmbededMessage(e.getTextChannel(), "Generated new color", randomColour, "Color: (R:" + randomColour.getRed()+ " G:"+randomColour.getGreen()+ " B:"+randomColour.getBlue()+")");
-    }
-
-    @Override
-    public String getDescription() {
-        return "Generates a random color.";
-    }
-
-    @Override
-    public String getUsage() {
-        return "color";
-    }
-
-    @Override
-    public int getPermissionLevel() {
-        return 0;
+        return new MessageBuilder().setEmbed(new EmbedBuilder().setTitle("Generated new color  Color:").setDescription("(R:" + randomColour.getRed()+ " G:"+randomColour.getGreen()+ " B:"+randomColour.getBlue()+")").build()).build();
     }
 }
