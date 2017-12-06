@@ -70,9 +70,8 @@ public class RubiconBot {
         // init JDA
         initJDA();
 
-
-        //post bot statistics to discordbots.org
-        DBLUtil.postStats(getJDA());
+        // post bot stats to discordbots.org and print warning
+        DBLUtil.postStats(false);
     }
 
     /**

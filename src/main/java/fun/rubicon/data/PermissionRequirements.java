@@ -12,35 +12,37 @@ package fun.rubicon.data;
  * @author tr808axm
  */
 public class PermissionRequirements {
-    private enum PermissionLevel {
-        EVERYONE(0),
-        WITH_PERMISSION(1),
-        ADMINISTRATOR(2),
-        SERVER_OWNER(3),
-        BOT_AUTHOR(4);
-
-        public final int value;
-
-        PermissionLevel(int value) {
-            this.value = value;
-        }
-
-        public static PermissionLevel getByValue(int value) {
-            for (PermissionLevel level : values())
-                if (level.value == value)
-                    return level;
-            return null;
-        }
-    }
-
     private final PermissionLevel requiredPermissionLevel;
     private final String requiredPermissionNode;
 
+    /**
+     * Constructs a new PermissionRequirements object.
+     *
+     * @param requiredPermissionLevel the required permission level. See {@link PermissionLevel} for value definitions.
+     * @param requiredPermissionNode  the permission node that allows a user to pass the permission check.
+     * @deprecated Use the constructor with {@link PermissionLevel} instead.
+     */
+    @Deprecated
     public PermissionRequirements(int requiredPermissionLevel, String requiredPermissionNode) {
-        this.requiredPermissionLevel = PermissionLevel.getByValue(requiredPermissionLevel);
+        this(PermissionLevel.getByValue(requiredPermissionLevel), requiredPermissionNode);
+    }
+
+    /**
+     * Constructs a new PermissionRequirements object.
+     *
+     * @param requiredPermissionLevel defines which group of users pass these requirements.
+     * @param requiredPermissionNode  the permission node that allows a user to pass the permission check.
+     */
+    public PermissionRequirements(PermissionLevel requiredPermissionLevel, String requiredPermissionNode) {
+        this.requiredPermissionLevel = requiredPermissionLevel;
         this.requiredPermissionNode = requiredPermissionNode;
     }
 
+    /**
+     * Checks whether the conditions set in this object are met by a user's permissions.
+     * @param userPermissions the user permissions access object.
+     * @return true if all conditions are met, false otherwise.
+     */
     public boolean coveredBy(UserPermissions userPermissions) {
         if (userPermissions.isBotAuthor())
             return true;
@@ -60,6 +62,19 @@ public class PermissionRequirements {
             return true;
 
         return requiredPermissionLevel == PermissionLevel.SERVER_OWNER && userPermissions.isServerOwner();
+    }
 
+    /**
+     * @return the PermissionLevel requirement.
+     */
+    public PermissionLevel getRequiredPermissionLevel() {
+        return requiredPermissionLevel;
+    }
+
+    /**
+     * @return the permission node that lets a user pass
+     */
+    public String getRequiredPermissionNode() {
+        return requiredPermissionNode;
     }
 }
