@@ -177,7 +177,8 @@ public class RubiconBot {
                 new CommandSearch(),
                 new CommandGoogle(),
                 new CommandASCII(),
-                new CommandClear()
+                new CommandClear(),
+                new CommandQRCode()
         );
 
         // also register commands from the old framework
