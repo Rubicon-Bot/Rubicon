@@ -37,7 +37,7 @@ public class DBLUtil {
     public static void postStats(boolean silent) {
         // check if bot has already been initialized
         if (RubiconBot.getJDA() == null) {
-            Logger.error("WARNING: Could not post discordbots.org stats as the bot has not been initialized yet.");
+            Logger.warning("Could not post discordbots.org stats as the bot has not been initialized yet.");
             return;
         }
 
@@ -51,7 +51,7 @@ public class DBLUtil {
         } catch (PostingException e) {
             // suppress warning if silent
             if (!silent)
-                Logger.error("WARNING: Could not post discordbots.org stats: " + e.getMessage());
+                Logger.warning("Could not post discordbots.org stats: " + e.getMessage());
         }
     }
 }

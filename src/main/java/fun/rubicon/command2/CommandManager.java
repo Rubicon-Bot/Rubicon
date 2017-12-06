@@ -45,7 +45,7 @@ public class CommandManager extends ListenerAdapter {
         for (String invokeAlias : commandHandler.getInvocationAliases())
             // only register if alias is not taken
             if (commandAssociations.containsKey(invokeAlias.toLowerCase()))
-                Logger.error("WARNING: The '" + commandHandler.toString()
+                Logger.warning("The '" + commandHandler.toString()
                         + "' CommandHandler tried to register the alias '" + invokeAlias
                         + "' which is already taken by the '" + commandAssociations.get(invokeAlias).toString()
                         + "' CommandHandler.");
