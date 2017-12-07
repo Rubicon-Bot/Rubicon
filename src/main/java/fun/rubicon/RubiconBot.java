@@ -169,16 +169,17 @@ public class RubiconBot {
         );
         // tools commands package
         commandManager.registerCommandHandlers(
-                new CommandLmgtfy(),
-                new CommandShorten(),
-                new CommandVote(),
-                new CommandUserInfo(),
-                new CommandServerInfo(),
-                new CommandSearch(),
-                new CommandGoogle(),
                 new CommandASCII(),
                 new CommandClear(),
-                new CommandQRCode()
+                new CommandDice(),
+                new CommandGoogle(),
+                new CommandLmgtfy(),
+                new CommandQRCode(),
+                new CommandSearch(),
+                new CommandServerInfo(),
+                new CommandShorten(),
+                new CommandUserInfo(),
+                new CommandVote()
         );
 
         // also register commands from the old framework
