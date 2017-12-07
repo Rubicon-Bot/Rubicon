@@ -45,7 +45,7 @@ public class CommandManager extends ListenerAdapter {
         for (String invokeAlias : commandHandler.getInvocationAliases())
             // only register if alias is not taken
             if (commandAssociations.containsKey(invokeAlias.toLowerCase()))
-                Logger.error("WARNING: The '" + commandHandler.toString()
+                Logger.warning("The '" + commandHandler.toString()
                         + "' CommandHandler tried to register the alias '" + invokeAlias
                         + "' which is already taken by the '" + commandAssociations.get(invokeAlias).toString()
                         + "' CommandHandler.");
@@ -95,8 +95,11 @@ public class CommandManager extends ListenerAdapter {
      */
     private static ParsedCommandInvocation parse(Message message) {
         String prefix = null;
-        // react to default prefix: 'rc!<majorcommand> [arguments]'
-        if (message.getRawContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()))
+        // react to mention: '@botmention<majorcommand> [arguments]'
+        if (message.getRawContent().startsWith(RubiconBot.getJDA().getSelfUser().getAsMention())) {
+            prefix = RubiconBot.getJDA().getSelfUser().getAsMention();
+            // react to default prefix: 'rc!<majorcommand> [arguments]'
+        } else if (message.getRawContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()))
             prefix = Info.BOT_DEFAULT_PREFIX;
             // react to custom server prefix: '<custom-server-prefix><majorcommand> [arguments...]'
         else if (message.getChannelType() == ChannelType.TEXT) { // ensure bot is on a server
@@ -104,11 +107,10 @@ public class CommandManager extends ListenerAdapter {
             if (message.getRawContent().toLowerCase().startsWith(serverPrefix.toLowerCase()))
                 prefix = serverPrefix;
         }
-        //TODO react to mentions: '<bot-mention> majorcommand [arguments]'
 
         if (prefix != null) {
             // cut off command prefix
-            String beheaded = message.getRawContent().substring(prefix.length(), message.getRawContent().length());
+            String beheaded = message.getRawContent().substring(prefix.length(), message.getRawContent().length()).trim();
             // split arguments
             String[] allArgs = beheaded.split(" ");
             // create an array of the actual command arguments (exclude invocation arg)
