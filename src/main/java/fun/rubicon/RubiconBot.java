@@ -171,6 +171,7 @@ public class RubiconBot {
         // tools commands package
         commandManager.registerCommandHandlers(
                 new CommandASCII(),
+                new CommandChoose(),
                 new CommandClear(),
                 new CommandColor(),
                 new CommandDice(),
