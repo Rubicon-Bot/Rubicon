@@ -8,6 +8,7 @@ package fun.rubicon;
 
 import fun.rubicon.commands.admin.*;
 import fun.rubicon.commands.botowner.*;
+import fun.rubicon.commands.fun.CommandColor;
 import fun.rubicon.commands.fun.CommandLevel;
 import fun.rubicon.commands.fun.CommandSlot;
 import fun.rubicon.commands.general.*;
@@ -171,6 +172,7 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(
                 new CommandASCII(),
                 new CommandClear(),
+                new CommandColor(),
                 new CommandDice(),
                 new CommandGoogle(),
                 new CommandLmgtfy(),
