@@ -8,12 +8,11 @@ package fun.rubicon;
 
 import fun.rubicon.commands.admin.*;
 import fun.rubicon.commands.botowner.*;
+import fun.rubicon.commands.fun.CommandColor;
 import fun.rubicon.commands.fun.CommandLevel;
+import fun.rubicon.commands.fun.CommandRip;
 import fun.rubicon.commands.fun.CommandSlot;
-import fun.rubicon.commands.general.CommandFeedback;
-import fun.rubicon.commands.general.CommandHelp;
-import fun.rubicon.commands.general.CommandMoney;
-import fun.rubicon.commands.general.CommandPing;
+import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.CommandManager;
@@ -73,9 +72,8 @@ public class RubiconBot {
         // init JDA
         initJDA();
 
-
-        //post bot statistics to discordbots.org
-        DBLUtil.postStats(getJDA());
+        // post bot stats to discordbots.org and print warning
+        DBLUtil.postStats(false);
     }
 
     /**
@@ -152,6 +150,7 @@ public class RubiconBot {
         // fun commands package
         commandManager.registerCommandHandlers(
                 new CommandLevel(),
+                new CommandRip(),
                 new CommandSlot()
         );
         // general commands package
@@ -159,6 +158,10 @@ public class RubiconBot {
                 new CommandHelp(),
                 new CommandFeedback(),
                 new CommandPing(),
+                new CommandBug(),
+                new CommandInfo(),
+                new CommandInvite(),
+                new CommandSpeedTest(),
                 new CommandMoney()
         );
         // settings commands package
@@ -171,15 +174,19 @@ public class RubiconBot {
         );
         // tools commands package
         commandManager.registerCommandHandlers(
-                new CommandLmgtfy(),
-                new CommandShorten(),
-                new CommandVote(),
-                new CommandUserInfo(),
-                new CommandServerInfo(),
-                new CommandSearch(),
-                new CommandGoogle(),
                 new CommandASCII(),
-                new CommandClear()
+                new CommandChoose(),
+                new CommandClear(),
+                new CommandColor(),
+                new CommandDice(),
+                new CommandGoogle(),
+                new CommandLmgtfy(),
+                new CommandQRCode(),
+                new CommandSearch(),
+                new CommandServerInfo(),
+                new CommandShorten(),
+                new CommandUserInfo(),
+                new CommandVote()
         );
 
         // also register commands from the old framework

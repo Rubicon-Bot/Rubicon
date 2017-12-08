@@ -14,6 +14,10 @@ import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.managers.fields.GuildField;
+
+import java.util.List;
+
 import static fun.rubicon.util.EmbedUtil.*;
 
 public class CommandGuilds extends CommandHandler {
@@ -24,14 +28,31 @@ public class CommandGuilds extends CommandHandler {
     }
 
     @Override
-    // Es muss noch ein Weg gefunden werden das er bei mehr als 200 Zeichen eine neue Seite macht! Plättern mit Reactions und massage don't delete after seconds
+    //FEHLER SEITENZALEN STIMMEN NOCH NICHT !
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         StringBuilder runningOnServers = new StringBuilder();
         int count_server = 1;
-        for (Guild guild : RubiconBot.getJDA().getGuilds()){
+
+        List<Guild> guild_sublist;
+        int SideNumbInput = 1;
+        if (parsedCommandInvocation.args.length > 1) {
+            SideNumbInput = Integer.parseInt(parsedCommandInvocation.args[1]);
+        }
+
+        if(RubiconBot.getJDA().getGuilds().size() > 20){
+            guild_sublist = RubiconBot.getJDA().getGuilds().subList((SideNumbInput-1)*20, (SideNumbInput-1)*20+20);
+        } else {
+            guild_sublist = RubiconBot.getJDA().getGuilds();
+        }
+        for (Guild guild : guild_sublist) {
             runningOnServers.append("`\t " + count_server +". ").append(guild.getName()).append("(").append(guild.getId()).append(")`\n");
             count_server++;
         }
-            return message(info("RubiconBot running on following guilds","`Total guilds: " + (count_server - 1)+"`\n\n"+runningOnServers.toString()));
+        int sideNumbAll;
+        if (RubiconBot.getJDA().getGuilds().size() >= 2) sideNumbAll = RubiconBot.getJDA().getGuilds().size() / 20;
+        else sideNumbAll = 1;
+        int sideNumb = SideNumbInput;
+            return message(info("RubiconBot running on following guilds","`Total guilds: " + RubiconBot.getJDA().getGuilds().size() + " Side " + sideNumb + " / " + sideNumbAll +"`\n\n"+runningOnServers.toString()));
+
     }
 }

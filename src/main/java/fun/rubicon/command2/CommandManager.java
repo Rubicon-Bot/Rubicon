@@ -112,7 +112,7 @@ public class CommandManager extends ListenerAdapter {
             // cut off command prefix
             String beheaded = message.getRawContent().substring(prefix.length(), message.getRawContent().length()).trim();
             // split arguments
-            String[] allArgs = beheaded.split(" ");
+            String[] allArgs = beheaded.split("\\s+");
             // create an array of the actual command arguments (exclude invocation arg)
             String[] args = new String[allArgs.length - 1];
             System.arraycopy(allArgs, 1, args, 0, args.length);

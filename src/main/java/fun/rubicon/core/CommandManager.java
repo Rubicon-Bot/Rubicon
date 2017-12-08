@@ -13,9 +13,9 @@ import fun.rubicon.commands.admin.CommandGiveaway;
 import fun.rubicon.commands.admin.CommandPermission;
 import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.botowner.CommandEval;
-import fun.rubicon.commands.fun.*;
-import fun.rubicon.commands.general.*;
-import fun.rubicon.commands.tools.*;
+import fun.rubicon.commands.fun.CommandRoulette;
+import fun.rubicon.commands.general.CommandMusic;
+import fun.rubicon.commands.general.CommandStatistics;
 
 /**
  * Old command registration script.
@@ -42,11 +42,7 @@ public class CommandManager {
 
 
         //Fun
-        CommandHandler.addCommand(new CommandRoll("roll", CommandCategory.FUN));
-        CommandHandler.addCommand(new CommandColor("color", CommandCategory.FUN));
-        CommandHandler.addCommand(new CommandChoose("choose", CommandCategory.FUN));
         //CommandHandler.addCommand(new CommandBday("birthday", CommandCategory.FUN).addAliases("bday"));
-        CommandHandler.addCommand(new CommandRip("rip", CommandCategory.FUN).addAliases("tombstone"));
         CommandHandler.addCommand(new CommandRoulette("roulette", CommandCategory.BOT_OWNER).addAliases("roulete","rulette", "roullete"));
 
 

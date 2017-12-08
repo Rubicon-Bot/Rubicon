@@ -1,17 +1,14 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.util;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-/**
- * Rubicon Discord bot
- *
- * @author Yannick Seeger / ForYaSee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.util
- */
 
 public class Logger {
     private static File logFile;
@@ -103,7 +100,7 @@ public class Logger {
                 break;
             case WARNING:
                 String warningMessage = formatLogMessage("Warning", text);
-                System.err.print(warningMessage);
+                System.err.println(warningMessage);
                 addLogEntry(warningMessage + "\n");
                 break;
             default:
