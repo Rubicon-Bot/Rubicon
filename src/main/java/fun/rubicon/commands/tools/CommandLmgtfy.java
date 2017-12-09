@@ -9,10 +9,9 @@ package fun.rubicon.commands.tools;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
-import fun.rubicon.util.Bitly;
-import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.entities.Message;
 
 import static fun.rubicon.util.EmbedUtil.message;
@@ -23,16 +22,13 @@ import static fun.rubicon.util.EmbedUtil.success;
  * @author LeeDJD, tr808axm
  */
 public class CommandLmgtfy extends CommandHandler {
-    private final Bitly bitlyAPI;
-
     /**
      * Constructs this command handler.
      */
     public CommandLmgtfy() {
         super(new String[]{"lmgtfy", "letmegooglethatforyou", "let-me-google-that-for-you"}, CommandCategory.TOOLS,
-                new PermissionRequirements(0, "command.lmgtfy"),
+                new PermissionRequirements(PermissionLevel.EVERYONE, "command.lmgtfy"),
                 "Creates a let-me-google-that-for-you link.", "<search query...>");
-        bitlyAPI = new Bitly(Info.BITLY_TOKEN);
     }
 
     @Override

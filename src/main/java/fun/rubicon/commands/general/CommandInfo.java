@@ -9,9 +9,15 @@ package fun.rubicon.commands.general;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
+import fun.rubicon.command2.CommandHandler;
+import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionRequirements;
+import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -21,18 +27,20 @@ import java.util.concurrent.TimeUnit;
  * Handles the 'info' command.
  * @author Yannick Seeger / ForYaSee
  */
-public class CommandInfo extends Command {
+public class CommandInfo extends CommandHandler {
 
-    public CommandInfo(String command, CommandCategory category) {
-        super(command, category);
+
+    public CommandInfo(){
+        super(new String[] {"Info", "inf"}, CommandCategory.GENERAL, new PermissionRequirements(0, "command.info"), "Shows some information about the bot!", "info");
     }
 
     @Override
-    protected void execute(String[] args, MessageReceivedEvent e) {
+    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         //Set some Var´s
+        Message message = parsedCommandInvocation.invocationMessage;
         EmbedBuilder builder = new EmbedBuilder();
         builder.setColor(Colors.COLOR_PRIMARY);
-        builder.setAuthor(Info.BOT_NAME + " - Info", "https://rubicon.fun", e.getJDA().getSelfUser().getEffectiveAvatarUrl());
+        builder.setAuthor(Info.BOT_NAME + " - Info", "https://rubicon.fun", message.getJDA().getSelfUser().getEffectiveAvatarUrl());
         builder.setThumbnail("https://cdn.discordapp.com/attachments/381176080494624768/381176148828356608/13079-thumb.jpg");
         StringBuilder authors = new StringBuilder();
 
@@ -62,21 +70,7 @@ public class CommandInfo extends Command {
                 "[jsoup](https://jsoup.org/)";
         builder.addField("Dependencies", dependencies, false);
         //Send Message and delete it after 2 Minutes
-        e.getTextChannel().sendMessage(builder.build()).queue(msg -> msg.delete().queueAfter(120, TimeUnit.SECONDS));
+        return new MessageBuilder().setEmbed(builder.build()).build();
     }
 
-    @Override
-    public String getDescription() {
-        return "Shows some information about the bot!";
-    }
-
-    @Override
-    public String getUsage() {
-        return "info";
-    }
-
-    @Override
-    public int getPermissionLevel() {
-        return 0;
-    }
 }

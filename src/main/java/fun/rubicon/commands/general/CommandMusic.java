@@ -47,7 +47,7 @@ public class CommandMusic extends Command {
 
     private static final int PLAYLIST_LIMIT = 1000;
     private static final AudioPlayerManager myManager = new DefaultAudioPlayerManager();
-    private static final Map<String, Map.Entry<AudioPlayer, TrackManager>> players = new HashMap<>();
+    public static final Map<String, Map.Entry<AudioPlayer, TrackManager>> players = new HashMap<>();
 
     private boolean endlessMode = false;
     private List<AudioTrack> endlessList = new ArrayList<>();
@@ -77,6 +77,7 @@ public class CommandMusic extends Command {
         TrackManager manager = new TrackManager(nPlayer);
         nPlayer.addListener(manager);
         guild.getAudioManager().setSendingHandler(new AudioPlayerSendHandler(nPlayer));
+        guild.getAudioManager().setSelfDeafened(true);
         players.put(guild.getId(), new AbstractMap.SimpleEntry<>(nPlayer, manager));
         return nPlayer;
     }
@@ -675,9 +676,15 @@ public class CommandMusic extends Command {
                                         @Override
                                         public void run() {
                                             int tracks = getTrackManager(guild).getQueuedTracks().size();
-                                            event.getTextChannel().sendMessage(
-                                                    new EmbedBuilder().setDescription(NOTE + "Queued `" + tracks + "` Tracks.").setColor(new Color(0, 255, 151)).build()
-                                            ).queue();
+                                            EmbedBuilder queued = new EmbedBuilder();
+                                            queued.setTitle("Added to queue");
+                                            queued.setAuthor(event.getAuthor().getName(), null, event.getAuthor().getAvatarUrl());
+                                            AudioTrackInfo info = TrackManager.getLastSong(guild);
+                                            queued.setDescription(info.title);
+                                            queued.addField("Artist", info.author, true);
+                                            queued.addField("Duration", getTimestamp(getPlayer(guild).getPlayingTrack().getDuration()), true);
+                                            queued.addField("Position in Queue", String.valueOf(getTrackManager(guild).getQueuedTracks().size()), false);
+                                            event.getTextChannel().sendMessage(queued.build()).queue();
                                         }
                                     },
                                     5000

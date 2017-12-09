@@ -8,16 +8,20 @@ package fun.rubicon;
 
 import fun.rubicon.commands.admin.*;
 import fun.rubicon.commands.botowner.*;
+import fun.rubicon.commands.fun.CommandColor;
 import fun.rubicon.commands.fun.CommandLevel;
+import fun.rubicon.commands.fun.CommandRip;
 import fun.rubicon.commands.fun.CommandSlot;
-import fun.rubicon.commands.general.CommandFeedback;
-import fun.rubicon.commands.general.CommandHelp;
-import fun.rubicon.commands.general.CommandPing;
+import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.settings.*;
+<<<<<<< HEAD
 import fun.rubicon.commands.tools.CommandSay;
 import fun.rubicon.commands.tools.CommandLmgtfy;
 import fun.rubicon.commands.tools.CommandShorten;
 import fun.rubicon.commands.tools.CommandVote;
+=======
+import fun.rubicon.commands.tools.*;
+>>>>>>> master
 import fun.rubicon.core.CommandManager;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.ListenerManager;
@@ -75,9 +79,8 @@ public class RubiconBot {
         // init JDA
         initJDA();
 
-
-        //post bot statistics to discordbots.org
-        DBLUtil.postStats(getJDA());
+        // post bot stats to discordbots.org and print warning
+        DBLUtil.postStats(false);
     }
 
     /**
@@ -114,6 +117,9 @@ public class RubiconBot {
         }
         GameAnimator.start();
         CommandVote.loadPolls(instance.jda);
+        CommandGiveaway.loadGiveaways(instance.jda.getGuilds());
+        CommandGiveaway.startGiveawayManager();
+
 
         StringBuilder runningOnServers = new StringBuilder("Running on following guilds:\n");
         for (Guild guild : instance.jda.getGuilds())
@@ -150,13 +156,18 @@ public class RubiconBot {
         // fun commands package
         commandManager.registerCommandHandlers(
                 new CommandLevel(),
+                new CommandRip(),
                 new CommandSlot()
         );
         // general commands package
         commandManager.registerCommandHandlers(
                 new CommandHelp(),
                 new CommandFeedback(),
-                new CommandPing()
+                new CommandPing(),
+                new CommandBug(),
+                new CommandInfo(),
+                new CommandInvite(),
+                new CommandSpeedTest()
         );
         // settings commands package
         commandManager.registerCommandHandlers(
@@ -168,9 +179,24 @@ public class RubiconBot {
         );
         // tools commands package
         commandManager.registerCommandHandlers(
+                new CommandASCII(),
+                new CommandChoose(),
+                new CommandClear(),
+                new CommandColor(),
+                new CommandDice(),
+                new CommandGoogle(),
                 new CommandLmgtfy(),
+<<<<<<< HEAD
                 new CommandShorten(),
                 new CommandSay()
+=======
+                new CommandQRCode(),
+                new CommandSearch(),
+                new CommandServerInfo(),
+                new CommandShorten(),
+                new CommandUserInfo(),
+                new CommandVote()
+>>>>>>> master
         );
 
         // also register commands from the old framework

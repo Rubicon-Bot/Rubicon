@@ -9,9 +9,8 @@ package fun.rubicon.core.permission;
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.core.Main;
-import fun.rubicon.util.Info;
-import fun.rubicon.util.Logger;
-import net.dv8tion.jda.core.Permission;
+import fun.rubicon.data.PermissionRequirements;
+import fun.rubicon.data.UserPermissions;
 import net.dv8tion.jda.core.entities.Member;
 
 import java.util.ArrayList;
@@ -21,49 +20,28 @@ import java.util.List;
  * Can test a member's permissions to a command.
  *
  * @author ForYaSee, tr808axm
+ * @deprecated Use {@link fun.rubicon.data.UserPermissions} instead.
  */
+@Deprecated
 public class PermissionManager {
-
     private Member member;
     private Command command;
+
+    private UserPermissions userPermissions;
+    private PermissionRequirements requirements;
 
     public PermissionManager(Member member, Command command) {
         this.member = member;
         this.command = command;
+
+        // init new model
+        userPermissions = new UserPermissions(member.getUser(), member.getGuild());
+        requirements = new PermissionRequirements(command.getPermissionLevel(), command.getCommand());
     }
 
     public boolean hasPermission() {
-        try {
-            int lvl = getPermissionLevel();
-            int cmdLvl = command.getPermissionLevel();
-
-            for (long authorId : Info.BOT_AUTHOR_IDS)
-                if (authorId == member.getUser().getIdLong())
-                    return true;
-
-            if (getPermissionLevel() > cmdLvl) {
-                return true;
-            }
-            if (containsPermission(command.getCommand())) {
-                return true;
-            }
-
-            if (cmdLvl == 0) {
-                return true;
-            } else if (cmdLvl == 1) {
-                if (getPermissionsAsString().contains(command.getCommand().toLowerCase()))
-                    return true;
-            } else if (cmdLvl == 2) {
-                if (member.getPermissions().contains(Permission.ADMINISTRATOR))
-                    return true;
-            } else if (cmdLvl == 3) {
-                if (member.isOwner())
-                    return true;
-            }
-        } catch (NullPointerException e) {
-            Logger.error(e);
-        }
-        return false;
+        userPermissions.update();
+        return requirements.coveredBy(userPermissions);
     }
 
     public String getPermissionsAsString() {
@@ -71,27 +49,17 @@ public class PermissionManager {
     }
 
     public int getPermissionLevel() {
-        String s = Main.getMySQL().getMemberValue(member, "permissionlevel");
-        int i;
-        try {
-            i = Integer.parseInt(s);
-        } catch (NumberFormatException ex) {
-            //Member doesn't exist
-            return 0;
-        }
-        return i;
+        userPermissions.update();
+        return userPermissions.getMemberPermissionLevel();
     }
 
     public String getAllAllowedCommands() {
         List<Command> allCommands = new ArrayList<>(CommandHandler.getCommands().values());
-        String res = "";
-        for (Command cmd : allCommands) {
-            PermissionManager p = new PermissionManager(member, cmd);
-            if (p.hasPermission()) {
-                res += cmd.getCommand() + ",";
-            }
-        }
-        return res;
+        StringBuilder permissionNodesString = new StringBuilder();
+        for (Command cmd : allCommands)
+            if (new PermissionManager(member, cmd).hasPermission())
+                permissionNodesString.append(cmd.getCommand()).append(",");
+        return permissionNodesString.toString();
     }
 
     public void addPermissions(String command) {

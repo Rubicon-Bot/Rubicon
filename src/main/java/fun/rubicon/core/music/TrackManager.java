@@ -4,6 +4,8 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
+import fun.rubicon.commands.general.CommandMusic;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.VoiceChannel;
@@ -86,5 +88,15 @@ public class TrackManager extends AudioEventAdapter {
 
     public AudioInfo getTrackInfo(AudioTrack track) {
         return queue.stream().filter(audioInfo -> audioInfo.getTrack().equals(track)).findFirst().orElse(null);
+    }
+
+    public static AudioTrackInfo getLastSong(Guild guild){
+        Iterator<AudioInfo> itr = CommandMusic.players.get(guild.getId()).getValue().getQueuedTracks().iterator();
+        AudioTrackInfo lastTrack = itr.next().getTrack().getInfo();
+
+        while (itr.hasNext()){
+            lastTrack=itr.next().getTrack().getInfo();
+        }
+        return lastTrack;
     }
 }

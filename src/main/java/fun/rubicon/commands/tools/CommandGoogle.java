@@ -2,6 +2,13 @@ package fun.rubicon.commands.tools;
 
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
+import fun.rubicon.command2.CommandHandler;
+import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionRequirements;
+import fun.rubicon.data.UserPermissions;
+import fun.rubicon.util.EmbedUtil;
+import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import org.jsoup.Jsoup;
@@ -23,22 +30,24 @@ import java.net.URLEncoder;
  * @package commands.tools
  */
 
-public class CommandGoogle extends Command{
+public class CommandGoogle extends CommandHandler{
     private String ttemp = "";
-    public CommandGoogle(String command, CommandCategory category) {
-        super(command, category);
+
+    public CommandGoogle() {
+        super(new String[] {"google"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.google"), "Google (useful) stuff.", "google <Search Query>");
     }
+
     @Override
-    protected void execute(String[] args, MessageReceivedEvent e) {
+    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        String[] args = parsedCommandInvocation.args;
+        Message message = parsedCommandInvocation.invocationMessage;
         //check args
         if (args.length < 1) {
-            e.getTextChannel().sendMessage(getUsage());
-            return;
+            return new MessageBuilder().setEmbed(EmbedUtil.error("Usage","google <Search Query>").build()).build();
         }
         //TODO check if Result is Nsfw
-        if (!e.getTextChannel().isNSFW()) {
-            sendErrorMessage("Sorry. Google-Search is only allowed in Channels with active NSFW filter.");
-            return;
+        if (!message.getTextChannel().isNSFW()) {
+            return new MessageBuilder().setEmbed(EmbedUtil.error("NSFW", "Sorry. Google-Search is only allowed in Channels with active NSFW filter.").build()).build();
         }
         //Generate query
         String query = "";
@@ -75,21 +84,8 @@ public class CommandGoogle extends Command{
 
         }
         //Send results
-        sendEmbededMessage("Search Results for **" + query + "**:\n" + ttemp);
+        return new MessageBuilder().setEmbed(EmbedUtil.embed("Search Results for **\" + query + \"**:", ttemp).build()).build();
     }
 
-    @Override
-    public String getDescription() {
-        return "Google (useful) stuff.";
-    }
 
-    @Override
-    public String getUsage() {
-        return "google <Search Query>";
-    }
-
-    @Override
-    public int getPermissionLevel() {
-        return 0;
-    }
 }

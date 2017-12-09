@@ -1,5 +1,12 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.commands.admin;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
@@ -13,15 +20,6 @@ import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.util.concurrent.TimeUnit;
-
-/**
- * Rubicon Discord bot
- *
- * @author Yannick Seeger / ForYaSee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.commands.admin
- */
 
 public class CommandPermission extends Command {
 
@@ -145,7 +143,7 @@ public class CommandPermission extends Command {
 
     private boolean isCommandAvailable(String cmd) {
         try {
-            if (CommandHandler.getCommands().get(cmd) != null) {
+            if (CommandHandler.getCommands().get(cmd) != null || RubiconBot.getCommandManager().getCommandAssociations().containsKey(cmd)) {
                 return true;
             }
         } catch (NullPointerException ex) {
