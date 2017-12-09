@@ -86,7 +86,7 @@ public class CommandGiveaway extends Command implements Serializable{
                 Giveaway giveaway = new Giveaway(expiry, msg, voteargs);
                 giveaways.put(e.getGuild(), giveaway);
                 saveGiveaway(giveaway);
-
+                System.out.println(giveaway.expiredate);
                 break;
             default:
                 sendUsageMessage();
@@ -140,6 +140,7 @@ public class CommandGiveaway extends Command implements Serializable{
                     Date now = new Date();
                     try{
                         Date date = format.parse(g.expiredate);
+                        System.out.println(g.expiredate);
                         if(date.after(now)){
                             TextChannel channel = RubiconBot.getJDA().getGuildById(g.guildid).getTextChannelById(g.channelid);
 
