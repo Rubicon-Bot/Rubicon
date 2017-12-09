@@ -186,6 +186,12 @@ public class CommandPortal extends CommandHandler {
         if (channelTwo != null)
             channelTwo.getManager().setName(closedChannelName).queue();
 
+        //Close and delete DB Portal
+        RubiconBot.getMySQL().updateGuildValue(messageGuild, "portal", "closed");
+        RubiconBot.getMySQL().deletePortal(messageGuild);
+        RubiconBot.getMySQL().updateGuildValue(partnerGuild, "portal", "closed");
+        RubiconBot.getMySQL().deletePortal(partnerGuild);
+
         EmbedBuilder portalClosedMessage = new EmbedBuilder();
         portalClosedMessage.setAuthor("Portal closed!", null, jda.getSelfUser().getEffectiveAvatarUrl());
         portalClosedMessage.setDescription("Portal was closed by the owner. Create a new one with `" + parsedCommandInvocation.serverPrefix + "portal create`");
@@ -194,11 +200,5 @@ public class CommandPortal extends CommandHandler {
         channelOne.sendMessage(portalClosedMessage.build()).queue();
         portalClosedMessage.setDescription("Portal was closed by the other server owner. Create a new one with `" + parsedCommandInvocation.serverPrefix + "portal create`");
         channelTwo.sendMessage(portalClosedMessage.build()).queue();
-
-        //Close and delete DB Portal
-        RubiconBot.getMySQL().updateGuildValue(messageGuild, "portal", "closed");
-        RubiconBot.getMySQL().deletePortal(messageGuild);
-        RubiconBot.getMySQL().updateGuildValue(partnerGuild, "portal", "closed");
-        RubiconBot.getMySQL().deletePortal(partnerGuild);
     }
 }
