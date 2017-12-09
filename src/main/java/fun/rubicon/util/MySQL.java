@@ -327,6 +327,17 @@ public class MySQL {
         }
     }
 
+    public void deletePortal(Guild guild) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM `portal` WHERE `guildid` = ?");
+            ps.setString(1, guild.getId());
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     //User Stuff
     public boolean ifUserExist(User user) {
         try {

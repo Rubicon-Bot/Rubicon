@@ -115,10 +115,11 @@ public class RubiconBot {
         CommandGiveaway.startGiveawayManager();
 
 
-        StringBuilder runningOnServers = new StringBuilder("Running on following guilds:\n");
+        //Too many guilds :(
+        /*StringBuilder runningOnServers = new StringBuilder("Running on following guilds:\n");
         for (Guild guild : instance.jda.getGuilds())
             runningOnServers.append("\t- ").append(guild.getName()).append("(").append(guild.getId()).append(")\n");
-        Logger.info(runningOnServers.toString());
+        Logger.info(runningOnServers.toString());*/
     }
 
     /**
@@ -137,15 +138,16 @@ public class RubiconBot {
                 new CommandMute(),
                 new CommandUnmute(),
                 new CommandUnWarn(),
-                new CommandWarn()
+                new CommandWarn(),
+                new CommandPortal()
         );
         // botowner commands package
         commandManager.registerCommandHandlers(
                 new CommandBroadcast(),
                 new CommandPlay(),
                 new CommandRestart(),
-                new CommandSetmoney(),
-                new CommandStop()
+                new CommandStop(),
+                new CommandCreateInvite()
         );
         // fun commands package
         commandManager.registerCommandHandlers(
@@ -161,7 +163,8 @@ public class RubiconBot {
                 new CommandBug(),
                 new CommandInfo(),
                 new CommandInvite(),
-                new CommandSpeedTest()
+                new CommandSpeedTest(),
+                new CommandMoney()
         );
         // settings commands package
         commandManager.registerCommandHandlers(
@@ -185,7 +188,6 @@ public class RubiconBot {
                 new CommandQRCode(),
                 new CommandSearch(),
                 new CommandServerInfo(),
-                new CommandShorten(),
                 new CommandUserInfo(),
                 new CommandVote()
         );

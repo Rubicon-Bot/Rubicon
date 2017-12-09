@@ -82,10 +82,6 @@ public class CommandVote extends CommandHandler implements Serializable {
     }
 
 
-
-
-
-
     private static class Poll implements Serializable {
         private String creator;
         private String heading;
