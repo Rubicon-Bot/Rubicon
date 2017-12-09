@@ -13,7 +13,6 @@ import fun.rubicon.commands.admin.CommandGiveaway;
 import fun.rubicon.commands.admin.CommandPermission;
 import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.botowner.CommandEval;
-import fun.rubicon.commands.fun.CommandRoulette;
 import fun.rubicon.commands.general.CommandMusic;
 import fun.rubicon.commands.general.CommandStatistics;
 
@@ -43,7 +42,6 @@ public class CommandManager {
 
         //Fun
         //CommandHandler.addCommand(new CommandBday("birthday", CommandCategory.FUN).addAliases("bday"));
-        CommandHandler.addCommand(new CommandRoulette("roulette", CommandCategory.BOT_OWNER).addAliases("roulete","rulette", "roullete"));
 
 
         //general
