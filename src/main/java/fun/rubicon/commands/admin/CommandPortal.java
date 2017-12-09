@@ -164,7 +164,7 @@ public class CommandPortal extends CommandHandler {
             messageChannel.sendMessage(EmbedUtil.error("Portal error!", "Portal is already closed").build()).queue();
             return;
         }
-        if(oldGuildPortalEntry.equals("waiting")) {
+        if (oldGuildPortalEntry.equals("waiting")) {
             RubiconBot.getMySQL().updateGuildValue(messageGuild, "portal", "closed");
             messageChannel.sendMessage(EmbedUtil.success("Portal", "Successfull closed portal request.").build()).queue();
             return;

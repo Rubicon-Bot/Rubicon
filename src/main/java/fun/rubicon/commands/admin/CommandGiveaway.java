@@ -7,6 +7,7 @@ import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.StringUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
@@ -133,7 +134,8 @@ public class CommandGiveaway extends Command implements Serializable {
         });
     }
 
-    public static void startGiveawayManager() {
+    public static void startGiveawayManager(JDA jda) {
+        loadGiveaways(jda.getGuilds());
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
@@ -189,7 +191,7 @@ public class CommandGiveaway extends Command implements Serializable {
             Giveaway giveaway = giveaways.get(event.getGuild());
             if (giveaway.users.contains(event.getUser().getId())) return;
             PrivateChannel pc = event.getMember().getUser().openPrivateChannel().complete();
-            pc.sendMessage("Yaaaaaaaaaa. You Take part at the Giveaway").queue();
+            pc.sendMessage("You Take part at the Giveaway at " + event.getGuild().getName()).queue();
             giveaway.users.add(event.getMember().getUser().getId());
         }
     }

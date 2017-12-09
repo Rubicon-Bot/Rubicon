@@ -1,6 +1,5 @@
 package fun.rubicon.commands.fun;
 
-import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
@@ -9,7 +8,6 @@ import fun.rubicon.data.UserPermissions;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.awt.*;
 import java.util.Random;
@@ -24,9 +22,9 @@ import java.util.Random;
  * @package commands.fun
  */
 
-public class CommandColor extends CommandHandler{
+public class CommandColor extends CommandHandler {
     public CommandColor() {
-        super(new String[]{"color"},CommandCategory.FUN,new PermissionRequirements(0,"command.color"),"Generates a random color.","");
+        super(new String[]{"color"}, CommandCategory.FUN, new PermissionRequirements(0, "command.color"), "Generates a random color.", "");
     }
 
 
@@ -38,9 +36,9 @@ public class CommandColor extends CommandHandler{
         int green = randomGenerator.nextInt(256);
         int blue = randomGenerator.nextInt(256);
 
-        Color randomColour = new Color(red,green,blue);
-        String s= "!";
+        Color randomColor = new Color(red, green, blue);
+        String s = "!";
         System.out.println(s.toLowerCase());
-        return new MessageBuilder().setEmbed(new EmbedBuilder().setTitle("Generated new color  Color:").setDescription("(R:" + randomColour.getRed()+ " G:"+randomColour.getGreen()+ " B:"+randomColour.getBlue()+")").build()).build();
+        return new MessageBuilder().setEmbed(new EmbedBuilder().setTitle("Generated new color  Color:").setDescription("(R:" + randomColor.getRed() + " G:" + randomColor.getGreen() + " B:" + randomColor.getBlue() + ")").setColor(randomColor).build()).build();
     }
 }

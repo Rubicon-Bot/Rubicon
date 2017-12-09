@@ -9,7 +9,7 @@ package fun.rubicon;
 import fun.rubicon.commands.admin.*;
 import fun.rubicon.commands.botowner.*;
 import fun.rubicon.commands.fun.CommandColor;
-import fun.rubicon.commands.fun.CommandLevel;
+import fun.rubicon.commands.general.CommandLevel;
 import fun.rubicon.commands.fun.CommandRip;
 import fun.rubicon.commands.fun.CommandSlot;
 import fun.rubicon.commands.general.*;
@@ -111,6 +111,7 @@ public class RubiconBot {
         }
         GameAnimator.start();
         CommandVote.loadPolls(instance.jda);
+        CommandGiveaway.startGiveawayManager(instance.jda);
 
         //Too many guilds :(
         /*StringBuilder runningOnServers = new StringBuilder("Running on following guilds:\n");
