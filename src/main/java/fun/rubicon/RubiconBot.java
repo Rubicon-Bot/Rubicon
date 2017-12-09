@@ -14,17 +14,11 @@ import fun.rubicon.commands.fun.CommandRip;
 import fun.rubicon.commands.fun.CommandSlot;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.settings.*;
-<<<<<<< HEAD
-import fun.rubicon.commands.tools.CommandSay;
-import fun.rubicon.commands.tools.CommandLmgtfy;
-import fun.rubicon.commands.tools.CommandShorten;
-import fun.rubicon.commands.tools.CommandVote;
-=======
 import fun.rubicon.commands.tools.*;
->>>>>>> master
 import fun.rubicon.core.CommandManager;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.ListenerManager;
+
 import fun.rubicon.util.*;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -186,17 +180,14 @@ public class RubiconBot {
                 new CommandDice(),
                 new CommandGoogle(),
                 new CommandLmgtfy(),
-<<<<<<< HEAD
                 new CommandShorten(),
-                new CommandSay()
-=======
+                new CommandSay(),
                 new CommandQRCode(),
                 new CommandSearch(),
                 new CommandServerInfo(),
                 new CommandShorten(),
                 new CommandUserInfo(),
                 new CommandVote()
->>>>>>> master
         );
 
         // also register commands from the old framework
