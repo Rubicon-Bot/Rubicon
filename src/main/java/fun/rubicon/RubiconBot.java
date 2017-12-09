@@ -8,13 +8,14 @@ package fun.rubicon;
 
 import fun.rubicon.commands.admin.*;
 import fun.rubicon.commands.botowner.*;
-import fun.rubicon.commands.fun.CommandColor;
 import fun.rubicon.commands.fun.CommandLevel;
-import fun.rubicon.commands.fun.CommandRip;
 import fun.rubicon.commands.fun.CommandSlot;
-import fun.rubicon.commands.general.*;
+import fun.rubicon.commands.general.CommandHelp;
+import fun.rubicon.commands.general.CommandPing;
 import fun.rubicon.commands.settings.*;
-import fun.rubicon.commands.tools.*;
+import fun.rubicon.commands.tools.CommandASCII;
+import fun.rubicon.commands.tools.CommandShorten;
+import fun.rubicon.commands.tools.CommandVote;
 import fun.rubicon.core.CommandManager;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.ListenerManager;
@@ -73,8 +74,9 @@ public class RubiconBot {
         // init JDA
         initJDA();
 
-        // post bot stats to discordbots.org and print warning
-        DBLUtil.postStats(false);
+
+        //post bot statistics to discordbots.org
+        DBLUtil.postStats(getJDA());
     }
 
     /**
@@ -111,9 +113,6 @@ public class RubiconBot {
         }
         GameAnimator.start();
         CommandVote.loadPolls(instance.jda);
-        CommandGiveaway.loadGiveaways(instance.jda.getGuilds());
-        CommandGiveaway.startGiveawayManager();
-
 
         //Too many guilds :(
         /*StringBuilder runningOnServers = new StringBuilder("Running on following guilds:\n");
@@ -129,6 +128,7 @@ public class RubiconBot {
      */
     private void registerCommandHandlers() {
         // Usage: commandManager.registerCommandHandler(yourCommandHandler...);
+<<<<<<< HEAD
 
         // admin commands package
         commandManager.registerCommandHandlers(
@@ -191,6 +191,32 @@ public class RubiconBot {
                 new CommandUserInfo(),
                 new CommandVote()
         );
+=======
+        commandManager.registerCommandHandler(new CommandPing());
+        commandManager.registerCommandHandler(new CommandShorten());
+        commandManager.registerCommandHandler(new CommandHelp());
+        commandManager.registerCommandHandlers(new CommandPrefix());
+        commandManager.registerCommandHandler(new CommandSlot());
+        commandManager.registerCommandHandler(new CommandBroadcast());
+        commandManager.registerCommandHandlers(new CommandLogChannel());
+        commandManager.registerCommandHandlers(new CommandWelcomeChannel());
+        commandManager.registerCommandHandlers(new CommandRestart());
+        commandManager.registerCommandHandler(new CommandKick());
+        commandManager.registerCommandHandler(new CommandBan());
+        commandManager.registerCommandHandlers(new CommandStop());
+        commandManager.registerCommandHandlers(new CommandSetmoney());
+        commandManager.registerCommandHandler(new CommandJoinMessage());
+        commandManager.registerCommandHandlers(new CommandAutorole());
+        commandManager.registerCommandHandler(new CommandPlay());
+        commandManager.registerCommandHandlers(new CommandLevel());
+        commandManager.registerCommandHandler(new CommandMute());
+        commandManager.registerCommandHandler(new CommandUnmute());
+        commandManager.registerCommandHandlers(new CommandWarn());
+        commandManager.registerCommandHandlers(new CommandUnWarn());
+        commandManager.registerCommandHandlers(new CommandGetWarn());
+        commandManager.registerCommandHandlers(new CommandEval());
+        commandManager.registerCommandHandlers(new CommandASCII());
+>>>>>>> master
 
         // also register commands from the old framework
         //noinspection deprecation

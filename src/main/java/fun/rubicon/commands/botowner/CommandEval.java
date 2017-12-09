@@ -1,8 +1,14 @@
 package fun.rubicon.commands.botowner;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
+import fun.rubicon.command2.CommandHandler;
+import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionRequirements;
+import fun.rubicon.data.UserPermissions;
 import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import javax.script.ScriptEngine;
@@ -17,16 +23,15 @@ import javax.script.ScriptException;
  * @license MIT License <http://rubicon.fun/license>
  * @package commands.botowner
  */
-public class CommandEval extends Command{
-    public CommandEval(String command, CommandCategory category) {
-        super(command, category);
+public class CommandEval extends CommandHandler{
+    public CommandEval() {
+        super(new String[]{"eval","e"}, CommandCategory.BOT_OWNER,new PermissionRequirements(4,"command.eval"),"Just Eval","eval <code>");
     }
 
     @Override
-    protected void execute(String[] args, MessageReceivedEvent e) {
-        if (e.getAuthor().getId().equals("264048760580079616")) return;
+    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
 
-        String[] par = String.join(" ", args).split("\\s+", 2);
+        String[] par = String.join(" ", parsedCommandInvocation.args).split("\\s+", 2);
 
         ScriptEngine se = new ScriptEngineManager().getEngineByName("Nashorn");
         try {
@@ -45,14 +50,13 @@ public class CommandEval extends Command{
         } catch (ScriptException er) {
             er.printStackTrace();
         }
-        se.put("e", e);
-        se.put("jda", e.getJDA());
-        se.put("guild", e.getGuild());
-        se.put("channel", e.getChannel());
-        se.put("message", e.getMessage());
-        se.put("author", e.getAuthor());
+        se.put("jda", RubiconBot.getJDA());
+        se.put("guild", parsedCommandInvocation.invocationMessage.getGuild());
+        se.put("channel", parsedCommandInvocation.invocationMessage.getChannel());
+        se.put("message", parsedCommandInvocation.invocationMessage);
+        se.put("author", parsedCommandInvocation.invocationMessage.getAuthor());
 
-        String modified_msg = String.join(" ", args)
+        String modified_msg = String.join(" ", parsedCommandInvocation.args)
                 .replace("getToken", "getTextChannelById(channel.getId()).sendMessage(\"UnsupportedOperationException(\\\"Nice try m8!\\\")\").queue").replace("System.exit", "getTextChannelById(channel.getId()).sendMessage(\"UnsupportedOperationException(\\\"Nice try m8!\\\")\").queue").replace("shutdown", "getTextChannelById(channel.getId()).sendMessage(\"UnsupportedOperationException(\\\"Nice try m8!\\\")\").queue").replace("Runtime", "getTextChannelById(channel.getId()).sendMessage(\"UnsupportedOperationException(\\\"Nice try m8!\\\")\").queue").replace("leave", "getTextChannelById(channel.getId()).sendMessage(\\\"UnsupportedOperationException(\\\\\\\"Nice try m8!\\\\\\\")\\\").queue").replace("kick", "SHUT UP SCHLAUBI").replace("while", "FUCK YOU!").replace("getAsMention()", "getAsShutUp()").replace("Thread", "EINSCHEIß");
         //        .replace("ProcessBuilder","throw new UnsupportedOperationException(\"Locked\")");
 
@@ -70,27 +74,13 @@ public class CommandEval extends Command{
                 out = "Your action..";
             }
 
-            e.getChannel().sendMessage(new StringBuilder().append("```Java\n").append(modified_msg)
+            parsedCommandInvocation.invocationMessage.getChannel().sendMessage(new StringBuilder().append("```Java\n").append(modified_msg)
                     .append("```Evaluated successfully:").toString()).queue();
-            new MessageBuilder().appendCodeBlock(out.toString(), "Java").buildAll(MessageBuilder.SplitPolicy.NEWLINE, MessageBuilder.SplitPolicy.SPACE, MessageBuilder.SplitPolicy.ANYWHERE).forEach(message -> e.getTextChannel().sendMessage(message).queue());
+            new MessageBuilder().appendCodeBlock(out.toString(), "Java").buildAll(MessageBuilder.SplitPolicy.NEWLINE, MessageBuilder.SplitPolicy.SPACE, MessageBuilder.SplitPolicy.ANYWHERE).forEach(message -> parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(message).queue());
         } catch (ScriptException er) {
-            e.getTextChannel().sendMessage(new StringBuilder().append("```Java\n").append(modified_msg)
+            parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(new StringBuilder().append("```Java\n").append(modified_msg)
                     .append("``` ```Java\nAn exception was thrown:" + er.toString() + "```").toString()).queue();
         }
-    }
-
-    @Override
-    public String getDescription() {
-        return "Simple evaluation command!";
-    }
-
-    @Override
-    public String getUsage() {
-        return "eval <CODE>";
-    }
-
-    @Override
-    public int getPermissionLevel() {
-        return 4;
+        return null;
     }
 }
