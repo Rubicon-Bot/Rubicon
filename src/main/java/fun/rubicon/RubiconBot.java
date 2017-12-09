@@ -8,14 +8,13 @@ package fun.rubicon;
 
 import fun.rubicon.commands.admin.*;
 import fun.rubicon.commands.botowner.*;
+import fun.rubicon.commands.fun.CommandColor;
 import fun.rubicon.commands.fun.CommandLevel;
+import fun.rubicon.commands.fun.CommandRip;
 import fun.rubicon.commands.fun.CommandSlot;
-import fun.rubicon.commands.general.CommandHelp;
-import fun.rubicon.commands.general.CommandPing;
+import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.settings.*;
-import fun.rubicon.commands.tools.CommandASCII;
-import fun.rubicon.commands.tools.CommandShorten;
-import fun.rubicon.commands.tools.CommandVote;
+import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.CommandManager;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.ListenerManager;
@@ -25,7 +24,6 @@ import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 import javax.security.auth.login.LoginException;
@@ -128,7 +126,6 @@ public class RubiconBot {
      */
     private void registerCommandHandlers() {
         // Usage: commandManager.registerCommandHandler(yourCommandHandler...);
-<<<<<<< HEAD
 
         // admin commands package
         commandManager.registerCommandHandlers(
@@ -147,13 +144,14 @@ public class RubiconBot {
                 new CommandPlay(),
                 new CommandRestart(),
                 new CommandStop(),
-                new CommandCreateInvite()
+                new CommandCreateInvite(),
+                new CommandEval()
         );
         // fun commands package
         commandManager.registerCommandHandlers(
-                new CommandLevel(),
                 new CommandRip(),
-                new CommandSlot()
+                new CommandSlot(),
+                new CommandDonatemoney()
         );
         // general commands package
         commandManager.registerCommandHandlers(
@@ -164,7 +162,8 @@ public class RubiconBot {
                 new CommandInfo(),
                 new CommandInvite(),
                 new CommandSpeedTest(),
-                new CommandMoney()
+                new CommandMoney(),
+                new CommandLevel()
         );
         // settings commands package
         commandManager.registerCommandHandlers(
@@ -191,32 +190,6 @@ public class RubiconBot {
                 new CommandUserInfo(),
                 new CommandVote()
         );
-=======
-        commandManager.registerCommandHandler(new CommandPing());
-        commandManager.registerCommandHandler(new CommandShorten());
-        commandManager.registerCommandHandler(new CommandHelp());
-        commandManager.registerCommandHandlers(new CommandPrefix());
-        commandManager.registerCommandHandler(new CommandSlot());
-        commandManager.registerCommandHandler(new CommandBroadcast());
-        commandManager.registerCommandHandlers(new CommandLogChannel());
-        commandManager.registerCommandHandlers(new CommandWelcomeChannel());
-        commandManager.registerCommandHandlers(new CommandRestart());
-        commandManager.registerCommandHandler(new CommandKick());
-        commandManager.registerCommandHandler(new CommandBan());
-        commandManager.registerCommandHandlers(new CommandStop());
-        commandManager.registerCommandHandlers(new CommandSetmoney());
-        commandManager.registerCommandHandler(new CommandJoinMessage());
-        commandManager.registerCommandHandlers(new CommandAutorole());
-        commandManager.registerCommandHandler(new CommandPlay());
-        commandManager.registerCommandHandlers(new CommandLevel());
-        commandManager.registerCommandHandler(new CommandMute());
-        commandManager.registerCommandHandler(new CommandUnmute());
-        commandManager.registerCommandHandlers(new CommandWarn());
-        commandManager.registerCommandHandlers(new CommandUnWarn());
-        commandManager.registerCommandHandlers(new CommandGetWarn());
-        commandManager.registerCommandHandlers(new CommandEval());
-        commandManager.registerCommandHandlers(new CommandASCII());
->>>>>>> master
 
         // also register commands from the old framework
         //noinspection deprecation

@@ -60,15 +60,6 @@ public class CommandInfo extends CommandHandler {
         builder.addField("Github Link", "[Github Link](" + Info.BOT_GITHUB + ")", true);
         builder.addField("Patreon Link", "[Rubicon Dev Team](https://www.patreon.com/rubiconbot)", true);
         builder.addField("Authors", authors.toString(), true);
-        String dependencies = "" +
-                "[json.org](http://json.org/)\n" +
-                "[JDA](https://github.com/DV8FromTheWorld/JDA)\n" +
-                "[mysql-connector](https://mvnrepository.com/artifact/mysql/mysql-connector-java)\n" +
-                "[slf4j-simple](https://mvnrepository.com/artifact/org.slf4j/slf4j-simple)\n" +
-                "[json-simple](https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple)\n" +
-                "[gson](https://github.com/google/gson)\n" +
-                "[jsoup](https://jsoup.org/)";
-        builder.addField("Dependencies", dependencies, false);
         //Send Message and delete it after 2 Minutes
         return new MessageBuilder().setEmbed(builder.build()).build();
     }
