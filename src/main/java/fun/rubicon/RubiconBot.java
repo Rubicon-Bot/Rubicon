@@ -9,6 +9,7 @@ package fun.rubicon;
 import fun.rubicon.commands.admin.*;
 import fun.rubicon.commands.botowner.*;
 import fun.rubicon.commands.fun.CommandColor;
+import fun.rubicon.commands.general.CommandLevel;
 import fun.rubicon.commands.fun.CommandRip;
 import fun.rubicon.commands.fun.CommandRoulette;
 import fun.rubicon.commands.fun.CommandSlot;
