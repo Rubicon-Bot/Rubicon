@@ -1,56 +1,45 @@
-package fun.rubicon.commands.general;
-
-import fun.rubicon.command.Command;
-import fun.rubicon.command.CommandCategory;
-import fun.rubicon.core.DiscordCore;
-import fun.rubicon.util.Colors;
-import fun.rubicon.util.Info;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-/**
- * Rubicon Discord bot
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
  *
- * @author Yannick Seeger / ForYaSee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.commands.general
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
  */
 
-public class CommandStatistics extends Command {
+package fun.rubicon.commands.general;
 
-    public CommandStatistics(String command, CommandCategory category) {
-        super(command, category);
+import fun.rubicon.RubiconBot;
+import fun.rubicon.command.CommandCategory;
+import fun.rubicon.command2.CommandHandler;
+import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
+import fun.rubicon.data.PermissionRequirements;
+import fun.rubicon.data.UserPermissions;
+import net.dv8tion.jda.core.entities.Message;
+
+import java.util.stream.Collectors;
+
+import static fun.rubicon.util.EmbedUtil.info;
+import static fun.rubicon.util.EmbedUtil.message;
+
+/**
+ * Handles the 'statistics' command which responds with some statistics about this bot.
+ *
+ * @author ForYaSee, tr808axm
+ */
+public class CommandStatistics extends CommandHandler {
+    /**
+     * Constructs the 'statistics' command handler.
+     */
+    public CommandStatistics() {
+        super(new String[]{"statistics", "statistic", "stats"}, CommandCategory.GENERAL,
+                new PermissionRequirements(PermissionLevel.EVERYONE, "command.statistics"),
+                "Shows some statistics about this bot.", "");
     }
 
     @Override
-    protected void execute(String[] args, MessageReceivedEvent e) {
-        //Set EmbedBuilder
-        EmbedBuilder builder = new EmbedBuilder();
-        //Set EmbedBuilder Values
-        builder.setColor(Colors.COLOR_PRIMARY);
-        builder.setAuthor(Info.BOT_NAME + " Statistics", null, e.getJDA().getSelfUser().getEffectiveAvatarUrl());
-        builder.addField("Total servers", e.getJDA().getGuilds().size() + " Server", false);
-        builder.addField("Total users", DiscordCore.getJDA().getUsers().stream().filter(u -> !u.isBot()).collect(Collectors.toList()).size() + " User", false);
-        //Send Message with EmbedBuilder and delete it after a Minute
-        e.getTextChannel().sendMessage(builder.build()).queue(message -> message.delete().queueAfter(60, TimeUnit.SECONDS));
-    }
-
-    @Override
-    public String getDescription() {
-        return "Sends bot stats.";
-    }
-
-    @Override
-    public String getUsage() {
-        return "statistics";
-    }
-
-    @Override
-    public int getPermissionLevel() {
-        return 0;
+    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        return message(info(RubiconBot.getJDA().getSelfUser().getName() + "'s statistics", null)
+                .addField("Total servers", String.valueOf(RubiconBot.getJDA().getGuilds().size()), true)
+                .addField("Total users", String.valueOf(RubiconBot.getJDA().getUsers().stream()
+                        .filter(u -> !u.isBot()).collect(Collectors.toList()).size()), true));
     }
 }

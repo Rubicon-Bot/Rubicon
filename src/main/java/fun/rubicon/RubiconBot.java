@@ -161,6 +161,7 @@ public class RubiconBot {
                 new CommandInfo(),
                 new CommandInvite(),
                 new CommandSpeedTest(),
+                new CommandStatistics(),
                 new CommandMoney(),
                 new CommandLevel()
         );
