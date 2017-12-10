@@ -33,9 +33,9 @@ public class CommandColor extends CommandHandler {
         int green = randomGenerator.nextInt(256);
         int blue = randomGenerator.nextInt(256);
 
-        Color randomColour = new Color(red, green, blue);
+        Color randomColor = new Color(red, green, blue);
         String s = "!";
         System.out.println(s.toLowerCase());
-        return new MessageBuilder().setEmbed(new EmbedBuilder().setTitle("Generated new color  Color:").setDescription("(R:" + randomColour.getRed() + " G:" + randomColour.getGreen() + " B:" + randomColour.getBlue() + ")").build()).build();
+        return new MessageBuilder().setEmbed(new EmbedBuilder().setTitle("Generated new color  Color:").setDescription("(R:" + randomColor.getRed() + " G:" + randomColor.getGreen() + " B:" + randomColor.getBlue() + ")").setColor(randomColor).build()).build();
     }
 }

@@ -29,6 +29,9 @@ public class CommandMoney extends CommandHandler {
         int user1_has_money = 0;
         int user2_has_money = 0;
         int user_spend_money = 0;
+        if (parsedCommandInvocation.args.length == 0) {
+            return createHelpMessage();
+        }
         switch (parsedCommandInvocation.args[0]) {
             case "give":
                 if (parsedCommandInvocation.args.length == 3) {
