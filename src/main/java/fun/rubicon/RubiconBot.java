@@ -141,22 +141,18 @@ public class RubiconBot {
                 new CommandBroadcast(),
                 new CommandPlay(),
                 new CommandRestart(),
-<<<<<<< HEAD
-                new CommandSetmoney(),
                 new CommandStop(),
-                new CommandGuilds()
-=======
+                new CommandGuilds(),
                 new CommandStop(),
                 new CommandCreateInvite(),
                 new CommandEval()
->>>>>>> master
         );
         // fun commands package
         commandManager.registerCommandHandlers(
                 new CommandRip(),
                 new CommandRoulette(),
-                new CommandSlot(),
-                new CommandDonatemoney()
+                new CommandSlot()
+                //new CommandDonatemoney()
         );
         // general commands package
         commandManager.registerCommandHandlers(
@@ -167,13 +163,10 @@ public class RubiconBot {
                 new CommandInfo(),
                 new CommandInvite(),
                 new CommandSpeedTest(),
-<<<<<<< HEAD
-                new CommandMoney()
-=======
+                new CommandMoney(),
                 new CommandStatistics(),
                 new CommandMoney(),
                 new CommandLevel()
->>>>>>> master
         );
         // settings commands package
         commandManager.registerCommandHandlers(

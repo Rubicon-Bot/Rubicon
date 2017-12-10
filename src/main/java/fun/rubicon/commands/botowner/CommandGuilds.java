@@ -35,8 +35,9 @@ public class CommandGuilds extends CommandHandler {
 
         List<Guild> guild_sublist;
         int SideNumbInput = 1;
-        if (parsedCommandInvocation.args.length > 1) {
-            SideNumbInput = Integer.parseInt(parsedCommandInvocation.args[1]);
+        if (parsedCommandInvocation.args.length > 0) {
+            SideNumbInput = Integer.parseInt(parsedCommandInvocation.args[0]);
+            System.out.println(SideNumbInput);
         }
 
         if(RubiconBot.getJDA().getGuilds().size() > 20){
@@ -49,10 +50,13 @@ public class CommandGuilds extends CommandHandler {
             count_server++;
         }
         int sideNumbAll;
-        if (RubiconBot.getJDA().getGuilds().size() >= 2) sideNumbAll = RubiconBot.getJDA().getGuilds().size() / 20;
-        else sideNumbAll = 1;
+        if (RubiconBot.getJDA().getGuilds().size() >= 20){
+            sideNumbAll = RubiconBot.getJDA().getGuilds().size() / 20;
+        }else{
+            sideNumbAll = 1;
+        }
         int sideNumb = SideNumbInput;
-            return message(info("RubiconBot running on following guilds","`Total guilds: " + RubiconBot.getJDA().getGuilds().size() + " Side " + sideNumb + " / " + sideNumbAll +"`\n\n"+runningOnServers.toString()));
+            return message(info("RubiconBot running on following guilds","`Total guilds: " + RubiconBot.getJDA().getGuilds().size() + " - Side " + sideNumb + " / " + sideNumbAll +"`\n\n"+runningOnServers.toString()));
 
     }
 }
