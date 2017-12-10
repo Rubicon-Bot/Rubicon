@@ -19,15 +19,6 @@ import java.awt.*;
 import java.util.Random;
 
 
-/**
- * Rubicon Discord bot
- *
- * @author Lee Kappes / Lee
- * @copyright Rubicon Dev Team ${YEAR}
- * @license MIT License <http://rubicon.fun/license>
- * @package commands.fun
- */
-
 public class CommandColor extends CommandHandler {
     public CommandColor() {
         super(new String[]{"color"}, CommandCategory.FUN, new PermissionRequirements(0, "command.color"), "Generates a random color.", "");

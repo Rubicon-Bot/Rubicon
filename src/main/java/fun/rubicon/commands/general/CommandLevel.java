@@ -18,14 +18,6 @@ import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
 
-/**
- * Rubicon Discord bot
- *
- * @author Yannick Seeger
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.commands.fun
- */
 public class CommandLevel extends CommandHandler {
 
 
