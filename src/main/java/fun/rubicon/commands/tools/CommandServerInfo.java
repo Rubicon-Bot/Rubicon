@@ -17,7 +17,7 @@ import net.dv8tion.jda.core.entities.TextChannel;
 public class CommandServerInfo extends CommandHandler{
 
     public CommandServerInfo() {
-        super(new String[] {"serverinfo", "guild", "guildinfo"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.serverinfo"), "Returns some information about the current server", "serverinfo");
+        super(new String[] {"serverinfo", "guild", "guildinfo"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.serverinfo"), "Returns some information about the current server", "");
     }
 
     @Override

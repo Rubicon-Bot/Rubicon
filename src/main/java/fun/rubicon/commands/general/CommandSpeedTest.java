@@ -26,7 +26,7 @@ import java.awt.*;
 public class CommandSpeedTest extends CommandHandler {
 
     public CommandSpeedTest() {
-        super(new String[]{"speedtest", "st"}, CommandCategory.GENERAL, new PermissionRequirements(0, "command.speedtest"), "Do a speedtest of the bot-connection.", "speedtest");
+        super(new String[]{"speedtest", "st"}, CommandCategory.GENERAL, new PermissionRequirements(0, "command.speedtest"), "Do a speedtest of the bot-connection.", "");
     }
 
     @Override

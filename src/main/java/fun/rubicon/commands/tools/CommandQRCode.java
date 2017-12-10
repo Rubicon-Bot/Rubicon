@@ -23,7 +23,7 @@ import java.net.URL;
  */
 public class CommandQRCode extends CommandHandler{
     public CommandQRCode() {
-        super(new String[] {"qrcode", "qr", "code"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.qr"), "Easily generate a QR code", "qr <text>");
+        super(new String[] {"qrcode", "qr", "code"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.qr"), "Easily generate a QR code", "<text>");
     }
 
     @Override

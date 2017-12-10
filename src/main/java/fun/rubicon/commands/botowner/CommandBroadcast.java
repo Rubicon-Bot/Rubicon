@@ -34,7 +34,7 @@ public class CommandBroadcast extends CommandHandler {
     public CommandBroadcast() {
         super(new String[]{"broadcast"}, CommandCategory.BOT_OWNER,
                 new PermissionRequirements(4, "command.broadcast"),
-                "Sends a message to all guild owners.", "broadcast <message>");
+                "Sends a message to all guild owners.", "<message>");
     }
 
     @Override

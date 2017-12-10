@@ -31,7 +31,7 @@ public class CommandPortal extends CommandHandler {
     private String closedChannelName = "closed-rubicon-portal";
 
     public CommandPortal() {
-        super(new String[]{"portal", "mirror", "telephone"}, CommandCategory.ADMIN, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.portal"), "Create a portal and talk with users of other guilds.", "portal create\nportal close");
+        super(new String[]{"portal", "mirror", "telephone"}, CommandCategory.ADMIN, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.portal"), "Create a portal and talk with users of other guilds.", "create\nportal close");
     }
 
     @Override

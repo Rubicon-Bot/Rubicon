@@ -27,7 +27,7 @@ public class CommandInfo extends CommandHandler {
 
 
     public CommandInfo(){
-        super(new String[] {"Info", "inf"}, CommandCategory.GENERAL, new PermissionRequirements(0, "command.info"), "Shows some information about the bot!", "info");
+        super(new String[] {"Info", "inf"}, CommandCategory.GENERAL, new PermissionRequirements(0, "command.info"), "Shows some information about the bot!", "");
     }
 
     @Override

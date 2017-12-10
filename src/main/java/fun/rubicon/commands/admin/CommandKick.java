@@ -21,7 +21,7 @@ import net.dv8tion.jda.core.entities.PrivateChannel;
  */
 public class CommandKick extends CommandHandler{
     public CommandKick() {
-        super(new String[] {"kick"}, CommandCategory.ADMIN, new PermissionRequirements(2, "command.kick"), "Kicks an member out of your server", "kick <@User>");
+        super(new String[] {"kick"}, CommandCategory.ADMIN, new PermissionRequirements(2, "command.kick"), "Kicks an member out of your server", "<@User>");
     }
 
     @Override

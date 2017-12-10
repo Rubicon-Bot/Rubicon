@@ -21,7 +21,7 @@ import net.dv8tion.jda.core.entities.PrivateChannel;
  */
 public class CommandBan extends CommandHandler {
     public CommandBan() {
-        super(new String[] {"ban"}, CommandCategory.ADMIN, new PermissionRequirements(2, "command.ban"), "Bans a user from your server", "ban <@User>");
+        super(new String[] {"ban"}, CommandCategory.ADMIN, new PermissionRequirements(2, "command.ban"), "Bans a user from your server", "<@User>");
     }
 
     @Override

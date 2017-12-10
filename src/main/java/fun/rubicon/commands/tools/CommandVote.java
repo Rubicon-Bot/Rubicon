@@ -41,7 +41,7 @@ public class CommandVote extends CommandHandler implements Serializable {
     private List<String> toAddEmojis = new ArrayList<>();
 
     public CommandVote() {
-        super(new String[]{"vote", "v"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.vote"), "Create polls on your server", "vote create <question>|<answer1>|...");
+        super(new String[]{"vote", "v"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.vote"), "Create polls on your server", "create <question>|<answer1>|...");
     }
 
 

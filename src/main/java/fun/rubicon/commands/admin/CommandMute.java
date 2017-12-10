@@ -23,7 +23,7 @@ import net.dv8tion.jda.core.entities.TextChannel;
  */
 public class CommandMute extends CommandHandler{
     public CommandMute() {
-        super(new String[] {"mute"}, CommandCategory.ADMIN, new PermissionRequirements(2, "command.mute"), "Mutes an annoying member", "mute <@User>");
+        super(new String[] {"mute"}, CommandCategory.ADMIN, new PermissionRequirements(2, "command.mute"), "Mutes an annoying member", "<@User>");
     }
 
     @Override

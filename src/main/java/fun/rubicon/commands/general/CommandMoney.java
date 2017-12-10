@@ -21,7 +21,7 @@ public class CommandMoney extends CommandHandler {
     public CommandMoney() {
         super(new String[]{"money", "ruby"}, CommandCategory.GENERAL,
                 new PermissionRequirements(PermissionLevel.EVERYONE, "command.money"),
-                "You can donate Ruby's to someone!", "money <give | set | add | remove> <UserAsMention> <amount>");
+                "You can donate Ruby's to someone!", "<give | set | add | remove> <UserAsMention> <amount>");
     }
 
     @Override

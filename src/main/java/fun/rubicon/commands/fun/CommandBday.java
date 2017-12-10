@@ -22,6 +22,7 @@ import java.util.TimerTask;
  * @copyright Rubicon Dev Team 2017
  * @license MIT License <http://rubicon.fun/license>
  * @package fun.rubicon.commands.fun
+ * @deprecated
  */
 public class CommandBday extends Command{
     private String getDateTime() {

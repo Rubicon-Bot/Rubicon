@@ -25,7 +25,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 public class CommandStop extends CommandHandler {
 
     public CommandStop() {
-        super(new String[]{"stop"}, CommandCategory.BOT_OWNER, new PermissionRequirements(4,"command.stop"),"Stops the bot.","stop");
+        super(new String[]{"stop"}, CommandCategory.BOT_OWNER, new PermissionRequirements(4,"command.stop"),"Stops the bot.","");
     }
 
     @Override
