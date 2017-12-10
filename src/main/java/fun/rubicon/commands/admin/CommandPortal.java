@@ -131,12 +131,14 @@ public class CommandPortal extends CommandHandler {
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setAuthor("Connection established with " + channelTwo.getGuild().getName(), null, channelTwo.getGuild().getIconUrl());
             embedBuilder.setDescription(":white_check_mark: Successfully created and connected portals.");
-            channelOne.sendMessage(embedBuilder.build()).queue();
+            Message message1 = channelOne.sendMessage(embedBuilder.build()).complete();
+            channelOne.pinMessageById(message1.getId()).queue();
 
             //GuildTwo Message
             embedBuilder.setAuthor("Connection established with " + channelOne.getGuild().getName(), null, channelOne.getGuild().getIconUrl());
             embedBuilder.setDescription(":white_check_mark: Successfully created and connected portals.");
-            channelTwo.sendMessage(embedBuilder.build()).queue();
+            Message message2 = channelTwo.sendMessage(embedBuilder.build()).complete();
+            channelTwo.pinMessageById(message2.getId()).queue();
         }
 
         private void setGuildWaiting (Guild g, TextChannel messageChannel){
