@@ -11,9 +11,6 @@ import fun.rubicon.command.CommandHandler;
 import fun.rubicon.commands.admin.CommandAutochannel;
 import fun.rubicon.commands.admin.CommandGiveaway;
 import fun.rubicon.commands.admin.CommandPermission;
-import fun.rubicon.commands.fun.CommandRoulette;
-import fun.rubicon.commands.admin.CommandPortal;
-import fun.rubicon.commands.botowner.CommandEval;
 import fun.rubicon.commands.general.CommandMusic;
 import fun.rubicon.commands.general.CommandStatistics;
 
@@ -35,7 +32,6 @@ public class CommandManager {
         CommandHandler.addCommand(new CommandPermission("permission", CommandCategory.ADMIN).addAliases("permission", "perm", "perms"));
         CommandHandler.addCommand(new CommandGiveaway("giveaway", CommandCategory.ADMIN).addAliases("g"));
         CommandHandler.addCommand(new CommandAutochannel("autochannel", CommandCategory.ADMIN).addAliases("ac", "autoc"));
-        CommandHandler.addCommand(new CommandEval("eval", CommandCategory.BOT_OWNER).addAliases("e"));
         CommandHandler.addCommand(new CommandStatistics("statistics", CommandCategory.GENERAL).addAliases("stats"));
         CommandHandler.addCommand(new CommandMusic("music", CommandCategory.GENERAL).addAliases("m"));
     }

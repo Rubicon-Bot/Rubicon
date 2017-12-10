@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.commands.general;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
@@ -19,14 +25,12 @@ import fun.rubicon.core.music.AudioPlayerSendHandler;
 import fun.rubicon.core.music.TrackManager;
 import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.guild.voice.GuildVoiceMoveEvent;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.awt.*;
-import java.io.*;
-import java.text.ParseException;
 import java.util.*;
 import java.util.List;
 
@@ -365,7 +369,7 @@ public class CommandMusic extends Command {
 
 
     @Override
-    protected void execute(String[] args, MessageReceivedEvent event) throws ParseException {
+    protected void execute(String[] args, MessageReceivedEvent event) {
 
         guild = event.getGuild();
 

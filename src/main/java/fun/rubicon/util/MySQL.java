@@ -1,22 +1,18 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.util;
 
 import fun.rubicon.core.DiscordCore;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * Rubicon Discord bot
- *
- * @author Michael Rittmeister / Yannick Seeger
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.util
- */
 
 public class MySQL {
 

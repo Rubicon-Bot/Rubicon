@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.listener;
 
 import fun.rubicon.RubiconBot;
@@ -8,7 +14,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 public class UserJoinListener extends ListenerAdapter {
 
     public void onGuildMemberJoin(GuildMemberJoinEvent e) {
-        if(!RubiconBot.getMySQL().ifUserExist(e.getUser())){
+        if (!RubiconBot.getMySQL().ifUserExist(e.getUser())) {
             RubiconBot.getMySQL().createUser(e.getUser());
         }
         try {
