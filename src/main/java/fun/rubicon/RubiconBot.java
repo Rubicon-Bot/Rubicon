@@ -23,11 +23,15 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import net.dv8tion.jda.core.hooks.EventListener;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Timer;
 
 /**
  * Rubicon-bot's main class. Initializes all components.
@@ -42,6 +46,8 @@ public class RubiconBot {
     private final Configuration configuration;
     private final fun.rubicon.command2.CommandManager commandManager;
     private JDA jda;
+    private final Timer timer;
+    private final Set<EventListener> eventListeners;
 
     /**
      * Constructs the RubiconBot.
@@ -50,6 +56,10 @@ public class RubiconBot {
         instance = this;
         // initialize logger
         Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, new File("latest.log"));
+
+        timer = new Timer();
+        eventListeners = new HashSet<>();
+
         // load configuration and obtain missing config values
         configuration = new Configuration(new File(Info.CONFIG_FILE));
         for (String configKey : CONFIG_KEYS) {
@@ -96,8 +106,8 @@ public class RubiconBot {
         builder.setToken(instance.configuration.getString("token"));
         builder.setGame(Game.of(Info.BOT_NAME + " " + Info.BOT_VERSION));
 
-        // Register command manager (chat listener)
-        builder.addEventListener(instance.commandManager);
+        // add all EventListeners
+        builder.addEventListener(instance.eventListeners);
 
         new ListenerManager(builder);
 
@@ -108,7 +118,7 @@ public class RubiconBot {
         }
         GameAnimator.start();
         CommandVote.loadPolls(instance.jda);
-        CommandGiveaway.startGiveawayManager(instance.jda);
+//        CommandGiveaway.startGiveawayManager(instance.jda);
 
         //Too many guilds :(
         /*StringBuilder runningOnServers = new StringBuilder("Running on following guilds:\n");
@@ -225,7 +235,25 @@ public class RubiconBot {
     }
 
     /**
-     * @return a freshly generated timestamp.
+     * @return a timer.
+     */
+    public static Timer getTimer() {
+        return instance == null ? null : instance.timer;
+    }
+
+    /**
+     * Adds an EventListener to the event pipe. EventListeners registered here will be re-registered when the JDA
+     * instance is initialized again.
+     *
+     * @param listener the EventListener to register.
+     * @return false if the bot has never been initialized or if the EventListener is already registered.
+     */
+    public static boolean registerEventListener(EventListener listener) {
+        return instance != null && instance.eventListeners.add(listener);
+    }
+
+    /**
+     * @return a freshly generated timestamp in the 'dd.MM.yyyy HH:mm:ss' format.
      */
     public static String getNewTimestamp() {
         return timeStampFormatter.format(new Date());
