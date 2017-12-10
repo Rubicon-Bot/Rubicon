@@ -7,7 +7,6 @@
 package fun.rubicon.commands.general;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
@@ -19,9 +18,6 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Handles the 'info' command.

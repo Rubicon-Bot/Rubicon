@@ -1,720 +1,198 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.commands.fun;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
+import fun.rubicon.command2.CommandManager;
 import fun.rubicon.core.minigames.RouletteNumber;
-import fun.rubicon.util.Info;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import fun.rubicon.data.PermissionLevel;
+import fun.rubicon.data.PermissionRequirements;
+import fun.rubicon.data.UserPermissions;
+import net.dv8tion.jda.core.entities.Message;
 
 import java.awt.*;
-import java.text.ParseException;
-import java.util.concurrent.ThreadLocalRandom;
+
+import static fun.rubicon.util.EmbedUtil.*;
 
 /**
- * Rubicon Discord bot
- *
- * @author xEiisKeksx
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.commands.fun
+ * Handles the 'roulette' command with that users can play roulette.
+ * @author xEiisKeksx, tr808axm
  */
-public class CommandRoulette extends Command {
-    public CommandRoulette(String command, CommandCategory category) {
-        super(command, category);
+public class CommandRoulette extends CommandHandler {
+    /**
+     * Constructs the 'roulette' command handler.
+     */
+    public CommandRoulette() {
+        super(new String[]{"roulette", "roulete", "rulette", "roullete"}, CommandCategory.FUN,
+                new PermissionRequirements(PermissionLevel.EVERYONE, "command.roulette"),
+                "Play Roulette to win some extra rubys.", "<bet-amount> <bet-option>");
     }
 
     @Override
-    protected void execute(String[] args, MessageReceivedEvent e) throws ParseException {
-        String condition = "";
-        int column_up[] = {3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36};
-        int column_mid[] = {2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35};
-        int column_down[] = {1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34};
-        String user_has_money = RubiconBot.getMySQL().getUserValue(e.getAuthor(), "money");
-        if (args.length >= 2) {
-            int user_set_money = 0;
+    protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions permissions) {
+        if (invocation.args.length < 2)
+            return createHelpMessage(invocation);
+        else {
+            int betAmount;
+            // parse bet amount
             try {
-                user_set_money = Integer.parseInt(args[0]);
-                if (user_set_money == 0) {
-                    sendErrorMessage(e.getAuthor().getAsMention() + " you have to bet more than 0 Ruby's!");
-                    return;
-                }
-            } catch (NumberFormatException exception) {
-                return;
+                betAmount = Integer.parseInt(invocation.args[0]);
+            } catch (NumberFormatException e) {
+                return message(error("Invalid value", "The minimum value `" + invocation.args[0]
+                        + "` is not an integer number."));
             }
-            if (Integer.parseInt(user_has_money) < user_set_money) {
-                sendErrorMessage(e.getAuthor().getAsMention() + " You don't have enough Ruby. Your entry wasn't accepted.");
+
+            // check if bet amount is > 0
+            if (betAmount <= 0)
+                return message(error("Bet too little", "You need to bet at least 1 ruby to play Roulette."));
+
+            // check if the user has enough money to cover his bet
+            if (betAmount > Integer.parseInt(RubiconBot.getMySQL().getUserValue(invocation.invocationMessage.getAuthor(), "money")))
+                return message(error("Not enough money", "You don't have `" + betAmount + "` rubys. " +
+                        "Check your money with `" + invocation.serverPrefix + "money`."));
+
+            // already generate random number
+            String betOption = invocation.args[1];
+            int rolledNumber = (int) (Math.random() * 37); // 0 - 36
+            int multiplier;
+            boolean wins;
+            switch (betOption) {
+                case "even":
+                    multiplier = 2;
+                    wins = rolledNumber != 0 && rolledNumber % 2 == 0;
+                    break;
+                case "odd":
+                    multiplier = 2;
+                    wins = rolledNumber % 2 != 0;
+                    break;
+                case "red":
+                    multiplier = 2;
+                    wins = RouletteNumber.RouletteColor[rolledNumber].equals("red");
+                    break;
+                case "black":
+                    multiplier = 2;
+                    wins = RouletteNumber.RouletteColor[rolledNumber].equals("black");
+                    break;
+                case "1-18":
+                    multiplier = 2;
+                    wins = rolledNumber > 0 && rolledNumber < 19;
+                    break;
+                case "19-36":
+                    multiplier = 2;
+                    wins = rolledNumber > 18; // numbers can not be greater than 36
+                    break;
+                case "1-12":
+                    multiplier = 3;
+                    wins = rolledNumber > 0 && rolledNumber < 13;
+                    break;
+                case "13-24":
+                    multiplier = 3;
+                    wins = rolledNumber > 12 && rolledNumber < 25;
+                    break;
+                case "25-36":
+                    multiplier = 3;
+                    wins = rolledNumber > 24;
+                    break;
+                case "column_low":
+                    multiplier = 3;
+                    wins = rolledNumber % 3 == 1;
+                    break;
+                case "column_mid":
+                    multiplier = 3;
+                    wins = rolledNumber % 3 == 2;
+                    break;
+                case "column_up":
+                    multiplier = 3;
+                    wins = rolledNumber != 0 && rolledNumber % 3 == 0;
+                    break;
+                default:
+                    int betNumber;
+                    try {
+                        betNumber = Integer.parseInt(betOption);
+                        if (betNumber < 0 || betNumber > 36)
+                            throw new IllegalArgumentException();
+                    } catch (IllegalArgumentException e) { // NumberFormatException is an IllegalArgumentException
+                        return message(error("Invalid bet option", "You can not bid on `" + betOption
+                                + "`. Use `" + invocation.serverPrefix + invocation.invocationCommand + "` for a full bet option list."));
+                    }
+                    multiplier = 36;
+                    wins = betNumber == rolledNumber;
+                    break;
+            }
+            sendAndDeleteOnGuilds(invocation.invocationMessage.getChannel(), message(info("Rien ne va plus!",
+                    "The number is " + rolledNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[rolledNumber] + ".")));
+            if (wins) {
+                int wonMoney = betAmount * (multiplier - 1);
+                // update money
+                RubiconBot.getMySQL().updateUserValue(invocation.invocationMessage.getAuthor(), "money",
+                        String.valueOf(Integer.parseInt(RubiconBot.getMySQL().getUserValue(invocation.invocationMessage.getAuthor(), "money")) + wonMoney));
+                // respond
+                return message(embed(":star: You win", "Congratulations "
+                        + invocation.invocationMessage.getAuthor().getAsMention() + "! You won " + wonMoney + " rubys.")
+                        .setColor(Color.YELLOW));
             } else {
-                int RandomRouletteNumber = ThreadLocalRandom.current().nextInt(0, 36 + 1);
-                switch (args[1]) {
-                    case "red":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RouletteNumber.RouletteColor[RandomRouletteNumber] == "red") {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 2) + " Ruby. :tada:");
-                            int new_user_has_money = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 2);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money));
-                        }
-                        break;
-                    case "black":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RouletteNumber.RouletteColor[RandomRouletteNumber] == "black") {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 2) + " Ruby. :tada:");
-                            int new_user_has_money = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 2);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money));
-                        }
-                        break;
-                    case "even":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (Integer.valueOf(RandomRouletteNumber) % 2 == 0) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 2) + " Ruby. :tada:");
-                            int new_user_has_money = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 2);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money));
-                        }
-                        break;
-                    case "odd":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (Integer.valueOf(RandomRouletteNumber) % 2 != 0) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 2) + " Ruby. :tada:");
-                            int new_user_has_money = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 2);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money));
-                        }
-                        break;
-                    case "1-18":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (Integer.valueOf(RandomRouletteNumber) <= 18 && Integer.valueOf(RandomRouletteNumber) > 0) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 2) + " Ruby. :tada:");
-                            int new_user_has_money = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 2);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money));
-                        }
-                        break;
-                    case "19-36":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (Integer.valueOf(RandomRouletteNumber) <= 36 && Integer.valueOf(RandomRouletteNumber) > 18) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 2) + " Ruby. :tada:");
-                            int new_user_has_money = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 2);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money));
-                        }
-                        break;
-                    case "1-12":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (Integer.valueOf(RandomRouletteNumber) <= 12 && Integer.valueOf(RandomRouletteNumber) > 0) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 3) + " Ruby. :tada:");
-                            int new_user_has_money = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 3);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money));
-                        }
-                        break;
-                    case "13-24":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (Integer.valueOf(RandomRouletteNumber) <= 24 && Integer.valueOf(RandomRouletteNumber) > 12) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 3) + " Ruby. :tada:");
-                            int new_user_has_money = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 3);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money));
-                        }
-                        break;
-                    case "25-36":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (Integer.valueOf(RandomRouletteNumber) <= 36 && Integer.valueOf(RandomRouletteNumber) > 24) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 3) + " Ruby. :tada:");
-                            int new_user_has_money = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 3);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money));
-                        }
-                        break;
-                    case "column_up":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        for (int i = 0; i < column_up.length; i++) {
-                            if (RandomRouletteNumber == column_up[i]) {
-                                sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 3) + " Ruby. :tada:");
-                                int new_user_has_money = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 3);
-                                RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money));
-                                break;
-                            } else {
-                                //weiter prüfen
-                            }
-                        }
-                        sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                        int new_user_has_money = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                        RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money));
-                        break;
-                    case "column_mid":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        for (int i = 0; i < column_mid.length; i++) {
-                            if (RandomRouletteNumber == column_mid[i]) {
-                                sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 3) + " Ruby. :tada:");
-                                int new_user_has_money0 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 3);
-                                RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money0));
-                                break;
-                            } else {
-                                //weiter prüfen
-                            }
-                        }
-                        sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                        int new_user_has_money1 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                        RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money1));
-                        break;
-                    case "column_low":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        for (int i = 0; i < column_down.length; i++) {
-                            if (RandomRouletteNumber == column_down[i]) {
-                                sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 3) + " Ruby. :tada:");
-                                int new_user_has_money2 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 3);
-                                RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money2));
-                                break;
-                            } else {
-                                //weiter prüfen
-                            }
-                        }
-                        sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                        int new_user_has_money3 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                        RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money3));
-                        break;
-                    case "0":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 0) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "1":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 1) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "2":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 2) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "3":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 3) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "4":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 4) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "5":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 5) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "6":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 6) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "7":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 7) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "8":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 8) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "9":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 9) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "10":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 10) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "11":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 11) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "12":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 12) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "13":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 13) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "14":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 14) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "15":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 15) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "16":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 16) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "17":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 17) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "18":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 18) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "19":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 19) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "20":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 20) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "21":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 21) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "22":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 22) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "23":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 23) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "24":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 24) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "25":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 25) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "26":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 26) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "27":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 27) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "28":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 28) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "29":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 29) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "30":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 30) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "31":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 31) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "32":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 32) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "33":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 33) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "34":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 34) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "35":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 35) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    case "36":
-                        sendEmbededMessage("'Rien ne va plus!' The Number is " + RandomRouletteNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[RandomRouletteNumber] + ".");
-                        if (RandomRouletteNumber == 36) {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Congratulation! You won " + (user_set_money * 36) + " Ruby. :tada:");
-                            int new_user_has_money4 = Integer.valueOf(user_has_money) + (Integer.valueOf(user_set_money) * 36);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money4));
-                        } else {
-                            sendEmbededMessage(e.getAuthor().getAsMention() + " Sorry! You lose. :cry: More luck next time!");
-                            int new_user_has_money5 = Integer.valueOf(user_has_money) - Integer.valueOf(user_set_money);
-                            RubiconBot.getMySQL().updateUserValue(e.getAuthor(), "money", String.valueOf(new_user_has_money5));
-                        }
-                        break;
-                    default:
-                        sendErrorMessage(e.getAuthor().getAsMention() + " '" + args[1] + "' is not an valid bet option.");
-                        sendHelpMessage(e);
-                        break;
-                }
+                // update money
+                RubiconBot.getMySQL().updateUserValue(invocation.invocationMessage.getAuthor(), "money",
+                        String.valueOf(Integer.parseInt(RubiconBot.getMySQL().getUserValue(invocation.invocationMessage.getAuthor(), "money")) - betAmount));
+                // respond
+                return message(embed(":cry: You lose", "Sorry, no luck this time!"));
             }
-        } else {
-            sendHelpMessage(e);
         }
     }
 
     @Override
-    public String getDescription() {
-        return "Play Roulette to win some extra money.";
-    }
+    public Message createHelpMessage(String serverPrefix, String aliasToUse) {
+        String x2betOptions =
+                "`even`: Bet on even numbers.\n" +
+                        "`2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36`\n" +
+                        "\n" +
+                        "`odd`: Bet on odd numbers.\n" +
+                        "`1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35`\n" +
+                        "\n" +
+                        "`red`: Bet on red numbers.\n" +
+                        "`1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36`\n" +
+                        "\n" +
+                        "`black`: Bet on black numbers.\n" +
+                        "`2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35`\n" +
+                        "\n" +
+                        "`1-18`: Bet on the first half of the numbers.\n" +
+                        "`1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18`\n" +
+                        "\n" +
+                        "`19-36`: Bet on the second half of the numbers.\n",
+                x3betOptions =
+                        "`1-12`: Bet on the first third of the numbers.\n" +
+                                "`1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12`\n" +
+                                "\n" +
+                                "`13-24`: Bet on the second third of the numbers.\n" +
+                                "`13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24`\n" +
+                                "\n" +
+                                "`25-36`: Bet on the third third of the numbers.\n" +
+                                "`25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36`\n" +
+                                "\n" +
+                                "`column_low`: Bet on the left column.\n" +
+                                "`1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34`\n" +
+                                "\n" +
+                                "`column_mid`: Bet on the middle column.\n" +
+                                "`2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35`\n" +
+                                "\n" +
+                                "`column_up`: Bet on the right column.\n" +
+                                "`3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36`\n",
+                x36betOptions =
+                        "`#`: Bet on any single number.\n" +
+                                "Only your bet wins`#`\n" +
+                                "\n";
 
-    @Override
-    public String getUsage() {
-        return "roulette <money> <bet option>";
-    }
-
-    @Override
-    public int getPermissionLevel() {
-        return 0;
-    }
-
-    private void sendHelpMessage(MessageReceivedEvent event) {
-        event.getTextChannel().sendMessage(
-                new EmbedBuilder()
-                        .setColor(new Color(22, 138, 233))
-                        .setDescription("__**BETTING OPTIONS FOR ROULETTE**__\n`" + "roulette <money> <bet option>`\n\n\n")
-
-                        .addField("Winning multiplicator: x2",
-                                "`<bet option>:`  **even** - All numbers that are winning with this option:\n" +
-                                        "> 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36 <\n\n" +
-                                        "`<bet option>:`  **odd** - All numbers that are winning with this option:\n" +
-                                        "> 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35 <\n\n" +
-                                        "`<bet option>:`  **red** - All numbers that are winning with this option:\n" +
-                                        "> 1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36 <\n\n" +
-                                        "`<bet option>:`  **black** - All numbers that are winning with this option:\n" +
-                                        "> 2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35 <\n\n" +
-                                        "`<bet option>:`  **1-18** - All numbers that are winning with this option:\n" +
-                                        "> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 <\n\n" +
-                                        "`<bet option>:`  **19-36** - All numbers that are winning with this option:\n" +
-                                        "> 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36 <\n" +
-                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ", false)
-
-                        .addField("Winning multiplicator: x3",
-                                "`<bet option>:`  **1-12** - All numbers that are winning with this option:\n" +
-                                        "> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 <\n\n" +
-                                        "`<bet option>:`  **13-24** - All numbers that are winning with this option:\n" +
-                                        "> 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 <\n\n" +
-                                        "`<bet option>:`  **25-36** - All numbers that are winning with this option:\n" +
-                                        "> 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36 <\n\n" +
-                                        "`<bet option>:`  **column_low** - All numbers that are winning with this option:\n" +
-                                        "> 1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34 <\n\n" +
-                                        "`<bet option>:`  **column_mid** - All numbers that are winning with this option:\n" +
-                                        "> 2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35 <\n\n" +
-                                        "`<bet option>:`  **column_up** - All numbers that are winning with this option:\n" +
-                                        "> 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36 <\n" +
-                                        ":heavy_minus_sign: :heavy_minus_sign: :heavy_minus_sign: ", false)
-
-                        .addField("Winning multiplicator: x36",
-                                "`<bet option>:`  **#** - (# = single number) Only the number you bet on, can win!\n", false)
-
-                        .build()
-        ).queue();
+        return message(info('\'' + aliasToUse + "' command help", getDescription())
+                .addField("Aliases", String.join(", ", getInvocationAliases()), false)
+                .addField("Usage", serverPrefix + aliasToUse + ' ' + getParameterUsage(), false)
+                .addField("Bet options (multiplier x2)", x2betOptions, false)
+                .addField("Bet options (multiplier x3)", x3betOptions, false)
+                .addField("Bet options (multiplier x36)", x36betOptions, false));
     }
 }

@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.commands.admin;
 
 import fun.rubicon.RubiconBot;
@@ -11,7 +17,6 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
-
 
 import java.io.*;
 import java.text.DateFormat;
@@ -49,7 +54,7 @@ public class CommandGiveaway extends Command implements Serializable {
     }
 
     @Override
-    protected void execute(String[] args, MessageReceivedEvent e) throws ParseException {
+    protected void execute(String[] args, MessageReceivedEvent e) {
         MessageChannel channel = e.getTextChannel();
         if (args.length < 3) {
             sendUsageMessage();

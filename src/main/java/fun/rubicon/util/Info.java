@@ -7,9 +7,7 @@
 package fun.rubicon.util;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.core.DiscordCore;
 import fun.rubicon.core.Main;
-import net.dv8tion.jda.core.entities.User;
 
 import java.util.Date;
 

@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.commands.tools;
 
 
@@ -8,26 +14,15 @@ import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
-
-
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
 
-/**
- * Rubicon Discord bot
- *
- * @author Moritz Jahn / ForMoJa
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package commands.tools
- */
-
 public class CommandASCII extends CommandHandler {
 
     public CommandASCII() {
-        super(new String[]{"ascii"}, CommandCategory.TOOLS,new PermissionRequirements(0,"command.ascii"),"Convert an ASCII-Code to a char and a char to an ASCII-Code.","ascii <string>\nascii code <ASCII-Code>");
+        super(new String[]{"ascii"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.ascii"), "Convert an ASCII-Code to a char and a char to an ASCII-Code.", "ascii <string>\nascii code <ASCII-Code>");
     }
 
     @Override
@@ -42,15 +37,15 @@ public class CommandASCII extends CommandHandler {
                     if (Integer.valueOf(parsedCommandInvocation.args[i]) <= 127)
                         text.append((char) ((int) Integer.valueOf(parsedCommandInvocation.args[i])));
                     else {
-                        return new MessageBuilder().setEmbed(EmbedUtil.error("","One of you numbers has a higher value than 127. But this is the highest ASCII-Value.").build()).build();
+                        return new MessageBuilder().setEmbed(EmbedUtil.error("", "One of you numbers has a higher value than 127. But this is the highest ASCII-Value.").build()).build();
                     }
                 } catch (NumberFormatException ex) {
-                    return new MessageBuilder().setEmbed(EmbedUtil.error("","You have to give me numbers!").build()).build();
+                    return new MessageBuilder().setEmbed(EmbedUtil.error("", "You have to give me numbers!").build()).build();
                 }
             }
             output.append(asciiBuilder.toString()).append("`\n");
             output.append(text.toString()).append("`");
-            return new MessageBuilder().setEmbed(EmbedUtil.embed("",output.toString()).build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.embed("", output.toString()).build()).build();
         } else if (parsedCommandInvocation.args.length > 0) {
             StringBuilder output = new StringBuilder();
             StringBuilder text = new StringBuilder("Text: `");
@@ -75,7 +70,7 @@ public class CommandASCII extends CommandHandler {
                     .setColor(Colors.COLOR_PRIMARY);
             parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(builder.build()).queue();
         } else
-            return new MessageBuilder().setEmbed(EmbedUtil.error("",getUsage()).build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error("", getUsage()).build()).build();
         return null;
     }
 }

@@ -8,9 +8,8 @@ package fun.rubicon;
 
 import fun.rubicon.commands.admin.*;
 import fun.rubicon.commands.botowner.*;
-import fun.rubicon.commands.fun.CommandColor;
-import fun.rubicon.commands.general.CommandLevel;
 import fun.rubicon.commands.fun.CommandRip;
+import fun.rubicon.commands.fun.CommandRoulette;
 import fun.rubicon.commands.fun.CommandSlot;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.settings.*;
@@ -18,7 +17,6 @@ import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.CommandManager;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.ListenerManager;
-
 import fun.rubicon.util.*;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -72,9 +70,8 @@ public class RubiconBot {
         // init JDA
         initJDA();
 
-
-        //post bot statistics to discordbots.org
-        DBLUtil.postStats(getJDA());
+        // post bot stats to discordbots.org and print warning
+        DBLUtil.postStats(false);
     }
 
     /**
@@ -151,7 +148,8 @@ public class RubiconBot {
         // fun commands package
         commandManager.registerCommandHandlers(
                 new CommandRip(),
-                new CommandSlot()
+                new CommandSlot(),
+                new CommandRoulette()
         );
         // general commands package
         commandManager.registerCommandHandlers(
@@ -162,6 +160,7 @@ public class RubiconBot {
                 new CommandInfo(),
                 new CommandInvite(),
                 new CommandSpeedTest(),
+                new CommandStatistics(),
                 new CommandMoney(),
                 new CommandLevel()
         );
@@ -182,11 +181,11 @@ public class RubiconBot {
                 new CommandDice(),
                 new CommandGoogle(),
                 new CommandLmgtfy(),
-                new CommandShorten(),
                 new CommandSay(),
                 new CommandQRCode(),
                 new CommandSearch(),
                 new CommandServerInfo(),
+                new CommandShorten(),
                 new CommandUserInfo(),
                 new CommandVote()
         );
