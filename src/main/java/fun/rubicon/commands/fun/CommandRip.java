@@ -9,58 +9,59 @@ package fun.rubicon.commands.fun;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
-import fun.rubicon.util.Colors;
-import fun.rubicon.util.EmbedUtil;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
+import static fun.rubicon.util.EmbedUtil.*;
+
+/**
+ * Handles the 'rip' command which fetches tombstone images with a custom sign.
+ *
+ * @author DRSchlaubi, tr808axm
+ */
 public class CommandRip extends CommandHandler {
-
+    /**
+     * Constructs the 'rip' command handler.
+     */
     public CommandRip() {
-        super(new String[]{"rip", "tombstone"}, CommandCategory.FUN, new PermissionRequirements(0, "command.rip"), "Creates a tombstone for you", "rip <name> <text>");
+        super(new String[]{"rip", "rest-in-peace", "tombstone"}, CommandCategory.FUN,
+                new PermissionRequirements(PermissionLevel.EVERYONE, "command.rip"),
+                "Creates a tombstone with custom text.", "<who-died> <sign text...>");
     }
 
-
     @Override
-    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        if (parsedCommandInvocation.args.length > 1) {
-            Message message = parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(new EmbedBuilder().setColor(Colors.COLOR_SECONDARY).setDescription("Generating tombstone ...").build()).complete();
-            StringBuilder query = new StringBuilder();
-            for (int i = 1; i < parsedCommandInvocation.args.length; i++) {
-                query.append(parsedCommandInvocation.args[i]).append(" ");
-            }
-            List<String> lines = new ArrayList<>();
-            int index = 0;
-            while (index < query.length()) {
-                lines.add(query.substring(index, Math.min(index + 25, query.length())));
-                index += 25;
-            }
-            InputStream image = null;
-            try {
-                if (query.length() > 25) {
-                    image = new URL("http://www.tombstonebuilder.com/generate.php?top1=R.I.P.&top2=" + parsedCommandInvocation.args[0].replace(" ", "%20").replace("@", "") + "&top3=" + lines.get(0).replace(" ", "%20") + "&top4=" + lines.get(1).replace(" ", "%20") + "&sp=").openStream();
-                } else {
-                    image = new URL("http://www.tombstonebuilder.com/generate.php?top1=R.I.P.&top2=" + parsedCommandInvocation.args[0].replace(" ", "%20").replace("@", "") + "&top3=" + lines.get(0).replace(" ", "%20") + "&top4=&sp=").openStream();
-                }
+    protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
+        if (invocation.args.length < 2)
+            return createHelpMessage(invocation);
+        else {
+            String whoDied = invocation.args[0];
+            StringBuilder sign = new StringBuilder(invocation.args[1]);
+            for (int i = 2; i < invocation.args.length; i++)
+                sign.append(' ').append(invocation.args[i]);
 
-            } catch (IOException e1) {
-                e1.printStackTrace();
-                //TODO error handling. image can not be sent if it does not exist.
+            // compile url
+            String tombstoneURL;
+            try {
+                tombstoneURL = "http://www.tombstonebuilder.com/generate.php"
+                        + "?top1=R.I.P."
+                        + "&top2=" + URLEncoder.encode(whoDied, StandardCharsets.UTF_8.toString())
+                        + "&top3=" + URLEncoder.encode(sign.substring(0, Math.min(25, sign.length())), StandardCharsets.UTF_8.toString())
+                        + "&top4=" + (sign.length() < 25 ? "" : URLEncoder.encode(sign.substring(25, Math.min(50, sign.length())), StandardCharsets.UTF_8.toString()))
+                        + "&sp=";
+            } catch (UnsupportedEncodingException e) {
+                // should not occur
+                return message(error());
             }
-            message.delete().queue();
-            parsedCommandInvocation.invocationMessage.getTextChannel().sendFile(image, "rip.png", null).queue();
-        } else {
-            return new MessageBuilder().setEmbed(EmbedUtil.error("", getUsage()).build()).build();
+
+            // respond
+            return message(success("Buried " + whoDied, "Here's an image of his tombstone:")
+                    .setImage(tombstoneURL));
         }
-        return null;
     }
 }
