@@ -22,6 +22,7 @@ import static fun.rubicon.util.EmbedUtil.*;
 
 /**
  * Handles the 'rip' command which fetches tombstone images with a custom sign.
+ *
  * @author DRSchlaubi, tr808axm
  */
 public class CommandRip extends CommandHandler {

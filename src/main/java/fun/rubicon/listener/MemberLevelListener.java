@@ -1,11 +1,14 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.listener;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.core.Main;
 import fun.rubicon.util.Cooldown;
 import fun.rubicon.util.MySQL;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -13,14 +16,6 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/**
- * Rubicon Discord bot
- *
- * @author Leon Kappes / Lee
- * @copyright RubiconBot Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.listener
- */
 public class MemberLevelListener extends ListenerAdapter {
 
 
@@ -71,8 +66,10 @@ public class MemberLevelListener extends ListenerAdapter {
                 int Result = r.nextInt(High - Low) + Low;
                 int ran = Math.round(Result);
                 int foa = foo * 200 / 3 + ran;
-                String m = String.valueOf(Math.round(foa));
-                sql.updateUserValue(event.getAuthor(), "money", m);
+                int Current = Integer.parseInt(sql.getUserValue(event.getAuthor(), "money"));
+                int m = Math.round(foa);
+                String fin = String.valueOf(foa + fina);
+                sql.updateUserValue(event.getAuthor(), "money", fin);
 
                 /*new Timer().schedule(new TimerTask() {
                     @Override

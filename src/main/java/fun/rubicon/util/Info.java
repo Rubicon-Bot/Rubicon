@@ -7,9 +7,7 @@
 package fun.rubicon.util;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.core.DiscordCore;
 import fun.rubicon.core.Main;
-import net.dv8tion.jda.core.entities.User;
 
 import java.util.Date;
 
@@ -34,7 +32,7 @@ public class Info {
     public final static String BOT_DEFAULT_PREFIX = "rc!";
     public static int reconnectCount = 0;
     public final static String BOT_NAME = "Rubicon";
-    public final static String BOT_VERSION = "0.1.4";
+    public final static String BOT_VERSION = "0.1.5";
     public final static String BOT_WEBSITE = "https://rubicon.fun";
     public final static String BOT_GITHUB = "https://github.com/Rubicon-Bot/RubiCon";
     public final static String CONFIG_FILE = "config.json";

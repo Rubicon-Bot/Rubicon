@@ -4,7 +4,7 @@
  * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
  */
 
-package fun.rubicon.commands.fun;
+package fun.rubicon.commands.tools;
 
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
@@ -21,6 +21,7 @@ import static fun.rubicon.util.EmbedUtil.success;
 
 /**
  * Handles the 'color' command which generates random colors.
+ *
  * @author LeeDJD, tr808axm
  */
 public class CommandColor extends CommandHandler {

@@ -6,32 +6,34 @@
 
 package fun.rubicon.commands.general;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
-import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.User;
 
-public class CommandInvite extends CommandHandler {
+public class CommandLevel extends CommandHandler {
 
-    public CommandInvite() {
-        super(new String[]{"invite", "inv"}, CommandCategory.GENERAL, new PermissionRequirements(0, "command.invite"), "Gives you the invite-link of the bot.", "invite");
+
+    public CommandLevel() {
+        super(new String[]{"rank", "level", "money", "lvl"}, CommandCategory.FUN, new PermissionRequirements(0, "command.rank"), "Get your level, points and ruby's.", "rank");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        User user = parsedCommandInvocation.invocationMessage.getAuthor();
         EmbedBuilder builder = new EmbedBuilder();
-        builder.setColor(Colors.COLOR_SECONDARY);
-        builder.setAuthor(Info.BOT_NAME + " - Invite", null, parsedCommandInvocation.invocationMessage.getJDA().getSelfUser().getAvatarUrl());
-        builder.setDescription("[Invite Rubicon Bot](https://discordapp.com/oauth2/authorize?client_id=380713705073147915&scope=bot&permissions=1898982486)\n" +
-                "[Join Rubicon Server](https://discord.gg/UrHvXY9)");
+        builder.setColor(Colors.COLOR_PRIMARY);
+        builder.setAuthor(user.getName(), null, user.getAvatarUrl());
+        builder.addField("Points", RubiconBot.getMySQL().getUserValue(user, "points"), true);
+        builder.addField("Level", RubiconBot.getMySQL().getUserValue(user, "level"), true);
+        builder.addField("Ruby's", RubiconBot.getMySQL().getUserValue(user, "money"), true);
         return new MessageBuilder().setEmbed(builder.build()).build();
     }
-
-
 }

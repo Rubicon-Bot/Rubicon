@@ -1,6 +1,11 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.commands.tools;
 
-import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
@@ -11,35 +16,25 @@ import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-
-/**
- * Rubicon Discord bot
- *
- * @author Yannick Seeger / ForYaSee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.commands.tools
- */
 
 public class CommandSay extends CommandHandler {
 
     public CommandSay() {
-        super(new String[]{"say", "s"}, CommandCategory.TOOLS, new PermissionRequirements(1,"command.say"),"Send a Message as the Bot!","say <Channel> <Message>");
+        super(new String[]{"say", "s"}, CommandCategory.TOOLS, new PermissionRequirements(1, "command.say"), "Send a Message as the Bot!", "say <Channel> <Message>");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        if(parsedCommandInvocation.args.length < 2) {
+        if (parsedCommandInvocation.args.length < 2) {
             return new MessageBuilder().setEmbed(EmbedUtil.error(":warning: Error", getUsage()).build()).build();
         }
 
-        if(parsedCommandInvocation.invocationMessage.getMentionedChannels().size() != 1) {
+        if (parsedCommandInvocation.invocationMessage.getMentionedChannels().size() != 1) {
             return new MessageBuilder().setEmbed(EmbedUtil.error(":warning: Error", getUsage()).build()).build();
         }
 
         String text = "";
-        for(int i = parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0).getAsMention().split(" ").length; i < parsedCommandInvocation.args.length; i++) {
+        for (int i = parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0).getAsMention().split(" ").length; i < parsedCommandInvocation.args.length; i++) {
             text += parsedCommandInvocation.args[i] + " ";
         }
         EmbedBuilder builder = new EmbedBuilder();
