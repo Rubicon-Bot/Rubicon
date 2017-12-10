@@ -82,10 +82,6 @@ public class CommandVote extends CommandHandler implements Serializable {
     }
 
 
-
-
-
-
     private static class Poll implements Serializable {
         private String creator;
         private String heading;
@@ -172,6 +168,8 @@ public class CommandVote extends CommandHandler implements Serializable {
         }
 
         polls.remove(guild);
+        String file = "SERVER_SETTINGS/" + guild.getId() + "/vote.dat";
+        new File(file).delete();
         channel.sendMessage(getParsedPoll(poll, guild).build()).queue();
         Message pollmsg = channel.getMessageById(String.valueOf(poll.pollmsg)).complete();
         try {
@@ -179,13 +177,13 @@ public class CommandVote extends CommandHandler implements Serializable {
         } catch (ErrorResponseException e) {
             //This is an empty Catch Block
         }
-        return new MessageBuilder().setEmbed(EmbedUtil.success("Closed vote", ":white_check_mark: Poll was closed by" + message.getAuthor().getAsMention()).build()).build();
+        return new MessageBuilder().setEmbed(EmbedUtil.success("Closed vote", "Poll was closed by " + message.getAuthor().getAsMention()).build()).build();
     }
 
     private Message createPoll(String[] args, Message message) {
         Guild guild = message.getGuild();
         if (polls.containsKey(guild)) {
-            return new MessageBuilder().setEmbed(EmbedUtil.error("No poll running", "There is currently no poll running on this guild").build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error("No poll running", "There is currently a open vote!").build()).build();
         }
         User author = message.getAuthor();
 
@@ -240,7 +238,8 @@ public class CommandVote extends CommandHandler implements Serializable {
         }
 
         if (poll.votes.containsKey(message.getAuthor().getId())) {
-            return new MessageBuilder().setEmbed(EmbedUtil.error("Error", "Sorry, but you can only vote at once for a poll").build()).build();
+            //return new MessageBuilder().setEmbed(EmbedUtil.error("Error", "Sorry, but you can only vote at once for a poll").build()).build();
+            return null;
         }
 
         poll.votes.put(message.getAuthor().getId(), vote);
@@ -260,7 +259,7 @@ public class CommandVote extends CommandHandler implements Serializable {
             return;
 
         if (poll.votes.containsKey(event.getUser().getId())) {
-            channel.sendMessage(new EmbedBuilder().setColor(Colors.COLOR_ERROR).setDescription("Sorry, but you can only vote at once for a poll").build()).queue();
+            //channel.sendMessage(new EmbedBuilder().setColor(Colors.COLOR_ERROR).setDescription("Sorry, but you can only vote at once for a poll").build()).queue();
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {

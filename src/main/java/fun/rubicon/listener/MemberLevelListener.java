@@ -71,8 +71,10 @@ public class MemberLevelListener extends ListenerAdapter {
                 int Result = r.nextInt(High - Low) + Low;
                 int ran = Math.round(Result);
                 int foa = foo * 200 / 3 + ran;
-                String m = String.valueOf(Math.round(foa));
-                sql.updateUserValue(event.getAuthor(), "money", m);
+                int Current = Integer.parseInt(sql.getUserValue(event.getAuthor(),"money"));
+                int m = Math.round(foa);
+                String fin = String.valueOf(foa+fina);
+                sql.updateUserValue(event.getAuthor(), "money", fin);
 
                 /*new Timer().schedule(new TimerTask() {
                     @Override

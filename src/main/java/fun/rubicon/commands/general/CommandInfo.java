@@ -56,19 +56,10 @@ public class CommandInfo extends CommandHandler {
         builder.addField("Bot Name", Info.BOT_NAME, true);
         builder.addField("Bot Version", Info.BOT_VERSION, true);
         builder.addField("Website", "[Link](" + Info.BOT_WEBSITE + ")", true);
-        builder.addField("Bot Invite", "[Invite Rubicon](https://discordapp.com/oauth2/authorize?client_id=380713705073147915&scope=bot&permissions=2146958591)", true);
+        builder.addField("Bot Invite", "[Invite Rubicon](https://discordapp.com/oauth2/authorize?client_id=380713705073147915&scope=bot&permissions=1898982486)", true);
         builder.addField("Github Link", "[Github Link](" + Info.BOT_GITHUB + ")", true);
         builder.addField("Patreon Link", "[Rubicon Dev Team](https://www.patreon.com/rubiconbot)", true);
         builder.addField("Authors", authors.toString(), true);
-        String dependencies = "" +
-                "[json.org](http://json.org/)\n" +
-                "[JDA](https://github.com/DV8FromTheWorld/JDA)\n" +
-                "[mysql-connector](https://mvnrepository.com/artifact/mysql/mysql-connector-java)\n" +
-                "[slf4j-simple](https://mvnrepository.com/artifact/org.slf4j/slf4j-simple)\n" +
-                "[json-simple](https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple)\n" +
-                "[gson](https://github.com/google/gson)\n" +
-                "[jsoup](https://jsoup.org/)";
-        builder.addField("Dependencies", dependencies, false);
         //Send Message and delete it after 2 Minutes
         return new MessageBuilder().setEmbed(builder.build()).build();
     }

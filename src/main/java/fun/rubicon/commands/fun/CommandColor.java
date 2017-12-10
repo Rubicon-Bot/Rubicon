@@ -1,43 +1,46 @@
-/*
- * Copyright (c) 2017 Rubicon Bot Development Team
- *
- * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
- */
-
 package fun.rubicon.commands.fun;
 
+import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
-import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
+import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.awt.*;
+import java.util.Random;
 
-import static fun.rubicon.util.EmbedUtil.message;
-import static fun.rubicon.util.EmbedUtil.success;
 
 /**
- * Handles the 'color' command which generates random colors.
- * @author LeeDJD, tr808axm
+ * Rubicon Discord bot
+ *
+ * @author Lee Kappes / Lee
+ * @copyright Rubicon Dev Team ${YEAR}
+ * @license MIT License <http://rubicon.fun/license>
+ * @package commands.fun
  */
-public class CommandColor extends CommandHandler {
-    /**
-     * Constructs the 'color' command handler.
-     */
+
+public class CommandColor extends CommandHandler{
     public CommandColor() {
-        super(new String[]{"color", "colour", "generate-color", "generate-colour", "random-color", "random-colour"}, CommandCategory.TOOLS,
-                new PermissionRequirements(PermissionLevel.EVERYONE, "command.color"),
-                "Generates a random color.", "");
+        super(new String[]{"color"},CommandCategory.FUN,new PermissionRequirements(0,"command.color"),"Generates a random color.","");
     }
+
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        Color generatedColor = new Color((float) Math.random(), (float) Math.random(), (float) Math.random());
-        return message(success("Color generated", "Your new random color is RGB (`"
-                + generatedColor.getRed() + "`, `" + generatedColor.getGreen() + "`, `" + generatedColor.getBlue() + "`).")
-                .setColor(generatedColor));
+        //gen
+        Random randomGenerator = new Random();
+        int red = randomGenerator.nextInt(256);
+        int green = randomGenerator.nextInt(256);
+        int blue = randomGenerator.nextInt(256);
+
+        Color randomColour = new Color(red,green,blue);
+        String s= "!";
+        System.out.println(s.toLowerCase());
+        return new MessageBuilder().setEmbed(new EmbedBuilder().setTitle("Generated new color  Color:").setDescription("(R:" + randomColour.getRed()+ " G:"+randomColour.getGreen()+ " B:"+randomColour.getBlue()+")").build()).build();
     }
 }

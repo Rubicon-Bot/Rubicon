@@ -15,12 +15,12 @@ import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.CommandManager;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.ListenerManager;
+
 import fun.rubicon.util.*;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 import javax.security.auth.login.LoginException;
@@ -107,14 +107,12 @@ public class RubiconBot {
         }
         GameAnimator.start();
         CommandVote.loadPolls(instance.jda);
-        CommandGiveaway.loadGiveaways(instance.jda.getGuilds());
-        CommandGiveaway.startGiveawayManager();
 
-
-        StringBuilder runningOnServers = new StringBuilder("Running on following guilds:\n");
+        //Too many guilds :(
+        /*StringBuilder runningOnServers = new StringBuilder("Running on following guilds:\n");
         for (Guild guild : instance.jda.getGuilds())
             runningOnServers.append("\t- ").append(guild.getName()).append("(").append(guild.getId()).append(")\n");
-        Logger.info(runningOnServers.toString());
+        Logger.info(runningOnServers.toString());*/
     }
 
     /**
@@ -133,22 +131,24 @@ public class RubiconBot {
                 new CommandMute(),
                 new CommandUnmute(),
                 new CommandUnWarn(),
-                new CommandWarn()
+                new CommandWarn(),
+                new CommandPortal()
         );
         // botowner commands package
         commandManager.registerCommandHandlers(
                 new CommandBroadcast(),
                 new CommandPlay(),
                 new CommandRestart(),
-                new CommandSetmoney(),
-                new CommandStop()
+                new CommandStop(),
+                new CommandCreateInvite(),
+                new CommandEval()
         );
         // fun commands package
         commandManager.registerCommandHandlers(
-                new CommandLevel(),
                 new CommandRip(),
                 new CommandRoulette(),
-                new CommandSlot()
+                new CommandSlot(),
+                new CommandDonatemoney()
         );
         // general commands package
         commandManager.registerCommandHandlers(
@@ -158,7 +158,9 @@ public class RubiconBot {
                 new CommandBug(),
                 new CommandInfo(),
                 new CommandInvite(),
-                new CommandSpeedTest()
+                new CommandSpeedTest(),
+                new CommandMoney(),
+                new CommandLevel()
         );
         // settings commands package
         commandManager.registerCommandHandlers(
@@ -177,6 +179,7 @@ public class RubiconBot {
                 new CommandDice(),
                 new CommandGoogle(),
                 new CommandLmgtfy(),
+                new CommandSay(),
                 new CommandQRCode(),
                 new CommandSearch(),
                 new CommandServerInfo(),

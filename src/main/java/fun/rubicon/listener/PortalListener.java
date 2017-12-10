@@ -20,17 +20,17 @@ public class PortalListener extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
-        if (!e.getAuthor().getId().equals(e.getJDA().getSelfUser().getId())){
-            if (e.getChannel().getName().equalsIgnoreCase("rubicon-portal")) {
+        if (!e.getAuthor().getId().equals(e.getJDA().getSelfUser().getId())) {
+            if (e.getChannel().getId().equals(RubiconBot.getMySQL().getPortalValue(e.getGuild(), "channelid"))) {
                 String status = RubiconBot.getMySQL().getGuildValue(e.getGuild(), "portal");
-                if (status.contains("connected")) {
-                    TextChannel otherChannel = e.getJDA().getTextChannelById(status.split(":")[2]);
+                if (status.contains("open")) {
+                    TextChannel otherChannel = e.getJDA().getTextChannelById(RubiconBot.getMySQL().getPortalValue(e.getJDA().getGuildById(RubiconBot.getMySQL().getPortalValue(e.getGuild(), "partnerid")), "channelid"));
                     try {
                         EmbedBuilder builder = new EmbedBuilder();
                         builder.setAuthor(e.getAuthor().getName(), null, e.getAuthor().getEffectiveAvatarUrl());
                         builder.setDescription(e.getMessage().getContent());
                         otherChannel.sendMessage(builder.build()).queue();
-                    }catch (NullPointerException fuck){
+                    } catch (NullPointerException fuck) {
                         fuck.printStackTrace();
                     }
                 }

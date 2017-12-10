@@ -22,6 +22,7 @@ import static fun.rubicon.util.EmbedUtil.*;
 
 /**
  * Handles the 'roulette' command with that users can play roulette.
+ * @author xEiisKeksx, tr808axm
  */
 public class CommandRoulette extends CommandHandler {
     /**
