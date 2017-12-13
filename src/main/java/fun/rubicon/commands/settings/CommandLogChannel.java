@@ -27,7 +27,7 @@ public class CommandLogChannel extends CommandHandler {
     public CommandLogChannel() {
         super(new String[]{"logchannel", "lch", "log"}, CommandCategory.SETTINGS,
                 new PermissionRequirements(2, "command.logchannel"),
-                "Set the Server LogChannel.", "logchannel <#channel>");
+                "Set the Server LogChannel.", "<#channel>");
     }
 
     @Override

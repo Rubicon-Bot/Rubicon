@@ -23,7 +23,7 @@ import net.dv8tion.jda.core.entities.TextChannel;
  */
 public class CommandUnmute extends CommandHandler {
     public CommandUnmute() {
-        super(new String[]{"unmute", "demute"}, CommandCategory.ADMIN, new PermissionRequirements(2, "command.unmute"), "Unmutes users", "unmute <@User>");
+        super(new String[]{"unmute", "demute"}, CommandCategory.ADMIN, new PermissionRequirements(2, "command.unmute"), "Unmutes users", "<@User>");
     }
 
     @Override

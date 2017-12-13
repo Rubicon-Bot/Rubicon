@@ -22,7 +22,7 @@ import net.dv8tion.jda.core.entities.*;
  */
 public class CommandWarn extends CommandHandler {
     public CommandWarn() {
-        super(new String[]{"warn"}, CommandCategory.MODERATION, new PermissionRequirements(2, "command.warn"), "Warn a User", "warn <User Mention> <reason> ");
+        super(new String[]{"warn"}, CommandCategory.MODERATION, new PermissionRequirements(2, "command.warn"), "Warn a User", "<User Mention> <reason> ");
     }
 
     public static void WarnUser(User target, Guild guild, User author, String reason) {

@@ -34,7 +34,7 @@ public class CommandGoogle extends CommandHandler{
     private String ttemp = "";
 
     public CommandGoogle() {
-        super(new String[] {"google"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.google"), "Google (useful) stuff.", "google <Search Query>");
+        super(new String[] {"google"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.google"), "Google (useful) stuff.", "<Search Query>");
     }
 
     @Override

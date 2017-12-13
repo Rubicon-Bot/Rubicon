@@ -18,7 +18,7 @@ import net.dv8tion.jda.core.entities.User;
 public class CommandUserInfo extends CommandHandler{
 
     public CommandUserInfo() {
-        super(new String[] {"userinfo","whois"}, CommandCategory.TOOLS, new PermissionRequirements(0, "comm"), "Returns some information about the specified user", "userinfo [@User]");
+        super(new String[] {"userinfo","whois"}, CommandCategory.TOOLS, new PermissionRequirements(0, "comm"), "Returns some information about the specified user", "[@User]");
     }
 
     @Override

@@ -45,7 +45,7 @@ public class CommandManager extends ListenerAdapter {
         for (String invokeAlias : commandHandler.getInvocationAliases())
             // only register if alias is not taken
             if (commandAssociations.containsKey(invokeAlias.toLowerCase()))
-                Logger.error("WARNING: The '" + commandHandler.toString()
+                Logger.warning("The '" + commandHandler.toString()
                         + "' CommandHandler tried to register the alias '" + invokeAlias
                         + "' which is already taken by the '" + commandAssociations.get(invokeAlias).toString()
                         + "' CommandHandler.");
@@ -57,7 +57,7 @@ public class CommandManager extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent event) {
         super.onMessageReceived(event);
         ParsedCommandInvocation commandInvocation = parse(event.getMessage());
-        if (commandInvocation != null) // if it is a command invocation
+        if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake()) // if it is a command invocation
             call(commandInvocation);
     }
 
@@ -112,7 +112,7 @@ public class CommandManager extends ListenerAdapter {
             // cut off command prefix
             String beheaded = message.getRawContent().substring(prefix.length(), message.getRawContent().length()).trim();
             // split arguments
-            String[] allArgs = beheaded.split(" ");
+            String[] allArgs = beheaded.split("\\s+");
             // create an array of the actual command arguments (exclude invocation arg)
             String[] args = new String[allArgs.length - 1];
             System.arraycopy(allArgs, 1, args, 0, args.length);

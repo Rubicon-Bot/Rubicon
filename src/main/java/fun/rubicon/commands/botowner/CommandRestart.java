@@ -29,7 +29,7 @@ import java.util.TimerTask;
 
 public class CommandRestart extends CommandHandler{
     public CommandRestart() {
-        super(new String[]{"rs", "restart", "r"},CommandCategory.BOT_OWNER,new PermissionRequirements(4,"command.restart"),"Restart the Bot!","restart");
+        super(new String[]{"rs", "restart", "r"},CommandCategory.BOT_OWNER,new PermissionRequirements(4,"command.restart"),"Restart the Bot!","");
     }
 
     @Override

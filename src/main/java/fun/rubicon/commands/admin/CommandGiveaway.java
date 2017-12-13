@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.commands.admin;
 
 import fun.rubicon.RubiconBot;
@@ -7,10 +13,10 @@ import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.StringUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
-
 
 import java.io.*;
 import java.text.DateFormat;
@@ -19,7 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class CommandGiveaway extends Command implements Serializable{
+public class CommandGiveaway extends Command implements Serializable {
     private static boolean running = false;
     private static String emote = "\ud83c\udfc6";
     private static HashMap<Guild, Giveaway> giveaways = new HashMap<>();
@@ -29,7 +35,7 @@ public class CommandGiveaway extends Command implements Serializable{
         super(command, category);
     }
 
-    private static class Giveaway implements Serializable{
+    private static class Giveaway implements Serializable {
         String expiredate;
         String messageid;
         String reward;
@@ -37,7 +43,7 @@ public class CommandGiveaway extends Command implements Serializable{
         String guildid;
         String channelid;
 
-        private Giveaway(Date expiry, Message message, String reward){
+        private Giveaway(Date expiry, Message message, String reward) {
             this.expiredate = format.format(expiry);
             this.messageid = message.getId();
             this.reward = reward;
@@ -48,7 +54,7 @@ public class CommandGiveaway extends Command implements Serializable{
     }
 
     @Override
-    protected void execute(String[] args, MessageReceivedEvent e) throws ParseException {
+    protected void execute(String[] args, MessageReceivedEvent e) {
         MessageChannel channel = e.getTextChannel();
         if (args.length < 3) {
             sendUsageMessage();
@@ -57,7 +63,7 @@ public class CommandGiveaway extends Command implements Serializable{
         switch (args[0]) {
             case "create":
                 String voteargs = "";
-                if(giveaways.containsKey(e.getGuild())){
+                if (giveaways.containsKey(e.getGuild())) {
                     e.getTextChannel().sendMessage(EmbedUtil.error("Already running", "There is already a giveaway running on this guild").build()).queue();
                     return;
                 }
@@ -94,14 +100,14 @@ public class CommandGiveaway extends Command implements Serializable{
         }
     }
 
-    private void saveGiveaway(Giveaway giveaway){
+    private void saveGiveaway(Giveaway giveaway) {
         Guild guild = RubiconBot.getJDA().getGuildById(giveaway.guildid);
         String saveFile = "GIVEAWAYS/" + guild.getId() + "/giveaway.dat";
         String saveDir = "GIVEAWAYS/" + guild.getId();
         File folder = new File(saveDir);
         File file = new File(saveFile);
         try {
-            if(!folder.exists())
+            if (!folder.exists())
                 folder.mkdirs();
             if (!file.exists())
                 file.createNewFile();
@@ -114,11 +120,11 @@ public class CommandGiveaway extends Command implements Serializable{
         }
     }
 
-    public static void loadGiveaways(List<Guild> guilds){
+    public static void loadGiveaways(List<Guild> guilds) {
         guilds.forEach(g -> {
             File folder = new File("GIVEAWAYS/" + g.getId());
             File file = new File("GIVEAWAYS/" + g.getId() + "/giveaway.dat");
-            if(!folder.exists() || !file.exists())
+            if (!folder.exists() || !file.exists())
                 return;
             String saveFile = "GIVEAWAYS/" + g.getId() + "/giveaway.dat";
             try {
@@ -132,19 +138,21 @@ public class CommandGiveaway extends Command implements Serializable{
             }
         });
     }
-    public static void startGiveawayManager(){
+
+    public static void startGiveawayManager(JDA jda) {
+        loadGiveaways(jda.getGuilds());
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
                 giveaways.values().forEach(g -> {
                     Date now = new Date();
-                    try{
+                    try {
                         Date date = format.parse(g.expiredate);
                         System.out.println(g.expiredate);
-                        if(date.after(now)){
+                        if (date.after(now)) {
                             TextChannel channel = RubiconBot.getJDA().getGuildById(g.guildid).getTextChannelById(g.channelid);
 
-                            if(g.users.isEmpty()){
+                            if (g.users.isEmpty()) {
                                 channel.sendMessage(EmbedUtil.error("No winner c:", "Because nobody reacted nobdoy won the giveaway").build()).queue();
                                 return;
                             }
@@ -155,7 +163,7 @@ public class CommandGiveaway extends Command implements Serializable{
                             File file = new File("GIVEAWAYS/" + channel.getGuild().getId() + "/giveaway.dat");
                             file.delete();
                         }
-                    } catch (ParseException pe){
+                    } catch (ParseException pe) {
                         pe.printStackTrace();
                     }
 
@@ -186,14 +194,10 @@ public class CommandGiveaway extends Command implements Serializable{
         if (react.equals(emote)) {
             if (!running) return;
             Giveaway giveaway = giveaways.get(event.getGuild());
-            if(giveaway.users.contains(event.getUser().getId())) return;
+            if (giveaway.users.contains(event.getUser().getId())) return;
             PrivateChannel pc = event.getMember().getUser().openPrivateChannel().complete();
-            pc.sendMessage("Yaaaaaaaaaa. You Take part at the Giveaway").queue();
+            pc.sendMessage("You Take part at the Giveaway at " + event.getGuild().getName()).queue();
             giveaway.users.add(event.getMember().getUser().getId());
         }
     }
-
-
-
-
 }

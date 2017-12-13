@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.commands.tools;
 
 import fun.rubicon.command.CommandCategory;
@@ -5,7 +11,6 @@ import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
-import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
@@ -36,7 +41,7 @@ public class CommandVote extends CommandHandler implements Serializable {
     private List<String> toAddEmojis = new ArrayList<>();
 
     public CommandVote() {
-        super(new String[]{"vote", "v"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.vote"), "Create polls on your server", "vote create <question>|<answer1>|...");
+        super(new String[]{"vote", "v"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.vote"), "Create polls on your server", "create <question>|<answer1>|...");
     }
 
 
@@ -80,10 +85,6 @@ public class CommandVote extends CommandHandler implements Serializable {
                 "`vote stats  `  -  get stats of a current vote\n" +
                 "`vote close  `  -  close a current vote").build()).build();
     }
-
-
-
-
 
 
     private static class Poll implements Serializable {
@@ -172,6 +173,8 @@ public class CommandVote extends CommandHandler implements Serializable {
         }
 
         polls.remove(guild);
+        String file = "SERVER_SETTINGS/" + guild.getId() + "/vote.dat";
+        new File(file).delete();
         channel.sendMessage(getParsedPoll(poll, guild).build()).queue();
         Message pollmsg = channel.getMessageById(String.valueOf(poll.pollmsg)).complete();
         try {
@@ -179,13 +182,13 @@ public class CommandVote extends CommandHandler implements Serializable {
         } catch (ErrorResponseException e) {
             //This is an empty Catch Block
         }
-        return new MessageBuilder().setEmbed(EmbedUtil.success("Closed vote", ":white_check_mark: Poll was closed by" + message.getAuthor().getAsMention()).build()).build();
+        return new MessageBuilder().setEmbed(EmbedUtil.success("Closed vote", "Poll was closed by " + message.getAuthor().getAsMention()).build()).build();
     }
 
     private Message createPoll(String[] args, Message message) {
         Guild guild = message.getGuild();
         if (polls.containsKey(guild)) {
-            return new MessageBuilder().setEmbed(EmbedUtil.error("No poll running", "There is currently no poll running on this guild").build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error("No poll running", "There is currently a open vote!").build()).build();
         }
         User author = message.getAuthor();
 
@@ -240,7 +243,8 @@ public class CommandVote extends CommandHandler implements Serializable {
         }
 
         if (poll.votes.containsKey(message.getAuthor().getId())) {
-            return new MessageBuilder().setEmbed(EmbedUtil.error("Error", "Sorry, but you can only vote at once for a poll").build()).build();
+            //return new MessageBuilder().setEmbed(EmbedUtil.error("Error", "Sorry, but you can only vote at once for a poll").build()).build();
+            return null;
         }
 
         poll.votes.put(message.getAuthor().getId(), vote);
@@ -260,7 +264,7 @@ public class CommandVote extends CommandHandler implements Serializable {
             return;
 
         if (poll.votes.containsKey(event.getUser().getId())) {
-            channel.sendMessage(new EmbedBuilder().setColor(Colors.COLOR_ERROR).setDescription("Sorry, but you can only vote at once for a poll").build()).queue();
+            //channel.sendMessage(new EmbedBuilder().setColor(Colors.COLOR_ERROR).setDescription("Sorry, but you can only vote at once for a poll").build()).queue();
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {

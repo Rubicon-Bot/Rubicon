@@ -8,7 +8,8 @@ package fun.rubicon;
 
 import fun.rubicon.commands.admin.*;
 import fun.rubicon.commands.botowner.*;
-import fun.rubicon.commands.fun.CommandLevel;
+import fun.rubicon.commands.fun.CommandRip;
+import fun.rubicon.commands.fun.CommandRoulette;
 import fun.rubicon.commands.fun.CommandSlot;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.settings.*;
@@ -21,7 +22,6 @@ import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 import javax.security.auth.login.LoginException;
@@ -108,14 +108,13 @@ public class RubiconBot {
         }
         GameAnimator.start();
         CommandVote.loadPolls(instance.jda);
-        CommandGiveaway.loadGiveaways(instance.jda.getGuilds());
-        CommandGiveaway.startGiveawayManager();
+        CommandGiveaway.startGiveawayManager(instance.jda);
 
-
-        StringBuilder runningOnServers = new StringBuilder("Running on following guilds:\n");
+        //Too many guilds :(
+        /*StringBuilder runningOnServers = new StringBuilder("Running on following guilds:\n");
         for (Guild guild : instance.jda.getGuilds())
             runningOnServers.append("\t- ").append(guild.getName()).append("(").append(guild.getId()).append(")\n");
-        Logger.info(runningOnServers.toString());
+        Logger.info(runningOnServers.toString());*/
     }
 
     /**
@@ -134,20 +133,23 @@ public class RubiconBot {
                 new CommandMute(),
                 new CommandUnmute(),
                 new CommandUnWarn(),
-                new CommandWarn()
+                new CommandWarn(),
+                new CommandPortal()
         );
         // botowner commands package
         commandManager.registerCommandHandlers(
                 new CommandBroadcast(),
                 new CommandPlay(),
                 new CommandRestart(),
-                new CommandSetmoney(),
-                new CommandStop()
+                new CommandStop(),
+                new CommandCreateInvite(),
+                new CommandEval()
         );
         // fun commands package
         commandManager.registerCommandHandlers(
-                new CommandLevel(),
-                new CommandSlot()
+                new CommandRip(),
+                new CommandSlot(),
+                new CommandRoulette()
         );
         // general commands package
         commandManager.registerCommandHandlers(
@@ -157,7 +159,10 @@ public class RubiconBot {
                 new CommandBug(),
                 new CommandInfo(),
                 new CommandInvite(),
-                new CommandSpeedTest()
+                new CommandSpeedTest(),
+                new CommandStatistics(),
+                new CommandMoney(),
+                new CommandLevel()
         );
         // settings commands package
         commandManager.registerCommandHandlers(
@@ -169,16 +174,20 @@ public class RubiconBot {
         );
         // tools commands package
         commandManager.registerCommandHandlers(
-                new CommandLmgtfy(),
-                new CommandShorten(),
-                new CommandVote(),
-                new CommandUserInfo(),
-                new CommandServerInfo(),
-                new CommandSearch(),
-                new CommandGoogle(),
                 new CommandASCII(),
+                new CommandChoose(),
                 new CommandClear(),
-                new CommandQRCode()
+                new CommandColor(),
+                new CommandDice(),
+                new CommandGoogle(),
+                new CommandLmgtfy(),
+                new CommandSay(),
+                new CommandQRCode(),
+                new CommandSearch(),
+                new CommandServerInfo(),
+                new CommandShorten(),
+                new CommandUserInfo(),
+                new CommandVote()
         );
 
         // also register commands from the old framework

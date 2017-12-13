@@ -21,6 +21,7 @@ import java.text.ParseException;
  * @copyright Rubicon Dev Team 2017
  * @license MIT License <http://rubicon.fun/license>
  * @package fun.rubicon.commands.general
+ * @deprecated
  */
 public class CommandDonatemoney extends CommandHandler {
 

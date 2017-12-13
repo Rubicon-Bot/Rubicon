@@ -9,12 +9,14 @@ package fun.rubicon.commands.tools;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Bitly;
-import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.Message;
+
+import javax.xml.ws.http.HTTPException;
 
 import static fun.rubicon.util.EmbedUtil.*;
 
@@ -25,16 +27,13 @@ import static fun.rubicon.util.EmbedUtil.*;
  * @author DerSchlaubi, tr808axm
  */
 public class CommandShorten extends CommandHandler {
-    private final Bitly bitlyAPI;
-
     /**
      * Constructs the CommandHandler.
      */
     public CommandShorten() {
         super(new String[]{"shorten", "short", "bitly", "schlb.pw"}, CommandCategory.TOOLS,
-                new PermissionRequirements(0, "command.shorten"),
+                new PermissionRequirements(PermissionLevel.EVERYONE, "command.shorten"),
                 "Shortens a URL with schlb.pw", "<URL>");
-        bitlyAPI = new Bitly(Info.BITLY_TOKEN);
     }
 
     @Override
@@ -45,17 +44,19 @@ public class CommandShorten extends CommandHandler {
         } else if (invocation.args.length == 1) {
             String shortURL;
             try {
-                shortURL = bitlyAPI.generateShortLink(invocation.args[0]);
-            } catch (Exception e) {
-                // unknown exception in request through HttpRequest
+                shortURL = Bitly.shorten(invocation.args[0]);
+            } catch (IllegalArgumentException e) {
+                return message(error("Invalid URL", "`" + invocation.args[0] + "` is not a valid URL."));
+            } catch (HTTPException e) {
+                Logger.error("Invalid bit.ly response");
+                Logger.error(e);
+                return message(error("Service problem", "The URL shortening service responded with an error."));
+            } catch (RuntimeException e) {
+                // invalid response code
                 Logger.error(e);
                 return message(error("Unknown error", "An unknown error occurred while fetching your short url."));
             }
-            return message(shortURL == null
-                    // invalid URL
-                    ? error("Invalid URL", "'" + invocation.args[0] + "' is not a valid URL.")
-                    // shortening successful
-                    : success("URL shortened", "Your URL was shortened:\n" + shortURL));
+            return message(success("URL shortened", "Your URL was shortened: " + shortURL));
         } else {
             // more than 1 arguments -> URL contains whitespaces
             return message(error("Invalid URL", "You can not use whitespaces in a URL."));

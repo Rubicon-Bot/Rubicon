@@ -29,7 +29,7 @@ public class CommandHelp extends CommandHandler {
     public CommandHelp() {
         super(new String[]{"help", "usage", "?", "command", "manual", "man"}, CommandCategory.GENERAL,
                 new PermissionRequirements(0, "command.help"),
-                "Shows the command manual.", "help [command]");
+                "Shows the command manual.", "[command]");
     }
 
     @Override

@@ -14,6 +14,7 @@ import net.dv8tion.jda.core.entities.Message;
  * @copyright RubiconBot Dev Team 2017
  * @license MIT License <http://rubicon.fun/license>
  * @package fun.rubicon.commands.guildowner
+ * @deprecated
  */
 public class CommandBackup extends CommandHandler {
 

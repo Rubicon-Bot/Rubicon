@@ -18,7 +18,7 @@ import java.awt.*;
 public class CommandSearch extends CommandHandler {
 
     public CommandSearch() {
-        super(new String[] {"search", "find"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.find"), "Searches for users, roles and channels with a specified name.", "search <query>");
+        super(new String[] {"search", "find"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.find"), "Searches for users, roles and channels with a specified name.", "<query>");
     }
 
     @Override

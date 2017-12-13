@@ -25,7 +25,7 @@ public class CommandGetWarn extends CommandHandler {
 
 
     public CommandGetWarn() {
-        super(new String[]{"getwarn", "getwarning", "getwarns"}, CommandCategory.MODERATION, new PermissionRequirements(2, "command.getwarn"), "Get The Warning of a User", "getwarn <Mention>");
+        super(new String[]{"getwarn", "getwarning", "getwarns"}, CommandCategory.MODERATION, new PermissionRequirements(2, "command.getwarn"), "Get The Warning of a User", "<Mention>");
     }
 
     @Override

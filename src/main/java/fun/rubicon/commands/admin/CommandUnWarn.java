@@ -24,7 +24,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 public class CommandUnWarn extends CommandHandler {
 
     public CommandUnWarn() {
-        super(new String[]{"unwarn"}, CommandCategory.MODERATION, new PermissionRequirements(2, "command.unwarn"), "Unwarns a user!", "unwarn <Mention>");
+        super(new String[]{"unwarn"}, CommandCategory.MODERATION, new PermissionRequirements(2, "command.unwarn"), "Unwarns a user!", "<Mention>");
     }
 
 

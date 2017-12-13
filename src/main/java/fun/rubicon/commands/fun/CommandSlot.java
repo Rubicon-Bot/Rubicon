@@ -29,7 +29,7 @@ public class CommandSlot extends CommandHandler {
     public CommandSlot() {
         super(new String[]{"slot", "slots"}, CommandCategory.FUN,
                 new PermissionRequirements(0, "command.slot"),
-                "Play a short round on a slot machine. Winning only at three of a kind!", "slot <money>");
+                "Play a short round on a slot machine. Winning only at three of a kind!", "<money>");
     }
 
     @Override

@@ -36,7 +36,7 @@ public class CommandClear extends CommandHandler{
         }
     }
     public CommandClear() {
-        super(new String[]{"clear","purge"},CommandCategory.ADMIN,new PermissionRequirements(1,"command.clear"),"","clear <amountofmessages>");
+        super(new String[]{"clear","purge"},CommandCategory.ADMIN,new PermissionRequirements(1,"command.clear"),"","<amount of messages>");
     }
 
     @Override
