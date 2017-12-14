@@ -37,6 +37,7 @@ import java.util.Date;
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
     private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token"};
+    private static final String dataFolder = "data/";
     private static RubiconBot instance;
     private final MySQL mySQL;
     private final Configuration configuration;
@@ -51,6 +52,8 @@ public class RubiconBot {
         // initialize logger
         Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, new File("latest.log"));
         // load configuration and obtain missing config values
+        new File(dataFolder).mkdirs();
+
         configuration = new Configuration(new File(Info.CONFIG_FILE));
         for (String configKey : CONFIG_KEYS) {
             if (!configuration.has(configKey)) {
@@ -228,5 +231,12 @@ public class RubiconBot {
      */
     public static String getNewTimestamp() {
         return timeStampFormatter.format(new Date());
+    }
+
+    /**
+     * @return the data folder path
+     */
+    public static String getDataFolder() {
+        return dataFolder;
     }
 }

@@ -143,3 +143,4 @@ src/META-INF/MANIFEST.MF
 config.json
 *.dat
 src/main/java/META-INF/MANIFEST.MF
+data/portal-invites.json
