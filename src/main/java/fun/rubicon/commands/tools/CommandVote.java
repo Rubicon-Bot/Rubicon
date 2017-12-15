@@ -9,6 +9,7 @@ package fun.rubicon.commands.tools;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CommandVote extends CommandHandler implements Serializable {
+    private static final long serialVersionUID = 7197077155306830990L;
 
     private static TextChannel channel;
 
@@ -40,8 +42,8 @@ public class CommandVote extends CommandHandler implements Serializable {
 
     private List<String> toAddEmojis = new ArrayList<>();
 
-    public CommandVote() {
-        super(new String[]{"vote", "v"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.vote"), "Create polls on your server", "create <question>|<answer1>|...");
+    public CommandVote(boolean disabled) {
+        super(new String[]{"vote", "v"}, CommandCategory.TOOLS, new PermissionRequirements(PermissionLevel.EVERYONE, "command.vote"), "Create polls on your server", "create <question>|<answer1>|...", disabled);
     }
 
 
@@ -88,6 +90,7 @@ public class CommandVote extends CommandHandler implements Serializable {
 
 
     private static class Poll implements Serializable {
+        private static final long serialVersionUID = 7197077155306830990L;
         private String creator;
         private String heading;
         private List<String> answers;
@@ -110,20 +113,8 @@ public class CommandVote extends CommandHandler implements Serializable {
             return guild.getMemberById(creator);
         }
 
-        public String getHeading() {
-            return heading;
-        }
-
-        public List<String> getAnswers() {
-            return answers;
-        }
-
         public String getPollmsg() {
             return pollmsg;
-        }
-
-        public HashMap<String, Integer> getVotes() {
-            return votes;
         }
 
         public HashMap<String, Integer> getReacts() {
@@ -161,7 +152,6 @@ public class CommandVote extends CommandHandler implements Serializable {
 
     private Message closeVote(Message message) {
         Guild guild = message.getGuild();
-        User author = message.getAuthor();
         if (!polls.containsKey(guild)) {
             return new MessageBuilder().setEmbed(EmbedUtil.error("No poll running", "There is currently no poll running on this guild").build()).build();
         }
@@ -173,7 +163,7 @@ public class CommandVote extends CommandHandler implements Serializable {
         }
 
         polls.remove(guild);
-        String file = "SERVER_SETTINGS/" + guild.getId() + "/vote.dat";
+        String file = "data/votes/" + guild.getId() + "/vote.dat";
         new File(file).delete();
         channel.sendMessage(getParsedPoll(poll, guild).build()).queue();
         Message pollmsg = channel.getMessageById(String.valueOf(poll.pollmsg)).complete();
@@ -190,8 +180,6 @@ public class CommandVote extends CommandHandler implements Serializable {
         if (polls.containsKey(guild)) {
             return new MessageBuilder().setEmbed(EmbedUtil.error("No poll running", "There is currently a open vote!").build()).build();
         }
-        User author = message.getAuthor();
-
 
         String argsSTRG = String.join(" ", new ArrayList<>(Arrays.asList(args).subList(1, args.length)));
         List<String> content = Arrays.asList(argsSTRG.split("\\|"));
@@ -295,7 +283,7 @@ public class CommandVote extends CommandHandler implements Serializable {
             return;
         }
 
-        String saveFile = "SERVER_SETTINGS/" + guild.getId() + "/vote.dat";
+        String saveFile = "data/votes/" + guild.getId() + "/vote.dat";
         Poll poll = polls.get(guild);
 
         FileOutputStream fos = new FileOutputStream(saveFile);
@@ -308,7 +296,7 @@ public class CommandVote extends CommandHandler implements Serializable {
         if (polls.containsKey(guild))
             return null;
 
-        String saveFile = "SERVER_SETTINGS/" + guild.getId() + "/vote.dat";
+        String saveFile = "data/votes/" + guild.getId() + "/vote.dat";
         FileInputStream fis = new FileInputStream(saveFile);
         ObjectInputStream ois = new ObjectInputStream(fis);
         Poll out = (Poll) ois.readObject();
@@ -319,7 +307,7 @@ public class CommandVote extends CommandHandler implements Serializable {
     public static void loadPolls(JDA jda) {
         jda.getGuilds().forEach(g -> {
 
-            File f = new File("SERVER_SETTINGS/" + g.getId() + "/vote.dat");
+            File f = new File("data/votes/" + g.getId() + "/vote.dat");
             if (f.exists())
                 try {
                     polls.put(g, getPoll(g));
@@ -332,7 +320,8 @@ public class CommandVote extends CommandHandler implements Serializable {
 
     private void savePolls() {
         polls.forEach((guild, poll) -> {
-            File path = new File("SERVER_SETTINGS/" + guild.getId() + "/");
+            new File("data/votes/").mkdirs();
+            File path = new File("data/votes/" + guild.getId() + "/");
             if (!path.exists())
                 path.mkdirs();
             try {
