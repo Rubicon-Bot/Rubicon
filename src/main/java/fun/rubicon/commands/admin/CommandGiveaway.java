@@ -92,7 +92,6 @@ public class CommandGiveaway extends Command implements Serializable {
                 Giveaway giveaway = new Giveaway(expiry, msg, voteargs);
                 giveaways.put(e.getGuild(), giveaway);
                 saveGiveaway(giveaway);
-                System.out.println(giveaway.expiredate);
                 break;
             default:
                 sendUsageMessage();

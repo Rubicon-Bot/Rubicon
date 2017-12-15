@@ -200,8 +200,6 @@ public class CommandVote extends CommandHandler implements Serializable{
             message.getTextChannel().sendMessage(EmbedUtil.error("Alrady running", "There is already a poll running on this guild").build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
             return;
         }
-        User author = message.getAuthor();
-
 
         String argsSTRG = String.join(" ", new ArrayList<>(Arrays.asList(args).subList(1, args.length)));
         List<String> content = Arrays.asList(argsSTRG.split("\\|"));
