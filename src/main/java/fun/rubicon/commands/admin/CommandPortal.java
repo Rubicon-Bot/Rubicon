@@ -242,10 +242,10 @@ public class CommandPortal extends CommandHandler {
     }
 
     public static void handleReaction(MessageReactionAddEvent event){
-        event.getReaction().removeReaction(event.getUser()).queue();
         if(!requests.containsKey(event.getGuild())) return;
         Message message = event.getTextChannel().getMessageById(event.getMessageId()).complete();
         if(!message.equals(requests.get(event.getGuild()))) return;
+        event.getReaction().removeReaction().queue();
         String emote = event.getReactionEmote().getName();
         if(emote.equalsIgnoreCase("❌")){
             message.editMessage(EmbedUtil.info("Declined", "You declined portal request").build()).queue();

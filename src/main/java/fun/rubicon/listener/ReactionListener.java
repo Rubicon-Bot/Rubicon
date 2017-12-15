@@ -4,6 +4,7 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.admin.CommandAutochannel;
 import fun.rubicon.commands.admin.CommandGiveaway;
 import fun.rubicon.commands.admin.CommandPortal;
+import fun.rubicon.commands.admin.CommandVerification;
 import fun.rubicon.commands.botowner.CommandBroadcast;
 import fun.rubicon.commands.tools.CommandVote;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
@@ -20,5 +21,6 @@ public class ReactionListener extends ListenerAdapter{
         CommandBroadcast.handleReaction(event);
         CommandAutochannel.handleReaction(event);
         CommandPortal.handleReaction(event);
+        CommandVerification.handleReaction(event);
     }
 }
