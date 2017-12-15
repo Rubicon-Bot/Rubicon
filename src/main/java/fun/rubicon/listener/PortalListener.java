@@ -7,6 +7,9 @@
 package fun.rubicon.listener;
 
 import fun.rubicon.RubiconBot;
+import fun.rubicon.util.EmbedUtil;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.Webhook;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
@@ -28,20 +31,20 @@ public class PortalListener extends ListenerAdapter {
                     try {
                         Webhook webhook = null;
 
-                        for(Webhook hook : otherChannel.getWebhooks().complete()) {
-                            if(hook.getName().equals("rubicon-portal-hook")) {
+                        for (Webhook hook : otherChannel.getWebhooks().complete()) {
+                            if (hook.getName().equals("rubicon-portal-hook")) {
                                 webhook = hook;
                                 break;
                             }
                         }
-                        if(webhook == null) {
+                        if (webhook == null) {
                             webhook = otherChannel.createWebhook("rubicon-portal-hook").complete();
                         }
                         WebhookClientBuilder clientBuilder = webhook.newClient();
                         WebhookClient client = clientBuilder.build();
 
                         WebhookMessageBuilder builder = new WebhookMessageBuilder();
-                        builder.setContent(e.getMessage().getContent());
+                        builder.setContent(e.getMessage().getContentDisplay().replace("@here", "@ here").replace("@everyone", "@ everyone"));
                         builder.setAvatarUrl(e.getAuthor().getAvatarUrl());
                         builder.setUsername(e.getAuthor().getName());
                         WebhookMessage message = builder.build();
