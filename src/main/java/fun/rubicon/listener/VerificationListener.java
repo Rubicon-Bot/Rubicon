@@ -62,6 +62,7 @@ public class VerificationListener extends ListenerAdapter{
         if(!RubiconBot.getMySQL().verificationEnabled(event.getGuild())) return;
         TextChannel channel = event.getGuild().getTextChannelById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "channelid"));
         Message message = channel.sendMessage(new EmbedBuilder().setDescription(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "text").replace("%user%", event.getUser().getAsMention())).build()).complete();
+        CommandVerification.users.put(message, event.getUser());
         message.addReaction("✅").queue();
         Role verified = event.getGuild().getRoleById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "roleid"));
         int delay = Integer.parseInt(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "kicktime"));
