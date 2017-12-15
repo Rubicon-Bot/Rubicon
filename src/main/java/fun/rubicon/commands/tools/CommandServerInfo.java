@@ -32,7 +32,7 @@ public class CommandServerInfo extends CommandHandler{
         roles.replace(rawRoles.lastIndexOf(","), roles.lastIndexOf(",") + 1, "" );
         EmbedBuilder serverInfo = new EmbedBuilder();
         serverInfo.setColor(Colors.COLOR_PRIMARY);
-        serverInfo.setFooter(Info.EMBED_FOOTER, Info.ICON_URL);
+        serverInfo.setFooter(Info.EMBED_FOOTER, "");
         serverInfo.setTitle(":desktop: Serverinfo of " + guild.getName());
         serverInfo.setThumbnail(guild.getIconUrl());
         serverInfo.addField("ID", "`" + guild.getId() + "`", false);
@@ -46,8 +46,6 @@ public class CommandServerInfo extends CommandHandler{
         serverInfo.addField("Server owner", guild.getOwner().getUser().getName() + "#" + guild.getOwner().getUser().getDiscriminator(), false);
         serverInfo.addField("Server icon url", guild.getIconUrl(), false);
         return new MessageBuilder().setEmbed(serverInfo.build()).build();
-
-
     }
 
 

@@ -20,7 +20,6 @@ public class ReactionListener extends ListenerAdapter{
         CommandGiveaway.handleReaction(event);
         CommandBroadcast.handleReaction(event);
         CommandAutochannel.handleReaction(event);
-        CommandPortal.handleReaction(event);
         CommandVerification.handleReaction(event);
     }
 }

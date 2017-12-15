@@ -10,6 +10,7 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
@@ -22,13 +23,14 @@ import java.util.*;
 
 /**
  * Handles the 'help' command which prints command description, aliases and usage.
+ *
  * @author Yannick Seeger, tr808axm
  */
 public class CommandHelp extends CommandHandler {
 
     public CommandHelp() {
         super(new String[]{"help", "usage", "?", "command", "manual", "man"}, CommandCategory.GENERAL,
-                new PermissionRequirements(0, "command.help"),
+                new PermissionRequirements(PermissionLevel.EVERYONE, "command.help"),
                 "Shows the command manual.", "[command]");
     }
 
