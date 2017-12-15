@@ -134,7 +134,8 @@ public class RubiconBot {
                 new CommandUnmute(),
                 new CommandUnWarn(),
                 new CommandWarn(),
-                new CommandPortal()
+                new CommandPortal(),
+                new CommandVerification()
         );
         // botowner commands package
         commandManager.registerCommandHandlers(
