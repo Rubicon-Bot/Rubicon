@@ -80,7 +80,7 @@ public class CommandSearch extends CommandHandler {
                     .addField("**Roles**", roles.toString(), false);
             return new MessageBuilder().setEmbed(results.build()).build();
         } catch (IllegalArgumentException ex){
-            return new MessageBuilder().setEmbed(new EmbedBuilder().setDescription(":warning: TO MANY RESULTS HEEEEEELP!").build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error("Error!", "Too many results!").build()).build();
         }
 
     }

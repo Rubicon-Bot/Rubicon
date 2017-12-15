@@ -107,7 +107,7 @@ public class CommandPortal extends CommandHandler {
             return;
         }
 
-        if (parsedCommandInvocation.args[0].equalsIgnoreCase(messageChannel.getId())) {
+        if (parsedCommandInvocation.args[1].equalsIgnoreCase(messageGuild.getId())) {
             messageChannel.sendMessage(EmbedUtil.error("Portal error!", "Portal you can't invite yourself.").build()).queue();
             return;
         }
@@ -300,6 +300,9 @@ public class CommandPortal extends CommandHandler {
         channelOne.sendMessage(portalClosedMessage.build()).queue();
         portalClosedMessage.setDescription("Portal was closed. Create a new one with `" + parsedCommandInvocation.serverPrefix + "portal create`");
         channelTwo.sendMessage(portalClosedMessage.build()).queue();
+
+        channelOne.getManager().setTopic("Portal closed").queue();
+        channelTwo.getManager().setTopic("Portal closed").queue();
     }
 
     private void createInviteEntryIfNotExists(Configuration configuration, Guild g) {

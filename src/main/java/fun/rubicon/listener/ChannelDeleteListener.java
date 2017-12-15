@@ -24,6 +24,7 @@ public class ChannelDeleteListener extends ListenerAdapter {
 
     @Override
     public void onTextChannelDelete(TextChannelDeleteEvent e) {
+        //TODO Rework!
         /*if (e.getChannel().getName().equals("rubicon-portal")) {
             String stat = RubiconBot.getMySQL().getGuildValue(e.getGuild(), "portal");
             if (stat.contains("waiting")) {
