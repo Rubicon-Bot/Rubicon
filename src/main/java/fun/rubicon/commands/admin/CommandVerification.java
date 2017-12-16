@@ -109,14 +109,9 @@ public class CommandVerification extends CommandHandler {
 
     public static void handleReaction(MessageReactionAddEvent event) {
         Message message = event.getTextChannel().getMessageById(event.getMessageId()).complete();
-<<<<<<< HEAD
-        if (!message.getAuthor().equals(RubiconBot.getJDA().getSelfUser())) return;
-        if (RubiconBot.getMySQL().verificationEnabled(event.getGuild())) {
-=======
         if(!message.getAuthor().equals(RubiconBot.getJDA().getSelfUser())) return;
         if(!event.getUser().equals(users.get(message))) return;
         if(RubiconBot.getMySQL().verificationEnabled(event.getGuild())){
->>>>>>> master
             TextChannel channel = event.getGuild().getTextChannelById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "channelid"));
             if (event.getTextChannel().equals(channel)) {
                 event.getReaction().removeReaction().queue();
