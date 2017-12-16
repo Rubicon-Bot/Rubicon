@@ -254,7 +254,6 @@ public class CommandVote extends CommandHandler implements Serializable{
         }
 
         if(poll.votes.containsKey(message.getAuthor().getId())){
-            message.getTextChannel().sendMessage(EmbedUtil.error("Double vote", "Sorry, but you can only vote at once for a poll").build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
             return;
         }
 
@@ -273,14 +272,6 @@ public class CommandVote extends CommandHandler implements Serializable{
         Poll poll = polls.get(event.getGuild());
         if(!poll.isPollmsg(event.getMessageId())) return;
         if(poll.votes.containsKey(event.getUser().getId())){
-            channel.sendMessage(new EmbedBuilder().setColor(Colors.COLOR_ERROR).setDescription("Sorry, but you can only vote at once for a poll").build()).queue();
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    event.getReaction().removeReaction(event.getUser()).queue();
-                }
-            }, 1000);
-            return;
         }
         String emoji = event.getReaction().getReactionEmote().getName();
 
