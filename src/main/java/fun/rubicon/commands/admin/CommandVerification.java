@@ -8,7 +8,6 @@ import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
-import fun.rubicon.util.MySQL;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.*;
@@ -28,7 +27,8 @@ import java.util.concurrent.TimeUnit;
 public class CommandVerification extends CommandHandler {
 
     public static HashMap<Guild, VerificationSetup> setups = new HashMap<>();
-    public static HashMap<Guild, VerificationSettings> settingslist = new HashMap<>();
+    private static HashMap<Guild, VerificationSettings> settingslist = new HashMap<>();
+    public static HashMap<Message, User> users = new HashMap<>();
 
     public CommandVerification() {
         super(new String[]{"verification", "verify"}, CommandCategory.ADMIN, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.verification"), "Let you members accept rules before posting messages", "verify setup\nverify disable");
@@ -109,8 +109,14 @@ public class CommandVerification extends CommandHandler {
 
     public static void handleReaction(MessageReactionAddEvent event) {
         Message message = event.getTextChannel().getMessageById(event.getMessageId()).complete();
+<<<<<<< HEAD
         if (!message.getAuthor().equals(RubiconBot.getJDA().getSelfUser())) return;
         if (RubiconBot.getMySQL().verificationEnabled(event.getGuild())) {
+=======
+        if(!message.getAuthor().equals(RubiconBot.getJDA().getSelfUser())) return;
+        if(!event.getUser().equals(users.get(message))) return;
+        if(RubiconBot.getMySQL().verificationEnabled(event.getGuild())){
+>>>>>>> master
             TextChannel channel = event.getGuild().getTextChannelById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "channelid"));
             if (event.getTextChannel().equals(channel)) {
                 event.getReaction().removeReaction().queue();

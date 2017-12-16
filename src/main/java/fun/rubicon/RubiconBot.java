@@ -191,7 +191,7 @@ public class RubiconBot {
                 new CommandServerInfo(),
                 new CommandShorten(),
                 new CommandUserInfo(),
-                new CommandVote(true)
+                new CommandVote()
         );
 
         // also register commands from the old framework
