@@ -52,6 +52,8 @@ public class CommandHelp extends CommandHandler {
                     categoryList.add(commandHandler);
             }
             for (Map.Entry<CommandCategory, List<CommandHandler>> categoryEntry : commandCategoryListMap.entrySet()) {
+                if(categoryEntry.equals(CommandCategory.BOT_OWNER))
+                    continue;
                 StringBuilder builder = new StringBuilder();
                 categoryEntry.getValue().forEach(handler -> builder.append('`').append(parsedCommandInvocation.serverPrefix)
                         .append(handler.getUsage()).append("` — ").append(handler.getDescription()).append('\n'));

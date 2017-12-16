@@ -13,6 +13,8 @@ import fun.rubicon.command2.CommandManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
+import fun.rubicon.util.EmbedUtil;
+import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
 import static fun.rubicon.util.EmbedUtil.*;
@@ -36,6 +38,13 @@ public class CommandMoney extends CommandHandler {
             case "give":
                 if (parsedCommandInvocation.args.length == 3) {
                     try {
+                        if(parsedCommandInvocation.invocationMessage.getMentionedMembers().size() == 1) {
+                            if(parsedCommandInvocation.invocationMessage.getMentionedMembers().get(0).getUser().getId().equalsIgnoreCase(parsedCommandInvocation.invocationMessage.getAuthor().getId())) {
+                                return new MessageBuilder().setEmbed(EmbedUtil.error("Error!", "You cant donate money yourself!").build()).build();
+                            }
+                        } else {
+                            return createHelpMessage();
+                        }
                         user_spend_money = Integer.parseInt(parsedCommandInvocation.args[parsedCommandInvocation.args.length - 1]);
                         user1_has_money = Integer.parseInt(RubiconBot.getMySQL().getUserValue(parsedCommandInvocation.invocationMessage.getAuthor(), "money"));
                         user2_has_money = Integer.parseInt(RubiconBot.getMySQL().getUserValue(parsedCommandInvocation.invocationMessage.getMentionedUsers().get(0), "money"));

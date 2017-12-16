@@ -185,7 +185,7 @@ public class CommandMusic extends Command {
     }
 
     private boolean isDj(Member member) {
-        return member.getRoles().stream().anyMatch(r -> r.getName().equals("DJ"));
+        return true;
     }
 
     private boolean isCurrentDj(Member member) {

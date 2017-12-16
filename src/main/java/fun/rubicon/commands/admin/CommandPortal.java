@@ -310,8 +310,4 @@ public class CommandPortal extends CommandHandler {
             configuration.set(g.getId() + ".state", "enabled");
         }
     }
-
-    private void sendMessage(EmbedBuilder embed) {
-
-    }
 }

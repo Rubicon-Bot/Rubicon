@@ -147,7 +147,6 @@ public class CommandGiveaway extends Command implements Serializable {
                     Date now = new Date();
                     try {
                         Date date = format.parse(g.expiredate);
-                        System.out.println(g.expiredate);
                         if (date.after(now)) {
                             TextChannel channel = RubiconBot.getJDA().getGuildById(g.guildid).getTextChannelById(g.channelid);
 
