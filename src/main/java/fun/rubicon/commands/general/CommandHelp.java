@@ -56,7 +56,7 @@ public class CommandHelp extends CommandHandler {
                     continue;
                 StringBuilder builder = new StringBuilder();
                 categoryEntry.getValue().forEach(handler -> builder.append('`').append(parsedCommandInvocation.serverPrefix)
-                        .append(handler.getUsage()).append("` — ").append(handler.getDescription()).append('\n'));
+                        .append(handler.getInvocationAliases()[0]).append("` — ").append(handler.getDescription()).append('\n'));
                 embedBuilder.addField(categoryEntry.getKey().getDisplayname() + " — "
                         + categoryEntry.getValue().size(), builder.toString(), false);
             }
