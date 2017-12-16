@@ -36,6 +36,7 @@ public class CommandMoney extends CommandHandler {
             case "give":
                 if (parsedCommandInvocation.args.length == 3) {
                     try {
+                        if()
                         user_spend_money = Integer.parseInt(parsedCommandInvocation.args[parsedCommandInvocation.args.length - 1]);
                         user1_has_money = Integer.parseInt(RubiconBot.getMySQL().getUserValue(parsedCommandInvocation.invocationMessage.getAuthor(), "money"));
                         user2_has_money = Integer.parseInt(RubiconBot.getMySQL().getUserValue(parsedCommandInvocation.invocationMessage.getMentionedUsers().get(0), "money"));

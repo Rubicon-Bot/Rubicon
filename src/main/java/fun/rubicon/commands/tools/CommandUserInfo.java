@@ -45,7 +45,6 @@ public class CommandUserInfo extends CommandHandler{
         EmbedBuilder userinfo = new EmbedBuilder();
         userinfo.setColor(Colors.COLOR_PRIMARY);
         userinfo.setTitle("User information of " + user.getUser().getName());
-        userinfo.setFooter(Info.EMBED_FOOTER, Info.ICON_URL);
         userinfo.setThumbnail(info.getAvatarUrl());
         userinfo.addField("Nickname", user.getEffectiveName(), false);
         userinfo.addField("User id", info.getId(), false);
