@@ -40,7 +40,7 @@ public class CommandVote extends CommandHandler implements Serializable{
     private List<String> toAddEmojis = new ArrayList<>();
 
     public CommandVote() {
-        super(new String[] {"vote", "v", "poll"}, CommandCategory.TOOLS, new PermissionRequirements(PermissionLevel.EVERYONE, "command.vote"), "Super nice polls on your guild2", "USAGE: \n`vote create <Title>|<Option1>|<Option2>|...  `  -  create a vote\n`vote vote <index of Option>  `  -  vote for a possibility\n`vote stats  `  -  get stats of a current vote\n`vote close  `  -  close a current vote");
+        super(new String[] {"vote", "v", "poll"}, CommandCategory.TOOLS, new PermissionRequirements(PermissionLevel.EVERYONE, "command.vote"), "Polls", "USAGE: \n`vote create <Title>|<Option1>|<Option2>|...  `  -  create a vote\n`vote vote <index of Option>  `  -  vote for a possibility\n`vote stats  `  -  get stats of a current vote\n`vote close  `  -  close a current vote");
     }
 
 
@@ -88,7 +88,7 @@ public class CommandVote extends CommandHandler implements Serializable{
         private String creator;
         private String heading;
         private List<String> answers;
-        private ArrayList<String> pollmsg;
+        private HashMap<String, String> pollmsgs;
         private HashMap<String, Integer> votes;
         private String channel;
         private HashMap<String, Integer> reacts;
@@ -97,12 +97,12 @@ public class CommandVote extends CommandHandler implements Serializable{
             this.creator = creator.getUser().getId();
             this.heading = heading;
             this.answers = answers;
-            this.pollmsg = new ArrayList<>();
+            this.pollmsgs = new HashMap<>();
             this.votes = new HashMap<>();
             this.channel = channel.getId();
             this.reacts = new HashMap<>();
 
-            this.pollmsg.add(pollmsg.getId());
+            this.pollmsgs.put(pollmsg.getTextChannel().getId(), pollmsg.getId());
         }
 
         Member getCreator(Guild guild) {
@@ -117,8 +117,8 @@ public class CommandVote extends CommandHandler implements Serializable{
             return answers;
         }
 
-        public boolean isPollmsg(Message message) {
-            return pollmsg.contains(message);
+        public boolean isPollmsg(String messageid) {
+            return pollmsgs.containsValue(messageid);
         }
 
         public HashMap<String, Integer> getVotes() {
@@ -158,7 +158,7 @@ public class CommandVote extends CommandHandler implements Serializable{
         }
         Poll poll = polls.get(message.getGuild());
         Message pollmsg = channel.sendMessage(getParsedPoll(polls.get(message.getGuild()), message.getGuild()).build()).complete();
-        poll.pollmsg.add(pollmsg.getId());
+        poll.pollmsgs.put(pollmsg.getTextChannel().getId(), pollmsg.getId());
         poll.reacts.keySet().forEach(r -> {
             pollmsg.addReaction(r).queue();
         });
@@ -184,8 +184,8 @@ public class CommandVote extends CommandHandler implements Serializable{
         channel.sendMessage(getParsedPoll(poll, message.getGuild()).build()).queue();
         message.getTextChannel().sendMessage(EmbedUtil.success("Closes", ":white_check_mark: Poll was closed by" + message.getAuthor().getAsMention()).build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
         try {
-            poll.pollmsg.forEach(m -> {
-                Message pollmsg = message.getChannel().getMessageById(m).complete();
+            poll.pollmsgs.forEach((c, m) -> {
+                Message pollmsg = message.getGuild().getTextChannelById(c).getMessageById(m).complete();
                 pollmsg.editMessage(getParsedPoll(poll, message.getGuild()).build()).queue();
             });
         } catch (ErrorResponseException e){
@@ -261,8 +261,8 @@ public class CommandVote extends CommandHandler implements Serializable{
         poll.votes.put(message.getAuthor().getId(), vote);
         polls.replace(message.getGuild(), poll);
         message.getAuthor().openPrivateChannel().complete().sendMessage("You have successfully voted for option `" + args[1] + "`");
-        poll.pollmsg.forEach(m -> {
-            Message pollmsg = message.getChannel().getMessageById(m).complete();
+        poll.pollmsgs.forEach((c, m) -> {
+            Message pollmsg = message.getGuild().getTextChannelById(c).getMessageById(m).complete();
             pollmsg.editMessage(getParsedPoll(poll, message.getGuild()).build()).queue();
         });
     }
@@ -271,10 +271,7 @@ public class CommandVote extends CommandHandler implements Serializable{
         if(event.getUser().isBot() || !polls.containsKey(event.getGuild()))
             return;
         Poll poll = polls.get(event.getGuild());
-
-        if(poll.isPollmsg(event.getChannel().getMessageById(event.getMessageId()).complete()))
-            return;
-
+        if(!poll.isPollmsg(event.getMessageId())) return;
         if(poll.votes.containsKey(event.getUser().getId())){
             channel.sendMessage(new EmbedBuilder().setColor(Colors.COLOR_ERROR).setDescription("Sorry, but you can only vote at once for a poll").build()).queue();
             new Timer().schedule(new TimerTask() {
@@ -290,8 +287,8 @@ public class CommandVote extends CommandHandler implements Serializable{
         poll.votes.put(event.getUser().getId(), poll.reacts.get(emoji));
         polls.replace(event.getGuild(), poll);
 
-        poll.pollmsg.forEach(m -> {
-            Message pollmsg = event.getChannel().getMessageById(m).complete();
+        poll.pollmsgs.forEach((c, m) -> {
+            Message pollmsg = event.getGuild().getTextChannelById(c).getMessageById(m).complete();
             pollmsg.editMessage(getParsedPoll(poll, event.getGuild()).build()).queue();
         });
 
