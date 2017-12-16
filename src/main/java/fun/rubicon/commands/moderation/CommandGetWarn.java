@@ -1,9 +1,10 @@
-package fun.rubicon.commands.admin;
+package fun.rubicon.commands.moderation;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
@@ -25,7 +26,7 @@ public class CommandGetWarn extends CommandHandler {
 
 
     public CommandGetWarn() {
-        super(new String[]{"getwarn", "getwarning", "getwarns"}, CommandCategory.MODERATION, new PermissionRequirements(2, "command.getwarn"), "Get The Warning of a User", "<Mention>");
+        super(new String[]{"getwarn", "getwarning", "getwarns"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.getwarn"), "Get The Warning of a User", "<Mention>");
     }
 
     @Override

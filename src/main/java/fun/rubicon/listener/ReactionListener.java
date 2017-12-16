@@ -2,8 +2,7 @@ package fun.rubicon.listener;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.admin.CommandAutochannel;
-import fun.rubicon.commands.admin.CommandGiveaway;
-import fun.rubicon.commands.admin.CommandPortal;
+import fun.rubicon.commands.fun.CommandGiveaway;
 import fun.rubicon.commands.admin.CommandVerification;
 import fun.rubicon.commands.botowner.CommandBroadcast;
 import fun.rubicon.commands.tools.CommandVote;

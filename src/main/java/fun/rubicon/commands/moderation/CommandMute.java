@@ -1,8 +1,9 @@
-package fun.rubicon.commands.admin;
+package fun.rubicon.commands.moderation;
 
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
@@ -23,7 +24,7 @@ import net.dv8tion.jda.core.entities.TextChannel;
  */
 public class CommandMute extends CommandHandler{
     public CommandMute() {
-        super(new String[] {"mute"}, CommandCategory.ADMIN, new PermissionRequirements(2, "command.mute"), "Mutes an annoying member", "<@User>");
+        super(new String[] {"mute"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.mute"), "Mutes an annoying member", "<@User>");
     }
 
     @Override
