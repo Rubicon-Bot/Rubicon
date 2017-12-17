@@ -145,3 +145,4 @@ config.json
 src/main/java/META-INF/MANIFEST.MF
 .floo
 .flooignore
+data/portal-invites.json
