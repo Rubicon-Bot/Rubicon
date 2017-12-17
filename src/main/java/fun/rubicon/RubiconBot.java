@@ -38,7 +38,7 @@ import java.util.Date;
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token"};
+    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token", "twitterConsumerKey", "twitterConsumerSecret", "twitterAccessToken", "twitterAccessTokenSecret"};
     private static final String dataFolder = "data/";
     private static RubiconBot instance;
     private final MySQL mySQL;
@@ -151,7 +151,8 @@ public class RubiconBot {
                 new CommandStop(),
                 new CommandGuilds(),
                 new CommandCreateInvite(),
-                new CommandEval()
+                new CommandEval(),
+                new CommandTwitter()
         );
         // fun commands package
         commandManager.registerCommandHandlers(

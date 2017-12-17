@@ -760,7 +760,7 @@ public class CommandMusic extends Command {
 
     @Override
     public String getUsage() {
-        return "music";
+        return "";
     }
 
     @Override
