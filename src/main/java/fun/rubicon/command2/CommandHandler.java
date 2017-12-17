@@ -204,8 +204,12 @@ public abstract class CommandHandler {
      * @param aliasToUse   which alias should be used in this message?
      */
     public Message createHelpMessage(String serverPrefix, String aliasToUse) {
+        StringBuilder usage = new StringBuilder();
+        for(String part : getParameterUsage().split("\n")) {
+            usage.append(serverPrefix + aliasToUse + " " + part + "\n");
+        }
         return message(info('\'' + aliasToUse + "' command help", getDescription())
                 .addField("Aliases", String.join(", ", getInvocationAliases()), false)
-                .addField("Usage", serverPrefix + aliasToUse + ' ' + getParameterUsage(), false));
+                .addField("Usage", usage.toString(), false));
     }
 }

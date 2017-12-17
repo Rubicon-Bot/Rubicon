@@ -15,6 +15,7 @@ import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.Info;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
@@ -36,6 +37,32 @@ public class CommandHelp extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        //Generate JSON File for website
+        /*int i = 0;
+        StringBuilder out = new StringBuilder();
+        List<CommandHandler> allCommands = new ArrayList<>();
+        for (CommandHandler commandHandler : RubiconBot.getCommandManager().getCommandAssociations().values()) {
+            if (!allCommands.contains(commandHandler))
+                allCommands.add(commandHandler);
+        }
+        for (CommandHandler commandHandler : allCommands) {
+            if (commandHandler.getCategory().equals(CommandCategory.BOT_OWNER))
+                continue;
+            StringBuilder usage = new StringBuilder();
+            for (String part : getParameterUsage().split("\n")) {
+                if (getParameterUsage().split("\n").length > 1)
+                    usage.append(Info.BOT_DEFAULT_PREFIX + commandHandler.getInvocationAliases()[0] + " " + part + "\\n");
+                else
+                    usage.append(Info.BOT_DEFAULT_PREFIX + commandHandler.getInvocationAliases()[0] + " " + part);
+            }
+            out.append("{\n\"id\":\"" + i + "\",\"name\":\"" + commandHandler.getInvocationAliases()[0] + "\",\n" +
+                    "\t\"command\":\"" + Info.BOT_DEFAULT_PREFIX + commandHandler.getInvocationAliases()[0] + "\",\n" +
+                    "\t\"description\":\"" + commandHandler.getDescription() + "\",\n" +
+                    "\t\"category\":\"" + commandHandler.getCategory().getId() + "\",\n" +
+                    "\t\"usage\":\"" + usage + "\"\n},\n");
+            i++;
+        }
+        Logger.debug(out.toString());*/
         if (parsedCommandInvocation.args.length == 0) {
             // show complete command manual
             EmbedBuilder embedBuilder = new EmbedBuilder()
@@ -52,7 +79,7 @@ public class CommandHelp extends CommandHandler {
                     categoryList.add(commandHandler);
             }
             for (Map.Entry<CommandCategory, List<CommandHandler>> categoryEntry : commandCategoryListMap.entrySet()) {
-                if(categoryEntry.equals(CommandCategory.BOT_OWNER))
+                if (categoryEntry.getKey().equals(CommandCategory.BOT_OWNER))
                     continue;
                 StringBuilder builder = new StringBuilder();
                 categoryEntry.getValue().forEach(handler -> builder.append('`').append(parsedCommandInvocation.serverPrefix)

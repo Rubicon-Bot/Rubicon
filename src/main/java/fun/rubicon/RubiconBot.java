@@ -99,7 +99,7 @@ public class RubiconBot {
 
         JDABuilder builder = new JDABuilder(AccountType.BOT);
         builder.setToken(instance.configuration.getString("token"));
-        builder.setGame(Game.of(Info.BOT_NAME + " " + Info.BOT_VERSION));
+        builder.setGame(Game.playing(Info.BOT_NAME + " " + Info.BOT_VERSION));
 
         // Register command manager (chat listener)
         builder.addEventListener(instance.commandManager);
@@ -140,7 +140,8 @@ public class RubiconBot {
                 new CommandUnWarn(),
                 new CommandWarn(),
                 new CommandPortal(),
-                new CommandVerification()
+                new CommandVerification(),
+                new CommandAutochannel()
         );
         // botowner commands package
         commandManager.registerCommandHandlers(
