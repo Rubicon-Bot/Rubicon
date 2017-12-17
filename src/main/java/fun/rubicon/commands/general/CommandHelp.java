@@ -10,6 +10,7 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
@@ -22,14 +23,15 @@ import java.util.*;
 
 /**
  * Handles the 'help' command which prints command description, aliases and usage.
+ *
  * @author Yannick Seeger, tr808axm
  */
 public class CommandHelp extends CommandHandler {
 
     public CommandHelp() {
         super(new String[]{"help", "usage", "?", "command", "manual", "man"}, CommandCategory.GENERAL,
-                new PermissionRequirements(0, "command.help"),
-                "Shows the command manual.", "help [command]");
+                new PermissionRequirements(PermissionLevel.EVERYONE, "command.help"),
+                "Shows the command manual.", "[command]");
     }
 
     @Override
@@ -50,9 +52,11 @@ public class CommandHelp extends CommandHandler {
                     categoryList.add(commandHandler);
             }
             for (Map.Entry<CommandCategory, List<CommandHandler>> categoryEntry : commandCategoryListMap.entrySet()) {
+                if(categoryEntry.equals(CommandCategory.BOT_OWNER))
+                    continue;
                 StringBuilder builder = new StringBuilder();
                 categoryEntry.getValue().forEach(handler -> builder.append('`').append(parsedCommandInvocation.serverPrefix)
-                        .append(handler.getUsage()).append("` — ").append(handler.getDescription()).append('\n'));
+                        .append(handler.getInvocationAliases()[0]).append("` — ").append(handler.getDescription()).append('\n'));
                 embedBuilder.addField(categoryEntry.getKey().getDisplayname() + " — "
                         + categoryEntry.getValue().size(), builder.toString(), false);
             }

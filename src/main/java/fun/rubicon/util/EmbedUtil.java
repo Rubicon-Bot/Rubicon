@@ -22,7 +22,7 @@ public class EmbedUtil {
     /**
      * The default deletion interval.
      */
-    private static final long defaultDeleteInterval = 20;
+    private static final long defaultDeleteInterval = 60;
     /**
      * The default deletion interval TimeUnit.
      */

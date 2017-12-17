@@ -10,6 +10,7 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
@@ -25,9 +26,10 @@ import net.dv8tion.jda.core.entities.User;
  */
 public class CommandInfo extends CommandHandler {
 
+    private String[] arrSupporter = {"Greg"};
 
     public CommandInfo(){
-        super(new String[] {"Info", "inf"}, CommandCategory.GENERAL, new PermissionRequirements(0, "command.info"), "Shows some information about the bot!", "info");
+        super(new String[] {"Info", "inf"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.info"), "Shows some information about the bot!", "");
     }
 
     @Override
@@ -56,6 +58,7 @@ public class CommandInfo extends CommandHandler {
         builder.addField("Github Link", "[Github Link](" + Info.BOT_GITHUB + ")", true);
         builder.addField("Patreon Link", "[Rubicon Dev Team](https://www.patreon.com/rubiconbot)", true);
         builder.addField("Authors", authors.toString(), true);
+        builder.addField("Donator & Supporter", String.join("\n", arrSupporter), false);
         //Send Message and delete it after 2 Minutes
         return new MessageBuilder().setEmbed(builder.build()).build();
     }

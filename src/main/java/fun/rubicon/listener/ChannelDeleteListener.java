@@ -24,7 +24,8 @@ public class ChannelDeleteListener extends ListenerAdapter {
 
     @Override
     public void onTextChannelDelete(TextChannelDeleteEvent e) {
-        if (e.getChannel().getName().equals("rubicon-portal")) {
+        //TODO Rework!
+        /*if (e.getChannel().getName().equals("rubicon-portal")) {
             String stat = RubiconBot.getMySQL().getGuildValue(e.getGuild(), "portal");
             if (stat.contains("waiting")) {
                 RubiconBot.getMySQL().updateGuildValue(e.getGuild(), "portal", "closed");
@@ -59,7 +60,7 @@ public class ChannelDeleteListener extends ListenerAdapter {
 
                 }
             }
-        }
+        }*/
     }
 
     private void sendPortalNotification(Guild guild, String message) {

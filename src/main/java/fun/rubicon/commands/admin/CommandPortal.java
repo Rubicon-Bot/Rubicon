@@ -13,9 +13,7 @@ import fun.rubicon.command2.CommandManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
-import fun.rubicon.util.Colors;
-import fun.rubicon.util.EmbedUtil;
-import fun.rubicon.util.Logger;
+import fun.rubicon.util.*;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.Permission;
@@ -23,15 +21,19 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class CommandPortal extends CommandHandler {
 
     private String portalChannelName = "rubicon-portal";
     private String closedChannelName = "closed-rubicon-portal";
+    private File inviteFile = new File(RubiconBot.getDataFolder() + "portal-invites.json");
 
     public CommandPortal() {
-        super(new String[]{"portal", "mirror", "telephone"}, CommandCategory.ADMIN, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.portal"), "Create a portal and talk with users of other guilds.", "portal create\nportal close");
+        super(new String[]{"portal", "mirror", "telephone"}, CommandCategory.ADMIN, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.portal"), "Create a portal and talk with users of other guilds.", "create\nportal close\nportal invite <serverid>\naccept <serverid>");
     }
 
     @Override
@@ -47,14 +49,24 @@ public class CommandPortal extends CommandHandler {
                 if (parsedCommandInvocation.args.length == 1) {
                     createPortalWithRandomGuild(parsedCommandInvocation);
                     return null;
-                } else if (parsedCommandInvocation.args.length == 2) {
-                    //TODO Direct Portal
-                } else {
-                    return createHelpMessage(parsedCommandInvocation);
                 }
                 return null;
             case "close":
                 closePortal(parsedCommandInvocation);
+                return null;
+            case "invite":
+                if (parsedCommandInvocation.args.length == 2) {
+                    inviteGuild(parsedCommandInvocation);
+                } else {
+                    return createHelpMessage();
+                }
+                return null;
+            case "accept":
+                if (parsedCommandInvocation.args.length == 2) {
+                    acceptInvite(parsedCommandInvocation);
+                } else {
+                    createHelpMessage();
+                }
                 return null;
             default:
                 return createHelpMessage(parsedCommandInvocation);
@@ -73,7 +85,7 @@ public class CommandPortal extends CommandHandler {
         //Check if portal exists
         String oldGuildPortalEntry = RubiconBot.getMySQL().getGuildValue(messageGuild, "portal");
         if (oldGuildPortalEntry.equals("open") || oldGuildPortalEntry.contains("waiting") || RubiconBot.getMySQL().ifPortalExist(messageGuild)) {
-            messageChannel.sendMessage(EmbedUtil.error("Portal error!", "Portal is already open").build()).queue();
+            messageChannel.sendMessage(EmbedUtil.error("Portal error!", "Portal is already open.").build()).queue();
             return;
         }
 
@@ -87,6 +99,94 @@ public class CommandPortal extends CommandHandler {
         }
     }
 
+    private void inviteGuild(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
+        Guild messageGuild = parsedCommandInvocation.invocationMessage.getGuild();
+        TextChannel messageChannel = parsedCommandInvocation.invocationMessage.getTextChannel();
+        if (!StringUtil.isNumeric(parsedCommandInvocation.args[1])) {
+            parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(EmbedUtil.error("Portal error", "Invalid guild id.").build()).queue(msg -> msg.delete().queueAfter(30, TimeUnit.SECONDS));
+            return;
+        }
+
+        if (parsedCommandInvocation.args[1].equalsIgnoreCase(messageGuild.getId())) {
+            messageChannel.sendMessage(EmbedUtil.error("Portal error!", "Portal you can't invite yourself.").build()).queue();
+            return;
+        }
+
+        //Check if portal exists
+        String oldGuildPortalEntry = RubiconBot.getMySQL().getGuildValue(messageGuild, "portal");
+        if (oldGuildPortalEntry.equals("open") || oldGuildPortalEntry.contains("waiting")) {
+            messageChannel.sendMessage(EmbedUtil.error("Portal error!", "Portal is already open.").build()).queue();
+            return;
+        }
+        String guildId = parsedCommandInvocation.args[1];
+        Guild guildTwo = null;
+        try {
+            guildTwo = parsedCommandInvocation.invocationMessage.getJDA().getGuildById(guildId);
+        } catch (NullPointerException ignored) {
+            // Guild doesn't exist
+        }
+
+        if (guildTwo == null) {
+            parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(EmbedUtil.error("Portal error", "Invalid guild id.").build()).queue(msg -> msg.delete().queueAfter(30, TimeUnit.SECONDS));
+            return;
+        }
+
+        if (RubiconBot.getMySQL().getGuildValue(guildTwo, "portal").equals("waiting") || RubiconBot.getMySQL().getGuildValue(guildTwo, "portal").equals("closed")) {
+            EmbedBuilder builder = EmbedUtil.embed("Portal Invite", parsedCommandInvocation.invocationMessage.getGuild().getName() + "(" + parsedCommandInvocation.invocationMessage.getGuild().getId() + ") has sent you an portal invite.\n`Accept with rc!portal accept <serverid>`");
+            builder.setFooter("Execute this command on your server", null);
+            builder.setColor(Colors.COLOR_PRIMARY);
+            guildTwo.getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(builder.build()).queue());
+
+            if (!inviteFile.exists()) {
+                try {
+                    inviteFile.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            Configuration configuration = new Configuration(inviteFile);
+            createInviteEntryIfNotExists(configuration, guildTwo);
+            configuration.set(guildTwo.getId() + "." + messageGuild.getId(), 1);
+            parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(EmbedUtil.success("Portal Invite sent", "Sucessfully sent an portal invite to " + guildTwo.getName()).build()).queue();
+        }
+    }
+
+    private void acceptInvite(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
+        Guild guildOne = parsedCommandInvocation.invocationMessage.getGuild();
+        if (guildOne == null) {
+            parsedCommandInvocation.invocationMessage.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(EmbedUtil.error("Portal error!", "You only can execute this command on your server.").build()).queue());
+            return;
+        }
+        Guild guildTwo;
+
+        if (!StringUtil.isNumeric(parsedCommandInvocation.args[1])) {
+            parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(EmbedUtil.error("Portal error", "Invalid guild id!").build()).queue(msg -> msg.delete().queueAfter(30, TimeUnit.SECONDS));
+            return;
+        }
+
+        try {
+            guildTwo = parsedCommandInvocation.invocationMessage.getJDA().getGuildById(parsedCommandInvocation.args[1]);
+        } catch (NullPointerException ex) {
+            parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(EmbedUtil.error("Portal error", "Invalid guild id!").build()).queue(msg -> msg.delete().queueAfter(30, TimeUnit.SECONDS));
+            return;
+        }
+
+        if (guildTwo == null) {
+            parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(EmbedUtil.error("Portal error", "Invalid guild id!").build()).queue(msg -> msg.delete().queueAfter(30, TimeUnit.SECONDS));
+            return;
+        }
+
+        Configuration configuration = new Configuration(inviteFile);
+        createInviteEntryIfNotExists(configuration, guildTwo);
+
+        if (configuration.has(guildOne.getId() + "." + guildTwo.getId())) {
+            connectGuilds(guildOne, guildTwo, parsedCommandInvocation.invocationMessage.getTextChannel());
+            configuration.set(guildOne.getId() + "." + guildTwo.getId(), null);
+        } else {
+            parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(EmbedUtil.error("Portal error!", "You don't have an invite from this guild!").build()).queue();
+        }
+    }
+
     /**
      * Create portals at two guilds
      *
@@ -97,20 +197,23 @@ public class CommandPortal extends CommandHandler {
         //Channel creation and waiting check
         TextChannel channelOne = (guildOne.getTextChannelsByName(portalChannelName, true).size() == 0) ? null : guildOne.getTextChannelsByName(portalChannelName, true).get(0);
         TextChannel channelTwo = (guildTwo.getTextChannelsByName(portalChannelName, true).size() == 0) ? null : guildTwo.getTextChannelsByName(portalChannelName, true).get(0);
-        if (channelOne == null && guildOne.getMemberById(RubiconBot.getJDA().getSelfUser().getId()).getPermissions().contains(Permission.MANAGE_CHANNEL)) {
-            channelOne = (TextChannel) guildOne.getController().createTextChannel(portalChannelName).complete();
-        } else {
-            guildOne.getMemberById(RubiconBot.getJDA().getSelfUser().getId()).getPermissions().forEach(permission -> Logger.debug(permission.getName()));
-            messageChannel.sendMessage(EmbedUtil.error("Portal Error!", "I need the `MANAGE_CHANNEL` permissions or you create yourself a channel called` rubicon-portal`.").setFooter(guildOne.getName(), null).build()).queue();
-            return;
+        if (channelOne == null) {
+            if (guildOne.getMemberById(RubiconBot.getJDA().getSelfUser().getId()).getPermissions().contains(Permission.MANAGE_CHANNEL)) {
+                channelOne = (TextChannel) guildOne.getController().createTextChannel(portalChannelName).complete();
+            } else {
+                messageChannel.sendMessage(EmbedUtil.error("Portal Error!", "I need the `MANAGE_CHANNEL` permissions or you create yourself a channel called `rubicon-portal`.").setFooter(guildOne.getName(), null).build()).queue();
+                return;
+            }
         }
-        if (channelTwo == null && guildTwo.getMemberById(RubiconBot.getJDA().getSelfUser().getId()).getPermissions().contains(Permission.MANAGE_CHANNEL)) {
-            channelTwo = (TextChannel) guildTwo.getController().createTextChannel(portalChannelName).complete();
-        } else {
-            guildTwo.getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(EmbedUtil.error("Portal Error!", "I need the `MANAGE_CHANNEL` permissions or you create yourself a channel called` rubicon-portal`.").setFooter(guildTwo.getName(), null).build()).queue());
-            RubiconBot.getMySQL().updateGuildValue(guildTwo, "portal", "closed");
-            setGuildWaiting(guildOne, messageChannel);
-            return;
+        if (channelTwo == null) {
+            if (guildTwo.getMemberById(RubiconBot.getJDA().getSelfUser().getId()).getPermissions().contains(Permission.MANAGE_CHANNEL)) {
+                channelTwo = (TextChannel) guildTwo.getController().createTextChannel(portalChannelName).complete();
+            } else {
+                guildTwo.getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(EmbedUtil.error("Portal Error!", "I need the `MANAGE_CHANNEL` permissions or you create yourself a channel called `rubicon-portal`.").setFooter(guildTwo.getName(), null).build()).queue());
+                RubiconBot.getMySQL().updateGuildValue(guildTwo, "portal", "closed");
+                setGuildWaiting(guildOne, messageChannel);
+                return;
+            }
         }
 
         //Update Database Values
@@ -118,6 +221,9 @@ public class CommandPortal extends CommandHandler {
         RubiconBot.getMySQL().createPortal(guildOne, guildTwo, channelOne);
         RubiconBot.getMySQL().updateGuildValue(guildTwo, "portal", "open");
         RubiconBot.getMySQL().createPortal(guildTwo, guildOne, channelTwo);
+
+        channelOne.getManager().setTopic("Connected to: " + guildTwo.getName()).queue();
+        channelTwo.getManager().setTopic("Connected to: " + guildOne.getName()).queue();
 
         //Send Connected Message
         sendConnectedMessage(channelOne, channelTwo);
@@ -128,12 +234,14 @@ public class CommandPortal extends CommandHandler {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setAuthor("Connection established with " + channelTwo.getGuild().getName(), null, channelTwo.getGuild().getIconUrl());
         embedBuilder.setDescription(":white_check_mark: Successfully created and connected portals.");
-        channelOne.sendMessage(embedBuilder.build()).queue();
+        Message message1 = channelOne.sendMessage(embedBuilder.build()).complete();
+        channelOne.pinMessageById(message1.getId()).queue();
 
         //GuildTwo Message
         embedBuilder.setAuthor("Connection established with " + channelOne.getGuild().getName(), null, channelOne.getGuild().getIconUrl());
         embedBuilder.setDescription(":white_check_mark: Successfully created and connected portals.");
-        channelTwo.sendMessage(embedBuilder.build()).queue();
+        Message message2 = channelTwo.sendMessage(embedBuilder.build()).complete();
+        channelTwo.pinMessageById(message2.getId()).queue();
     }
 
     private void setGuildWaiting(Guild g, TextChannel messageChannel) {
@@ -186,11 +294,20 @@ public class CommandPortal extends CommandHandler {
 
         EmbedBuilder portalClosedMessage = new EmbedBuilder();
         portalClosedMessage.setAuthor("Portal closed!", null, jda.getSelfUser().getEffectiveAvatarUrl());
-        portalClosedMessage.setDescription("Portal was closed by the owner. Create a new one with `" + parsedCommandInvocation.serverPrefix + "portal create`");
+        portalClosedMessage.setDescription("Portal was closed. Create a new one with `" + parsedCommandInvocation.serverPrefix + "portal create`");
         portalClosedMessage.setColor(Colors.COLOR_ERROR);
 
         channelOne.sendMessage(portalClosedMessage.build()).queue();
-        portalClosedMessage.setDescription("Portal was closed by the other server owner. Create a new one with `" + parsedCommandInvocation.serverPrefix + "portal create`");
+        portalClosedMessage.setDescription("Portal was closed. Create a new one with `" + parsedCommandInvocation.serverPrefix + "portal create`");
         channelTwo.sendMessage(portalClosedMessage.build()).queue();
+
+        channelOne.getManager().setTopic("Portal closed").queue();
+        channelTwo.getManager().setTopic("Portal closed").queue();
+    }
+
+    private void createInviteEntryIfNotExists(Configuration configuration, Guild g) {
+        if (!configuration.has(g.getId() + ".state")) {
+            configuration.set(g.getId() + ".state", "enabled");
+        }
     }
 }

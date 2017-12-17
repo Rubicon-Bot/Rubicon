@@ -15,7 +15,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class CommandBug extends CommandHandler {
 
     public CommandBug() {
-        super(new String[] {"bug"}, CommandCategory.GENERAL, new PermissionRequirements(0, "command.bug"), "Sends a bug to the bot developers", "bug [message] (min. 3 args)");
+        super(new String[] {"bug"}, CommandCategory.GENERAL, new PermissionRequirements(0, "command.bug"), "Sends a bug to the bot developers", "[message] (min. 3 args)");
     }
 
     @Override

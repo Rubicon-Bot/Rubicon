@@ -57,7 +57,7 @@ public class CommandManager extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent event) {
         super.onMessageReceived(event);
         ParsedCommandInvocation commandInvocation = parse(event.getMessage());
-        if (commandInvocation != null) // if it is a command invocation
+        if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake()) // if it is a command invocation
             call(commandInvocation);
     }
 
@@ -66,7 +66,7 @@ public class CommandManager extends ListenerAdapter {
      *
      * @param parsedCommandInvocation the parsed message.
      */
-    public void call(ParsedCommandInvocation parsedCommandInvocation) {
+    private void call(ParsedCommandInvocation parsedCommandInvocation) {
         CommandHandler commandHandler = getCommandHandler(parsedCommandInvocation.invocationCommand);
         Message response;
         if (commandHandler == null) {
@@ -74,7 +74,7 @@ public class CommandManager extends ListenerAdapter {
                     + "' could not be resolved to a command.\nType '" + parsedCommandInvocation.serverPrefix
                     + "help' to get a list of all commands.")));*/
             return;
-        }else
+        } else
             response = commandHandler.call(parsedCommandInvocation);
 
         // respond
@@ -82,8 +82,10 @@ public class CommandManager extends ListenerAdapter {
             EmbedUtil.sendAndDeleteOnGuilds(parsedCommandInvocation.invocationMessage.getChannel(), response);
 
         // delete invocation message
-        parsedCommandInvocation.invocationMessage.delete().queue(null, msg -> {
-        }); // suppress failure
+        if (parsedCommandInvocation.invocationMessage.getGuild() != null) {
+            parsedCommandInvocation.invocationMessage.delete().queue(null, msg -> {
+            }); // suppress failure
+        }
     }
 
     /**
@@ -96,21 +98,21 @@ public class CommandManager extends ListenerAdapter {
     private static ParsedCommandInvocation parse(Message message) {
         String prefix = null;
         // react to mention: '@botmention<majorcommand> [arguments]'
-        if (message.getRawContent().startsWith(RubiconBot.getJDA().getSelfUser().getAsMention())) {
+        if (message.getContentRaw().startsWith(RubiconBot.getJDA().getSelfUser().getAsMention())) {
             prefix = RubiconBot.getJDA().getSelfUser().getAsMention();
             // react to default prefix: 'rc!<majorcommand> [arguments]'
-        } else if (message.getRawContent().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()))
+        } else if (message.getContentRaw().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()))
             prefix = Info.BOT_DEFAULT_PREFIX;
             // react to custom server prefix: '<custom-server-prefix><majorcommand> [arguments...]'
         else if (message.getChannelType() == ChannelType.TEXT) { // ensure bot is on a server
             String serverPrefix = RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix");
-            if (message.getRawContent().toLowerCase().startsWith(serverPrefix.toLowerCase()))
+            if (message.getContentRaw().toLowerCase().startsWith(serverPrefix.toLowerCase()))
                 prefix = serverPrefix;
         }
 
         if (prefix != null) {
             // cut off command prefix
-            String beheaded = message.getRawContent().substring(prefix.length(), message.getRawContent().length()).trim();
+            String beheaded = message.getContentRaw().substring(prefix.length(), message.getContentRaw().length()).trim();
             // split arguments
             String[] allArgs = beheaded.split("\\s+");
             // create an array of the actual command arguments (exclude invocation arg)

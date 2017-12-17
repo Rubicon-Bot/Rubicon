@@ -18,7 +18,7 @@ import java.awt.*;
 public class CommandSearch extends CommandHandler {
 
     public CommandSearch() {
-        super(new String[] {"search", "find"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.find"), "Searches for users, roles and channels with a specified name.", "search <query>");
+        super(new String[] {"search", "find"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.find"), "Searches for users, roles and channels with a specified name.", "<query>");
     }
 
     @Override
@@ -70,8 +70,8 @@ public class CommandSearch extends CommandHandler {
             if(i.getName().toLowerCase().contains(query.toString().toLowerCase()))
                 roles.append(i.getName() + "(`" + i.getId() + "`)").append("\n");
         });
+        mymsg.delete().queue();
         try {
-            mymsg.delete().queue();
             EmbedBuilder results = new EmbedBuilder()
                     .setColor(Color.green)
                     .addField("**Textchannels**", textchannels.toString(), false)
@@ -80,8 +80,7 @@ public class CommandSearch extends CommandHandler {
                     .addField("**Roles**", roles.toString(), false);
             return new MessageBuilder().setEmbed(results.build()).build();
         } catch (IllegalArgumentException ex){
-            mymsg.delete().queue();
-            return new MessageBuilder().setEmbed(new EmbedBuilder().setDescription(":warning: TO MANY RESULTS HEEEEEELP!").build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error("Error!", "Too many results!").build()).build();
         }
 
     }

@@ -41,32 +41,32 @@ public class GameAnimator {
             t = new Thread(() -> {
                 long last = 0;
                 while (running) {
-                    if (System.currentTimeMillis() >= last + 30000) {
-                        String playStat = RubiconBot.getConfiguration().getString("playingStatus");
-                        if (!playStat.equals("0")) {
-                            RubiconBot.getJDA().getPresence().setGame(Game.playing(playStat));
-                            last = System.currentTimeMillis();
-                        } else {
-                            String[] gameAnimations = {
-                                    "Running on " + RubiconBot.getJDA().getGuilds().size() + " servers!",
-                                    "Helping " + RubiconBot.getJDA().getUsers().stream().filter(u -> !u.isBot()).collect(Collectors.toList()).size() + " users!",
-                                    "JDA squad!",
-                                    Info.BOT_NAME + " " + Info.BOT_VERSION,
-                                    "Generating new features...",
-                                    "Blowing stuff up!",
-                            };
-                            RubiconBot.getJDA().getPresence().setGame(Game.playing(gameAnimations[currentGame]));
+                    if (System.currentTimeMillis() >= last + 60000) {
+                        if (RubiconBot.getConfiguration().has("playingStatus")) {
+                            String playStat = RubiconBot.getConfiguration().getString("playingStatus");
+                            if (!playStat.equals("0") && !playStat.equals("")) {
+                                RubiconBot.getJDA().getPresence().setGame(Game.playing(playStat));
+                                last = System.currentTimeMillis();
+                            } else {
+                                String[] gameAnimations = {
+                                        "Running on " + RubiconBot.getJDA().getGuilds().size() + " servers!",
+                                        "Helping " + RubiconBot.getJDA().getUsers().stream().filter(u -> !u.isBot()).collect(Collectors.toList()).size() + " users!",
+                                        Info.BOT_NAME + " " + Info.BOT_VERSION,
+                                        "rc!help"
+                                };
+                                RubiconBot.getJDA().getPresence().setGame(Game.playing(gameAnimations[currentGame]));
 
-                            if (currentGame == gameAnimations.length - 1)
-                                currentGame = 0;
-                            else
-                                currentGame += 1;
-                            last = System.currentTimeMillis();
+                                if (currentGame == gameAnimations.length - 1)
+                                    currentGame = 0;
+                                else
+                                    currentGame += 1;
+                                last = System.currentTimeMillis();
+                            }
                         }
                     }
                 }
             });
-            t.setName("GameAnimator Thread");
+            t.setName("GameAnimator");
             running = true;
             t.start();
         }

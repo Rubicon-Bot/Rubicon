@@ -1,8 +1,9 @@
-package fun.rubicon.commands.admin;
+package fun.rubicon.commands.moderation;
 
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
@@ -21,7 +22,7 @@ import net.dv8tion.jda.core.entities.PrivateChannel;
  */
 public class CommandKick extends CommandHandler{
     public CommandKick() {
-        super(new String[] {"kick"}, CommandCategory.ADMIN, new PermissionRequirements(2, "command.kick"), "Kicks an member out of your server", "kick <@User>");
+        super(new String[] {"kick"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.kick"), "Kicks an member out of your server", "<@User>");
     }
 
     @Override

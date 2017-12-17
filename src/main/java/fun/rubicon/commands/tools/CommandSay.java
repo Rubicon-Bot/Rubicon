@@ -9,6 +9,7 @@ package fun.rubicon.commands.tools;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
@@ -20,7 +21,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class CommandSay extends CommandHandler {
 
     public CommandSay() {
-        super(new String[]{"say", "s"}, CommandCategory.TOOLS, new PermissionRequirements(1, "command.say"), "Send a Message as the Bot!", "say <Channel> <Message>");
+        super(new String[]{"say", "s"}, CommandCategory.TOOLS, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.say"), "Send a Message as the Bot!", "<Channel> <Message>");
     }
 
     @Override

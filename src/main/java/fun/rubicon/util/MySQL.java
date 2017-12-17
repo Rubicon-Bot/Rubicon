@@ -6,6 +6,7 @@
 
 package fun.rubicon.util;
 
+import fun.rubicon.commands.admin.CommandVerification;
 import fun.rubicon.core.DiscordCore;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
@@ -569,5 +570,57 @@ public class MySQL {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void deleteGuildVerification(Guild g){
+        try{
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM `verifications` WHERE `guildid` =?");
+            ps.setString(1, g.getId());
+            ps.execute();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public String getVerificationValue(Guild g, String key){
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM `verifications` WHERE `guildid` = ?");
+            ps.setString(1, g.getId());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next())
+                return rs.getString(key);
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void createVerification(CommandVerification.VerificationSettings settings){
+        try {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO `verifications` (`guildid`, `channelid`, `roleid`, `text`, `verifiedtext`, `kicktime`, `kicktext`) VALUES ( ?, ?, ?,?,?,?,?);");
+            ps.setString(1, settings.channel.getGuild().getId());
+            ps.setString(2, settings.channel.getId());
+            ps.setString(3, settings.role.getId());
+            ps.setString(4, settings.verifytext);
+            ps.setString(5, settings.verifiedtext);
+            ps.setString(6, String.valueOf(settings.kicktime));
+            ps.setString(7, settings.kicktext);
+            ps.execute();
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public boolean verificationEnabled(Guild g){
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM `verifications` WHERE `guildid` = ?");
+            ps.setString(1, g.getId());
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return false;
     }
 }

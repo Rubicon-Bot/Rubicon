@@ -1,10 +1,11 @@
-package fun.rubicon.commands.admin;
+package fun.rubicon.commands.moderation;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
@@ -22,7 +23,7 @@ import net.dv8tion.jda.core.entities.*;
  */
 public class CommandWarn extends CommandHandler {
     public CommandWarn() {
-        super(new String[]{"warn"}, CommandCategory.MODERATION, new PermissionRequirements(2, "command.warn"), "Warn a User", "warn <User Mention> <reason> ");
+        super(new String[]{"warn"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.warn"), "Warn a User", "<User Mention> <reason> ");
     }
 
     public static void WarnUser(User target, Guild guild, User author, String reason) {

@@ -11,6 +11,7 @@ import fun.rubicon.command.CommandCategory;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
+import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -31,6 +32,7 @@ public abstract class CommandHandler {
     private final PermissionRequirements permissionRequirements;
     private final String description;
     private final String parameterUsage;
+    private boolean disabled = false;
 
     /**
      * Constructs a new CommandHandler.
@@ -57,12 +59,22 @@ public abstract class CommandHandler {
      * @param parameterUsage         the usage message.
      */
     protected CommandHandler(String[] invocationAliases, CommandCategory category,
-                             PermissionRequirements permissionRequirements, String description, String parameterUsage) {
+                                  PermissionRequirements permissionRequirements, String description, String parameterUsage) {
         this.invocationAliases = invocationAliases;
         this.category = category;
         this.permissionRequirements = permissionRequirements;
         this.description = description;
         this.parameterUsage = parameterUsage;
+    }
+
+    protected CommandHandler(String[] invocationAliases, CommandCategory category,
+                             PermissionRequirements permissionRequirements, String description, String parameterUsage, boolean disabled) {
+        this.invocationAliases = invocationAliases;
+        this.category = category;
+        this.permissionRequirements = permissionRequirements;
+        this.description = description;
+        this.parameterUsage = parameterUsage;
+        this.disabled = disabled;
     }
 
     /**
@@ -72,6 +84,9 @@ public abstract class CommandHandler {
      * @return a response that will be sent and deleted by the caller.
      */
     public Message call(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
+        if(disabled) {
+            return new MessageBuilder().setEmbed(EmbedUtil.info("Vote Command disabled", "Vote Command is currently disabled due to an error.\nWe are working on that problem.").setFooter("RubiconBot Dev Team", null).build()).build();
+        }
         UserPermissions userPermissions = new UserPermissions(parsedCommandInvocation.invocationMessage.getAuthor(),
                 parsedCommandInvocation.invocationMessage.getGuild());
         // check permission

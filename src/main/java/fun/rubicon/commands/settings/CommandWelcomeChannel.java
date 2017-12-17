@@ -15,7 +15,7 @@ public class CommandWelcomeChannel extends CommandHandler{
     public CommandWelcomeChannel(){
         super(new String[]{"channel", "welcomechannel", "welchannel", "joinchannel"}, CommandCategory.SETTINGS,
                 new PermissionRequirements(3, "command.welcome"),
-                "Set the Server Welcome Channel!", "channel <#channel>");
+                "Set the Server Welcome Channel!", "<#channel>");
     }
 
     @Override

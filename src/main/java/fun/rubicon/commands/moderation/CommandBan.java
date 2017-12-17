@@ -1,8 +1,9 @@
-package fun.rubicon.commands.admin;
+package fun.rubicon.commands.moderation;
 
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
@@ -21,7 +22,7 @@ import net.dv8tion.jda.core.entities.PrivateChannel;
  */
 public class CommandBan extends CommandHandler {
     public CommandBan() {
-        super(new String[] {"ban"}, CommandCategory.ADMIN, new PermissionRequirements(2, "command.ban"), "Bans a user from your server", "ban <@User>");
+        super(new String[] {"ban"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.ban"), "Bans a user from your server", "<@User>");
     }
 
     @Override

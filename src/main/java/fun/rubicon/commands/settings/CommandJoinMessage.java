@@ -14,7 +14,7 @@ public class CommandJoinMessage extends CommandHandler{
     public CommandJoinMessage(){
         super(new String[]{"joinmsg", "joinmessage", "joinnachricht"}, CommandCategory.SETTINGS,
                 new PermissionRequirements(2, "command.joinmsg"),
-                "Set the server's message channel (Join & Leave)!", "joinmsg <Message(%user% for username, %guild% for guildname)>");
+                "Set the server's message channel (Join & Leave)!", "<Message(%user% for username, %guild% for guildname)>");
     }
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {

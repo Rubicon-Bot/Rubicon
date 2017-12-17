@@ -22,7 +22,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class CommandASCII extends CommandHandler {
 
     public CommandASCII() {
-        super(new String[]{"ascii"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.ascii"), "Convert an ASCII-Code to a char and a char to an ASCII-Code.", "ascii <string>\nascii code <ASCII-Code>");
+        super(new String[]{"ascii"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.ascii"), "Convert an ASCII-Code to a char and a char to an ASCII-Code.", "<string>\nascii code <ASCII-Code>");
     }
 
     @Override

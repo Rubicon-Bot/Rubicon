@@ -27,7 +27,7 @@ public class CommandPing extends CommandHandler {
     public CommandPing() {
         super(new String[]{"ping"}, CommandCategory.GENERAL,
                 new PermissionRequirements(0, "command.ping"),
-                "Get the bot's ping", "ping");
+                "Get the bot's ping", "");
     }
 
     @Override
