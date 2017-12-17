@@ -49,11 +49,12 @@ public class CommandHelp extends CommandHandler {
             if (commandHandler.getCategory().equals(CommandCategory.BOT_OWNER))
                 continue;
             StringBuilder usage = new StringBuilder();
-            for (String part : getParameterUsage().split("\n")) {
-                if (getParameterUsage().split("\n").length > 1)
-                    usage.append(Info.BOT_DEFAULT_PREFIX + commandHandler.getInvocationAliases()[0] + " " + part + "\\n");
+            for (String part : commandHandler.getParameterUsage().split("\n")) {
+                if (commandHandler.getParameterUsage().split("\n").length > 1) {
+                    usage.append(Info.BOT_DEFAULT_PREFIX + commandHandler.getInvocationAliases()[0] + " " + part + "<br>");
+                }
                 else
-                    usage.append(Info.BOT_DEFAULT_PREFIX + commandHandler.getInvocationAliases()[0] + " " + part);
+                    usage.append(Info.BOT_DEFAULT_PREFIX + commandHandler.getInvocationAliases()[0] + " " + part + "");
             }
             out.append("{\n\"id\":\"" + i + "\",\"name\":\"" + commandHandler.getInvocationAliases()[0] + "\",\n" +
                     "\t\"command\":\"" + Info.BOT_DEFAULT_PREFIX + commandHandler.getInvocationAliases()[0] + "\",\n" +

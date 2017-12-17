@@ -180,7 +180,7 @@ public class CommandGiveaway extends Command implements Serializable {
 
     @Override
     public String getUsage() {
-        return "giveaway create <runtime in minutes> <award>";
+        return "create <runtime in minutes> <award>";
     }
 
     @Override

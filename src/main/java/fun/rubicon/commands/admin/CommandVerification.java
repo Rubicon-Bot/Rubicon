@@ -31,7 +31,7 @@ public class CommandVerification extends CommandHandler {
     public static HashMap<Message, User> users = new HashMap<>();
 
     public CommandVerification() {
-        super(new String[]{"verification", "verify"}, CommandCategory.ADMIN, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.verification"), "Let you members accept rules before posting messages", "verify setup\nverify disable");
+        super(new String[]{"verification", "verify"}, CommandCategory.ADMIN, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.verification"), "Let you members accept rules before posting messages", "setup\ndisable");
     }
 
     @Override
@@ -45,7 +45,7 @@ public class CommandVerification extends CommandHandler {
         else if (args[0].equalsIgnoreCase("setup"))
             return enableVerification(parsedCommandInvocation);
         else
-            return new MessageBuilder().setEmbed(EmbedUtil.error("Usage", "verify setup\n verify disable").build()).build();
+            return createHelpMessage();
 
     }
 
