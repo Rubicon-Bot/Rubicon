@@ -28,7 +28,7 @@ public class CommandManager {
     }
 
     private void initCommands() {
-        CommandHandler.addCommand(new CommandPermission("permission", CommandCategory.ADMIN).addAliases("permission", "perm", "perms"));
+        CommandHandler.addCommand(new CommandPermission("permission", CommandCategory.ADMIN).addAliases("perm", "perms"));
         CommandHandler.addCommand(new CommandGiveaway("giveaway", CommandCategory.MODERATION).addAliases("g"));
         CommandHandler.addCommand(new CommandAutochannel("autochannel", CommandCategory.ADMIN).addAliases("ac", "autoc"));
         CommandHandler.addCommand(new CommandMusic("music", CommandCategory.GENERAL).addAliases("m"));

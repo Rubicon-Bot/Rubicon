@@ -10,6 +10,7 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import net.dv8tion.jda.core.entities.Guild;
@@ -22,8 +23,8 @@ import static fun.rubicon.util.EmbedUtil.*;
 
 public class CommandGuilds extends CommandHandler {
     public CommandGuilds() {
-        super(new String[]{"guilds","guild"}, CommandCategory.BOT_OWNER,
-                new PermissionRequirements(4, "command.guilds"),
+        super(new String[]{"guilds"}, CommandCategory.BOT_OWNER,
+                new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.guilds"),
                 "Shows all Guilds the Bot is running on!", "guilds");
     }
 
