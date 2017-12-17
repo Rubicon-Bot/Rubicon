@@ -272,12 +272,12 @@ public class CommandVote extends CommandHandler implements Serializable {
         if (!poll.isPollmsg(event.getMessageId())) return;
         if (poll.votes.containsKey(event.getUser().getId())) {
              new Timer().schedule(new TimerTask() {
- -                @Override
- -                public void run() {
- -                    event.getReaction().removeReaction(event.getUser()).queue();
- -                }
- -            }, 1000);
- -            return;
+                 @Override
+                 public void run() {
+                     event.getReaction().removeReaction(event.getUser()).queue();
+                 }
+             }, 1000);
+             return;
         }
         String emoji = event.getReaction().getReactionEmote().getName();
 
