@@ -71,7 +71,7 @@ public class CommandASCII extends CommandHandler {
                     .setColor(Colors.COLOR_PRIMARY);
             parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(builder.build()).queue();
         } else
-            return new MessageBuilder().setEmbed(EmbedUtil.error("", getUsage()).build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error("", getParameterUsage()).build()).build();
         return null;
     }
 }
