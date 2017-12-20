@@ -13,6 +13,7 @@ import fun.rubicon.command2.CommandManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
+import javafx.geometry.Side;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.managers.fields.GuildField;
@@ -47,7 +48,7 @@ public class CommandGuilds extends CommandHandler {
             guild_sublist = RubiconBot.getJDA().getGuilds();
         }
         for (Guild guild : guild_sublist) {
-            runningOnServers.append("`\t " + count_server +". ").append(guild.getName()).append("(").append(guild.getId()).append(")`\n");
+            runningOnServers.append("`\t " + (SideNumbInput * count_server) +". ").append(guild.getName()).append("(").append(guild.getId()).append(")`\n");
             count_server++;
         }
         int sideNumbAll;
