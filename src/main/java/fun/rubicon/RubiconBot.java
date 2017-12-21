@@ -97,7 +97,7 @@ public class RubiconBot {
 
         JDABuilder builder = new JDABuilder(AccountType.BOT);
         builder.setToken(instance.configuration.getString("token"));
-        builder.setGame(Game.of(Info.BOT_NAME + " " + Info.BOT_VERSION));
+        builder.setGame(Game.playing(Info.BOT_NAME + " " + Info.BOT_VERSION));
 
         // Register command manager (chat listener)
         builder.addEventListener(instance.commandManager);
@@ -191,7 +191,8 @@ public class RubiconBot {
                 new CommandServerInfo(),
                 new CommandShorten(),
                 new CommandUserInfo(),
-                new CommandVote()
+                new CommandVote(),
+                new CommandMoveAll()
         );
 
         // also register commands from the old framework

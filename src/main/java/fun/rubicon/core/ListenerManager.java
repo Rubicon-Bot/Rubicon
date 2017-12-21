@@ -30,5 +30,6 @@ public class ListenerManager {
         b.addEventListener(new AutochannelListener());
         b.addEventListener(new UserJoinListener());
         b.addEventListener(new VerificationListener());
+        b.addEventListener(new MessageDeleteListener());
     }
 }
