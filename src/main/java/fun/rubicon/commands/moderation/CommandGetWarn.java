@@ -1,9 +1,10 @@
-package fun.rubicon.commands.admin;
+package fun.rubicon.commands.moderation;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
@@ -25,18 +26,18 @@ public class CommandGetWarn extends CommandHandler {
 
 
     public CommandGetWarn() {
-        super(new String[]{"getwarn", "getwarning", "getwarns"}, CommandCategory.MODERATION, new PermissionRequirements(2, "command.getwarn"), "Get The Warning of a User", "<Mention>");
+        super(new String[]{"warns", "getwarn", "getwarning", "getwarns"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.getwarn"), "Get the warning of a user.", "<Mention>");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         if (parsedCommandInvocation.invocationMessage.getMentionedUsers().size() < 1) {
-            return new MessageBuilder().setEmbed(EmbedUtil.error("Oh something went wrong!", getUsage()).build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error("Oh something went wrong!", getParameterUsage()).build()).build();
         }
         MySQL sql = RubiconBot.getMySQL();
         User unmuteuser = parsedCommandInvocation.invocationMessage.getMentionedUsers().get(0);
         if (!sql.ifWarning(unmuteuser, parsedCommandInvocation.invocationMessage.getGuild())) {
-            return new MessageBuilder().setEmbed(EmbedUtil.error("Oh " + unmuteuser.getName() + " is not warned!", "warn <User Mention> <reason>").build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.info(unmuteuser.getName() + " has 0 warns!", "There are no warns.").build()).build();
         }
         Guild g = parsedCommandInvocation.invocationMessage.getGuild();
         String Reason = sql.getWarning(unmuteuser, g, "reason");

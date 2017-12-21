@@ -1,8 +1,9 @@
-package fun.rubicon.commands.admin;
+package fun.rubicon.commands.moderation;
 
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
@@ -23,7 +24,7 @@ import net.dv8tion.jda.core.entities.TextChannel;
  */
 public class CommandMute extends CommandHandler{
     public CommandMute() {
-        super(new String[] {"mute"}, CommandCategory.ADMIN, new PermissionRequirements(2, "command.mute"), "Mutes an annoying member", "<@User>");
+        super(new String[] {"mute"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.mute"), "Mutes an annoying member", "<@User>");
     }
 
     @Override
@@ -33,13 +34,13 @@ public class CommandMute extends CommandHandler{
             return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "mute <@User>").build()).build();
         Member target = message.getGuild().getMember(message.getMentionedUsers().get(0));
         if(!message.getGuild().getSelfMember().canInteract(target))
-            return new MessageBuilder().setEmbed(EmbedUtil.error("No permission", "Sorry i can't mute this use! It's a moderator or higher").build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error("No permission", "Sorry i can't mute this user! His/her role is higher than yours.").build()).build();
 
         TextChannel channel = message.getTextChannel();
         if(channel.getPermissionOverride(target) == null)
             channel.createPermissionOverride(target).complete();
         if(channel.getPermissionOverride(target).getDenied().contains(Permission.MESSAGE_WRITE))
-            return new MessageBuilder().setEmbed(EmbedUtil.error("Already muted", "This user is already muted. Use `unmute <@User>` to undo this").build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error("Already muted", "This user is already muted.").build()).build();
         message.getGuild().getTextChannels().forEach(c -> {
             if(c.getPermissionOverride(target) == null)
                 c.createPermissionOverride(target).complete();

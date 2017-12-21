@@ -24,8 +24,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-
-public class CommandVote extends CommandHandler implements Serializable{
+public class CommandVote extends CommandHandler implements Serializable {
 
     private static TextChannel channel;
 
@@ -41,7 +40,7 @@ public class CommandVote extends CommandHandler implements Serializable{
     private List<String> toAddEmojis = new ArrayList<>();
 
     public CommandVote() {
-        super(new String[] {"vote", "v", "poll"}, CommandCategory.TOOLS, new PermissionRequirements(PermissionLevel.EVERYONE, "command.vote"), "Polls", "USAGE: \n`vote create <Title>|<Option1>|<Option2>|...  `  -  create a vote\n`vote vote <index of Option>  `  -  vote for a possibility\n`vote stats  `  -  get stats of a current vote\n`vote close  `  -  close a current vote");
+        super(new String[]{"vote", "v", "poll"}, CommandCategory.TOOLS, new PermissionRequirements(PermissionLevel.EVERYONE, "command.vote"), "Polls", "create <Title>|<Option1>|<Option2>|...\nvote <index of Option>\nstats\nclose");
     }
 
 
@@ -53,10 +52,10 @@ public class CommandVote extends CommandHandler implements Serializable{
         if (args.length < 1) {
             return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "USAGE: \n`vote create <Title>|<Option1>|<Option2>|...  `  -  create a vote\n`vote vote <index of Option>  `  -  vote for a possibility\n`vote stats  `  -  get stats of a current vote\n`vote close  `  -  close a current vote").build()).build();
         }
-        switch (args[0]){
+        switch (args[0]) {
             case "create":
                 String[] voteargs = message.getContentDisplay().split("\\|");
-                if(voteargs.length < 2){
+                if (voteargs.length < 2) {
                     return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "USAGE: \n`vote create <Title>|<Option1>|<Option2>|...  `  -  create a vote\n`vote vote <index of Option>  `  -  vote for a possibility\n`vote stats  `  -  get stats of a current vote\n`vote close  `  -  close a current vote").build()).build();
                 }
                 createPoll(parsedCommandInvocation);
@@ -74,9 +73,9 @@ public class CommandVote extends CommandHandler implements Serializable{
 
         polls.forEach((guild, poll) -> {
             File path = new File("data/votes");
-            if(!path.exists())
+            if (!path.exists())
                 path.mkdirs();
-            try{
+            try {
                 savePoll(message.getGuild());
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -85,7 +84,7 @@ public class CommandVote extends CommandHandler implements Serializable{
         return null;
     }
 
-    private static class Poll implements Serializable{
+    private static class Poll implements Serializable {
         private String creator;
         private String heading;
         private List<String> answers;
@@ -94,7 +93,7 @@ public class CommandVote extends CommandHandler implements Serializable{
         private String channel;
         private HashMap<String, Integer> reacts;
 
-        private Poll(Member creator, String heading, List<String> answers, Message pollmsg, TextChannel channel){
+        private Poll(Member creator, String heading, List<String> answers, Message pollmsg, TextChannel channel) {
             this.creator = creator.getUser().getId();
             this.heading = heading;
             this.answers = answers;
@@ -132,12 +131,12 @@ public class CommandVote extends CommandHandler implements Serializable{
     }
 
 
-    private static EmbedBuilder getParsedPoll(Poll poll, Guild guild){
+    private static EmbedBuilder getParsedPoll(Poll poll, Guild guild) {
 
         StringBuilder ansSTR = new StringBuilder();
         final AtomicInteger count = new AtomicInteger();
 
-        poll.answers.forEach(s ->{
+        poll.answers.forEach(s -> {
             long votescount = poll.votes.keySet().stream().filter(k -> poll.votes.get(k).equals(count.get() + 1)).count();
             ansSTR.append(EMOTI[count.get()] + " - " + (count.get() + 1) + "  -  " + s + "  -  Votes: `" + votescount + "` \n");
             count.addAndGet(1);
@@ -151,9 +150,9 @@ public class CommandVote extends CommandHandler implements Serializable{
 
     }
 
-    private void voteStats(CommandManager.ParsedCommandInvocation parsedCommandInvocation){
+    private void voteStats(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         Message message = parsedCommandInvocation.invocationMessage;
-        if(!polls.containsKey(message.getGuild())){
+        if (!polls.containsKey(message.getGuild())) {
             message.getTextChannel().sendMessage(EmbedUtil.error("No poll", "There is currently no poll running on this guild").build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
             return;
         }
@@ -166,39 +165,39 @@ public class CommandVote extends CommandHandler implements Serializable{
         polls.replace(message.getGuild(), poll);
     }
 
-    private void closeVote(CommandManager.ParsedCommandInvocation parsedCommandInvocation){
+    private void closeVote(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         Message message = parsedCommandInvocation.invocationMessage;
         User author = message.getAuthor();
-        if(!polls.containsKey(message.getGuild())){
+        if (!polls.containsKey(message.getGuild())) {
             message.getTextChannel().sendMessage(EmbedUtil.error("No poll", "There is currently no poll running on this guild").build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
             return;
         }
 
         Poll poll = polls.get(message.getGuild());
 
-        if(message.getAuthor().equals(poll.getCreator(message.getGuild()))){
+        if (message.getAuthor().equals(poll.getCreator(message.getGuild()))) {
             message.getTextChannel().sendMessage(EmbedUtil.error("No permission", ":warning: Only the poll creator can close polls").build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
             return;
         }
 
         polls.remove(message.getGuild());
         channel.sendMessage(getParsedPoll(poll, message.getGuild()).build()).queue();
-        message.getTextChannel().sendMessage(EmbedUtil.success("Closes", ":white_check_mark: Poll was closed by" + message.getAuthor().getAsMention()).build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
+        message.getTextChannel().sendMessage(EmbedUtil.success("Closed", "Poll was closed by " + message.getAuthor().getAsMention()).build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
         try {
             poll.pollmsgs.forEach((c, m) -> {
                 Message pollmsg = message.getGuild().getTextChannelById(c).getMessageById(m).complete();
                 pollmsg.editMessage(getParsedPoll(poll, message.getGuild()).build()).queue();
             });
-        } catch (ErrorResponseException e){
+        } catch (ErrorResponseException e) {
             //This is an empty Catch Block
         }
     }
 
-    private void createPoll(CommandManager.ParsedCommandInvocation parsedCommandInvocation){
+    private void createPoll(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         Message message = parsedCommandInvocation.invocationMessage;
         String[] args = parsedCommandInvocation.args;
-        if(polls.containsKey(message.getGuild())){
-            message.getTextChannel().sendMessage(EmbedUtil.error("Alrady running", "There is already a poll running on this guild").build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
+        if (polls.containsKey(message.getGuild())) {
+            message.getTextChannel().sendMessage(EmbedUtil.error("Already running", "There is already a poll running on this guild").build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
             return;
         }
 
@@ -213,7 +212,7 @@ public class CommandVote extends CommandHandler implements Serializable{
         HashMap<String, Integer> reactions = new HashMap<>();
         final AtomicInteger count = new AtomicInteger();
         toAddEmojis = new ArrayList<String>(Arrays.asList(EMOTI));
-        answers.forEach(a ->{
+        answers.forEach(a -> {
             reactions.put(toAddEmojis.get(0), count.get() + 1);
             toAddEmojis.remove(0);
             count.addAndGet(1);
@@ -233,10 +232,10 @@ public class CommandVote extends CommandHandler implements Serializable{
         }, 500);
     }
 
-    private void votePoll(CommandManager.ParsedCommandInvocation parsedCommandInvocation){
+    private void votePoll(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         Message message = parsedCommandInvocation.invocationMessage;
         String[] args = parsedCommandInvocation.args;
-        if(!polls.containsKey(message.getGuild())){
+        if (!polls.containsKey(message.getGuild())) {
             message.getTextChannel().sendMessage(EmbedUtil.error("No poll", "There is currently no poll running on this guild").build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
             return;
         }
@@ -244,18 +243,17 @@ public class CommandVote extends CommandHandler implements Serializable{
         Poll poll = polls.get(message.getGuild());
 
         int vote;
-        try{
+        try {
             vote = Integer.parseInt(args[1]);
-            if(vote > poll.answers.size()){
+            if (vote > poll.answers.size()) {
                 throw new Exception();
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             message.getTextChannel().sendMessage(EmbedUtil.error("Wrong answer", ":warning: You entered an wrong answer!").build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
             return;
         }
 
-        if(poll.votes.containsKey(message.getAuthor().getId())){
-            message.getTextChannel().sendMessage(EmbedUtil.error("Double vote", "Sorry, but you can only vote at once for a poll").build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
+        if (poll.votes.containsKey(message.getAuthor().getId())) {
             return;
         }
 
@@ -268,20 +266,19 @@ public class CommandVote extends CommandHandler implements Serializable{
         });
     }
 
-    public static void reactVote(MessageReactionAddEvent event){
-        if(event.getUser().isBot() || !polls.containsKey(event.getGuild()))
+    public static void reactVote(MessageReactionAddEvent event) {
+        if (event.getUser().isBot() || !polls.containsKey(event.getGuild()))
             return;
         Poll poll = polls.get(event.getGuild());
-        if(!poll.isPollmsg(event.getMessageId())) return;
-        if(poll.votes.containsKey(event.getUser().getId())){
-            channel.sendMessage(new EmbedBuilder().setColor(Colors.COLOR_ERROR).setDescription("Sorry, but you can only vote at once for a poll").build()).queue();
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    event.getReaction().removeReaction(event.getUser()).queue();
-                }
-            }, 1000);
-            return;
+        if (!poll.isPollmsg(event.getMessageId())) return;
+        if (poll.votes.containsKey(event.getUser().getId())) {
+             new Timer().schedule(new TimerTask() {
+                 @Override
+                 public void run() {
+                     event.getReaction().removeReaction(event.getUser()).queue();
+                 }
+             }, 1000);
+             return;
         }
         String emoji = event.getReaction().getReactionEmote().getName();
 
@@ -302,9 +299,9 @@ public class CommandVote extends CommandHandler implements Serializable{
 
         CommandVote.polls.keySet().forEach((guild) -> {
             File path = new File("data/votes");
-            if(!path.exists())
+            if (!path.exists())
                 path.mkdirs();
-            try{
+            try {
                 CommandVote.savePoll(event.getGuild());
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -314,7 +311,7 @@ public class CommandVote extends CommandHandler implements Serializable{
     }
 
     private static void savePoll(Guild guild) throws IOException {
-        if(!polls.containsKey(guild)){
+        if (!polls.containsKey(guild)) {
             return;
         }
 
@@ -326,8 +323,9 @@ public class CommandVote extends CommandHandler implements Serializable{
         oos.writeObject(poll);
         oos.close();
     }
+
     private static Poll getPoll(Guild guild) throws IOException, ClassNotFoundException {
-        if(polls.containsKey(guild))
+        if (polls.containsKey(guild))
             return null;
 
         String saveFile = "data/votes/" + guild.getId() + ".dat";
@@ -338,12 +336,12 @@ public class CommandVote extends CommandHandler implements Serializable{
         return out;
     }
 
-    public static void loadPolls(JDA jda){
-        jda.getGuilds().forEach(g ->{
+    public static void loadPolls(JDA jda) {
+        jda.getGuilds().forEach(g -> {
 
             String saveFile = "data/votes/" + g.getId() + ".dat";
             File f = new File(saveFile);
-            if(f.exists())
+            if (f.exists())
                 try {
                     polls.put(g, getPoll(g));
                 } catch (IOException | ClassNotFoundException e) {

@@ -10,6 +10,7 @@ package fun.rubicon.commands.tools;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
@@ -22,7 +23,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class CommandASCII extends CommandHandler {
 
     public CommandASCII() {
-        super(new String[]{"ascii"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.ascii"), "Convert an ASCII-Code to a char and a char to an ASCII-Code.", "<string>\nascii code <ASCII-Code>");
+        super(new String[]{"ascii"}, CommandCategory.TOOLS, new PermissionRequirements(PermissionLevel.EVERYONE, "command.ascii"), "Convert an ASCII-Code to a char and a char to an ASCII-Code.", "<string>\ncode <ASCII-Code>");
     }
 
     @Override
@@ -70,7 +71,7 @@ public class CommandASCII extends CommandHandler {
                     .setColor(Colors.COLOR_PRIMARY);
             parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(builder.build()).queue();
         } else
-            return new MessageBuilder().setEmbed(EmbedUtil.error("", getUsage()).build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error("", getParameterUsage()).build()).build();
         return null;
     }
 }

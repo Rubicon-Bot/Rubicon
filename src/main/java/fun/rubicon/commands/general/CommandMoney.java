@@ -63,10 +63,10 @@ public class CommandMoney extends CommandHandler {
                         return message(error("NaN or money value is to big!", "The money value is not a number or bigger than 2.147.483.647!"));
                     }
                 } else {
-                    return message(error("Wrong count of arguments", "Three arguments are necessary!\n" + getUsage()));
+                    return message(error("Wrong count of arguments", "Three arguments are necessary!\n" + getParameterUsage()));
                 }
             case "set":
-                if (new PermissionRequirements(4, "command.money.modify").coveredBy(userPermissions)) {
+                if (new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.money.modify").coveredBy(userPermissions)) {
                     if (parsedCommandInvocation.args.length == 3) {
                         try {
                             user_spend_money = Integer.parseInt(parsedCommandInvocation.args[parsedCommandInvocation.args.length - 1]);
@@ -81,7 +81,7 @@ public class CommandMoney extends CommandHandler {
                             return message(error("NaN or money value is to big!", "The money value is not a number or bigger than 2.147.483.647!"));
                         }
                     } else {
-                        return message(error("Wrong count of arguments", "Three arguments are necessary!\n" + getUsage()));
+                        return message(error("Wrong count of arguments", "Three arguments are necessary!\n" + getParameterUsage()));
                     }
                 } else {
                     return message(no_permissions());
@@ -89,7 +89,7 @@ public class CommandMoney extends CommandHandler {
             case "add":
                 int max_money = 2147483647;
                 user2_has_money = Integer.parseInt(RubiconBot.getMySQL().getUserValue(parsedCommandInvocation.invocationMessage.getMentionedUsers().get(0), "money"));
-                if (new PermissionRequirements(4, "command.money.modify").coveredBy(userPermissions)) {
+                if (new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.money.modify").coveredBy(userPermissions)) {
                     if (parsedCommandInvocation.args.length == 3) {
                         try {
                             user_spend_money = Integer.parseInt(parsedCommandInvocation.args[parsedCommandInvocation.args.length - 1]);
@@ -112,7 +112,7 @@ public class CommandMoney extends CommandHandler {
                             return message(error("Not a number!", "The money value is not a number!"));
                         }
                     } else {
-                        return message(error("Wrong count of arguments", "Three arguments are necessary!\n" + getUsage()));
+                        return message(error("Wrong count of arguments", "Three arguments are necessary!\n" + getParameterUsage()));
                     }
                 } else {
                     return message(no_permissions());
@@ -120,7 +120,7 @@ public class CommandMoney extends CommandHandler {
 
             case "remove":
                 user2_has_money = Integer.parseInt(RubiconBot.getMySQL().getUserValue(parsedCommandInvocation.invocationMessage.getMentionedUsers().get(0), "money"));
-                if (new PermissionRequirements(4, "command.money.modify").coveredBy(userPermissions)) {
+                if (new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.money.modify").coveredBy(userPermissions)) {
                     if (parsedCommandInvocation.args.length == 3) {
                         try {
                             user_spend_money = Integer.parseInt(parsedCommandInvocation.args[parsedCommandInvocation.args.length - 1]);
@@ -139,7 +139,7 @@ public class CommandMoney extends CommandHandler {
                             return message(error("NaN or money value is to big!", "The money value is not a number or bigger than 2.147.483.647!"));
                         }
                     } else {
-                        return message(error("Wrong count of arguments", "Three arguments are necessary!\n" + getUsage()));
+                        return message(error("Wrong count of arguments", "Three arguments are necessary!\n" + getParameterUsage()));
                     }
                 } else {
                     return message(no_permissions());

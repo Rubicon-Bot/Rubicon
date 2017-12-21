@@ -4,7 +4,7 @@
  * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
  */
 
-package fun.rubicon.commands.admin;
+package fun.rubicon.commands.fun;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.Command;
@@ -26,6 +26,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class CommandGiveaway extends Command implements Serializable {
+
     private static boolean running = false;
     private static String emote = "\ud83c\udfc6";
     private static HashMap<Guild, Giveaway> giveaways = new HashMap<>();
@@ -179,7 +180,7 @@ public class CommandGiveaway extends Command implements Serializable {
 
     @Override
     public String getUsage() {
-        return "giveaway create <runtime in minutes> <award>";
+        return "create <runtime in minutes> <award>";
     }
 
     @Override

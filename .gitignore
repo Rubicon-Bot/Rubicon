@@ -143,4 +143,9 @@ src/META-INF/MANIFEST.MF
 config.json
 *.dat
 src/main/java/META-INF/MANIFEST.MF
+<<<<<<< HEAD
+.floo
+.flooignore
+=======
+>>>>>>> master
 data/portal-invites.json

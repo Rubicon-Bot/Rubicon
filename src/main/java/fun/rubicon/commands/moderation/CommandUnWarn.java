@@ -1,9 +1,10 @@
-package fun.rubicon.commands.admin;
+package fun.rubicon.commands.moderation;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
@@ -24,7 +25,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 public class CommandUnWarn extends CommandHandler {
 
     public CommandUnWarn() {
-        super(new String[]{"unwarn"}, CommandCategory.MODERATION, new PermissionRequirements(2, "command.unwarn"), "Unwarns a user!", "<Mention>");
+        super(new String[]{"unwarn", "pardon"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.unwarn"), "Unwarns a user!", "<Mention>");
     }
 
 

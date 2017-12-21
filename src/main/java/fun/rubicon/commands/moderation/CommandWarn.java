@@ -1,10 +1,11 @@
-package fun.rubicon.commands.admin;
+package fun.rubicon.commands.moderation;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
@@ -22,7 +23,7 @@ import net.dv8tion.jda.core.entities.*;
  */
 public class CommandWarn extends CommandHandler {
     public CommandWarn() {
-        super(new String[]{"warn"}, CommandCategory.MODERATION, new PermissionRequirements(2, "command.warn"), "Warn a User", "<User Mention> <reason> ");
+        super(new String[]{"warn"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.warn"), "Warn a user.", "<User Mention> <reason> ");
     }
 
     public static void WarnUser(User target, Guild guild, User author, String reason) {
@@ -44,11 +45,11 @@ public class CommandWarn extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        if (parsedCommandInvocation.args.length < 3) {
-            return new MessageBuilder().setEmbed(EmbedUtil.error("", "Not enough arguments!\n" + getUsage()).build()).build();
+        if (parsedCommandInvocation.args.length < 2) {
+            return new MessageBuilder().setEmbed(EmbedUtil.error("", "Not enough arguments!\n" + getParameterUsage()).build()).build();
         }
         if (parsedCommandInvocation.invocationMessage.getMentionedUsers().size() < 1) {
-            return new MessageBuilder().setEmbed(EmbedUtil.error("", "Please Mention someone!\n" + getUsage()).build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error("", "Please Mention someone!\n" + getParameterUsage()).build()).build();
         }
         User targ = parsedCommandInvocation.invocationMessage.getMentionedUsers().get(0);
         Guild g = parsedCommandInvocation.invocationMessage.getGuild();
@@ -58,6 +59,6 @@ public class CommandWarn extends CommandHandler {
             reas += parsedCommandInvocation.args[i] + " ";
         }
         WarnUser(targ, g, auth, reas);
-        return new MessageBuilder().setEmbed(EmbedUtil.success("", "I warned" + targ.getAsMention() + "\n For: " + reas).build()).build();
+        return new MessageBuilder().setEmbed(EmbedUtil.success("", "I warned " + targ.getAsMention() + " for `" + reas + "`").build()).build();
     }
 }

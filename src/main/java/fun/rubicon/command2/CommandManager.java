@@ -57,7 +57,7 @@ public class CommandManager extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent event) {
         super.onMessageReceived(event);
         ParsedCommandInvocation commandInvocation = parse(event.getMessage());
-        if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake()) // if it is a command invocation
+        if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake() && !event.isWebhookMessage())
             call(commandInvocation);
     }
 
