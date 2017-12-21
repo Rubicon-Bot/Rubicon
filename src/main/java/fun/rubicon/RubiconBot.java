@@ -24,6 +24,7 @@ import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 import javax.security.auth.login.LoginException;
@@ -115,11 +116,18 @@ public class RubiconBot {
         CommandVote.loadPolls(instance.jda);
         CommandGiveaway.startGiveawayManager(instance.jda);
 
-        //Too many guilds :(
-        /*StringBuilder runningOnServers = new StringBuilder("Running on following guilds:\n");
-        for (Guild guild : instance.jda.getGuilds())
-            runningOnServers.append("\t- ").append(guild.getName()).append("(").append(guild.getId()).append(")\n");
-        Logger.info(runningOnServers.toString());*/
+        int memberCount = 0;
+        for(Guild guild : getJDA().getGuilds())
+            memberCount += guild.getMembers().size();
+
+        StringBuilder infoOnStart = new StringBuilder();
+        infoOnStart.append("---------- " + Info.BOT_NAME + " v." + Info.BOT_VERSION + " ---------- \n");
+        infoOnStart.append("Running on " + getJDA().getGuilds().size() + " Guilds \n");
+        infoOnStart.append("Supplying " + getJDA().getUsers().size() + " User \n");
+        infoOnStart.append("Supplying " + memberCount + " Member \n");
+        infoOnStart.append("---------------------------------------");
+
+        System.out.println(infoOnStart.toString());
     }
 
     /**

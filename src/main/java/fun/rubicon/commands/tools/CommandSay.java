@@ -27,22 +27,18 @@ public class CommandSay extends CommandHandler {
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         if (parsedCommandInvocation.args.length < 2) {
-            return new MessageBuilder().setEmbed(EmbedUtil.error(":warning: Error", getUsage()).build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error(":warning: Error", getParameterUsage()).build()).build();
         }
 
         if (parsedCommandInvocation.invocationMessage.getMentionedChannels().size() != 1) {
-            return new MessageBuilder().setEmbed(EmbedUtil.error(":warning: Error", getUsage()).build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error(":warning: Error", getParameterUsage()).build()).build();
         }
 
         String text = "";
         for (int i = parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0).getAsMention().split(" ").length; i < parsedCommandInvocation.args.length; i++) {
             text += parsedCommandInvocation.args[i] + " ";
         }
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setAuthor(parsedCommandInvocation.invocationMessage.getMember().getEffectiveName() + "'s Commands", null, parsedCommandInvocation.invocationMessage.getMember().getUser().getEffectiveAvatarUrl());
-        builder.setDescription(text);
-        builder.setColor(Colors.COLOR_PRIMARY);
-        parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0).sendMessage(builder.build()).queue();
-        return new MessageBuilder().setEmbed(EmbedUtil.success("Completed", "Send Message :`" + text + "` to Channel" + parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0).getAsMention()).build()).build();
+        parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0).sendMessage(text).queue();
+        return new MessageBuilder().setEmbed(EmbedUtil.success("Successful", "Successful sent message in " + parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0).getAsMention()).build()).build();
     }
 }
