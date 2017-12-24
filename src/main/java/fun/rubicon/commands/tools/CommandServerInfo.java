@@ -1,13 +1,19 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.commands.tools;
 
 
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
-import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Guild;
@@ -17,7 +23,7 @@ import net.dv8tion.jda.core.entities.TextChannel;
 public class CommandServerInfo extends CommandHandler{
 
     public CommandServerInfo() {
-        super(new String[] {"serverinfo", "guild", "guildinfo"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.serverinfo"), "Returns some information about the current server", "serverinfo");
+        super(new String[]{"serverinfo", "guild", "guildinfo"}, CommandCategory.TOOLS, new PermissionRequirements(PermissionLevel.EVERYONE, "command.serverinfo"), "Returns some information about the current server", "");
     }
 
     @Override
@@ -32,7 +38,6 @@ public class CommandServerInfo extends CommandHandler{
         roles.replace(rawRoles.lastIndexOf(","), roles.lastIndexOf(",") + 1, "" );
         EmbedBuilder serverInfo = new EmbedBuilder();
         serverInfo.setColor(Colors.COLOR_PRIMARY);
-        serverInfo.setFooter(Info.EMBED_FOOTER, Info.ICON_URL);
         serverInfo.setTitle(":desktop: Serverinfo of " + guild.getName());
         serverInfo.setThumbnail(guild.getIconUrl());
         serverInfo.addField("ID", "`" + guild.getId() + "`", false);
@@ -46,9 +51,5 @@ public class CommandServerInfo extends CommandHandler{
         serverInfo.addField("Server owner", guild.getOwner().getUser().getName() + "#" + guild.getOwner().getUser().getDiscriminator(), false);
         serverInfo.addField("Server icon url", guild.getIconUrl(), false);
         return new MessageBuilder().setEmbed(serverInfo.build()).build();
-
-
     }
-
-
 }

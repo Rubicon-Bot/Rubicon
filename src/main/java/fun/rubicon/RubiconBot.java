@@ -6,12 +6,15 @@
 
 package fun.rubicon;
 
-import fun.rubicon.commands.admin.*;
+import fun.rubicon.commands.admin.CommandAutochannel;
+import fun.rubicon.commands.admin.CommandPortal;
+import fun.rubicon.commands.admin.CommandVerification;
 import fun.rubicon.commands.botowner.*;
 import fun.rubicon.commands.fun.CommandRip;
 import fun.rubicon.commands.fun.CommandRoulette;
 import fun.rubicon.commands.fun.CommandSlot;
 import fun.rubicon.commands.general.*;
+import fun.rubicon.commands.moderation.*;
 import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.CommandManager;
@@ -23,6 +26,7 @@ import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.hooks.EventListener;
 
@@ -41,7 +45,8 @@ import java.util.Timer;
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token"};
+    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token", "twitterConsumerKey", "twitterConsumerSecret", "twitterAccessToken", "twitterAccessTokenSecret"};
+    private static final String dataFolder = "data/";
     private static RubiconBot instance;
     private final MySQL mySQL;
     private final Configuration configuration;
@@ -62,6 +67,8 @@ public class RubiconBot {
         eventListeners = new HashSet<>();
 
         // load configuration and obtain missing config values
+        new File(dataFolder).mkdirs();
+
         configuration = new Configuration(new File(Info.CONFIG_FILE));
         for (String configKey : CONFIG_KEYS) {
             if (!configuration.has(configKey)) {
@@ -108,7 +115,7 @@ public class RubiconBot {
 
         JDABuilder builder = new JDABuilder(AccountType.BOT);
         builder.setToken(instance.configuration.getString("token"));
-        builder.setGame(Game.of(Info.BOT_NAME + " " + Info.BOT_VERSION));
+        builder.setGame(Game.playing(Info.BOT_NAME + " " + Info.BOT_VERSION));
 
         // add all EventListeners
         for (EventListener listener : instance.eventListeners)
@@ -125,11 +132,20 @@ public class RubiconBot {
         CommandVote.loadPolls(instance.jda);
 //        CommandGiveaway.startGiveawayManager(instance.jda);
 
-        //Too many guilds :(
-        /*StringBuilder runningOnServers = new StringBuilder("Running on following guilds:\n");
-        for (Guild guild : instance.jda.getGuilds())
-            runningOnServers.append("\t- ").append(guild.getName()).append("(").append(guild.getId()).append(")\n");
-        Logger.info(runningOnServers.toString());*/
+        int memberCount = 0;
+        for (Guild guild : getJDA().getGuilds())
+            memberCount += guild.getMembers().size();
+
+        StringBuilder infoOnStart = new StringBuilder();
+        infoOnStart.append("\n");
+        infoOnStart.append("---------- " + Info.BOT_NAME + " v." + Info.BOT_VERSION + " ---------- \n");
+        infoOnStart.append("Running on " + getJDA().getGuilds().size() + " Guilds \n");
+        infoOnStart.append("Supplying " + getJDA().getUsers().size() + " User \n");
+        infoOnStart.append("Supplying " + memberCount + " Member \n");
+        infoOnStart.append("---------------------------------------");
+        infoOnStart.append("\n");
+
+        System.out.println(infoOnStart.toString());
     }
 
     /**
@@ -149,23 +165,27 @@ public class RubiconBot {
                 new CommandUnmute(),
                 new CommandUnWarn(),
                 new CommandWarn(),
-                new CommandPortal()
+                new CommandPortal(),
+                new CommandVerification(),
+                new CommandAutochannel()
         );
         // botowner commands package
         commandManager.registerCommandHandlers(
                 new CommandBroadcast(),
+                new CommandDBGuild(),
                 new CommandPlay(),
                 new CommandRestart(),
                 new CommandStop(),
+                new CommandGuilds(),
                 new CommandCreateInvite(),
-                new CommandEval()
+                new CommandEval(),
+                new CommandTwitter()
         );
         // fun commands package
         commandManager.registerCommandHandlers(
                 new CommandRip(),
-                new CommandRoulette(),
                 new CommandSlot(),
-                new CommandDonatemoney()
+                new CommandRoulette()
         );
         // general commands package
         commandManager.registerCommandHandlers(
@@ -186,7 +206,8 @@ public class RubiconBot {
                 new CommandJoinMessage(),
                 new CommandLogChannel(),
                 new CommandPrefix(),
-                new CommandWelcomeChannel()
+                new CommandWelcomeChannel(),
+                new CommandBlacklist()
         );
         // tools commands package
         commandManager.registerCommandHandlers(
@@ -203,7 +224,8 @@ public class RubiconBot {
                 new CommandServerInfo(),
                 new CommandShorten(),
                 new CommandUserInfo(),
-                new CommandVote()
+                new CommandVote(),
+                new CommandMoveAll()
         );
 
         // also register commands from the old framework
@@ -267,5 +289,12 @@ public class RubiconBot {
      */
     public static String getNewTimestamp() {
         return timeStampFormatter.format(new Date());
+    }
+
+    /**
+     * @return the data folder path
+     */
+    public static String getDataFolder() {
+        return dataFolder;
     }
 }

@@ -185,7 +185,7 @@ public class CommandMusic extends Command {
     }
 
     private boolean isDj(Member member) {
-        return member.getRoles().stream().anyMatch(r -> r.getName().equals("DJ"));
+        return true;
     }
 
     private boolean isCurrentDj(Member member) {
@@ -473,7 +473,9 @@ public class CommandMusic extends Command {
                             else
                                 tracksSublist = tracks;
 
-                            tracksSublist.forEach(s -> sb.append(s));
+                            for (String s : tracksSublist) {
+                                sb.append(s);
+                            }
                             int sideNumbAll = tracks.size() >= 20 ? tracks.size() / 20 : 1;
                             int sideNumb = SideNumbInput;
 
@@ -758,7 +760,7 @@ public class CommandMusic extends Command {
 
     @Override
     public String getUsage() {
-        return "music";
+        return "";
     }
 
     @Override

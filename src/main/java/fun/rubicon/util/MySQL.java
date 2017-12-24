@@ -6,7 +6,8 @@
 
 package fun.rubicon.util;
 
-import fun.rubicon.core.DiscordCore;
+import fun.rubicon.RubiconBot;
+import fun.rubicon.commands.admin.CommandVerification;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 
@@ -23,16 +24,19 @@ public class MySQL {
     private String password;
     private String database;
 
+    /**
+     * @return MySQL connection
+     */
     public static Connection getConnection() {
         return connection;
     }
 
     /**
-     * @param host
-     * @param port
-     * @param user
-     * @param password
-     * @param dbname
+     * @param host Host of MySQL server
+     * @param port Port of MySQL server
+     * @param user User of MySQL database
+     * @param password Password of MySQL user
+     * @param dbname Name of MySQL database
      */
     public MySQL(String host, String port, String user, String password, String dbname) {
         this.host = host;
@@ -123,6 +127,17 @@ public class MySQL {
         return this;
     }
 
+    public MySQL executePreparedStatements(PreparedStatement... statements) {
+        for (PreparedStatement statement : statements) {
+            try {
+                statement.execute();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return this;
+    }
+
     //Role Stuff
     public boolean ifRoleExist(Role role) {
         try {
@@ -136,7 +151,7 @@ public class MySQL {
         return false;
     }
 
-    public void updateRoleValue(Role role, String type, String value) {
+    public MySQL updateRoleValue(Role role, String type, String value) {
         try {
             if (connection.isClosed())
                 connect();
@@ -147,6 +162,7 @@ public class MySQL {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return this;
     }
 
     public String getRoleValue(Role role, String type) {
@@ -172,12 +188,13 @@ public class MySQL {
      *
      * @param role the Role to check and create.
      */
-    private void createRoleIfNecessary(Role role) {
+    private MySQL createRoleIfNecessary(Role role) {
         if (!ifRoleExist(role))
             createRole(role);
+        return this;
     }
 
-    public void createRole(Role role) {
+    public MySQL createRole(Role role) {
         try {
             if (connection.isClosed())
                 connect();
@@ -187,6 +204,7 @@ public class MySQL {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return this;
     }
 
     //Member Stuff
@@ -203,7 +221,7 @@ public class MySQL {
         return false;
     }
 
-    public void updateMemberValue(Member member, String type, String value) {
+    public MySQL updateMemberValue(Member member, String type, String value) {
         try {
             if (connection.isClosed())
                 connect();
@@ -214,6 +232,7 @@ public class MySQL {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return this;
     }
 
     public String getMemberValue(Member member, String type) {
@@ -240,12 +259,13 @@ public class MySQL {
      *
      * @param member the Member to check and create.
      */
-    private void createMemberIfNecessary(Member member) {
+    private MySQL createMemberIfNecessary(Member member) {
         if (!ifMemberExist(member))
             createMember(member);
+        return this;
     }
 
-    public void createMember(Member member) {
+    public MySQL createMember(Member member) {
         try {
             if (connection.isClosed())
                 connect();
@@ -265,6 +285,7 @@ public class MySQL {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return this;
     }
 
     //Portal Stuff
@@ -280,7 +301,7 @@ public class MySQL {
         return false;
     }
 
-    public void updatePortalValue(Guild guild, String type, String value) {
+    public MySQL updatePortalValue(Guild guild, String type, String value) {
         try {
             if (connection.isClosed())
                 connect();
@@ -290,6 +311,7 @@ public class MySQL {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return this;
     }
 
     public String getPortalValue(Guild guild, String type) {
@@ -309,7 +331,7 @@ public class MySQL {
         return null;
     }
 
-    public void createPortal(Guild guild, Guild otherguild, TextChannel channel) {
+    public MySQL createPortal(Guild guild, Guild otherguild, TextChannel channel) {
         try {
             if (connection.isClosed())
                 connect();
@@ -321,9 +343,10 @@ public class MySQL {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return this;
     }
 
-    public void deletePortal(Guild guild) {
+    public MySQL deletePortal(Guild guild) {
         try {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM `portal` WHERE `guildid` = ?");
             ps.setString(1, guild.getId());
@@ -331,6 +354,7 @@ public class MySQL {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return this;
     }
 
 
@@ -347,7 +371,7 @@ public class MySQL {
         return false;
     }
 
-    public void updateUserValue(User user, String type, String value) {
+    public MySQL updateUserValue(User user, String type, String value) {
         try {
             if (connection.isClosed())
                 connect();
@@ -359,6 +383,7 @@ public class MySQL {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return this;
     }
 
     public String getUserValue(User user, String type) {
@@ -384,12 +409,13 @@ public class MySQL {
      *
      * @param user the User to check and create.
      */
-    private void createUserIfNecessary(User user) {
+    private MySQL createUserIfNecessary(User user) {
         if (!ifUserExist(user))
             createUser(user);
+        return this;
     }
 
-    public void createUser(User user) {
+    public MySQL createUser(User user) {
         try {
             if (connection.isClosed())
                 connect();
@@ -399,6 +425,7 @@ public class MySQL {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return this;
     }
 
     //Guild Stuff
@@ -409,7 +436,7 @@ public class MySQL {
             List<Guild> guilds = new ArrayList<>();
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                guilds.add(DiscordCore.getJDA().getGuildById(rs.getString("serverid")));
+                guilds.add(RubiconBot.getJDA().getGuildById(rs.getString("serverid")));
             }
             return guilds;
         } catch (SQLException ex) {
@@ -425,7 +452,7 @@ public class MySQL {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 if (rs.getString(type).contains(value)) {
-                    guilds.add(DiscordCore.getJDA().getGuildById(rs.getString("serverid")));
+                    guilds.add(RubiconBot.getJDA().getGuildById(rs.getString("serverid")));
                 }
             }
             return guilds;
@@ -447,7 +474,7 @@ public class MySQL {
         return false;
     }
 
-    public void updateGuildValue(Guild guild, String type, String value) {
+    public MySQL updateGuildValue(Guild guild, String type, String value) {
         try {
             if (connection.isClosed())
                 connect();
@@ -459,6 +486,7 @@ public class MySQL {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return this;
     }
 
     public String getGuildValue(Guild guild, String type) {
@@ -484,24 +512,39 @@ public class MySQL {
      *
      * @param guild the Guild to check and create.
      */
-    private void createGuildIfNecessary(Guild guild) {
+    private MySQL createGuildIfNecessary(Guild guild) {
         if (!ifGuildExits(guild))
             createGuildServer(guild);
+        return this;
     }
 
-    public void createGuildServer(Guild guild) {
+    public MySQL createGuildServer(Guild guild) {
         try {
             if (connection.isClosed())
                 connect();
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO `guilds`(`serverid`, `channel`, `prefix`, `joinmsg`, `leavemsg`, `logchannel`, `autorole`, `portal`, `welmsg`, `autochannels`) VALUES (?, '0', 'rc!', 'Welcome %user% on %guild%', 'Bye %user%', '0', '0', 'closed', '0', '')");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO `guilds`(`serverid`, `channel`, `prefix`, `joinmsg`, `leavemsg`, `logchannel`, `autorole`, `portal`, `welmsg`, `autochannels`, `blacklist`) VALUES (?, '0', 'rc!', 'Welcome %user% on %guild%', 'Bye %user%', '0', '0', 'closed', '0', '', '')");
             ps.setString(1, String.valueOf(guild.getIdLong()));
             ps.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return this;
     }
 
-    public void deleteGuild(Guild guild) {
+    public MySQL createGuildServer(String serverID) {
+        try {
+            if (connection.isClosed())
+                connect();
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO `guilds`(`serverid`, `channel`, `prefix`, `joinmsg`, `leavemsg`, `logchannel`, `autorole`, `portal`, `welmsg`, `autochannels`, `blacklist`) VALUES (?, '0', 'rc!', 'Welcome %user% on %guild%', 'Bye %user%', '0', '0', 'closed', '0', '', '')");
+            ps.setString(1, serverID);
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+
+    public MySQL deleteGuild(Guild guild) {
         try {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM `guilds` WHERE `serverid` = ?");
             ps.setString(1, guild.getId());
@@ -512,9 +555,24 @@ public class MySQL {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return this;
     }
 
-    public void createWarning(Guild guild, User target, User author, String reason) {
+    public MySQL deleteGuild(String serverID) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM `guilds` WHERE `serverid` = ?");
+            ps.setString(1, serverID);
+            ps.execute();
+            PreparedStatement ps2 = connection.prepareStatement("DELETE FROM `member` WHERE `guildid` = ?");
+            ps2.setString(1, serverID);
+            ps2.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+
+    public MySQL createWarning(Guild guild, User target, User author, String reason) {
         try {
             if (connection.isClosed())
                 connect();
@@ -527,6 +585,7 @@ public class MySQL {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return this;
     }
 
     public String getWarning(User user, Guild guild, String type) {
@@ -560,7 +619,7 @@ public class MySQL {
         return false;
     }
 
-    public void deleteWarning(User user, Guild g) {
+    public MySQL deleteWarning(User user, Guild g) {
         try {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM `warnings` WHERE `userid` = ? AND `serverid` = ?");
             ps.setString(1, user.getId());
@@ -569,5 +628,84 @@ public class MySQL {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return this;
+    }
+
+    public MySQL deleteGuildVerification(Guild g) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM `verifications` WHERE `guildid` =?");
+            ps.setString(1, g.getId());
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+
+    public String getVerificationValue(Guild g, String key) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM `verifications` WHERE `guildid` = ?");
+            ps.setString(1, g.getId());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next())
+                return rs.getString(key);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public MySQL createVerification(CommandVerification.VerificationSettings settings) {
+        String kicktext = "0";
+        if (settings.kicktext != null)
+            kicktext = settings.kicktext;
+        String emote;
+        if (settings.emote.getId() != null)
+            emote = settings.emote.getId();
+        else
+            emote = settings.emote.getName();
+        try {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO `verifications` (`guildid`, `channelid`, `roleid`, `text`, `verifiedtext`, `kicktime`, `kicktext`, `emote`) VALUES ( ?, ?, ?,?,?,?,?,?);");
+            ps.setString(1, settings.channel.getGuild().getId());
+            ps.setString(2, settings.channel.getId());
+            ps.setString(3, settings.role.getId());
+            ps.setString(4, settings.verifytext);
+            ps.setString(5, settings.verifiedtext);
+            ps.setString(6, String.valueOf(settings.kicktime));
+            ps.setString(7, kicktext);
+            ps.setString(8, emote);
+            ps.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+
+    public boolean verificationEnabled(Guild g) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM `verifications` WHERE `guildid` = ?");
+            ps.setString(1, g.getId());
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean isBlacklisted(TextChannel channel) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM guilds WHERE `serverid` = ?");
+            ps.setString(1, channel.getGuild().getId());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next())
+                return rs.getString("blacklist").contains(channel.getId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (NullPointerException ignored) {
+
+        }
+        return false;
     }
 }

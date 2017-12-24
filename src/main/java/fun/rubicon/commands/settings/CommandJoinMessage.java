@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.commands.settings;
 
 import fun.rubicon.RubiconBot;
@@ -14,8 +20,9 @@ public class CommandJoinMessage extends CommandHandler{
     public CommandJoinMessage(){
         super(new String[]{"joinmsg", "joinmessage", "joinnachricht"}, CommandCategory.SETTINGS,
                 new PermissionRequirements(2, "command.joinmsg"),
-                "Set the server's message channel (Join & Leave)!", "joinmsg <Message(%user% for username, %guild% for guildname)>");
+                "Set the server's message channel (Join & Leave)!", "<Message(%user% for username, %guild% for guildname)>");
     }
+
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         if (parsedCommandInvocation.args.length<=1)

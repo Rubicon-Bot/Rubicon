@@ -1,9 +1,16 @@
-package fun.rubicon.commands.admin;
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
+package fun.rubicon.commands.moderation;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
@@ -11,20 +18,11 @@ import fun.rubicon.util.MySQL;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-/**
- * Rubicon Discord bot
- *
- * @author Leon Kappes / Lee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.commands.admin
- */
 public class CommandUnWarn extends CommandHandler {
 
     public CommandUnWarn() {
-        super(new String[]{"unwarn"}, CommandCategory.MODERATION, new PermissionRequirements(2, "command.unwarn"), "Unwarns a user!", "unwarn <Mention>");
+        super(new String[]{"unwarn", "pardon"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.unwarn"), "Unwarns a user!", "<Mention>");
     }
 
 

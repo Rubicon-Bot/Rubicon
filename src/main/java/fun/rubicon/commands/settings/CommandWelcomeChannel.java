@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.commands.settings;
 
 import fun.rubicon.RubiconBot;
@@ -15,7 +21,7 @@ public class CommandWelcomeChannel extends CommandHandler{
     public CommandWelcomeChannel(){
         super(new String[]{"channel", "welcomechannel", "welchannel", "joinchannel"}, CommandCategory.SETTINGS,
                 new PermissionRequirements(3, "command.welcome"),
-                "Set the Server Welcome Channel!", "channel <#channel>");
+                "Set the Server Welcome Channel!", "<#channel>");
     }
 
     @Override

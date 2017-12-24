@@ -10,6 +10,7 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
@@ -22,7 +23,7 @@ public class CommandLevel extends CommandHandler {
 
 
     public CommandLevel() {
-        super(new String[]{"rank", "level", "money", "lvl"}, CommandCategory.FUN, new PermissionRequirements(0, "command.rank"), "Get your level, points and ruby's.", "rank");
+        super(new String[]{"rank", "level", "lvl"}, CommandCategory.FUN, new PermissionRequirements(PermissionLevel.EVERYONE, "command.rank"), "Get your level, points and ruby's.", "");
     }
 
     @Override

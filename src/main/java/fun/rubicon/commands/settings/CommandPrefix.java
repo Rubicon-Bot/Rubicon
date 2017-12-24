@@ -23,7 +23,7 @@ public class CommandPrefix extends CommandHandler{
     public CommandPrefix() {
         super(new String[]{"prefix", "pr"}, CommandCategory.SETTINGS,
                 new PermissionRequirements(2, "command.prefix"),
-                "Set the Server Prefix!", "prefix <prefix>");
+                "Set the Server Prefix!", "<prefix>");
     }
 
     @Override

@@ -1,28 +1,29 @@
-package fun.rubicon.commands.admin;
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
+package fun.rubicon.commands.moderation;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.MySQL;
 import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
 
-/**
- * Rubicon Discord bot
- *
- * @author Leon Kappes / Lee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.commands.admin
- */
 public class CommandWarn extends CommandHandler {
     public CommandWarn() {
-        super(new String[]{"warn"}, CommandCategory.MODERATION, new PermissionRequirements(2, "command.warn"), "Warn a User", "warn <User Mention> <reason> ");
+        super(new String[]{"warn"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.warn"), "Warn a user.", "<User Mention> <reason> ");
     }
 
     public static void WarnUser(User target, Guild guild, User author, String reason) {
@@ -44,11 +45,11 @@ public class CommandWarn extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        if (parsedCommandInvocation.args.length < 3) {
-            return new MessageBuilder().setEmbed(EmbedUtil.error("", "Not enough arguments!\n" + getUsage()).build()).build();
+        if (parsedCommandInvocation.args.length < 2) {
+            return new MessageBuilder().setEmbed(EmbedUtil.error("", "Not enough arguments!\n" + getParameterUsage()).build()).build();
         }
         if (parsedCommandInvocation.invocationMessage.getMentionedUsers().size() < 1) {
-            return new MessageBuilder().setEmbed(EmbedUtil.error("", "Please Mention someone!\n" + getUsage()).build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error("", "Please Mention someone!\n" + getParameterUsage()).build()).build();
         }
         User targ = parsedCommandInvocation.invocationMessage.getMentionedUsers().get(0);
         Guild g = parsedCommandInvocation.invocationMessage.getGuild();
@@ -58,6 +59,6 @@ public class CommandWarn extends CommandHandler {
             reas += parsedCommandInvocation.args[i] + " ";
         }
         WarnUser(targ, g, auth, reas);
-        return new MessageBuilder().setEmbed(EmbedUtil.success("", "I warned" + targ.getAsMention() + "\n For: " + reas).build()).build();
+        return new MessageBuilder().setEmbed(EmbedUtil.success("", "I warned " + targ.getAsMention() + " for `" + reas + "`").build()).build();
     }
 }

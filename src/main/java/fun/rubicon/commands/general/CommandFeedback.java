@@ -10,6 +10,7 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import net.dv8tion.jda.core.entities.Message;
@@ -25,8 +26,8 @@ public class CommandFeedback extends CommandHandler {
      */
     public CommandFeedback() {
         super(new String[]{"feedback", "submitidea", "submit-idea"}, CommandCategory.GENERAL,
-                new PermissionRequirements(0, "command.feedback"),
-                "Sends a feedback message to the developers.", "<message (min. 3 words)...>");
+                new PermissionRequirements(PermissionLevel.EVERYONE, "command.feedback"),
+                "Sends a feedback message to the developers.", "<message (min. 3 words)>");
     }
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions permissions) {

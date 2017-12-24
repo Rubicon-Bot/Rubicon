@@ -1,33 +1,42 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.commands.admin;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
-import fun.rubicon.core.Main;
-import fun.rubicon.core.permission.PermissionManager;
+import fun.rubicon.command2.CommandHandler;
+import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
+import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
-import fun.rubicon.util.MySQL;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.VoiceChannel;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 
-import java.text.ParseException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
-public class CommandAutochannel extends Command {
+public class CommandAutochannel extends CommandHandler {
 
-    public CommandAutochannel(String command, CommandCategory category) {
-        super(command, category);
+    public CommandAutochannel() {
+        super(new String[]{"autochannel", "ac"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.autochannel"), "Create channels that duplicate themselves upon joining.", "" +
+                "create <channelname>\n" +
+                "list\n" +
+                "delete <channel name>\n" +
+                "add <channel name>");
     }
 
-    public static HashMap<Guild, ChannelSearch> searches = new HashMap<>();
+    private static HashMap<Guild, ChannelSearch> searches = new HashMap<>();
 
     private static final String[] EMOTI = ("\uD83C\uDF4F \uD83C\uDF4E \uD83C\uDF50 \uD83C\uDF4A \uD83C\uDF4B \uD83C\uDF4C \uD83C\uDF49 \uD83C\uDF47 \uD83C\uDF53 \uD83C\uDF48 \uD83C\uDF52 \uD83C\uDF51 \uD83C\uDF4D \uD83E\uDD5D " +
             "\uD83E\uDD51 \uD83C\uDF45 \uD83C\uDF46 \uD83E\uDD52 \uD83E\uDD55 \uD83C\uDF3D \uD83C\uDF36 \uD83E\uDD54 \uD83C\uDF60 \uD83C\uDF30 \uD83E\uDD5C \uD83C\uDF6F \uD83E\uDD50 \uD83C\uDF5E " +
@@ -36,107 +45,116 @@ public class CommandAutochannel extends Command {
             "\uD83C\uDF62 \uD83C\uDF61 \uD83C\uDF67 \uD83C\uDF68 \uD83C\uDF66 \uD83C\uDF70 \uD83C\uDF82 \uD83C\uDF6E \uD83C\uDF6D \uD83C\uDF6C \uD83C\uDF6B \uD83C\uDF7F \uD83C\uDF69 \uD83C\uDF6A \uD83E\uDD5B " +
             "\uD83C\uDF75 \uD83C\uDF76 \uD83C\uDF7A \uD83C\uDF7B \uD83E\uDD42 \uD83C\uDF77 \uD83E\uDD43 \uD83C\uDF78 \uD83C\uDF79 \uD83C\uDF7E \uD83E\uDD44 \uD83C\uDF74 \uD83C\uDF7D").split(" ");
 
-
     @Override
-    protected void execute(String[] args, MessageReceivedEvent e) throws ParseException {
-        if(args.length == 1) {
-            if(args[0].equalsIgnoreCase("list")) {
-                String entry = Main.getMySQL().getGuildValue(e.getGuild(), "autochannels");
-                String out = "";
-                for(String s : entry.split(",")) {
-                    out += e.getJDA().getVoiceChannelById(s).getName() + "\n";
+    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        String[] args = parsedCommandInvocation.args;
+        Guild guild = parsedCommandInvocation.invocationMessage.getGuild();
+        JDA jda = parsedCommandInvocation.invocationMessage.getJDA();
+
+        if (args.length == 1) {
+            if (args[0].equalsIgnoreCase("list")) {
+                String entry = RubiconBot.getMySQL().getGuildValue(guild, "autochannels");
+                StringBuilder out = new StringBuilder();
+                for (String s : entry.split(",")) {
+                    out.append(jda.getVoiceChannelById(s).getName()).append("\n");
                 }
-                sendEmbededMessage(e.getTextChannel(),  "Autochannels", Colors.COLOR_PRIMARY, out);
+                return new MessageBuilder().setEmbed(EmbedUtil.embed("Autochannels", out.toString()).setColor(Colors.COLOR_PRIMARY).build()).build();
             } else
-                sendUsageMessage();
+                return createHelpMessage();
         } else if (args.length >= 2) {
             switch (args[0].toLowerCase()) {
                 case "create":
                 case "c":
-                    createChannel(args);
+                    createChannel(parsedCommandInvocation);
                     break;
                 case "del":
                 case "delete":
-                    invokeDelete(args);
+                    invokeDelete(parsedCommandInvocation);
                     break;
                 case "add":
                 case "set":
-                    addChannel(args);
+                    addChannel(parsedCommandInvocation);
                     break;
                 default:
-                    sendUsageMessage();
-                    break;
+                    return createHelpMessage();
             }
         } else
-            sendUsageMessage();
+            return createHelpMessage();
+        return null;
     }
 
-    private void createChannel(String[] args) {
+    private void createChannel(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
+        String[] args = parsedCommandInvocation.args;
+        Guild guild = parsedCommandInvocation.invocationMessage.getGuild();
+
         StringBuilder names = new StringBuilder();
-        for(int i = 1; i < args.length; i++){
+        for (int i = 1; i < args.length; i++) {
             names.append(args[i]).append(" ");
         }
         String name = names.toString();
-        name = names.replace(name.lastIndexOf(" "),name.lastIndexOf(" ") + 1, "").toString();
-        Channel channel = e.getGuild().getController().createVoiceChannel(name).complete();
-        String oldEntry = RubiconBot.getMySQL().getGuildValue(e.getGuild(), "autochannels");
-        String newEntry = oldEntry +", " + channel.getId();
-        RubiconBot.getMySQL().updateGuildValue(e.getGuild(), "autochannels", newEntry);
-        Message mymsg = e.getChannel().sendMessage(EmbedUtil.success("Created Autochannel", "Successfully created autochannel -> " + channel.getName() + "").build()).complete();
+        name = names.replace(name.lastIndexOf(" "), name.lastIndexOf(" ") + 1, "").toString();
+        Channel channel = guild.getController().createVoiceChannel(name).complete();
+        String oldEntry = RubiconBot.getMySQL().getGuildValue(guild, "autochannels");
+        String newEntry = oldEntry + ", " + channel.getId();
+        RubiconBot.getMySQL().updateGuildValue(guild, "autochannels", newEntry);
+        Message mymsg = parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(EmbedUtil.success("Created Autochannel", "Successfully created autochannel -> " + channel.getName() + "").build()).complete();
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
                 mymsg.delete().queue();
             }
-        },5000);
+        }, 5000);
     }
 
 
-    private void invokeDelete(String[] args){
+    private void invokeDelete(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
+        String[] args = parsedCommandInvocation.args;
+        Guild guild = parsedCommandInvocation.invocationMessage.getGuild();
+
         StringBuilder names = new StringBuilder();
-        for(int i = 1; i < args.length; i++){
+        for (int i = 1; i < args.length; i++) {
             names.append(args[i]).append(" ");
         }
         String name = names.toString();
-        name = names.replace(name.lastIndexOf(" "),name.lastIndexOf(" ") + 1, "").toString();
-        List<VoiceChannel> channels = e.getGuild().getVoiceChannelsByName(name, false);
-        String oldEntry = RubiconBot.getMySQL().getGuildValue(e.getGuild(), "autochannels");
+        name = names.replace(name.lastIndexOf(" "), name.lastIndexOf(" ") + 1, "").toString();
+        List<VoiceChannel> channels = guild.getVoiceChannelsByName(name, false);
+        String oldEntry = RubiconBot.getMySQL().getGuildValue(guild, "autochannels");
         List<VoiceChannel> autochannels = new ArrayList<>();
         channels.forEach(c -> {
             if (oldEntry.contains(c.getId()))
                 autochannels.add(c);
         });
-        if(autochannels.isEmpty()){
-            Message mymsg = e.getTextChannel().sendMessage(EmbedUtil.error("Unknown Channel", ":warning: There is now channel with this name").build()).complete();
+        if (autochannels.isEmpty()) {
+            Message mymsg = parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(EmbedUtil.error("Unknown Channel", "There is now channel with this name").build()).complete();
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
                     mymsg.delete().queue();
                 }
-            },5000);
+            }, 5000);
             return;
         }
-        if(autochannels.size() > 1){
+        if (autochannels.size() > 1) {
 
-            ChannelSearch search = genChannelSearch(autochannels, oldEntry, true);
-            searches.put(e.getGuild(), search);
+            ChannelSearch search = genChannelSearch(autochannels, true, parsedCommandInvocation);
+            searches.put(guild, search);
         } else {
             VoiceChannel channel = channels.get(0);
-            if(!oldEntry.contains(channel.getId())){
-                e.getTextChannel().sendMessage(EmbedUtil.error("Unknown channel", ":warning: This channel isn't an autochannel").build()).queue();
+            if (!oldEntry.contains(channel.getId())) {
+                parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(EmbedUtil.error("Unknown channel", "This channel isn't an autochannel").build()).queue();
                 return;
             }
-            deleteChannel(channel);
+            deleteChannel(channel, parsedCommandInvocation);
         }
     }
 
-    private ChannelSearch genChannelSearch(List<VoiceChannel> channels, String oldEntry, boolean deleteChannel){
+    private ChannelSearch genChannelSearch(List<VoiceChannel> channels, boolean deleteChannel, CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         HashMap<String, VoiceChannel> channellist = new HashMap<>();
         StringBuilder channelnames = new StringBuilder();
         ArrayList<String> EMOJIS = new ArrayList<>(Arrays.asList(EMOTI));
         channels.forEach(c -> {
             String category;
-            if(c.getParent() != null)
+            if (c.getParent() != null)
                 category = c.getParent().getName();
             else
                 category = "NONE";
@@ -144,77 +162,76 @@ public class CommandAutochannel extends Command {
             channellist.put(EMOJIS.get(0), c);
             EMOJIS.remove(0);
         });
-        if(channellist.isEmpty()){
-            e.getTextChannel().sendMessage(EmbedUtil.error("Unknown Channel", ":warning: There is now channel with this name").build()).queue();
+        if (channellist.isEmpty()) {
+            parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(EmbedUtil.error("Unknown Channel", "There is now channel with this name").build()).queue();
             return null;
         } else {
-            Message msg = e.getTextChannel().sendMessage(new EmbedBuilder().setColor(Colors.COLOR_SECONDARY).setDescription(channelnames.toString()).build()).complete();
-            channellist.keySet().forEach(e ->{
-                msg.addReaction(e).queue();
-            });
-            ChannelSearch search = new ChannelSearch(msg, channellist, deleteChannel);
-            return search;
+            Message msg = parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(new EmbedBuilder().setColor(Colors.COLOR_SECONDARY).setDescription(channelnames.toString()).build()).complete();
+            channellist.keySet().forEach(e -> msg.addReaction(e).queue());
+            return new ChannelSearch(msg, channellist, deleteChannel);
         }
     }
 
-    private void deleteChannel(VoiceChannel channel){
-        String oldEntry = RubiconBot.getMySQL().getGuildValue(e.getGuild(), "autochannels");
+    private void deleteChannel(VoiceChannel channel, CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
+        Guild guild = parsedCommandInvocation.invocationMessage.getGuild();
+
+        String oldEntry = RubiconBot.getMySQL().getGuildValue(guild, "autochannels");
         String newEntry = oldEntry.replace(channel.getId() + ",", "");
-        RubiconBot.getMySQL().updateGuildValue(e.getGuild(), "autochannels", newEntry);
-        Message mymsg = e.getChannel().sendMessage(EmbedUtil.success("Deleted channel", "Autochannel " + channel.getName() + "successfully removed").build()).complete();
+        RubiconBot.getMySQL().updateGuildValue(guild, "autochannels", newEntry);
+        Message mymsg = parsedCommandInvocation.invocationMessage.getChannel().sendMessage(EmbedUtil.success("Deleted channel", "Autochannel " + channel.getName() + " successfully removed").build()).complete();
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
                 mymsg.delete().queue();
             }
-        },5000);
+        }, 5000);
         channel.delete().queue();
     }
 
-    public static void deleteChannel(VoiceChannel channel, Message message, MessageReactionAddEvent event){
+    public static void deleteChannel(VoiceChannel channel, Message message, MessageReactionAddEvent event) {
         String oldEntry = RubiconBot.getMySQL().getGuildValue(event.getGuild(), "autochannels");
         String newEntry = oldEntry.replace(channel.getId() + ",", "");
         RubiconBot.getMySQL().updateGuildValue(event.getGuild(), "autochannels", newEntry);
-        message.editMessage(EmbedUtil.success("Deleted channel", "Autochannel " + channel.getName() + "successfully removed").build()).complete();
+        message.editMessage(EmbedUtil.success("Deleted channel", "Autochannel " + channel.getName() + " successfully removed").build()).complete();
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
                 message.delete().queue();
             }
-        },5000);
+        }, 5000);
         channel.delete().queue();
     }
 
-    public class ChannelSearch{
+    public class ChannelSearch {
         Message message;
         HashMap<String, VoiceChannel> channels;
         boolean delete;
 
-        private ChannelSearch(Message message, HashMap<String, VoiceChannel> channels, boolean deleteChannel){
+        private ChannelSearch(Message message, HashMap<String, VoiceChannel> channels, boolean deleteChannel) {
             this.message = message;
             this.channels = channels;
             this.delete = deleteChannel;
         }
     }
 
-    public static void handleReaction(MessageReactionAddEvent event){
-        if(!searches.containsKey(event.getGuild()))
+    public static void handleReaction(MessageReactionAddEvent event) {
+        if (!searches.containsKey(event.getGuild()))
             return;
         ChannelSearch search = searches.get(event.getGuild());
-        if(!event.getMessageId().equals(search.message.getId()))
+        if (!event.getMessageId().equals(search.message.getId()))
             return;
         String emote = event.getReactionEmote().getName();
         event.getReaction().removeReaction(event.getUser()).queue();
-        if(!search.channels.containsKey(emote))
+        if (!search.channels.containsKey(emote))
             return;
-        if(search.delete) {
+        if (search.delete) {
             VoiceChannel channel = search.channels.get(emote);
             deleteChannel(channel, event.getTextChannel().getMessageById(event.getMessageId()).complete(), event);
 
         } else {
             VoiceChannel channel = search.channels.get(emote);
             String oldEntry = RubiconBot.getMySQL().getGuildValue(event.getGuild(), "autochannels");
-            String newEntry = oldEntry +", " + channel.getId();
+            String newEntry = oldEntry + ", " + channel.getId();
             RubiconBot.getMySQL().updateGuildValue(event.getGuild(), "autochannels", newEntry);
             Message mymsg = event.getTextChannel().getMessageById(event.getMessageId()).complete().editMessage(EmbedUtil.success("Created Autochannel", "Successfully created autochannel -> " + channel.getName() + "").build()).complete();
             new Timer().schedule(new TimerTask() {
@@ -222,64 +239,47 @@ public class CommandAutochannel extends Command {
                 public void run() {
                     mymsg.delete().queue();
                 }
-            },5000);
+            }, 5000);
         }
-        event.getTextChannel().getMessageById(event.getMessageId()).complete().getReactions().forEach(r -> {
-            r.removeReaction().queue();
-        });
+        event.getTextChannel().getMessageById(event.getMessageId()).complete().getReactions().forEach(r -> r.removeReaction().queue());
     }
 
-    public void addChannel(String[] args){
+    public void addChannel(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
+        String[] args = parsedCommandInvocation.args;
+        Guild guild = parsedCommandInvocation.invocationMessage.getGuild();
+
         StringBuilder names = new StringBuilder();
-        for(int i = 1; i < args.length; i++){
+        for (int i = 1; i < args.length; i++) {
             names.append(args[i]).append(" ");
         }
         String name = names.toString();
-        name = names.replace(name.lastIndexOf(" "),name.lastIndexOf(" ") + 1, "").toString();
-        List<VoiceChannel> channels = e.getGuild().getVoiceChannelsByName(name, false);
-        String oldEntry = RubiconBot.getMySQL().getGuildValue(e.getGuild(), "autochannels");
-        if(channels.isEmpty()){
-            Message mymsg = e.getTextChannel().sendMessage(EmbedUtil.error("Not found","There is no Channel with the specified name").build()).complete();
+        name = names.replace(name.lastIndexOf(" "), name.lastIndexOf(" ") + 1, "").toString();
+        List<VoiceChannel> channels = guild.getVoiceChannelsByName(name, false);
+        String oldEntry = RubiconBot.getMySQL().getGuildValue(guild, "autochannels");
+        if (channels.isEmpty()) {
+            Message mymsg = parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(EmbedUtil.error("Not found", "There is no Channel with the specified name").build()).complete();
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
                     mymsg.delete().queue();
                 }
-            },5000);
+            }, 5000);
             return;
         }
-        if(channels.size() > 1){
-            ChannelSearch search = genChannelSearch(channels, oldEntry, false);
-            searches.put(e.getGuild(), search);
+        if (channels.size() > 1) {
+            ChannelSearch search = genChannelSearch(channels, false, parsedCommandInvocation);
+            searches.put(guild, search);
         } else {
             VoiceChannel channel = channels.get(0);
-            String newEntry = oldEntry +", " + channel.getId();
-            RubiconBot.getMySQL().updateGuildValue(e.getGuild(), "autochannels", newEntry);
-            Message mymsg = e.getChannel().sendMessage(EmbedUtil.success("Created Autochannel", "Successfully created autochannel -> " + channel.getName() + "").build()).complete();
+            String newEntry = oldEntry + ", " + channel.getId();
+            RubiconBot.getMySQL().updateGuildValue(guild, "autochannels", newEntry);
+            Message mymsg = parsedCommandInvocation.invocationMessage.getChannel().sendMessage(EmbedUtil.success("Created Autochannel", "Successfully created autochannel -> " + channel.getName() + "").build()).complete();
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
                     mymsg.delete().queue();
                 }
-            },5000);
+            }, 5000);
         }
-    }
-
-    @Override
-    public String getDescription() {
-        return null;
-    }
-
-    @Override
-    public String getUsage() {
-        return "autochannel create [channelname]\n" +
-                "autochannel list\n" +
-                "autochannel delete [channel name]\n" +
-                "autochannel add [channel name]";
-    }
-
-    @Override
-    public int getPermissionLevel() {
-        return 2;
     }
 }

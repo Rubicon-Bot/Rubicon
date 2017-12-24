@@ -10,9 +10,7 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
-import fun.rubicon.util.Colors;
-import fun.rubicon.util.Info;
-import fun.rubicon.util.Logger;
+import fun.rubicon.util.*;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
@@ -31,6 +29,7 @@ public abstract class CommandHandler {
     private final PermissionRequirements permissionRequirements;
     private final String description;
     private final String parameterUsage;
+    private boolean disabled = false;
 
     /**
      * Constructs a new CommandHandler.
@@ -65,6 +64,16 @@ public abstract class CommandHandler {
         this.parameterUsage = parameterUsage;
     }
 
+    protected CommandHandler(String[] invocationAliases, CommandCategory category,
+                             PermissionRequirements permissionRequirements, String description, String parameterUsage, boolean disabled) {
+        this.invocationAliases = invocationAliases;
+        this.category = category;
+        this.permissionRequirements = permissionRequirements;
+        this.description = description;
+        this.parameterUsage = parameterUsage;
+        this.disabled = disabled;
+    }
+
     /**
      * Checks permission, safely calls the execute method and ensures response.
      *
@@ -72,12 +81,16 @@ public abstract class CommandHandler {
      * @return a response that will be sent and deleted by the caller.
      */
     public Message call(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
+        if (disabled) {
+            return new MessageBuilder().setEmbed(EmbedUtil.info("Vote Command disabled", "Vote Command is currently disabled due to an error.\nWe are working on that problem.").setFooter("RubiconBot Dev Team", null).build()).build();
+        }
         UserPermissions userPermissions = new UserPermissions(parsedCommandInvocation.invocationMessage.getAuthor(),
                 parsedCommandInvocation.invocationMessage.getGuild());
         // check permission
         if (permissionRequirements.coveredBy(userPermissions)) {
             // execute command
             try {
+                ChannelLog.logCommand(parsedCommandInvocation);
                 return execute(parsedCommandInvocation, userPermissions);
             } catch (Exception e) { // catch exceptions in command and provide an answer
                 Logger.error("Unknown error during the execution of the '" + parsedCommandInvocation.invocationCommand + "' command. ");
@@ -189,8 +202,12 @@ public abstract class CommandHandler {
      * @param aliasToUse   which alias should be used in this message?
      */
     public Message createHelpMessage(String serverPrefix, String aliasToUse) {
+        StringBuilder usage = new StringBuilder();
+        for (String part : getParameterUsage().split("\n")) {
+            usage.append(serverPrefix + aliasToUse + " " + part + "\n");
+        }
         return message(info('\'' + aliasToUse + "' command help", getDescription())
                 .addField("Aliases", String.join(", ", getInvocationAliases()), false)
-                .addField("Usage", serverPrefix + aliasToUse + ' ' + getParameterUsage(), false));
+                .addField("Usage", usage.toString(), false));
     }
 }

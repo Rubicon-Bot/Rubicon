@@ -1,13 +1,10 @@
-package fun.rubicon.commands.botowner;
-
-/**
- * Rubicon Discord bot
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
  *
- * @author xEiisKeksx
- * @copyright RubiconBot Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.command
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
  */
+
+package fun.rubicon.commands.botowner;
 
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
@@ -34,7 +31,7 @@ public class CommandBroadcast extends CommandHandler {
     public CommandBroadcast() {
         super(new String[]{"broadcast"}, CommandCategory.BOT_OWNER,
                 new PermissionRequirements(4, "command.broadcast"),
-                "Sends a message to all guild owners.", "broadcast <message>");
+                "Sends a message to all guild owners.", "<message>");
     }
 
     @Override

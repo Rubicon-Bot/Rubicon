@@ -10,6 +10,7 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
@@ -22,18 +23,46 @@ import java.util.*;
 
 /**
  * Handles the 'help' command which prints command description, aliases and usage.
+ *
  * @author Yannick Seeger, tr808axm
  */
 public class CommandHelp extends CommandHandler {
 
     public CommandHelp() {
         super(new String[]{"help", "usage", "?", "command", "manual", "man"}, CommandCategory.GENERAL,
-                new PermissionRequirements(0, "command.help"),
-                "Shows the command manual.", "help [command]");
+                new PermissionRequirements(PermissionLevel.EVERYONE, "command.help"),
+                "Shows the command manual.", "[command]");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        //Generate JSON File for website
+        /*int i = 0;
+        StringBuilder out = new StringBuilder();
+        List<CommandHandler> allCommands = new ArrayList<>();
+        for (CommandHandler commandHandler : RubiconBot.getCommandManager().getCommandAssociations().values()) {
+            if (!allCommands.contains(commandHandler))
+                allCommands.add(commandHandler);
+        }
+        for (CommandHandler commandHandler : allCommands) {
+            if (commandHandler.getCategory().equals(CommandCategory.BOT_OWNER))
+                continue;
+            StringBuilder usage = new StringBuilder();
+            for (String part : commandHandler.getParameterUsage().split("\n")) {
+                if (commandHandler.getParameterUsage().split("\n").length > 1) {
+                    usage.append(Info.BOT_DEFAULT_PREFIX + commandHandler.getInvocationAliases()[0] + " " + part + "<br>");
+                }
+                else
+                    usage.append(Info.BOT_DEFAULT_PREFIX + commandHandler.getInvocationAliases()[0] + " " + part + "");
+            }
+            out.append("{\n\"id\":\"" + i + "\",\"name\":\"" + commandHandler.getInvocationAliases()[0] + "\",\n" +
+                    "\t\"command\":\"" + Info.BOT_DEFAULT_PREFIX + commandHandler.getInvocationAliases()[0] + "\",\n" +
+                    "\t\"description\":\"" + commandHandler.getDescription() + "\",\n" +
+                    "\t\"category\":\"" + commandHandler.getCategory().getId() + "\",\n" +
+                    "\t\"usage\":\"" + usage + "\"\n},\n");
+            i++;
+        }
+        Logger.debug(out.toString());*/
         if (parsedCommandInvocation.args.length == 0) {
             // show complete command manual
             EmbedBuilder embedBuilder = new EmbedBuilder()
@@ -49,13 +78,16 @@ public class CommandHelp extends CommandHandler {
                 if (!categoryList.contains(commandHandler))
                     categoryList.add(commandHandler);
             }
-            for (Map.Entry<CommandCategory, List<CommandHandler>> categoryEntry : commandCategoryListMap.entrySet()) {
+            /*for (Map.Entry<CommandCategory, List<CommandHandler>> categoryEntry : commandCategoryListMap.entrySet()) {
+                if (categoryEntry.getKey().equals(CommandCategory.BOT_OWNER))
+                    continue;
                 StringBuilder builder = new StringBuilder();
                 categoryEntry.getValue().forEach(handler -> builder.append('`').append(parsedCommandInvocation.serverPrefix)
-                        .append(handler.getUsage()).append("` — ").append(handler.getDescription()).append('\n'));
+                        .append(handler.getInvocationAliases()[0]).append("` — ").append(handler.getDescription()).append('\n'));
                 embedBuilder.addField(categoryEntry.getKey().getDisplayname() + " — "
                         + categoryEntry.getValue().size(), builder.toString(), false);
-            }
+            }*/
+            embedBuilder.addField("Documentation", "Take a look at my [Documentation](https://rubicon.fun)", false);
             embedBuilder.setFooter("Loaded a total of "
                     + new HashSet<>(RubiconBot.getCommandManager().getCommandAssociations().values()).size()
                     + " commands.", null);

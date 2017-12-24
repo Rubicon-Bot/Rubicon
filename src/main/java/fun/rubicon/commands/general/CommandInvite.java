@@ -20,7 +20,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class CommandInvite extends CommandHandler {
 
     public CommandInvite() {
-        super(new String[]{"invite", "inv"}, CommandCategory.GENERAL, new PermissionRequirements(0, "command.invite"), "Gives you the invite-link of the bot.", "invite");
+        super(new String[]{"invite", "inv"}, CommandCategory.GENERAL, new PermissionRequirements(0, "command.invite"), "Gives you the invite-link of the bot.", "");
     }
 
     @Override

@@ -1,32 +1,30 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.util;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.core.Main;
+import fun.rubicon.command2.CommandManager;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-/**
- * Rubicon Discord bot
- *
- * @author Leon Kappes / Lee
- * @copyright RubiconBot Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package util
- */
 public class ChannelLog {
-    public static void logCommand(String command, MessageReceivedEvent event) {
-        Guild guild = event.getGuild();
+
+    public static void logCommand(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
+        Guild guild = parsedCommandInvocation.invocationMessage.getGuild();
         MySQL SQL = RubiconBot.getMySQL();
         String prefix = SQL.getGuildValue(guild, "prefix");
         String logchannel = SQL.getGuildValue(guild, "logchannel");
         if (SQL.getGuildValue(guild, "logchannel").equals("0")) return;
-        String us = event.getMember().getNickname();
+        String us = parsedCommandInvocation.invocationMessage.getMember().getNickname();
         TextChannel channel = guild.getTextChannelById(logchannel);
         if (channel == null) return;
-        if (us == null) us = event.getAuthor().getName();
-        channel.sendMessage(new EmbedBuilder().setDescription("[Command] `" + prefix + command + "` was executed by **" + us + " (" + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + ")**").build()).queue();
+        if (us == null) us = parsedCommandInvocation.invocationMessage.getAuthor().getName();
+        channel.sendMessage(new EmbedBuilder().setDescription("[Command] `" + prefix + parsedCommandInvocation.invocationCommand + "` was executed by **" + us + " (" + parsedCommandInvocation.invocationMessage.getAuthor().getName() + "#" + parsedCommandInvocation.invocationMessage.getAuthor().getDiscriminator() + ")**").build()).queue();
     }
 
 }
