@@ -689,6 +689,8 @@ public class MySQL {
                 return rs.getString("blacklist").contains(channel.getId());
         } catch (SQLException e){
             e.printStackTrace();
+        } catch (NullPointerException ignored) {
+
         }
         return false;
     }

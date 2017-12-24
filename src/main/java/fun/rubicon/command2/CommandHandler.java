@@ -10,10 +10,7 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
-import fun.rubicon.util.Colors;
-import fun.rubicon.util.EmbedUtil;
-import fun.rubicon.util.Info;
-import fun.rubicon.util.Logger;
+import fun.rubicon.util.*;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
@@ -93,6 +90,7 @@ public abstract class CommandHandler {
         if (permissionRequirements.coveredBy(userPermissions)) {
             // execute command
             try {
+                ChannelLog.logCommand(parsedCommandInvocation);
                 return execute(parsedCommandInvocation, userPermissions);
             } catch (Exception e) { // catch exceptions in command and provide an answer
                 Logger.error("Unknown error during the execution of the '" + parsedCommandInvocation.invocationCommand + "' command. ");
