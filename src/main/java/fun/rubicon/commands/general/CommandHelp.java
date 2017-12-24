@@ -79,7 +79,7 @@ public class CommandHelp extends CommandHandler {
                 if (!categoryList.contains(commandHandler))
                     categoryList.add(commandHandler);
             }
-            for (Map.Entry<CommandCategory, List<CommandHandler>> categoryEntry : commandCategoryListMap.entrySet()) {
+            /*for (Map.Entry<CommandCategory, List<CommandHandler>> categoryEntry : commandCategoryListMap.entrySet()) {
                 if (categoryEntry.getKey().equals(CommandCategory.BOT_OWNER))
                     continue;
                 StringBuilder builder = new StringBuilder();
@@ -87,7 +87,8 @@ public class CommandHelp extends CommandHandler {
                         .append(handler.getInvocationAliases()[0]).append("` — ").append(handler.getDescription()).append('\n'));
                 embedBuilder.addField(categoryEntry.getKey().getDisplayname() + " — "
                         + categoryEntry.getValue().size(), builder.toString(), false);
-            }
+            }*/
+            embedBuilder.addField("Documentation", "Take a look at my [Documentation](https://rubicon.fun)", false);
             embedBuilder.setFooter("Loaded a total of "
                     + new HashSet<>(RubiconBot.getCommandManager().getCommandAssociations().values()).size()
                     + " commands.", null);
