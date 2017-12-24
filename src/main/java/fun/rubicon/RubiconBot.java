@@ -158,6 +158,7 @@ public class RubiconBot {
         // botowner commands package
         commandManager.registerCommandHandlers(
                 new CommandBroadcast(),
+                new CommandDBGuild(),
                 new CommandPlay(),
                 new CommandRestart(),
                 new CommandStop(),
