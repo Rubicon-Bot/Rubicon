@@ -1,6 +1,5 @@
 package fun.rubicon.commands.tools;
 
-import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
@@ -17,7 +16,7 @@ import java.util.List;
 
 public class CommandMoveAll extends CommandHandler{
     public CommandMoveAll() {
-        super(new String[] {"moveall", "mvall", "mva"}, CommandCategory.TOOLS, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.moveall"), "Move all members in your channel into another channel", "moveall <Channel>", false);
+        super(new String[] {"moveall", "mvall", "mva"}, CommandCategory.ADMIN, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.moveall"), "Move all members in your channel into another channel", "moveall <Channel>", false);
     }
 
     @Override

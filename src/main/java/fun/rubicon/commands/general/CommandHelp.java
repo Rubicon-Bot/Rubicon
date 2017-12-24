@@ -38,7 +38,7 @@ public class CommandHelp extends CommandHandler {
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         //Generate JSON File for website
-        /*int i = 0;
+        int i = 0;
         StringBuilder out = new StringBuilder();
         List<CommandHandler> allCommands = new ArrayList<>();
         for (CommandHandler commandHandler : RubiconBot.getCommandManager().getCommandAssociations().values()) {
@@ -63,7 +63,7 @@ public class CommandHelp extends CommandHandler {
                     "\t\"usage\":\"" + usage + "\"\n},\n");
             i++;
         }
-        Logger.debug(out.toString());*/
+        Logger.debug("[\n" + out.toString() + "\n]");
         if (parsedCommandInvocation.args.length == 0) {
             // show complete command manual
             EmbedBuilder embedBuilder = new EmbedBuilder()

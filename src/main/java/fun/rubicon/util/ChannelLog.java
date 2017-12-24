@@ -26,7 +26,7 @@ public class ChannelLog {
         TextChannel channel = guild.getTextChannelById(logchannel);
         if (channel == null) return;
         if (us == null) us = parsedCommandInvocation.invocationMessage.getAuthor().getName();
-        channel.sendMessage(new EmbedBuilder().setDescription("[Command] `" + prefix + parsedCommandInvocation.invocationCommand + "` was executed by **" + us + " (" + parsedCommandInvocation.invocationMessage.getAuthor().getName() + "#" + parsedCommandInvocation.invocationMessage.getAuthor().getDiscriminator() + ")**").build()).queue();
+        channel.sendMessage(new EmbedBuilder().setDescription("[Command] `" + prefix + parsedCommandInvocation.invocationCommand + "` was executed by **" + parsedCommandInvocation.invocationMessage.getAuthor().getName() + "#" + parsedCommandInvocation.invocationMessage.getAuthor().getDiscriminator() + " (" + parsedCommandInvocation.invocationMessage.getAuthor().getId() + ")**").build()).queue();
     }
 
 }
