@@ -544,6 +544,19 @@ public class MySQL {
         }
         return this;
     }
+    public MySQL deleteGuild(String serverID) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM `guilds` WHERE `serverid` = ?");
+            ps.setString(1, serverID);
+            ps.execute();
+            PreparedStatement ps2 = connection.prepareStatement("DELETE FROM `member` WHERE `guildid` = ?");
+            ps2.setString(1, serverID);
+            ps2.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
 
     public MySQL createWarning(Guild guild, User target, User author, String reason) {
         try {
