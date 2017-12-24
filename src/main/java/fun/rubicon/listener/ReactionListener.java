@@ -1,7 +1,12 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.listener;
 
 import fun.rubicon.commands.admin.CommandAutochannel;
-import fun.rubicon.commands.admin.CommandGiveaway;
 import fun.rubicon.commands.botowner.CommandBroadcast;
 import fun.rubicon.commands.tools.CommandVote;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
@@ -14,7 +19,6 @@ public class ReactionListener extends ListenerAdapter{
         if(event.getUser().isBot())
             return;
         CommandVote.reactVote(event);
-        CommandGiveaway.handleReaction(event);
         CommandBroadcast.handleReaction(event);
         CommandAutochannel.handleReaction(event);
     }

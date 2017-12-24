@@ -17,6 +17,7 @@ import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.CommandManager;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.ListenerManager;
+import fun.rubicon.features.GiveawayHandler;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -80,6 +81,9 @@ public class RubiconBot {
         // init JDA
         initJDA();
 
+        // init features
+        new GiveawayHandler();
+
         // post bot stats to discordbots.org and print warning
         DBLUtil.postStats(false);
     }
@@ -107,7 +111,8 @@ public class RubiconBot {
         builder.setGame(Game.of(Info.BOT_NAME + " " + Info.BOT_VERSION));
 
         // add all EventListeners
-        builder.addEventListener(instance.eventListeners);
+        for (EventListener listener : instance.eventListeners)
+            builder.addEventListener(listener);
 
         new ListenerManager(builder);
 
@@ -249,7 +254,12 @@ public class RubiconBot {
      * @return false if the bot has never been initialized or if the EventListener is already registered.
      */
     public static boolean registerEventListener(EventListener listener) {
-        return instance != null && instance.eventListeners.add(listener);
+        if (instance != null && instance.eventListeners.add(listener)) {
+            if (instance.jda != null)
+                instance.jda.addEventListener(listener);
+            return true;
+        }
+        return false;
     }
 
     /**
