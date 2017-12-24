@@ -187,7 +187,8 @@ public class RubiconBot {
                 new CommandJoinMessage(),
                 new CommandLogChannel(),
                 new CommandPrefix(),
-                new CommandWelcomeChannel()
+                new CommandWelcomeChannel(),
+                new CommandBlacklist()
         );
         // tools commands package
         commandManager.registerCommandHandlers(

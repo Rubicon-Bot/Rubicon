@@ -71,6 +71,7 @@ public class CommandVerification extends CommandHandler {
         setupmsg.addReaction("❌").queue();
         VerificationSetup setup = new VerificationSetup(parsedCommandInvocation, setupmsg);
         setups.put(message.getGuild(), setup);
+        users.put(setupmsg, message.getAuthor());
         return null;
     }
 
@@ -94,14 +95,16 @@ public class CommandVerification extends CommandHandler {
         public String verifytext;
         public String verifiedtext;
         public Role role;
+        public MessageReaction.ReactionEmote emote;
         public int kicktime;
         public String kicktext;
 
-        public VerificationSettings(TextChannel verificationChannel, String verifytext, String verifiedtext, Role verifiedrole, int kicktime, String kicktext) {
+        public VerificationSettings(TextChannel verificationChannel, String verifytext, String verifiedtext, Role verifiedrole, int kicktime, String kicktext, MessageReaction.ReactionEmote emote) {
             this.channel = verificationChannel;
             this.verifytext = verifytext;
             this.verifiedtext = verifiedtext;
             this.role = verifiedrole;
+            this.emote = emote;
             this.kicktime = kicktime;
             this.kicktext = kicktext;
         }
@@ -109,15 +112,17 @@ public class CommandVerification extends CommandHandler {
 
     public static void handleReaction(MessageReactionAddEvent event) {
         Message message = event.getTextChannel().getMessageById(event.getMessageId()).complete();
-        if(!message.getAuthor().equals(RubiconBot.getJDA().getSelfUser())) return;
+        if(!message.getAuthor().equals(event.getJDA().getSelfUser())) return;
         if(!event.getUser().equals(users.get(message))) return;
         if(RubiconBot.getMySQL().verificationEnabled(event.getGuild())){
             TextChannel channel = event.getGuild().getTextChannelById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "channelid"));
             if (event.getTextChannel().equals(channel)) {
                 event.getReaction().removeReaction().queue();
+                String emote = RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "emote");
+                if(!emote.equals(event.getReactionEmote().getName()) && !emote.equals(event.getReactionEmote().getId())) return;
                 Role verfied = event.getGuild().getRoleById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "roleid"));
                 event.getGuild().getController().addRolesToMember(event.getMember(), verfied).queue();
-                message.editMessage(new EmbedBuilder().setDescription(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "verifiedtext").replace("%user%", event.getUser().getAsMention())).build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
+                message.editMessage(new EmbedBuilder().setDescription(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "verifiedtext").replace("%user%", event.getUser().getAsMention())).build()).queue();
             }
         } else {
             if (!setups.containsKey(event.getGuild())) return;
@@ -125,10 +130,12 @@ public class CommandVerification extends CommandHandler {
             event.getReaction().removeReaction(event.getUser()).queue();
             message.getReactions().forEach(r -> r.removeReaction().queue());
             String emote = event.getReactionEmote().getName();
-            if (emote.equalsIgnoreCase("✅"))
+            if(setups.get(event.getGuild()).step == 4)
+                setupStepFour(event);
+            else if (emote.equalsIgnoreCase("✅"))
                 message.editMessage(EmbedUtil.info("Step 2 - Channel", "Please mention the channel where verification messages should me posted").build()).queue();
             else if (emote.equalsIgnoreCase("❌"))
-                message.editMessage(EmbedUtil.error("Aborted", "Successfully aborted setup").build()).queue(msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
+                message.editMessage(EmbedUtil.error("Aborted", "Successfully aborted setup").build()).queue();
         }
     }
 
@@ -138,7 +145,7 @@ public class CommandVerification extends CommandHandler {
             message.delete().queue();
             return;
         }
-        VerificationSettings settings = new VerificationSettings(response.getMentionedChannels().get(0), null, null, null, 0, null);
+        VerificationSettings settings = new VerificationSettings(response.getMentionedChannels().get(0), null, null, null, 0, null, null);
         settingslist.put(message.getGuild(), settings);
 
         message.editMessage(EmbedUtil.info("Step 3 - Verify message", "Please enter the text of the message that'll be sent to new users. (Use `%user%` to mention the user)").build()).queue();
@@ -169,13 +176,30 @@ public class CommandVerification extends CommandHandler {
         VerificationSettings settings = settingslist.get(message.getGuild());
         settings.verifiedtext = response.getContentDisplay();
         settingslist.replace(message.getGuild(), settings);
-        message.editMessage(EmbedUtil.info("Step 4 - Verified role", "Please mention the verified role").build()).queue();
+        message.editMessage(EmbedUtil.info("Step 4 - Verified emote", "Please react with the verify emote").build()).queue();
         VerificationSetup setup = setups.get(message.getGuild());
         setup.step++;
         setups.replace(message.getGuild(), setup);
     }
 
-    public static void setupStepFour(Message message, Message response) {
+    public static void setupStepFour(MessageReactionAddEvent event){
+        Message message = event.getTextChannel().getMessageById(event.getMessageId()).complete();
+        VerificationSettings settings = settingslist.get(event.getGuild());
+        MessageReaction.ReactionEmote emote = event.getReactionEmote();
+        if(event.getGuild().getEmoteById(emote.getId()) == null){
+            message.getTextChannel().sendMessage(EmbedUtil.error("Unsupported emote", "You can only use global or custom emotes of your server").build()).queue(msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
+            return;
+        }
+        settings.emote = emote;
+        settingslist.replace(event.getGuild(), settings);
+        message.editMessage(EmbedUtil.info("Step 5 - Verified role", "Please type in the emote that should be reacted by users when acceptings rules").build()).queue();
+        VerificationSetup setup = setups.get(message.getGuild());
+        setup.step++;
+        setups.replace(message.getGuild(), setup);
+        event.getReaction().removeReaction(event.getUser()).queue();
+    }
+
+    public static void setupStepFive(Message message, Message response) {
         VerificationSettings settings = settingslist.get(message.getGuild());
         if (response.getMentionedRoles().isEmpty()) {
             setups.remove(message.getGuild());
@@ -185,14 +209,14 @@ public class CommandVerification extends CommandHandler {
         }
         settings.role = response.getMentionedRoles().get(0);
         settingslist.replace(message.getGuild(), settings);
-        message.editMessage(EmbedUtil.info("Step 5 - Time", "Please enter the time (minutes) after that the user should be kicked when he does not accept the rules").build()).queue();
+        message.editMessage(EmbedUtil.info("Step 6 - Time", "Please enter the time (minutes) after that the user should be kicked when he does not accept the rules").build()).queue();
         VerificationSetup setup = setups.get(message.getGuild());
         setup.step++;
         setups.replace(message.getGuild(), setup);
 
     }
 
-    public static void setupStepFive(Message message, Message response) {
+    public static void setupStepSix(Message message, Message response) {
         int kicktime;
         try {
             kicktime = Integer.parseInt(response.getContentDisplay());
@@ -202,22 +226,21 @@ public class CommandVerification extends CommandHandler {
         }
         VerificationSettings settings = settingslist.get(message.getGuild());
         if (kicktime == 0) {
-            settings.verifiedtext = "NULL";
+            settings.kicktext = "NULL";
             message.editMessage(EmbedUtil.success("Saved!", "Successfully enabled verification").build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
             setups.remove(message.getGuild());
             settingslist.remove(message.getGuild());
-            message.delete().queue();
             RubiconBot.getMySQL().createVerification(settings);
             return;
         }
         settings.kicktime = kicktime;
-        message.editMessage(EmbedUtil.info("Step 6 - Kick message", "Please enter the message that'll be sent to the user after he got kicked").build()).queue();
+        message.editMessage(EmbedUtil.info("Step 7 - Kick message", "Please enter the message that'll be sent to the user after he got kicked").build()).queue();
         VerificationSetup setup = setups.get(message.getGuild());
         setup.step++;
         setups.replace(message.getGuild(), setup);
     }
 
-    public static void setupStepSix(Message message, Message response) {
+    public static void setupStepSeven(Message message, Message response) {
         if (response.getContentDisplay().length() > 1048) {
             message.getTextChannel().sendMessage(EmbedUtil.error("To long", "Your message can't be longer than 1048 chars").build()).queue(msg -> msg.delete().queueAfter(4, TimeUnit.SECONDS));
             return;
