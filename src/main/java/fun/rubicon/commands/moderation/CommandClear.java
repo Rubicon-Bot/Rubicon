@@ -53,11 +53,10 @@ public class CommandClear extends CommandHandler{
                 List<Message> messages;
                 messages = history.retrievePast(numb).complete();
                 parsedCommandInvocation.invocationMessage.getTextChannel().deleteMessages(messages).queue();
-                int number = numb - 1;
                 //User Feedback
                 Message msg = parsedCommandInvocation.invocationMessage.getChannel().sendMessage(new EmbedBuilder()
                         .setColor(Colors.COLOR_PRIMARY)
-                        .setDescription(":bomb: Deleted " + number + " Messages!")
+                        .setDescription(":bomb: Deleted " + numb + " Messages!")
                         .build()
                 ).complete();
                 //Delete User Feedback

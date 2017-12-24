@@ -191,7 +191,8 @@ public class RubiconBot {
                 new CommandJoinMessage(),
                 new CommandLogChannel(),
                 new CommandPrefix(),
-                new CommandWelcomeChannel()
+                new CommandWelcomeChannel(),
+                new CommandBlacklist()
         );
         // tools commands package
         commandManager.registerCommandHandlers(
@@ -208,7 +209,8 @@ public class RubiconBot {
                 new CommandServerInfo(),
                 new CommandShorten(),
                 new CommandUserInfo(),
-                new CommandVote()
+                new CommandVote(),
+                new CommandMoveAll()
         );
 
         // also register commands from the old framework

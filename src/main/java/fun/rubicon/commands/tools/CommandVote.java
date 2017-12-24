@@ -12,6 +12,7 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.core.exceptions.ErrorResponseException;
 
@@ -348,6 +349,19 @@ public class CommandVote extends CommandHandler implements Serializable {
                 }
 
         });
+    }
+
+    public static void handleMessageDeletion(MessageDeleteEvent event){
+        try {
+            if(!polls.containsKey(event.getGuild())) return;
+            Poll poll = getPoll(event.getGuild());
+            if(!poll.isPollmsg(event.getMessageId())) return;
+            poll.pollmsgs.remove(event.getTextChannel().getId(), event.getMessageId());
+            polls.replace(event.getGuild(), poll);
+            savePoll(event.getGuild());
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
 }
