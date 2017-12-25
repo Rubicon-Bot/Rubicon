@@ -26,7 +26,6 @@ public class CommandDBGuild extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-
         if (parsedCommandInvocation.args.length == 2) {
             String option = parsedCommandInvocation.args[0];
             String serverID = parsedCommandInvocation.args[1];

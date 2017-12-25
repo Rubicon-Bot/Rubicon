@@ -14,6 +14,10 @@ import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import net.dv8tion.jda.core.entities.Message;
 
+/**
+ * Handles the 'rockpaperscissor' command.
+ * @author Yannick Seeger / ForYaSee
+ */
 public class CommandRockPaperScissor extends CommandHandler {
 
     public CommandRockPaperScissor() {

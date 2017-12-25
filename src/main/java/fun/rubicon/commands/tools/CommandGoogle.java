@@ -23,6 +23,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+/**
+ * Handles the 'google' command.
+ * @author Leon Kappes / Lee
+ */
 public class CommandGoogle extends CommandHandler{
     private String ttemp = "";
 

@@ -56,7 +56,7 @@ public abstract class CommandHandler {
      * @param parameterUsage         the usage message.
      */
     protected CommandHandler(String[] invocationAliases, CommandCategory category,
-                             PermissionRequirements permissionRequirements, String description, String parameterUsage) {
+                                  PermissionRequirements permissionRequirements, String description, String parameterUsage) {
         this.invocationAliases = invocationAliases;
         this.category = category;
         this.permissionRequirements = permissionRequirements;
@@ -81,7 +81,7 @@ public abstract class CommandHandler {
      * @return a response that will be sent and deleted by the caller.
      */
     public Message call(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
-        if (disabled) {
+        if(disabled) {
             return new MessageBuilder().setEmbed(EmbedUtil.info("Vote Command disabled", "Vote Command is currently disabled due to an error.\nWe are working on that problem.").setFooter("RubiconBot Dev Team", null).build()).build();
         }
         UserPermissions userPermissions = new UserPermissions(parsedCommandInvocation.invocationMessage.getAuthor(),

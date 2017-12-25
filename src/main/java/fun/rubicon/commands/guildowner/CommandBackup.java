@@ -13,6 +13,10 @@ import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import net.dv8tion.jda.core.entities.Message;
 
+/**
+ * Handles the 'backup' command.
+ * @author Yannick Seeger / ForYaSee
+ */
 public class CommandBackup extends CommandHandler {
 
     public CommandBackup(String[] invocationAliases, CommandCategory category, PermissionRequirements permissionRequirements, String description, String usage) {

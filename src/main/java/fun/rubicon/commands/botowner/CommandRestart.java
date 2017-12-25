@@ -20,6 +20,10 @@ import net.dv8tion.jda.core.entities.Message;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * Handles the 'restart' command.
+ * @author Leon Kappes / Lee
+ */
 public class CommandRestart extends CommandHandler{
     public CommandRestart() {
         super(new String[]{"rs", "restart", "r"}, CommandCategory.BOT_OWNER, new PermissionRequirements(4, "command.restart"), "Restart the Bot!", "");

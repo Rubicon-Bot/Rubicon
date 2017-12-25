@@ -57,6 +57,5 @@ public class CommandGuilds extends CommandHandler {
         }
         int sideNumb = SideNumbInput;
         return message(info("RubiconBot running on following guilds", "`Total guilds: " + RubiconBot.getJDA().getGuilds().size() + " - Side " + sideNumb + " / " + sideNumbAll + "`\n\n" + runningOnServers.toString()));
-
     }
 }

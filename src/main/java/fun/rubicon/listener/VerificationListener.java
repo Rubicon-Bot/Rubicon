@@ -20,6 +20,9 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * @author Michael Rittmeister / Schlaubi
+ */
 public class VerificationListener extends ListenerAdapter {
 
     @Override
@@ -86,6 +89,7 @@ public class VerificationListener extends ListenerAdapter {
         try {
             double d = Double.parseDouble(str);
         } catch (NumberFormatException nfe) {
+
             return false;
         }
         return true;

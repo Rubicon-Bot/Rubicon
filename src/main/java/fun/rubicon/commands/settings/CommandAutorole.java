@@ -16,6 +16,10 @@ import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
+/**
+ * Handles the 'autorole' command.
+ * @author Leon Kappes / Lee
+ */
 public class CommandAutorole extends CommandHandler{
     public CommandAutorole(){
         super(new String[]{"autorole", "role"}, CommandCategory.ADMIN, new PermissionRequirements(2, "command.autorole"), "Set the Autorole.Triggers when a User Join your Guild", "<RoleMention or RoleName>");

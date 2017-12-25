@@ -16,11 +16,11 @@ import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.MySQL;
 import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
 
+/**
+ * Handles the 'warn' command.
+ */
 public class CommandWarn extends CommandHandler {
     public CommandWarn() {
         super(new String[]{"warn"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.warn"), "Warn a user.", "<User Mention> <reason> ");

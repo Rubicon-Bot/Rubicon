@@ -15,6 +15,10 @@ import fun.rubicon.data.UserPermissions;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
+/**
+ * Handles the 'stop' command.
+ * @author Leon Kappes / Lee
+ */
 public class CommandStop extends CommandHandler {
 
     public CommandStop() {

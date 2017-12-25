@@ -19,6 +19,10 @@ import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
 
+/**
+ * Handles the 'unwarn' command.
+ * @author Leon Kappes / Lee
+ */
 public class CommandUnWarn extends CommandHandler {
 
     public CommandUnWarn() {

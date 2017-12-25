@@ -20,6 +20,10 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 
+/**
+ * Handles the 'unmute' command.
+ * @author Michael Rittmeister / Schlaubi
+ */
 public class CommandUnmute extends CommandHandler {
     public CommandUnmute() {
         super(new String[]{"unmute", "demute"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.unmute"), "Unmutes users", "<@User>");

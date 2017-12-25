@@ -3,7 +3,6 @@
  *
  * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
  */
-
 package fun.rubicon.commands.moderation;
 
 import fun.rubicon.command.CommandCategory;
@@ -23,6 +22,10 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * Handles the 'clear' command.
+ * @author Leon Kappes / Lee
+ */
 public class CommandClear extends CommandHandler {
     private int getInt(String string) {
         try {
@@ -34,7 +37,7 @@ public class CommandClear extends CommandHandler {
     }
 
     public CommandClear() {
-        super(new String[]{"clear", "purge"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.clear"), "Clear the chat.", "<amount of messages>");
+        super(new String[]{"clear","purge"},CommandCategory.MODERATION,new PermissionRequirements(PermissionLevel.WITH_PERMISSION,"command.clear"),"Clear the chat.", "<amount of messages>");
     }
 
     @Override

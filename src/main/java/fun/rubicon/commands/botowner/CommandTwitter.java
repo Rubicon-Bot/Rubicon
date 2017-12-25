@@ -15,6 +15,7 @@ import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -25,6 +26,10 @@ import twitter4j.conf.ConfigurationBuilder;
 import java.awt.*;
 import java.text.SimpleDateFormat;
 
+/**
+ * Handles the 'twitter' command.
+ * @author Yannick Seeger / ForYaSee
+ */
 public class CommandTwitter extends CommandHandler {
 
     public CommandTwitter() {

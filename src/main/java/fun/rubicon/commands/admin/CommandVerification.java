@@ -22,6 +22,10 @@ import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Handles the 'verification' command.
+ * @author Michael Rittmeister / Schlaubi
+ */
 public class CommandVerification extends CommandHandler {
 
     public static HashMap<Guild, VerificationSetup> setups = new HashMap<>();

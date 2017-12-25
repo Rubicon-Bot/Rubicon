@@ -20,6 +20,10 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
 
+/**
+ * Handles the 'getwarn' command.
+ * @author Leon Kappes / Lee
+ */
 public class CommandGetWarn extends CommandHandler {
 
 

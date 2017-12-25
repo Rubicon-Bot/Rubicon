@@ -18,6 +18,10 @@ import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.PrivateChannel;
 
+/**
+ * Handles the 'kick' command.
+ * @author Michael Rittmeister / Schlaubi
+ */
 public class CommandKick extends CommandHandler {
     public CommandKick() {
         super(new String[]{"kick"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.kick"), "Kicks an member out of your server", "<@User>");

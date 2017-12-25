@@ -20,6 +20,9 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 
+/**
+ * Handles the 'mute' command
+ */
 public class CommandMute extends CommandHandler {
     public CommandMute() {
         super(new String[]{"mute"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.mute"), "Mutes an annoying member", "<@User>");
