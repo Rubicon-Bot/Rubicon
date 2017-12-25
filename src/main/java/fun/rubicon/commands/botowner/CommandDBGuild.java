@@ -14,37 +14,37 @@ import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import net.dv8tion.jda.core.entities.Message;
+
 import static fun.rubicon.util.EmbedUtil.*;
 
 public class CommandDBGuild extends CommandHandler {
     public CommandDBGuild() {
-        super(new String[]{"dbguild" , "dbguilds"}, CommandCategory.BOT_OWNER,
+        super(new String[]{"dbguild", "dbguilds"}, CommandCategory.BOT_OWNER,
                 new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.dbguild"),
                 "Manage database guild entries.", "<add | remove | default> <ServerID>");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-
-        if(parsedCommandInvocation.args.length ==2){
+        if (parsedCommandInvocation.args.length == 2) {
             String option = parsedCommandInvocation.args[0];
             String serverID = parsedCommandInvocation.args[1];
 
-            switch (option){
+            switch (option) {
                 case "default":
                     RubiconBot.getMySQL().deleteGuild(serverID);
                     RubiconBot.getMySQL().createGuildServer(serverID);
-                    return message(success("Server set to default","The Server with the ID " +serverID + " has been set to default."));
+                    return message(success("Server set to default", "The Server with the ID " + serverID + " has been set to default."));
                 case "add":
                     RubiconBot.getMySQL().createGuildServer(serverID);
-                    return message(success("Server added","The Server with the ID " +serverID + " has been added successfully."));
+                    return message(success("Server added", "The Server with the ID " + serverID + " has been added successfully."));
                 case "remove":
                     RubiconBot.getMySQL().deleteGuild(serverID);
-                    return message(success("Server removed","The Server with the ID " +serverID + " has been removed successfully."));
+                    return message(success("Server removed", "The Server with the ID " + serverID + " has been removed successfully."));
                 default:
-                    return message(error("Invalid parameter",option + " is not an valid parameter."));
+                    return message(error("Invalid parameter", option + " is not an valid parameter."));
             }
-        }else{
+        } else {
             return message(error("Not enough arguments", "You forgot to add the option or server's ID."));
         }
     }

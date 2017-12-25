@@ -13,14 +13,13 @@ import fun.rubicon.command2.CommandManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
-import javafx.geometry.Side;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.managers.fields.GuildField;
 
 import java.util.List;
 
-import static fun.rubicon.util.EmbedUtil.*;
+import static fun.rubicon.util.EmbedUtil.info;
+import static fun.rubicon.util.EmbedUtil.message;
 
 public class CommandGuilds extends CommandHandler {
     public CommandGuilds() {
@@ -41,23 +40,22 @@ public class CommandGuilds extends CommandHandler {
             System.out.println(SideNumbInput);
         }
 
-        if(RubiconBot.getJDA().getGuilds().size() > 20){
-            guild_sublist = RubiconBot.getJDA().getGuilds().subList((SideNumbInput-1)*20, (SideNumbInput-1)*20+20);
+        if (RubiconBot.getJDA().getGuilds().size() > 20) {
+            guild_sublist = RubiconBot.getJDA().getGuilds().subList((SideNumbInput - 1) * 20, (SideNumbInput - 1) * 20 + 20);
         } else {
             guild_sublist = RubiconBot.getJDA().getGuilds();
         }
         for (Guild guild : guild_sublist) {
-            runningOnServers.append("`\t " + (SideNumbInput * count_server) +". ").append(guild.getName()).append("(").append(guild.getId()).append(")`\n");
+            runningOnServers.append("`\t " + (SideNumbInput * count_server) + ". ").append(guild.getName()).append("(").append(guild.getId()).append(")`\n");
             count_server++;
         }
         int sideNumbAll;
-        if (RubiconBot.getJDA().getGuilds().size() >= 20){
+        if (RubiconBot.getJDA().getGuilds().size() >= 20) {
             sideNumbAll = RubiconBot.getJDA().getGuilds().size() / 20;
-        }else{
+        } else {
             sideNumbAll = 1;
         }
         int sideNumb = SideNumbInput;
-            return message(info("RubiconBot running on following guilds","`Total guilds: " + RubiconBot.getJDA().getGuilds().size() + " - Side " + sideNumb + " / " + sideNumbAll +"`\n\n"+runningOnServers.toString()));
-
+        return message(info("RubiconBot running on following guilds", "`Total guilds: " + RubiconBot.getJDA().getGuilds().size() + " - Side " + sideNumb + " / " + sideNumbAll + "`\n\n" + runningOnServers.toString()));
     }
 }

@@ -27,6 +27,13 @@ public class CommandManager extends ListenerAdapter {
     private final Map<String, CommandHandler> commandAssociations = new HashMap<>();
 
     /**
+     * Constructs and registers the command manager.
+     */
+    public CommandManager() {
+        RubiconBot.registerEventListener(this);
+    }
+
+    /**
      * Registers multiple CommandHandlers with their invocation aliases.
      *
      * @param commandHandlers the CommandHandlers to register.
@@ -55,7 +62,7 @@ public class CommandManager extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if(!RubiconBot.getMySQL().isBlacklisted(event.getTextChannel())) {
+        if (!RubiconBot.getMySQL().isBlacklisted(event.getTextChannel())) {
             super.onMessageReceived(event);
             ParsedCommandInvocation commandInvocation = parse(event.getMessage());
             if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake() && !event.isWebhookMessage())

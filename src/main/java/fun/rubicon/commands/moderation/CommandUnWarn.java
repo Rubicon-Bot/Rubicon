@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.commands.moderation;
 
 import fun.rubicon.RubiconBot;
@@ -12,15 +18,10 @@ import fun.rubicon.util.MySQL;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 /**
- * Rubicon Discord bot
- *
+ * Handles the 'unwarn' command.
  * @author Leon Kappes / Lee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.commands.admin
  */
 public class CommandUnWarn extends CommandHandler {
 

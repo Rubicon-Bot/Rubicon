@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.commands.settings;
 
 import fun.rubicon.RubiconBot;
@@ -11,17 +17,14 @@ import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
 /**
- * Rubicon Discord bot
- *
+ * Handles the 'autorole' command.
  * @author Leon Kappes / Lee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.commands.settings
  */
 public class CommandAutorole extends CommandHandler{
     public CommandAutorole(){
-        super(new String[]{"autorole","role"}, CommandCategory.ADMIN, new PermissionRequirements(2,"command.autorole"),"Set the Autorole.Triggers when a User Join your Guild","<RoleMention or RoleName>");
+        super(new String[]{"autorole", "role"}, CommandCategory.ADMIN, new PermissionRequirements(2, "command.autorole"), "Set the Autorole.Triggers when a User Join your Guild", "<RoleMention or RoleName>");
     }
+
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         if (parsedCommandInvocation.args.length < 1) {

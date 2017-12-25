@@ -1,31 +1,28 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.commands.botowner;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.command.Command;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
-import fun.rubicon.core.Main;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 /**
- * Rubicon Discord bot
- *
+ * Handles the 'stop' command.
  * @author Leon Kappes / Lee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package commands.botowner
  */
-
 public class CommandStop extends CommandHandler {
 
     public CommandStop() {
-        super(new String[]{"stop"}, CommandCategory.BOT_OWNER, new PermissionRequirements(4,"command.stop"),"Stops the bot.","");
+        super(new String[]{"stop"}, CommandCategory.BOT_OWNER, new PermissionRequirements(4, "command.stop"), "Stops the bot.", "");
     }
 
     @Override

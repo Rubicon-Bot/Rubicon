@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.commands.general;
 
 import fun.rubicon.RubiconBot;
@@ -16,7 +22,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class CommandBug extends CommandHandler {
 
     public CommandBug() {
-        super(new String[] {"bug"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.bug"), "Sends a bug to the bot developers", "<message (min. 3 words)>");
+        super(new String[]{"bug"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.bug"), "Sends a bug to the bot developers", "<message (min. 3 words)>");
     }
 
     @Override
@@ -43,8 +49,4 @@ public class CommandBug extends CommandHandler {
         //User Feedback
         return new MessageBuilder().setEmbed(EmbedUtil.success("Bug reported", "Successfully send the Bug to Head Developers").build()).build();
     }
-
-
-
-
 }

@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.commands.admin;
 
 import fun.rubicon.RubiconBot;
@@ -17,12 +23,8 @@ import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Rubicon Discord bot
- *
+ * Handles the 'verification' command.
  * @author Michael Rittmeister / Schlaubi
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.commands.admin
  */
 public class CommandVerification extends CommandHandler {
 
@@ -112,14 +114,15 @@ public class CommandVerification extends CommandHandler {
 
     public static void handleReaction(MessageReactionAddEvent event) {
         Message message = event.getTextChannel().getMessageById(event.getMessageId()).complete();
-        if(!message.getAuthor().equals(event.getJDA().getSelfUser())) return;
-        if(!event.getUser().equals(users.get(message))) return;
-        if(RubiconBot.getMySQL().verificationEnabled(event.getGuild())){
+        if (!message.getAuthor().equals(event.getJDA().getSelfUser())) return;
+        if (!event.getUser().equals(users.get(message))) return;
+        if (RubiconBot.getMySQL().verificationEnabled(event.getGuild())) {
             TextChannel channel = event.getGuild().getTextChannelById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "channelid"));
             if (event.getTextChannel().equals(channel)) {
                 event.getReaction().removeReaction().queue();
                 String emote = RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "emote");
-                if(!emote.equals(event.getReactionEmote().getName()) && !emote.equals(event.getReactionEmote().getId())) return;
+                if (!emote.equals(event.getReactionEmote().getName()) && !emote.equals(event.getReactionEmote().getId()))
+                    return;
                 Role verfied = event.getGuild().getRoleById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "roleid"));
                 event.getGuild().getController().addRolesToMember(event.getMember(), verfied).queue();
                 message.editMessage(new EmbedBuilder().setDescription(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "verifiedtext").replace("%user%", event.getUser().getAsMention())).build()).queue();
@@ -130,7 +133,7 @@ public class CommandVerification extends CommandHandler {
             event.getReaction().removeReaction(event.getUser()).queue();
             message.getReactions().forEach(r -> r.removeReaction().queue());
             String emote = event.getReactionEmote().getName();
-            if(setups.get(event.getGuild()).step == 4)
+            if (setups.get(event.getGuild()).step == 4)
                 setupStepFour(event);
             else if (emote.equalsIgnoreCase("✅"))
                 message.editMessage(EmbedUtil.info("Step 2 - Channel", "Please mention the channel where verification messages should me posted").build()).queue();
@@ -182,11 +185,11 @@ public class CommandVerification extends CommandHandler {
         setups.replace(message.getGuild(), setup);
     }
 
-    public static void setupStepFour(MessageReactionAddEvent event){
+    public static void setupStepFour(MessageReactionAddEvent event) {
         Message message = event.getTextChannel().getMessageById(event.getMessageId()).complete();
         VerificationSettings settings = settingslist.get(event.getGuild());
         MessageReaction.ReactionEmote emote = event.getReactionEmote();
-        if(event.getGuild().getEmoteById(emote.getId()) == null){
+        if (event.getGuild().getEmoteById(emote.getId()) == null) {
             message.getTextChannel().sendMessage(EmbedUtil.error("Unsupported emote", "You can only use global or custom emotes of your server").build()).queue(msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
             return;
         }
