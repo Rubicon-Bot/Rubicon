@@ -18,4 +18,4 @@
  
  
 - **Commands**
-<br>Commands are listed [![here](http://rubicon.fun)
+<br>Commands are listed [!here](http://rubicon.fun)
