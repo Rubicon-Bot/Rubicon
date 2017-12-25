@@ -30,7 +30,6 @@ public class CommandGuilds extends CommandHandler {
     }
 
     @Override
-    //FEHLER SEITENZALEN STIMMEN NOCH NICHT !
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         StringBuilder runningOnServers = new StringBuilder();
         int count_server = 1;

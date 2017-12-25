@@ -531,6 +531,19 @@ public class MySQL {
         return this;
     }
 
+    public MySQL createGuildServer(String serverID) {
+        try {
+            if (connection.isClosed())
+                connect();
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO `guilds`(`serverid`, `channel`, `prefix`, `joinmsg`, `leavemsg`, `logchannel`, `autorole`, `portal`, `welmsg`, `autochannels`, `blacklist`) VALUES (?, '0', 'rc!', 'Welcome %user% on %guild%', 'Bye %user%', '0', '0', 'closed', '0', '', '')");
+            ps.setString(1, serverID);
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+
     public MySQL deleteGuild(Guild guild) {
         try {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM `guilds` WHERE `serverid` = ?");
@@ -538,6 +551,19 @@ public class MySQL {
             ps.execute();
             PreparedStatement ps2 = connection.prepareStatement("DELETE FROM `member` WHERE `guildid` = ?");
             ps2.setString(1, guild.getId());
+            ps2.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+    public MySQL deleteGuild(String serverID) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM `guilds` WHERE `serverid` = ?");
+            ps.setString(1, serverID);
+            ps.execute();
+            PreparedStatement ps2 = connection.prepareStatement("DELETE FROM `member` WHERE `guildid` = ?");
+            ps2.setString(1, serverID);
             ps2.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -676,6 +702,8 @@ public class MySQL {
                 return rs.getString("blacklist").contains(channel.getId());
         } catch (SQLException e){
             e.printStackTrace();
+        } catch (NullPointerException ignored) {
+
         }
         return false;
     }

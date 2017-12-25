@@ -12,6 +12,7 @@ import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 
 import java.util.concurrent.TimeUnit;
 

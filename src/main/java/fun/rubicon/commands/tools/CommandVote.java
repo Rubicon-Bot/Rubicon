@@ -272,13 +272,13 @@ public class CommandVote extends CommandHandler implements Serializable {
         Poll poll = polls.get(event.getGuild());
         if (!poll.isPollmsg(event.getMessageId())) return;
         if (poll.votes.containsKey(event.getUser().getId())) {
-             new Timer().schedule(new TimerTask() {
-                 @Override
-                 public void run() {
-                     event.getReaction().removeReaction(event.getUser()).queue();
-                 }
-             }, 1000);
-             return;
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    event.getReaction().removeReaction(event.getUser()).queue();
+                }
+            }, 1000);
+            return;
         }
         String emoji = event.getReaction().getReactionEmote().getName();
 
@@ -307,7 +307,6 @@ public class CommandVote extends CommandHandler implements Serializable {
                 ex.printStackTrace();
             }
         });
-
     }
 
     private static void savePoll(Guild guild) throws IOException {
@@ -347,20 +346,21 @@ public class CommandVote extends CommandHandler implements Serializable {
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
-
         });
     }
 
-    public static void handleMessageDeletion(MessageDeleteEvent event){
+    public static void handleMessageDeletion(MessageDeleteEvent event) {
         try {
-            if(!polls.containsKey(event.getGuild())) return;
+            if (!polls.containsKey(event.getGuild())) return;
             Poll poll = getPoll(event.getGuild());
-            if(!poll.isPollmsg(event.getMessageId())) return;
+            if (!poll.isPollmsg(event.getMessageId())) return;
             poll.pollmsgs.remove(event.getTextChannel().getId(), event.getMessageId());
             polls.replace(event.getGuild(), poll);
             savePoll(event.getGuild());
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
+        } catch (NullPointerException ignored) {
+
         }
     }
 

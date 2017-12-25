@@ -6,7 +6,9 @@
 
 package fun.rubicon;
 
-import fun.rubicon.commands.admin.*;
+import fun.rubicon.commands.admin.CommandAutochannel;
+import fun.rubicon.commands.admin.CommandPortal;
+import fun.rubicon.commands.admin.CommandVerification;
 import fun.rubicon.commands.botowner.*;
 import fun.rubicon.commands.fun.CommandGiveaway;
 import fun.rubicon.commands.fun.CommandRip;
@@ -140,11 +142,13 @@ public class RubiconBot {
             memberCount += guild.getMembers().size();
 
         StringBuilder infoOnStart = new StringBuilder();
+        infoOnStart.append("\n");
         infoOnStart.append("---------- " + Info.BOT_NAME + " v." + Info.BOT_VERSION + " ---------- \n");
         infoOnStart.append("Running on " + getJDA().getGuilds().size() + " Guilds \n");
         infoOnStart.append("Supplying " + getJDA().getUsers().size() + " User \n");
         infoOnStart.append("Supplying " + memberCount + " Member \n");
         infoOnStart.append("---------------------------------------");
+        infoOnStart.append("\n");
 
         System.out.println(infoOnStart.toString());
     }
@@ -173,6 +177,7 @@ public class RubiconBot {
         // botowner commands package
         commandManager.registerCommandHandlers(
                 new CommandBroadcast(),
+                new CommandDBGuild(),
                 new CommandPlay(),
                 new CommandRestart(),
                 new CommandStop(),
