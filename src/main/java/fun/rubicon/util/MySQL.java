@@ -127,8 +127,8 @@ public class MySQL {
         return this;
     }
 
-    public MySQL executePreparedStatements(PreparedStatement... statements){
-        for(PreparedStatement statement : statements){
+    public MySQL executePreparedStatements(PreparedStatement... statements) {
+        for (PreparedStatement statement : statements) {
             try {
                 statement.execute();
             } catch (SQLException e) {
@@ -531,6 +531,19 @@ public class MySQL {
         return this;
     }
 
+    public MySQL createGuildServer(String serverID) {
+        try {
+            if (connection.isClosed())
+                connect();
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO `guilds`(`serverid`, `channel`, `prefix`, `joinmsg`, `leavemsg`, `logchannel`, `autorole`, `portal`, `welmsg`, `autochannels`, `blacklist`) VALUES (?, '0', 'rc!', 'Welcome %user% on %guild%', 'Bye %user%', '0', '0', 'closed', '0', '', '')");
+            ps.setString(1, serverID);
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+
     public MySQL deleteGuild(Guild guild) {
         try {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM `guilds` WHERE `serverid` = ?");
@@ -538,6 +551,20 @@ public class MySQL {
             ps.execute();
             PreparedStatement ps2 = connection.prepareStatement("DELETE FROM `member` WHERE `guildid` = ?");
             ps2.setString(1, guild.getId());
+            ps2.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+
+    public MySQL deleteGuild(String serverID) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM `guilds` WHERE `serverid` = ?");
+            ps.setString(1, serverID);
+            ps.execute();
+            PreparedStatement ps2 = connection.prepareStatement("DELETE FROM `member` WHERE `guildid` = ?");
+            ps2.setString(1, serverID);
             ps2.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -604,36 +631,36 @@ public class MySQL {
         return this;
     }
 
-    public MySQL deleteGuildVerification(Guild g){
-        try{
+    public MySQL deleteGuildVerification(Guild g) {
+        try {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM `verifications` WHERE `guildid` =?");
             ps.setString(1, g.getId());
             ps.execute();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return this;
     }
 
-    public String getVerificationValue(Guild g, String key){
+    public String getVerificationValue(Guild g, String key) {
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM `verifications` WHERE `guildid` = ?");
             ps.setString(1, g.getId());
             ResultSet rs = ps.executeQuery();
             while (rs.next())
                 return rs.getString(key);
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public MySQL createVerification(CommandVerification.VerificationSettings settings){
+    public MySQL createVerification(CommandVerification.VerificationSettings settings) {
         String kicktext = "0";
-        if(settings.kicktext != null)
+        if (settings.kicktext != null)
             kicktext = settings.kicktext;
         String emote;
-        if(settings.emote.getId() != null)
+        if (settings.emote.getId() != null)
             emote = settings.emote.getId();
         else
             emote = settings.emote.getName();
@@ -649,32 +676,32 @@ public class MySQL {
             ps.setString(8, emote);
             ps.execute();
 
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return this;
     }
 
-    public boolean verificationEnabled(Guild g){
+    public boolean verificationEnabled(Guild g) {
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM `verifications` WHERE `guildid` = ?");
             ps.setString(1, g.getId());
             ResultSet rs = ps.executeQuery();
             return rs.next();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
 
-    public boolean isBlacklisted(TextChannel channel){
-        try{
+    public boolean isBlacklisted(TextChannel channel) {
+        try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM guilds WHERE `serverid` = ?");
             ps.setString(1, channel.getGuild().getId());
             ResultSet rs = ps.executeQuery();
             while (rs.next())
                 return rs.getString("blacklist").contains(channel.getId());
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         } catch (NullPointerException ignored) {
 

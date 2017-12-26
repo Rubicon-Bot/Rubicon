@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.util;
 
 import fun.rubicon.RubiconBot;
@@ -6,14 +12,6 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 
-/**
- * Rubicon Discord bot
- *
- * @author Leon Kappes / Lee
- * @copyright RubiconBot Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package util
- */
 public class ChannelLog {
 
     public static void logCommand(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {

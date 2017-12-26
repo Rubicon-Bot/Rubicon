@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.commands.moderation;
 
 import fun.rubicon.command.CommandCategory;
@@ -13,26 +19,22 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.PrivateChannel;
 
 /**
- * Rubicon Discord bot
- *
+ * Handles the 'kick' command.
  * @author Michael Rittmeister / Schlaubi
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.commands.admin
  */
-public class CommandKick extends CommandHandler{
+public class CommandKick extends CommandHandler {
     public CommandKick() {
-        super(new String[] {"kick"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.kick"), "Kicks an member out of your server", "<@User>");
+        super(new String[]{"kick"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.kick"), "Kicks an member out of your server", "<@User>");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         Message msg = parsedCommandInvocation.invocationMessage;
-        if(msg.getMentionedUsers().isEmpty()){
+        if (msg.getMentionedUsers().isEmpty()) {
             return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "kick <@User>").build()).build();
         }
         Member target = msg.getGuild().getMember(msg.getMentionedUsers().get(0));
-        if(!msg.getGuild().getSelfMember().canInteract(target)){
+        if (!msg.getGuild().getSelfMember().canInteract(target)) {
             return new MessageBuilder().setEmbed(EmbedUtil.error("No permissions", "Sorry I can't kick this User!!!").build()).build();
         } else {
             PrivateChannel channel = target.getUser().openPrivateChannel().complete();

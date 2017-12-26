@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.commands.general;
 
 import fr.bmartel.speedtest.SpeedTestReport;
@@ -15,14 +21,6 @@ import net.dv8tion.jda.core.entities.Message;
 import java.awt.*;
 
 
-/**
- * Rubicon Discord bot
- *
- * @author Leon Kappes / Lee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package commands.general
- */
 public class CommandSpeedTest extends CommandHandler {
 
     public CommandSpeedTest() {
