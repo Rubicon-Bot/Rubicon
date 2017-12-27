@@ -63,7 +63,7 @@ public class CommandHelp extends CommandHandler {
                     "\t\"usage\":\"" + usage + "\"\n},\n");
             i++;
         }
-        Logger.debug(out.toString());*/
+        Logger.debug("[\n" + out.toString() + "\n]");*/
         if (parsedCommandInvocation.args.length == 0) {
             // show complete command manual
             EmbedBuilder embedBuilder = new EmbedBuilder()

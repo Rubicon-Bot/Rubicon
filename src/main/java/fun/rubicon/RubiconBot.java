@@ -198,7 +198,8 @@ public class RubiconBot {
                 new CommandGuilds(),
                 new CommandCreateInvite(),
                 new CommandEval(),
-                new CommandTwitter()
+                new CommandTwitter(),
+                new CommandGlobalBlacklist()
         );
         // fun commands package
         commandManager.registerCommandHandlers(

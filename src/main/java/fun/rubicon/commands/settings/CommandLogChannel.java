@@ -10,6 +10,7 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -26,7 +27,7 @@ public class CommandLogChannel extends CommandHandler {
      */
     public CommandLogChannel() {
         super(new String[]{"logchannel", "lch", "log"}, CommandCategory.SETTINGS,
-                new PermissionRequirements(2, "command.logchannel"),
+                new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.logchannel"),
                 "Set the Server LogChannel.", "<#channel>");
     }
 
