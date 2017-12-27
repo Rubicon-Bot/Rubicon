@@ -149,3 +149,4 @@ src/main/java/META-INF/MANIFEST.MF
 =======
 >>>>>>> master
 data/portal-invites.json
+data/global-blacklist.json
