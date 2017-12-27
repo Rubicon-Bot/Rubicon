@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.commands.tools;
 
 import fun.rubicon.command.CommandCategory;
@@ -10,7 +16,6 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.awt.*;
@@ -18,7 +23,7 @@ import java.awt.*;
 public class CommandSearch extends CommandHandler {
 
     public CommandSearch() {
-        super(new String[] {"search", "find"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.find"), "Searches for users, roles and channels with a specified name.", "<query>");
+        super(new String[]{"search", "find"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.find"), "Searches for users, roles and channels with a specified name.", "<query>");
     }
 
     @Override

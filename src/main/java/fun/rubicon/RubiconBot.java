@@ -10,7 +10,6 @@ import fun.rubicon.commands.admin.CommandAutochannel;
 import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.admin.CommandVerification;
 import fun.rubicon.commands.botowner.*;
-import fun.rubicon.commands.fun.CommandGiveaway;
 import fun.rubicon.commands.fun.CommandRip;
 import fun.rubicon.commands.fun.CommandRoulette;
 import fun.rubicon.commands.fun.CommandSlot;
@@ -21,6 +20,7 @@ import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.CommandManager;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.ListenerManager;
+import fun.rubicon.features.GiveawayHandler;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -28,6 +28,7 @@ import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import net.dv8tion.jda.core.hooks.EventListener;
 
 import javax.security.auth.login.LoginException;
 
@@ -37,6 +38,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Timer;
 
 /**
  * Rubicon-bot's main class. Initializes all components.
@@ -52,6 +56,8 @@ public class RubiconBot {
     private final Configuration configuration;
     private final fun.rubicon.command2.CommandManager commandManager;
     private JDA jda;
+    private final Timer timer;
+    private final Set<EventListener> eventListeners;
 
     /**
      * Constructs the RubiconBot.
@@ -60,6 +66,10 @@ public class RubiconBot {
         instance = this;
         // initialize logger
         Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, new File("latest.log"));
+
+        timer = new Timer();
+        eventListeners = new HashSet<>();
+
         // load configuration and obtain missing config values
         new File(dataFolder).mkdirs();
 
@@ -97,6 +107,9 @@ public class RubiconBot {
         // init JDA
         initJDA();
 
+        // init features
+        new GiveawayHandler();
+
         // post bot stats to discordbots.org and print warning
         DBLUtil.postStats(false);
     }
@@ -123,8 +136,9 @@ public class RubiconBot {
         builder.setToken(instance.configuration.getString("token"));
         builder.setGame(Game.playing(Info.BOT_NAME + " " + Info.BOT_VERSION));
 
-        // Register command manager (chat listener)
-        builder.addEventListener(instance.commandManager);
+        // add all EventListeners
+        for (EventListener listener : instance.eventListeners)
+            builder.addEventListener(listener);
 
         new ListenerManager(builder);
 
@@ -135,10 +149,10 @@ public class RubiconBot {
         }
         GameAnimator.start();
         CommandVote.loadPolls(instance.jda);
-        CommandGiveaway.startGiveawayManager(instance.jda);
+//        CommandGiveaway.startGiveawayManager(instance.jda);
 
         int memberCount = 0;
-        for(Guild guild : getJDA().getGuilds())
+        for (Guild guild : getJDA().getGuilds())
             memberCount += guild.getMembers().size();
 
         StringBuilder infoOnStart = new StringBuilder();
@@ -267,7 +281,30 @@ public class RubiconBot {
     }
 
     /**
-     * @return a freshly generated timestamp.
+     * @return a timer.
+     */
+    public static Timer getTimer() {
+        return instance == null ? null : instance.timer;
+    }
+
+    /**
+     * Adds an EventListener to the event pipe. EventListeners registered here will be re-registered when the JDA
+     * instance is initialized again.
+     *
+     * @param listener the EventListener to register.
+     * @return false if the bot has never been initialized or if the EventListener is already registered.
+     */
+    public static boolean registerEventListener(EventListener listener) {
+        if (instance != null && instance.eventListeners.add(listener)) {
+            if (instance.jda != null)
+                instance.jda.addEventListener(listener);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @return a freshly generated timestamp in the 'dd.MM.yyyy HH:mm:ss' format.
      */
     public static String getNewTimestamp() {
         return timeStampFormatter.format(new Date());

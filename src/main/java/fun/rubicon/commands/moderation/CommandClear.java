@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
 package fun.rubicon.commands.moderation;
 
 import fun.rubicon.command.CommandCategory;
@@ -18,24 +23,21 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * Rubicon Discord bot
- *
+ * Handles the 'clear' command.
  * @author Leon Kappes / Lee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package commands.tools
  */
-public class CommandClear extends CommandHandler{
-    private int getInt(String string){
+public class CommandClear extends CommandHandler {
+    private int getInt(String string) {
         try {
             return Integer.parseInt(string);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return 0;
         }
     }
+
     public CommandClear() {
-        super(new String[]{"clear","purge"},CommandCategory.MODERATION,new PermissionRequirements(PermissionLevel.WITH_PERMISSION,"command.clear"),"Clear the chat.","<amount of messages>");
+        super(new String[]{"clear","purge"},CommandCategory.MODERATION,new PermissionRequirements(PermissionLevel.WITH_PERMISSION,"command.clear"),"Clear the chat.", "<amount of messages>");
     }
 
     @Override
@@ -74,4 +76,5 @@ public class CommandClear extends CommandHandler{
         }
 
         return null;
-    }}
+    }
+}

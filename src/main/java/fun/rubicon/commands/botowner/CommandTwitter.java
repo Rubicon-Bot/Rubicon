@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.commands.botowner;
 
 import fun.rubicon.RubiconBot;
@@ -21,12 +27,8 @@ import java.awt.*;
 import java.text.SimpleDateFormat;
 
 /**
- * Rubicon Discord bot
- *
+ * Handles the 'twitter' command.
  * @author Yannick Seeger / ForYaSee
- * @copyright RubiconBot Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.commands.botowner
  */
 public class CommandTwitter extends CommandHandler {
 
@@ -46,7 +48,7 @@ public class CommandTwitter extends CommandHandler {
         Twitter twitter = tf.getInstance();
         try {
             Status status = twitter.updateStatus(String.join(" ", parsedCommandInvocation.args));
-           parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(new EmbedBuilder()
+            parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(new EmbedBuilder()
                     .setDescription(status.getText())
                     .setColor(new Color(0, 153, 229))
                     .setAuthor("Take a look at the tweet on Twitter", "https://twitter.com/" + status.getUser().getScreenName() + "/status/" + status.getId(), "http://icons.iconarchive.com/icons/sicons/basic-round-social/512/twitter-icon.png")

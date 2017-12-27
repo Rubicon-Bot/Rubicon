@@ -203,7 +203,7 @@ public abstract class CommandHandler {
      */
     public Message createHelpMessage(String serverPrefix, String aliasToUse) {
         StringBuilder usage = new StringBuilder();
-        for(String part : getParameterUsage().split("\n")) {
+        for (String part : getParameterUsage().split("\n")) {
             usage.append(serverPrefix + aliasToUse + " " + part + "\n");
         }
         return message(info('\'' + aliasToUse + "' command help", getDescription())

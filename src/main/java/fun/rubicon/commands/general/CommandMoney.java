@@ -38,8 +38,8 @@ public class CommandMoney extends CommandHandler {
             case "give":
                 if (parsedCommandInvocation.args.length == 3) {
                     try {
-                        if(parsedCommandInvocation.invocationMessage.getMentionedMembers().size() == 1) {
-                            if(parsedCommandInvocation.invocationMessage.getMentionedMembers().get(0).getUser().getId().equalsIgnoreCase(parsedCommandInvocation.invocationMessage.getAuthor().getId())) {
+                        if (parsedCommandInvocation.invocationMessage.getMentionedMembers().size() == 1) {
+                            if (parsedCommandInvocation.invocationMessage.getMentionedMembers().get(0).getUser().getId().equalsIgnoreCase(parsedCommandInvocation.invocationMessage.getAuthor().getId())) {
                                 return new MessageBuilder().setEmbed(EmbedUtil.error("Error!", "You cant donate money yourself!").build()).build();
                             }
                         } else {

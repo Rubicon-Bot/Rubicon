@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.commands.tools;
 
 import fun.rubicon.command.CommandCategory;
@@ -13,17 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-/**
- * Rubicon Discord bot
- *
- * @author Michael Rittmeister / Schlaubi
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.commands.tools
- */
 public class CommandQRCode extends CommandHandler{
     public CommandQRCode() {
-        super(new String[] {"qrcode", "qr", "code"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.qr"), "Easily generate a QR code", "<text>");
+        super(new String[]{"qrcode", "qr", "code"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.qr"), "Easily generate a QR code", "<text>");
     }
 
     @Override
