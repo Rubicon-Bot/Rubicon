@@ -63,17 +63,17 @@ public class CommandManager extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if (GlobalBlacklist.isOnBlacklist(event.getAuthor())) {
-            event.getTextChannel().sendMessage(EmbedUtil.message(EmbedUtil.error("Blacklisted", "You are on the RubiconBot blacklist! ;)"))).queue();
-            return;
-        }
         if (event.isFromType(ChannelType.PRIVATE)) return;
         if (RubiconBot.getMySQL().isBlacklisted(event.getTextChannel())) return;
         super.onMessageReceived(event);
         ParsedCommandInvocation commandInvocation = parse(event.getMessage());
-        if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake() && !event.isWebhookMessage())
+        if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake() && !event.isWebhookMessage()) {
+            if (GlobalBlacklist.isOnBlacklist(event.getAuthor())) {
+                event.getTextChannel().sendMessage(EmbedUtil.message(EmbedUtil.error("Blacklisted", "You are on the RubiconBot blacklist! ;)"))).queue();
+                return;
+            }
             call(commandInvocation);
-
+        }
     }
 
     /**
