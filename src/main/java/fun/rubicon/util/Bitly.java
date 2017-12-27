@@ -40,14 +40,13 @@ public class Bitly {
             throw new RuntimeException("An unknown exception occurred while fetching a bit.ly http request", e);
         }
         JSONObject response = new JSONObject(result.getResponse());
-
         // check if uri was valid
         if (response.getString("status_txt").equals("INVALID_URI"))
             throw new IllegalArgumentException("'" + longURL + "' is not a valid URL.");
             // ensure 'OK' status response
         else if (response.getInt("status_code") == 400)
             throw new HTTPException(response.getInt("status_code"));
-
+        
         // return shortened url
         return response.getJSONObject("data").getString("url");
     }
