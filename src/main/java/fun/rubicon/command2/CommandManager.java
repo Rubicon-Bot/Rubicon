@@ -55,12 +55,13 @@ public class CommandManager extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if(!RubiconBot.getMySQL().isBlacklisted(event.getTextChannel())) {
+        if(event.isFromType(ChannelType.PRIVATE)) return;
+        if(RubiconBot.getMySQL().isBlacklisted(event.getTextChannel())) return;
             super.onMessageReceived(event);
             ParsedCommandInvocation commandInvocation = parse(event.getMessage());
             if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake() && !event.isWebhookMessage())
                 call(commandInvocation);
-        }
+
     }
 
     /**
