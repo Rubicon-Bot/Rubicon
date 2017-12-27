@@ -8,6 +8,7 @@ package fun.rubicon.command2;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.util.EmbedUtil;
+import fun.rubicon.util.GlobalBlacklist;
 import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.ChannelType;
@@ -62,6 +63,10 @@ public class CommandManager extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
+        if(GlobalBlacklist.isOnBlacklist(event.getAuthor())) {
+            event.getTextChannel().sendMessage(EmbedUtil.message(EmbedUtil.error("Blacklisted", "You are on the RubiconBot blacklist! :)"))).queue();
+            return;
+        }
         if (!RubiconBot.getMySQL().isBlacklisted(event.getTextChannel())) {
             super.onMessageReceived(event);
             ParsedCommandInvocation commandInvocation = parse(event.getMessage());
