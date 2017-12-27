@@ -32,11 +32,9 @@ public class CommandGlobalBlacklist extends CommandHandler {
                     case "add":
                         GlobalBlacklist.addToBlacklist(parsedCommandInvocation.invocationMessage.getMentionedUsers().get(0));
                         return EmbedUtil.message(EmbedUtil.success("Success!", "Successfuly added " + parsedCommandInvocation.invocationMessage.getMentionedUsers().get(0).getName() + " to global blacklist."));
-                    break;
                     case "remove":
                         GlobalBlacklist.removeFromBlacklist(parsedCommandInvocation.invocationMessage.getMentionedUsers().get(0));
                         return EmbedUtil.message(EmbedUtil.success("Success!", "Successfuly removed " + parsedCommandInvocation.invocationMessage.getMentionedUsers().get(0).getName() + " from the global blacklist."));
-                    break;
                 }
             }
         }
