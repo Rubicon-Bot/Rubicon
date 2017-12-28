@@ -21,6 +21,7 @@ import fun.rubicon.core.CommandManager;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.ListenerManager;
 import fun.rubicon.features.GiveawayHandler;
+import fun.rubicon.permission.PermissionManager;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -54,6 +55,7 @@ public class RubiconBot {
     private JDA jda;
     private final Timer timer;
     private final Set<EventListener> eventListeners;
+    private final PermissionManager permissionManager;
 
     /**
      * Constructs the RubiconBot.
@@ -84,6 +86,7 @@ public class RubiconBot {
 
         commandManager = new fun.rubicon.command2.CommandManager();
         registerCommandHandlers();
+        permissionManager = new PermissionManager();
 
         // init JDA
         initJDA();
@@ -259,6 +262,20 @@ public class RubiconBot {
      */
     public static fun.rubicon.command2.CommandManager getCommandManager() {
         return instance == null ? null : instance.commandManager;
+    }
+
+    /**
+     * @return the {@link PermissionManager}.
+     */
+    public PermissionManager getPermissionManager() {
+        return permissionManager;
+    }
+
+    /**
+     * @return the {@link PermissionManager} via a static reference.
+     */
+    public static PermissionManager sGetPermissionManager() {
+        return instance == null ? null : instance.permissionManager;
     }
 
     /**

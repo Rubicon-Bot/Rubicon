@@ -8,7 +8,6 @@ package fun.rubicon.core;
 
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
-import fun.rubicon.commands.admin.CommandPermission;
 import fun.rubicon.commands.general.CommandMusic;
 
 /**
@@ -26,7 +25,6 @@ public class CommandManager {
     }
 
     private void initCommands() {
-        CommandHandler.addCommand(new CommandPermission("permission", CommandCategory.ADMIN).addAliases("perm", "perms"));
         CommandHandler.addCommand(new CommandMusic("music", CommandCategory.GENERAL).addAliases("m"));
     }
 }
