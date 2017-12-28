@@ -32,7 +32,11 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.hooks.EventListener;
 
 import javax.security.auth.login.LoginException;
+
 import java.io.File;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
@@ -82,6 +86,21 @@ public class RubiconBot {
         // load MySQL adapter
         mySQL = new MySQL(Info.MYSQL_HOST, Info.MYSQL_PORT, Info.MYSQL_USER, Info.MYSQL_PASSWORD, Info.MYSQL_DATABASE);
         mySQL.connect();
+        //Create databases if neccesary
+        /*Connection connection = mySQL.getConnection();
+        try{
+            PreparedStatement guilds = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `guilds` ( `serverid` VARCHAR(100) NOT NULL AUTO_INCREMENT , `prefix` VARCHAR(25) NOT NULL , `joinmsg` TEXT NOT NULL , `leavemsg` TEXT NOT NULL , `channel` TEXT NOT NULL , `logchannel` TEXT NOT NULL , `autorole` TEXT NOT NULL , `portal` VARCHAR(250) NOT NULL , `welmsg` TEXT NOT NULL , `autochannels` VARCHAR(250) NOT NULL , `cases` INT(11) NOT NULL , `blacklist` INT NOT NULL , PRIMARY KEY (`serverid`)) ENGINE = InnoDB;");        
+            PreparedStatement member = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `member` ( `id` INT(250) NOT NULL , `userid` VARCHAR(100) NOT NULL , `guildid` VARCHAR(100) NOT NULL , `permissionlevel` VARCHAR(2) NOT NULL , `permissions` VARCHAR(250) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
+            PreparedStatement mutes = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `mutes` ( `id` INT NOT NULL AUTO_INCREMENT , `serverid` BIGINT(18) NOT NULL , `userid` BIGINT(18) NOT NULL , `authorid` BIGINT(18) NOT NULL , `add_date` VARCHAR(10) NOT NULL , `del_date` VARCHAR(10) NOT NULL , `reason` VARCHAR(300) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
+            PreparedStatement portal = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `portal` ( `id` INT(250) NOT NULL AUTO_INCREMENT , `guildid` VARCHAR(250) NOT NULL , `partnerid` VARCHAR(250) NOT NULL , `channelid` VARCHAR(250) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
+            PreparedStatement roles = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `roles` ( `id` INT(250) NOT NULL AUTO_INCREMENT , `roleid` VARCHAR(100) NOT NULL , `permissions` VARCHAR(250) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
+            PreparedStatement user = connection.prepareStatement("CREATE TABLE IF NOT EXSITS `user` ( `id` INT(250) NOT NULL AUTO_INCREMENT , `userid` VARCHAR(250) NOT NULL , `bio` VARCHAR(250) NULL , `bday` VARCHAR NULL , `level` TEXT NULL DEFAULT NULL , `points` TEXT NULL DEFAULT NULL , `money` TEXT NULL DEFAULT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
+            PreparedStatement verifications = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `verifications_b` ( `id` INT(11) NOT NULL AUTO_INCREMENT , `guildid` TEXT NOT NULL , `channelid` TEXT NOT NULL , `roleid` TEXT NOT NULL , `text` TEXT NOT NULL , `verifiedtext` TEXT NOT NULL , `kicktime` TEXT NOT NULL , `kicktext` TEXT NOT NULL , `emote` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
+            mySQL.executePreparedStatements(guilds, member, mutes, portal, roles, user, verifications);            
+        } catch(SQLException ex){
+            ex.printStackTrace();
+        }*/
+
 
 
         commandManager = new fun.rubicon.command2.CommandManager();
@@ -182,7 +201,8 @@ public class RubiconBot {
                 new CommandGuilds(),
                 new CommandCreateInvite(),
                 new CommandEval(),
-                new CommandTwitter()
+                new CommandTwitter(),
+                new CommandGlobalBlacklist()
         );
         // fun commands package
         commandManager.registerCommandHandlers(

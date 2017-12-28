@@ -25,6 +25,12 @@ import java.util.concurrent.TimeUnit;
 /**
  * Handles the 'verification' command.
  * @author Michael Rittmeister / Schlaubi
+ * @copyright Rubicon Dev Team 2017
+ * @license MIT License <http://rubicon.fun/license>
+ * @package fun.rubicon.commands.admin
+ *  Some Parts of this command are inspired by CodingGuy<http://entwickler.cc>
+ *
+=======
  */
 public class CommandVerification extends CommandHandler {
 
@@ -189,9 +195,12 @@ public class CommandVerification extends CommandHandler {
         Message message = event.getTextChannel().getMessageById(event.getMessageId()).complete();
         VerificationSettings settings = settingslist.get(event.getGuild());
         MessageReaction.ReactionEmote emote = event.getReactionEmote();
-        if (event.getGuild().getEmoteById(emote.getId()) == null) {
-            message.getTextChannel().sendMessage(EmbedUtil.error("Unsupported emote", "You can only use global or custom emotes of your server").build()).queue(msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
-            return;
+        System.out.println(event.getReactionEmote().getEmote().isManaged());
+        if(!event.getReactionEmote().getEmote().isManaged()){
+                if(!event.getGuild().getEmotes().contains(emote.getEmote())) {
+                    message.getTextChannel().sendMessage(EmbedUtil.error("Unsupported emote", "You can only use global or custom emotes of your server").build()).queue(msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
+                    return;
+                }
         }
         settings.emote = emote;
         settingslist.replace(event.getGuild(), settings);

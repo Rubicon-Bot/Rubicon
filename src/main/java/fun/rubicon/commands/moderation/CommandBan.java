@@ -42,7 +42,7 @@ public class CommandBan extends CommandHandler {
                 channel.sendMessage(EmbedUtil.success("Banned", "You got banned").build()).queue();
             }
             msg.getGuild().getController().ban(target, 7).queue();
-            return new MessageBuilder().setEmbed(EmbedUtil.success("Banned", "Successfully banned" + target.getAsMention()).build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.success("Banned", "Successfully banned " + target.getAsMention()).build()).build();
         }
     }
 }
