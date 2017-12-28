@@ -19,3 +19,7 @@
  
 - **Commands**
 <br>Commands are listed [here](http://rubicon.fun)
+<br>
+
+
+Some parts of our verification command are inspired by CodingGuy's flashbot (http://flashbot.de)
