@@ -23,31 +23,12 @@ import net.dv8tion.jda.core.entities.Message;
 public class CommandASCII extends CommandHandler {
 
     public CommandASCII() {
-        super(new String[]{"ascii"}, CommandCategory.TOOLS, new PermissionRequirements(PermissionLevel.EVERYONE, "command.ascii"), "Convert an ASCII-Code to a char and a char to an ASCII-Code.", "<string>\ncode <ASCII-Code>");
+        super(new String[]{"ascii"}, CommandCategory.TOOLS, new PermissionRequirements(PermissionLevel.EVERYONE, "command.ascii"), "Convert an text to ASCII-Code", "<string>");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        if (parsedCommandInvocation.args.length >= 2 && parsedCommandInvocation.args[0].equalsIgnoreCase("code")) {
-            StringBuilder output = new StringBuilder();
-            StringBuilder asciiBuilder = new StringBuilder("ASCII-Code: `");
-            StringBuilder text = new StringBuilder("Text: `");
-            for (int i = 1; i < parsedCommandInvocation.args.length; i++) {
-                asciiBuilder.append(parsedCommandInvocation.args[i]).append(" ");
-                try {
-                    if (Integer.valueOf(parsedCommandInvocation.args[i]) <= 127)
-                        text.append((char) ((int) Integer.valueOf(parsedCommandInvocation.args[i])));
-                    else {
-                        return new MessageBuilder().setEmbed(EmbedUtil.error("", "One of you numbers has a higher value than 127. But this is the highest ASCII-Value.").build()).build();
-                    }
-                } catch (NumberFormatException ex) {
-                    return new MessageBuilder().setEmbed(EmbedUtil.error("", "You have to give me numbers!").build()).build();
-                }
-            }
-            output.append(asciiBuilder.toString()).append("`\n");
-            output.append(text.toString()).append("`");
-            return new MessageBuilder().setEmbed(EmbedUtil.embed("", output.toString()).build()).build();
-        } else if (parsedCommandInvocation.args.length > 0) {
+        if (parsedCommandInvocation.args.length > 0) {
             StringBuilder output = new StringBuilder();
             StringBuilder text = new StringBuilder("Text: `");
             StringBuilder asciiBuilder = new StringBuilder("ASCII-Code: `");
