@@ -159,8 +159,8 @@ public class RubiconBot {
         infoOnStart.append("\n");
         infoOnStart.append("---------- " + Info.BOT_NAME + " v." + Info.BOT_VERSION + " ---------- \n");
         infoOnStart.append("Running on " + getJDA().getGuilds().size() + " Guilds \n");
-        infoOnStart.append("Supplying " + getJDA().getUsers().size() + " User \n");
-        infoOnStart.append("Supplying " + memberCount + " Member \n");
+        infoOnStart.append("Supplying " + getJDA().getUsers().size() + " Users \n");
+        infoOnStart.append("Supplying " + memberCount + " Members \n");
         infoOnStart.append("---------------------------------------");
         infoOnStart.append("\n");
 
