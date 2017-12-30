@@ -99,8 +99,6 @@ public class RubiconBot {
             ex.printStackTrace();
         }*/
 
-
-
         commandManager = new fun.rubicon.command2.CommandManager();
         registerCommandHandlers();
 
