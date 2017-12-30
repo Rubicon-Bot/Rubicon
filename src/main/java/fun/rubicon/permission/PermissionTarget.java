@@ -6,7 +6,6 @@
 
 package fun.rubicon.permission;
 
-import fun.rubicon.RubiconBot;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -124,9 +123,11 @@ public class PermissionTarget {
     public boolean exists() {
         switch (type) {
             case USER:
-                return RubiconBot.getJDA().getUserById(id) != null;
+                User user = getUser();
+                return user != null && guild.isMember(user);
             case ROLE:
-                return RubiconBot.getJDA().getRoleById(id) != null;
+                Role role = getRole();
+                return role != null && role.getGuild().equals(guild);
             case DISCORD_PERMISSION:
                 return Permission.getFromOffset((int) id) != Permission.UNKNOWN;
         }
