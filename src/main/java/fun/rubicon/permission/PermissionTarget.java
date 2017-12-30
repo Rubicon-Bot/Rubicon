@@ -9,6 +9,7 @@ package fun.rubicon.permission;
 import fun.rubicon.RubiconBot;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.User;
 
@@ -22,8 +23,8 @@ public class PermissionTarget {
         DISCORD_PERMISSION('d', "discord permission");
 
         private final char identifier;
-        private final String name;
 
+        private final String name;
         Type(char identifier, String name) {
             this.identifier = identifier;
             this.name = name;
@@ -43,9 +44,9 @@ public class PermissionTarget {
                     return type;
             return null;
         }
+
     }
     private final Guild guild;
-
     private final Type type;
     private final long id;
 
@@ -53,6 +54,31 @@ public class PermissionTarget {
         this.guild = guild;
         this.type = type;
         this.id = id;
+    }
+
+    /**
+     * Overloading constructor for creating a user permission target.
+     * @param member the target user.
+     */
+    public PermissionTarget(Member member) {
+        this(member.getGuild(), Type.USER, member.getUser().getIdLong());
+    }
+
+    /**
+     * Overloading constructor for creating a role permission target.
+     * @param role the target role.
+     */
+    public PermissionTarget(Role role) {
+        this(role.getGuild(), Type.ROLE, role.getIdLong());
+    }
+
+    /**
+     * Overloading constructor for creating a discord-permission permission target.
+     * @param guild the guild this permission should apply for.
+     * @param permission the target discord-permission.
+     */
+    public PermissionTarget(Guild guild, Permission permission) {
+        this(guild, Type.DISCORD_PERMISSION, permission.getOffset());
     }
 
     public Guild getGuild() {

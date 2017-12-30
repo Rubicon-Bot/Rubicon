@@ -49,7 +49,7 @@ public class PermissionRequirements {
         else if (requiredPermissionLevel == PermissionLevel.BOT_AUTHOR)
             return false;
 
-        if (userPermissions.getMemberPermissionLevel() > requiredPermissionLevel.value)
+        if (userPermissions.getNewMemberPermissionLevel().value > requiredPermissionLevel.value)
             return true;
 
         if (requiredPermissionLevel == PermissionLevel.WITH_PERMISSION && userPermissions.hasPermissionNode(requiredPermissionNode))

@@ -6,10 +6,12 @@
 
 package fun.rubicon.data;
 
+import java.util.Comparator;
+
 /**
  * Specifies a group of users that can access permission-locked features.
  */
-public enum PermissionLevel {
+public enum PermissionLevel implements Comparator<PermissionLevel> {
     /**
      * Every user can access the feature.
      */
@@ -40,6 +42,8 @@ public enum PermissionLevel {
         this.value = value;
     }
 
+
+
     /**
      * @param value the permission level id.
      * @return the PermissionLevel corresponding to value or null if the value is invalid.
@@ -49,5 +53,10 @@ public enum PermissionLevel {
             if (level.value == value)
                 return level;
         return null;
+    }
+
+    @Override
+    public int compare(PermissionLevel o1, PermissionLevel o2) {
+        return Integer.compare(o1.value, o2.value);
     }
 }

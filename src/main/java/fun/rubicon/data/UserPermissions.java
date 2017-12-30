@@ -7,14 +7,17 @@
 package fun.rubicon.data;
 
 import fun.rubicon.RubiconBot;
+import fun.rubicon.permission.Permission;
+import fun.rubicon.permission.PermissionManager;
+import fun.rubicon.permission.PermissionTarget;
 import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Member/User-specific object used to query all permission-relevant variables.
@@ -25,11 +28,10 @@ public class UserPermissions {
     private final long userId;
     private final long guildId;
 
-    private int memberPermissionLevel;
+    private PermissionLevel memberPermissionLevel;
     private boolean isBotAuthor;
     private boolean isServerOwner;
     private boolean isAdministrator;
-    private String[] memberPermissionNodes;
 
     /**
      * Construct a UserPermissions object.
@@ -78,13 +80,12 @@ public class UserPermissions {
         // prepare data sources
         Member discordMember = getDiscordMember();
 
-
         // update member permission level
-        memberPermissionLevel = 0;
+        memberPermissionLevel = PermissionLevel.EVERYONE;
         if (discordMember != null) { // memberPermissionLevel stays 0 in private message
             try {
-                memberPermissionLevel = Integer.parseInt(RubiconBot.getMySQL()
-                        .getMemberValue(getDiscordMember(), "permissionlevel"));
+                memberPermissionLevel = PermissionLevel.getByValue(Integer.parseInt(RubiconBot.getMySQL()
+                        .getMemberValue(getDiscordMember(), "permissionlevel")));
             } catch (NumberFormatException e) {
                 Logger.error("Permission value for user " + userId + " in guild " + guildId
                         + " is not an integer number.");
@@ -98,12 +99,8 @@ public class UserPermissions {
         isServerOwner = discordMember != null && discordMember.isOwner();
 
         // update is administrator
-        isAdministrator = discordMember != null && discordMember.getPermissions().contains(Permission.ADMINISTRATOR);
-
-        // update member permissions
-        memberPermissionNodes = discordMember == null
-                ? new String[0]
-                : RubiconBot.getMySQL().getMemberValue(discordMember, "permissions").split(",");
+        isAdministrator = discordMember != null && discordMember.getPermissions()
+                .contains(net.dv8tion.jda.core.Permission.ADMINISTRATOR);
     }
 
     /**
@@ -153,8 +150,17 @@ public class UserPermissions {
     /**
      * @return the member permission level. Also 0 if no guild was specified.
      * @see fun.rubicon.core.permission.PermissionManager for usage definitions.
+     * @deprecated use {@link #getNewMemberPermissionLevel().value} instead.
      */
+    @Deprecated
     public int getMemberPermissionLevel() {
+        return memberPermissionLevel.value;
+    }
+
+    /**
+     * @return the member permission level. {@code null} if no guild was specified.
+     */
+    public PermissionLevel getNewMemberPermissionLevel() {
         return memberPermissionLevel;
     }
 
@@ -185,7 +191,16 @@ public class UserPermissions {
      * if no guild was specified.
      */
     public String[] getMemberPermissionNodes() {
-        return memberPermissionNodes;
+        PermissionManager manager = RubiconBot.sGetPermissionManager();
+        List<Permission> effectivePermissions = new ArrayList<>();
+        for (PermissionTarget target : getPermissionTargets(null))
+            for(Permission targetPermission : manager.getPermissions(target))
+                // only add to effective if there is no equal permission string yet.
+                if(effectivePermissions.stream()
+                        .noneMatch(effectivePermission -> effectivePermission.equalsIgnoreNegation(targetPermission)))
+                    effectivePermissions.add(targetPermission);
+        List<String> effectivePermissionStrings = effectivePermissions.stream().map(Permission::getPermissionString).collect(Collectors.toList());
+        return effectivePermissionStrings.toArray(new String[effectivePermissionStrings.size()]);
     }
 
     /**
@@ -193,6 +208,55 @@ public class UserPermissions {
      * @return whether memberPermissionNodes contains requiredPermissionNode.
      */
     public boolean hasPermissionNode(String requiredPermissionNode) {
-        return Arrays.asList(memberPermissionNodes).contains(requiredPermissionNode);
+        return hasPermission(null, requiredPermissionNode);
+    }
+
+    /**
+     * @param context used to check discord permissions in a channel.
+     * @param requiredPermissionNode the required permission node.
+     * @return whether memberPermissionNodes contains requiredPermissionNode.
+     */
+    public boolean hasPermission(Channel context, String requiredPermissionNode) {
+        PermissionManager permissionManager = RubiconBot.sGetPermissionManager();
+        // check permissions
+        for(PermissionTarget permissionTarget : getPermissionTargets(context)) {
+            Permission permission = permissionManager.getPermission(permissionTarget, requiredPermissionNode);
+            if (permission != null)
+                // negated -> false (does not have perm), not negated -> true (has perm)
+                return !permission.isNegated();
+        }
+        return false;
+    }
+
+    /**
+     * @param context used to check discord permissions in a channel.
+     * @return all {@link PermissionTarget PermissionTargets} that apply on this user in the order they should be
+     * checked.
+     */
+    public List<PermissionTarget> getPermissionTargets(Channel context) {
+        List<PermissionTarget> targets = new ArrayList<>();
+        if (isMember()) {
+            Member member = getDiscordMember();
+
+            // add user target
+            targets.add(new PermissionTarget(member));
+
+            // add discord permission targets
+            for(net.dv8tion.jda.core.Permission permission : context == null ? member.getPermissions() : member.getPermissions(context))
+                targets.add(new PermissionTarget(member.getGuild(), permission));
+
+            // add role targets
+            List<Role> roleList = member.getRoles(); // member roles sorted from highest to lowest
+            roleList.forEach(role -> targets.add(new PermissionTarget(role))); // add all roles
+
+        }
+        return targets;
+    }
+
+    /**
+     * @return whether this permission object can access member permission settings.
+     */
+    public boolean isMember() {
+        return guildId != -1;
     }
 }

@@ -77,7 +77,7 @@ public class PermissionManager {
      * @return {@code true} if there is an entry and {@code false} otherwise.
      * @throws RuntimeException in case of an {@link SQLException}.
      */
-    private boolean hasPermission(PermissionTarget target, Permission permission, boolean ignoreNegation) {
+    public boolean hasPermission(PermissionTarget target, Permission permission, boolean ignoreNegation) {
         try {
             PreparedStatement selectStatement = MySQL.getConnection()
                     .prepareStatement("SELECT * FROM `" + TABLE + "` " +
@@ -93,6 +93,33 @@ public class PermissionManager {
             if(!ignoreNegation)
                 selectStatement.setBoolean(5,  permission.isNegated());
             return selectStatement.executeQuery().next(); // has permission if there is an entry
+        } catch (SQLException e) {
+            throw new RuntimeException("An unknown error has occurred while fetching database information.", e);
+        }
+    }
+
+    /**
+     * Loads a {@link Permission} object from the database.
+     * @param target the target to query.
+     * @param permissionString the permission to query.
+     * @return the {@link Permission Permission object} with a negation value or null if it does not exist.
+     */
+    public Permission getPermission(PermissionTarget target, String permissionString) {
+        try {
+            PreparedStatement selectStatement = MySQL.getConnection()
+                    .prepareStatement("SELECT `negated` FROM `" + TABLE + "` " +
+                            "WHERE `guildid` = ? " +
+                            "AND `type` = ? " +
+                            "AND `id` = ? " +
+                            "AND `permission` = ?;");
+            selectStatement.setLong(1, target.getGuild().getIdLong());
+            selectStatement.setString(2, String.valueOf(target.getType().getIdentifier()));
+            selectStatement.setLong(3, target.getId());
+            selectStatement.setString(4, permissionString);
+            ResultSet queryResult = selectStatement.executeQuery();
+            return queryResult.next()
+                    ? new Permission(permissionString, queryResult.getBoolean("negated")) // entry with negation value
+                    : null; // no entry
         } catch (SQLException e) {
             throw new RuntimeException("An unknown error has occurred while fetching database information.", e);
         }
