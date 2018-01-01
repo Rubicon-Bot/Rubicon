@@ -8,13 +8,13 @@
 <a href="https://discord.gg/tnZW6mt"><img src="https://discordapp.com/api/guilds/381419503164325900/embed.png"/></a> 
  
 ## Commands
-<br>Commands are listed [here](http://rubicon.fun)
+<br>Command Documantion can be found [here](http://rubicon.fun)
 
 ## Invite
-Invite Rubicon here: <a href="inv.rucb.co">rucb.cp</a>
+Invite Rubicon here: <a href="http://inv.rucb.co">rucb.cp</a>
 
 ## Support and Infos
-If you have questions, join our <a href="dc.rucb.co">Community Server</a>
+If you have questions, join our <a href="http://dc.rucb.co">Community Server</a>
 
 ## RubiconBot Team
 ForYaSee#9353<br>
