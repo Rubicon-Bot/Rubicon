@@ -76,12 +76,7 @@ public class CommandHelp extends CommandHandler {
                     + new HashSet<>(RubiconBot.getCommandManager().getCommandAssociations().values()).size()
                     + " commands.", null);
             textChannel.sendMessage(new MessageBuilder().setEmbed(embedBuilder.build()).build()).queue();
-            return new MessageBuilder().setEmbed(new EmbedBuilder()
-                    .setColor(Colors.COLOR_PRIMARY)
-                    .setTitle(":white_check_mark: Command help sent")
-                    .setDescription("Check your private messages <@"
-                            + parsedCommandInvocation.invocationMessage.getAuthor().getId() + ">!")
-                    .build()).build();
+            return null;
         } else {
             CommandHandler handler = RubiconBot.getCommandManager().getCommandHandler(parsedCommandInvocation.args[0]);
             return handler == null

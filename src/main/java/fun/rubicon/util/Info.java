@@ -29,7 +29,6 @@ public class Info {
     public final static Long[] BOT_AUTHOR_IDS = {
             227817074976751616L, // ForYaSee
             153507094933274624L, // Lee
-            318773753796624394L, // Scryptex
             138014719582797824L, // Eiskeks
             264048760580079616L, // Schlaubi
             221905671296253953L, // Zekro
