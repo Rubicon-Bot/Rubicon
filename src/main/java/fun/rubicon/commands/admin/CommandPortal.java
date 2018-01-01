@@ -33,7 +33,7 @@ public class CommandPortal extends CommandHandler {
     private File inviteFile = new File(RubiconBot.getDataFolder() + "portal-invites.json");
 
     public CommandPortal() {
-        super(new String[]{"portal", "mirror", "telephone"}, CommandCategory.ADMIN, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.portal"), "Create a portal and talk with users of other guilds.", "create\nportal close\nportal invite <serverid>\naccept <serverid>");
+        super(new String[]{"portal", "mirror", "telephone"}, CommandCategory.ADMIN, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.portal"), "Create a portal and talk with users of other guilds.", "create\nclose\ninvite <serverid>\naccept <serverid>");
     }
 
     @Override

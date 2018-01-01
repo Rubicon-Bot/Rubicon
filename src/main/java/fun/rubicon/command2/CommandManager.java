@@ -8,6 +8,7 @@ package fun.rubicon.command2;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.util.EmbedUtil;
+import fun.rubicon.util.GlobalBlacklist;
 import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.ChannelType;
@@ -17,6 +18,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Maintains command invocation associations.
@@ -62,13 +64,17 @@ public class CommandManager extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if(event.isFromType(ChannelType.PRIVATE)) return;
-        if(RubiconBot.getMySQL().isBlacklisted(event.getTextChannel())) return;
-            super.onMessageReceived(event);
-            ParsedCommandInvocation commandInvocation = parse(event.getMessage());
-            if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake() && !event.isWebhookMessage())
-                call(commandInvocation);
-
+        if (event.isFromType(ChannelType.PRIVATE)) return;
+        if (RubiconBot.getMySQL().isBlacklisted(event.getTextChannel())) return;
+        super.onMessageReceived(event);
+        ParsedCommandInvocation commandInvocation = parse(event.getMessage());
+        if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake() && !event.isWebhookMessage()) {
+            if (GlobalBlacklist.isOnBlacklist(event.getAuthor())) {
+                event.getTextChannel().sendMessage(EmbedUtil.message(EmbedUtil.error("Blacklisted", "You are on the RubiconBot blacklist! ;)"))).queue(msg -> msg.delete().queueAfter(20, TimeUnit.SECONDS));
+                return;
+            }
+            call(commandInvocation);
+        }
     }
 
     /**
