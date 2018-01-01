@@ -217,15 +217,28 @@ public class UserPermissions {
      * @return whether memberPermissionNodes contains requiredPermissionNode.
      */
     public boolean hasPermission(Channel context, String requiredPermissionNode) {
+        Permission permission = getEffectivePermissionEntry(context, requiredPermissionNode);
+        // negated -> false (does not have perm), not negated -> true (has perm)
+        return permission != null && !permission.isNegated();
+    }
+
+    /**
+     * Iterates through all {@link PermissionTarget PermissionTargets} and returns the effective {@link Permission} entry.
+     * @param context used to check discord permissions in a channel.
+     * @param requiredPermissionNode the permission to query.
+     * @return the effect
+     */
+    public Permission getEffectivePermissionEntry(Channel context, String requiredPermissionNode) {
         PermissionManager permissionManager = RubiconBot.sGetPermissionManager();
+        Permission effectivePermissionEntry = null;
         // check permissions
-        for(PermissionTarget permissionTarget : getPermissionTargets(context)) {
-            Permission permission = permissionManager.getPermission(permissionTarget, requiredPermissionNode);
+        List<PermissionTarget> permissionTargets = getPermissionTargets(context);
+        for(int i = 0; effectivePermissionEntry == null && i < permissionTargets.size(); i++) {
+            Permission permission = permissionManager.getPermission(permissionTargets.get(i), requiredPermissionNode);
             if (permission != null)
-                // negated -> false (does not have perm), not negated -> true (has perm)
-                return !permission.isNegated();
+                effectivePermissionEntry = permission;
         }
-        return false;
+        return effectivePermissionEntry;
     }
 
     /**
@@ -248,7 +261,6 @@ public class UserPermissions {
             // add role targets
             List<Role> roleList = member.getRoles(); // member roles sorted from highest to lowest
             roleList.forEach(role -> targets.add(new PermissionTarget(role))); // add all roles
-
         }
         return targets;
     }

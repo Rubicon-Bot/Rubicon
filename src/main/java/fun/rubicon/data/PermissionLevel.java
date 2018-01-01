@@ -21,12 +21,15 @@ public enum PermissionLevel implements Comparator<PermissionLevel> {
      */
     WITH_PERMISSION(1),
     /**
-     * Only administrators can access the feature.
+     * @deprecated Administrator permissions should be defined by server owners, not by defaults.
      */
+    @Deprecated
     ADMINISTRATOR(2),
     /**
-     * Only the guild owner can access the feature.
+     * @deprecated As server owners have access to all permission-restricted things (except author exclusive ones),
+     * this level is redundant.
      */
+    @Deprecated
     SERVER_OWNER(3),
     /**
      * Only bot authors can access the feature.
@@ -41,8 +44,6 @@ public enum PermissionLevel implements Comparator<PermissionLevel> {
     PermissionLevel(int value) {
         this.value = value;
     }
-
-
 
     /**
      * @param value the permission level id.
