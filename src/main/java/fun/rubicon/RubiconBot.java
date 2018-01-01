@@ -86,7 +86,7 @@ public class RubiconBot {
         mySQL.connect();
         //Create databases if neccesary
         Connection connection = mySQL.getConnection();
-        try{
+        /*try{
             PreparedStatement guilds = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `guilds` ( `serverid` VARCHAR(100) NOT NULL AUTO_INCREMENT , `prefix` VARCHAR(25) NOT NULL , `joinmsg` TEXT NOT NULL , `leavemsg` TEXT NOT NULL , `channel` TEXT NOT NULL , `logchannel` TEXT NOT NULL , `autorole` TEXT NOT NULL , `portal` VARCHAR(250) NOT NULL , `welmsg` TEXT NOT NULL , `autochannels` VARCHAR(250) NOT NULL , `cases` INT(11) NOT NULL , `blacklist` INT NOT NULL , PRIMARY KEY (`serverid`)) ENGINE = InnoDB;");        
             PreparedStatement member = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `member` ( `id` INT(250) NOT NULL , `userid` VARCHAR(100) NOT NULL , `guildid` VARCHAR(100) NOT NULL , `permissionlevel` VARCHAR(2) NOT NULL , `permissions` VARCHAR(250) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
             PreparedStatement mutes = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `mutes` ( `id` INT NOT NULL AUTO_INCREMENT , `serverid` BIGINT(18) NOT NULL , `userid` BIGINT(18) NOT NULL , `authorid` BIGINT(18) NOT NULL , `add_date` VARCHAR(10) NOT NULL , `del_date` VARCHAR(10) NOT NULL , `reason` VARCHAR(300) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
@@ -97,7 +97,7 @@ public class RubiconBot {
             mySQL.executePreparedStatements(guilds, member, mutes, portal, roles, user, verifications);            
         } catch(SQLException ex){
             ex.printStackTrace();
-        }
+        }*/
 
 
 
