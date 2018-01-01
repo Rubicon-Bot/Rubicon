@@ -5,11 +5,16 @@
 
 [![Discord Bots](https://discordbots.org/api/widget/status/380713705073147915.png)](https://discordbots.org/beta/bot/380713705073147915)
 [![Travis-CI](https://travis-ci.org/Rubicon-Bot/Rubicon.svg?branch=master)](https://travis-ci.org/Rubicon-Bot/Rubicon)
-<a href="https://discord.gg/tnZW6mt"><img src="https://discordapp.com/api/guilds/381419503164325900/embed.png"/></a>
+<a href="https://discord.gg/tnZW6mt"><img src="https://discordapp.com/api/guilds/381419503164325900/embed.png"/></a> 
  
 ## Commands
 <br>Commands are listed [here](http://rubicon.fun)
-<br>
+
+## Invite
+Invite Rubicon here: <a href="inv.rucb.co">rucb.cp</a>
+
+## Support and Infos
+If you have an question, join our <a href="dc.rucb.co">Community Server</a>
 
 ## RubiconBot Team
 ForYaSee#9353<br>
