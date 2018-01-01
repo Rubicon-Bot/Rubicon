@@ -31,5 +31,6 @@ public class ListenerManager {
         b.addEventListener(new UserJoinListener());
         b.addEventListener(new VerificationListener());
         b.addEventListener(new MessageDeleteListener());
+        b.addEventListener(new ServerLogHandler());
     }
 }

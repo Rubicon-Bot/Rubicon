@@ -39,7 +39,6 @@ public class CommandInfo extends CommandHandler {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setColor(Colors.COLOR_PRIMARY);
         builder.setAuthor(Info.BOT_NAME + " - Info", "https://rubicon.fun", message.getJDA().getSelfUser().getEffectiveAvatarUrl());
-        builder.setThumbnail("https://cdn.discordapp.com/attachments/381176080494624768/381176148828356608/13079-thumb.jpg");
         StringBuilder authors = new StringBuilder();
 
         //Append Id´s on StringBuilder

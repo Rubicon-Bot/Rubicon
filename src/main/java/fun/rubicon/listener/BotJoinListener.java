@@ -31,17 +31,18 @@ public class BotJoinListener extends ListenerAdapter {
 
     /**
      * Creates the new guild in the database
-     * @param e
+     * @param event
      */
     @Override
-    public void onGuildJoin(GuildJoinEvent e) {
+    public void onGuildJoin(GuildJoinEvent event) {
         //post statistics to discordbots.org
-        DBLUtil.postStats(e.getJDA());
+        DBLUtil.postStats(event.getJDA());
         try {
-            Guild g = e.getGuild();
-            if (!RubiconBot.getMySQL().ifGuildExits(e.getGuild())) {
+            Guild g = event.getGuild();
+            if (!RubiconBot.getMySQL().ifGuildExits(event.getGuild())) {
                 RubiconBot.getMySQL().createGuildServer(g);
-                RubiconBot.getMySQL().createMember(e.getGuild().getOwner());
+                RubiconBot.getMySQL().createMember(event.getGuild().getOwner());
+                new ServerLogHandler.ServerLogSQL(event.getGuild()).createDefaultEntryIfNotExist();
             }
         } catch (Exception ex) {
             Logger.error(ex);

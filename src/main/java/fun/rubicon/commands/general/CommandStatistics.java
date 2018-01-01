@@ -37,9 +37,11 @@ public class CommandStatistics extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        return message(info(RubiconBot.getJDA().getSelfUser().getName() + "'s statistics", null)
+        Message message = message(info(RubiconBot.getJDA().getSelfUser().getName() + "'s statistics", null)
                 .addField("Total servers", String.valueOf(RubiconBot.getJDA().getGuilds().size()), true)
                 .addField("Total users", String.valueOf(RubiconBot.getJDA().getUsers().stream()
                         .filter(u -> !u.isBot()).collect(Collectors.toList()).size()), true));
+        textChannel.sendMessage(message).queue();
+        return null;
     }
 }

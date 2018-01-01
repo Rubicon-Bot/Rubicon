@@ -25,11 +25,11 @@ public class CommandSay extends CommandHandler {
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         if (parsedCommandInvocation.args.length < 2) {
-            return new MessageBuilder().setEmbed(EmbedUtil.error(":warning: Error", getParameterUsage()).build()).build();
+            return createHelpMessage();
         }
 
         if (parsedCommandInvocation.invocationMessage.getMentionedChannels().size() != 1) {
-            return new MessageBuilder().setEmbed(EmbedUtil.error(":warning: Error", getParameterUsage()).build()).build();
+            return createHelpMessage();
         }
 
         String text = "";
