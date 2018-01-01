@@ -10,6 +10,7 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Configuration;
@@ -23,7 +24,7 @@ public class CommandPlay extends CommandHandler {
     private String configKey = "playingStatus";
 
     public CommandPlay() {
-        super(new String[]{"play"}, CommandCategory.BOT_OWNER, new PermissionRequirements(4, "command.play"), "Change bot's playing status.", "<text>");
+        super(new String[]{"play"}, CommandCategory.BOT_OWNER, new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.play"), "Change bot's playing status.", "<text>");
     }
 
     @Override
