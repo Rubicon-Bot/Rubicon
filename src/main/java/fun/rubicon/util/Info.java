@@ -16,9 +16,9 @@ public class Info {
 
     public final static String BOT_DEFAULT_PREFIX = "rc!";
     public final static String BOT_NAME = "Rubicon";
-    public final static String BOT_VERSION = "0.1.6.7";
+    public final static String BOT_VERSION = "0.1.6.8";
     public final static String BOT_WEBSITE = "https://rubicon.fun";
-    public final static String BOT_GITHUB = "https://github.com/Rubicon-Bot/RubiCon";
+    public final static String BOT_GITHUB = "https://github.com/Rubicon-Bot/Rubicon";
     public final static String CONFIG_FILE = "config.json";
     public final static String BITLY_TOKEN = RubiconBot.getConfiguration().getString("bitlytoken");
     public final static String DBL_TOKEN = RubiconBot.getConfiguration().getString("dbl_token");

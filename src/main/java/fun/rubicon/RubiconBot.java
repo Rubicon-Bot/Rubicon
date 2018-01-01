@@ -10,6 +10,7 @@ import fun.rubicon.commands.admin.CommandAutochannel;
 import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.admin.CommandVerification;
 import fun.rubicon.commands.botowner.*;
+import fun.rubicon.commands.fun.CommandOK;
 import fun.rubicon.commands.fun.CommandRip;
 import fun.rubicon.commands.fun.CommandRoulette;
 import fun.rubicon.commands.fun.CommandSlot;
@@ -21,10 +22,12 @@ import fun.rubicon.core.CommandManager;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.ListenerManager;
 import fun.rubicon.features.GiveawayHandler;
+import fun.rubicon.listener.ServerLogHandler;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
@@ -48,7 +51,7 @@ import java.util.Timer;
  * @author tr808axm
  */
 public class RubiconBot {
-    private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+    private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
     private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token", "twitterConsumerKey", "twitterConsumerSecret", "twitterAccessToken", "twitterAccessTokenSecret"};
     private static final String dataFolder = "data/";
     private static RubiconBot instance;
@@ -205,7 +208,8 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(
                 new CommandRip(),
                 new CommandSlot(),
-                new CommandRoulette()
+                new CommandRoulette(),
+                new CommandOK()
         );
         // general commands package
         commandManager.registerCommandHandlers(
@@ -227,7 +231,8 @@ public class RubiconBot {
                 new CommandLogChannel(),
                 new CommandPrefix(),
                 new CommandWelcomeChannel(),
-                new CommandBlacklist()
+                new CommandBlacklist(),
+                new CommandLog()
         );
         // tools commands package
         commandManager.registerCommandHandlers(

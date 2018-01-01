@@ -32,11 +32,11 @@ public class MySQL {
     }
 
     /**
-     * @param host Host of MySQL server
-     * @param port Port of MySQL server
-     * @param user User of MySQL database
+     * @param host     Host of MySQL server
+     * @param port     Port of MySQL server
+     * @param user     User of MySQL database
      * @param password Password of MySQL user
-     * @param dbname Name of MySQL database
+     * @param dbname   Name of MySQL database
      */
     public MySQL(String host, String port, String user, String password, String dbname) {
         this.host = host;
