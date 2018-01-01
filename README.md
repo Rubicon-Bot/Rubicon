@@ -12,10 +12,10 @@
 <br>
 
 ## RubiconBot Team
-ForYaSee#9353
-Lee#6874
-xEiisKeksx#7483
-Schlaubi#9378
-zekro#9131
-lucsoft#5138
+ForYaSee#9353<br>
+Lee#6874<br>
+xEiisKeksx#7483<br>
+Schlaubi#9378<br>
+zekro#9131<br>
+lucsoft#5138<br>
 tr808axm#7012
