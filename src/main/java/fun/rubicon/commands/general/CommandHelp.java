@@ -71,19 +71,11 @@ public class CommandHelp extends CommandHandler {
                     .setTitle(":information_source: Rubicon Bot command manual")
                     .setDescription("Use `" + parsedCommandInvocation.serverPrefix
                             + parsedCommandInvocation.invocationCommand + " <command>` to get a more detailed command help");
-            Map<CommandCategory, List<CommandHandler>> commandCategoryListMap = new HashMap<>();
-            for (CommandHandler commandHandler : RubiconBot.getCommandManager().getCommandAssociations().values()) {
-                if (!commandCategoryListMap.containsKey(commandHandler.getCategory()))
-                    commandCategoryListMap.put(commandHandler.getCategory(), new ArrayList<>());
-                List<CommandHandler> categoryList = commandCategoryListMap.get(commandHandler.getCategory());
-                if (!categoryList.contains(commandHandler))
-                    categoryList.add(commandHandler);
-            }
             embedBuilder.addField("Documentation", "Take a look at my [Documentation](https://rubicon.fun)", false);
             embedBuilder.setFooter("Loaded a total of "
                     + new HashSet<>(RubiconBot.getCommandManager().getCommandAssociations().values()).size()
                     + " commands.", null);
-            parsedCommandInvocation.invocationMessage.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(new MessageBuilder().setEmbed(embedBuilder.build()).build()).queue());
+            textChannel.sendMessage(new MessageBuilder().setEmbed(embedBuilder.build()).build()).queue();
             return new MessageBuilder().setEmbed(new EmbedBuilder()
                     .setColor(Colors.COLOR_PRIMARY)
                     .setTitle(":white_check_mark: Command help sent")
