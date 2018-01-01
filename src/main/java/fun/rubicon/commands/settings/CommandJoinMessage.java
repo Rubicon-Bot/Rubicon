@@ -20,7 +20,7 @@ public class CommandJoinMessage extends CommandHandler{
     public CommandJoinMessage(){
         super(new String[]{"joinmsg", "joinmessage", "joinnachricht"}, CommandCategory.SETTINGS,
                 new PermissionRequirements(2, "command.joinmsg"),
-                "Set the server's message channel (Join & Leave)!", "<Message(%user% for username, %guild% for guildname)>");
+                "Set the server's join message!", "<Message(%user% for username, %guild% for guildname)>");
     }
 
     @Override
