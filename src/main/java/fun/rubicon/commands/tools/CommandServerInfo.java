@@ -20,6 +20,8 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 
+import java.time.format.DateTimeFormatter;
+
 public class CommandServerInfo extends CommandHandler{
 
     public CommandServerInfo() {
@@ -47,9 +49,9 @@ public class CommandServerInfo extends CommandHandler{
         serverInfo.addField("Textchannels", String.valueOf(guild.getTextChannels().size()), false);
         serverInfo.addField("Voicechannels", String.valueOf(guild.getVoiceChannels().size()), false);
         serverInfo.addField("Roles", String.valueOf(guild.getRoles().size()) + "\n ```" + roles.toString() + "```", false);
-        serverInfo.addField("AFK Timeout", guild.getAfkTimeout().toString().replace("SECONDS_", "") + "seconds", false);
         serverInfo.addField("Server owner", guild.getOwner().getUser().getName() + "#" + guild.getOwner().getUser().getDiscriminator(), false);
         serverInfo.addField("Server icon url", guild.getIconUrl(), false);
+        serverInfo.addField("Server Creation Date", guild.getCreationTime().format(DateTimeFormatter.ISO_DATE_TIME), false);
         return new MessageBuilder().setEmbed(serverInfo.build()).build();
     }
 }

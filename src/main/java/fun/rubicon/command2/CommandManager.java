@@ -18,6 +18,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Maintains command invocation associations.
@@ -69,7 +70,7 @@ public class CommandManager extends ListenerAdapter {
         ParsedCommandInvocation commandInvocation = parse(event.getMessage());
         if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake() && !event.isWebhookMessage()) {
             if (GlobalBlacklist.isOnBlacklist(event.getAuthor())) {
-                event.getTextChannel().sendMessage(EmbedUtil.message(EmbedUtil.error("Blacklisted", "You are on the RubiconBot blacklist! ;)"))).queue();
+                event.getTextChannel().sendMessage(EmbedUtil.message(EmbedUtil.error("Blacklisted", "You are on the RubiconBot blacklist! ;)"))).queue(msg -> msg.delete().queueAfter(20, TimeUnit.SECONDS));
                 return;
             }
             call(commandInvocation);

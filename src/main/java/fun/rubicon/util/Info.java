@@ -16,12 +16,10 @@ public class Info {
 
     public final static String BOT_DEFAULT_PREFIX = "rc!";
     public final static String BOT_NAME = "Rubicon";
-    public final static String BOT_VERSION = "0.1.6.6";
+    public final static String BOT_VERSION = "0.1.6.8";
     public final static String BOT_WEBSITE = "https://rubicon.fun";
-    public final static String BOT_GITHUB = "https://github.com/Rubicon-Bot/RubiCon";
+    public final static String BOT_GITHUB = "https://github.com/Rubicon-Bot/Rubicon";
     public final static String CONFIG_FILE = "config.json";
-    public final static String EMBED_FOOTER = "© 2017 Rubicon Dev Team";
-    public final static String ICON_URL = "https://images-ext-2.discordapp.net/external/Xae9oFQTIRhV7V21twWufcxtdcxhmW6NFNatN8cyxz8/https/cdn.discordapp.com/icons/380415148545802250/579ee17b8de4d027c98853606567d760.jpg?width=72&height=72";
     public final static String BITLY_TOKEN = RubiconBot.getConfiguration().getString("bitlytoken");
     public final static String DBL_TOKEN = RubiconBot.getConfiguration().getString("dbl_token");
 
@@ -31,7 +29,6 @@ public class Info {
     public final static Long[] BOT_AUTHOR_IDS = {
             227817074976751616L, // ForYaSee
             153507094933274624L, // Lee
-            318773753796624394L, // Scryptex
             138014719582797824L, // Eiskeks
             264048760580079616L, // Schlaubi
             221905671296253953L, // Zekro

@@ -20,16 +20,16 @@ import static fun.rubicon.util.EmbedUtil.message;
 import static fun.rubicon.util.EmbedUtil.success;
 
 /**
- * Handles the 'color' command which generates random colors.
+ * Handles the 'randomcolor' command which generates random colors.
  *
  * @author LeeDJD, tr808axm
  */
-public class CommandColor extends CommandHandler {
+public class CommandRandomColor extends CommandHandler {
     /**
      * Constructs the 'color' command handler.
      */
-    public CommandColor() {
-        super(new String[]{"color", "colour", "generate-color", "generate-colour", "random-color", "random-colour"}, CommandCategory.TOOLS,
+    public CommandRandomColor() {
+        super(new String[]{"randomcolor", "rcolor", "randc"}, CommandCategory.TOOLS,
                 new PermissionRequirements(PermissionLevel.EVERYONE, "command.color"),
                 "Generates a random color.", "");
     }
