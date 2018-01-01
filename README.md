@@ -14,7 +14,7 @@
 Invite Rubicon here: <a href="inv.rucb.co">rucb.cp</a>
 
 ## Support and Infos
-If you have an question, join our <a href="dc.rucb.co">Community Server</a>
+If you have questions, join our <a href="dc.rucb.co">Community Server</a>
 
 ## RubiconBot Team
 ForYaSee#9353<br>
