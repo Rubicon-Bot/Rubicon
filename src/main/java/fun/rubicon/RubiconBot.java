@@ -228,7 +228,6 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(
                 new CommandAutorole(),
                 new CommandJoinMessage(),
-                new CommandLogChannel(),
                 new CommandPrefix(),
                 new CommandWelcomeChannel(),
                 new CommandBlacklist(),
