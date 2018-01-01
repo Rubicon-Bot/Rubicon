@@ -112,14 +112,22 @@ public class PermissionTarget {
                 && id == ((PermissionTarget) obj).id; // id
     }
 
-    @Override
-    public String toString() {
+    public String getName() {
         return type == Type.USER ? getUser().getName() // user name
                 : (type == Type.ROLE ? getRole().getName() // or role name
-                : getPermission().getName()) // or permission name
+                : getPermission().getName()); // or permission name
+    }
+
+    @Override
+    public String toString() {
+        return (exists() ? getName() : id)
                 + " (" + type.getName() + ")"; // and type
     }
 
+    /**
+     * Checks whether the target exists in the given context (guild).
+     * @return {@code true} if the actual target exists and {@code false} otherwise.
+     */
     public boolean exists() {
         switch (type) {
             case USER:
