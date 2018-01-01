@@ -11,7 +11,7 @@
 <br>Command Documantion can be found [here](http://rubicon.fun)
 
 ## Invite
-Invite Rubicon here: <a href="http://inv.rucb.co">rucb.cp</a>
+Invite Rubicon here: <a href="http://inv.rucb.co">inv.rucb.co</a>
 
 ## Support and Infos
 If you have questions, join our <a href="http://dc.rucb.co">Community Server</a>
