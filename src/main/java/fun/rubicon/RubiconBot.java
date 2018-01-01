@@ -149,7 +149,7 @@ public class RubiconBot {
         }
         GameAnimator.start();
         CommandVote.loadPolls(instance.jda);
-//        CommandGiveaway.startGiveawayManager(instance.jda);
+//      CommandGiveaway.startGiveawayManager(instance.jda);
 
         int memberCount = 0;
         for (Guild guild : getJDA().getGuilds())
