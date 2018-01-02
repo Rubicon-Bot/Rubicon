@@ -31,10 +31,8 @@ public class ListenerManager {
         b.addEventListener(new UserJoinListener());
         b.addEventListener(new VerificationListener());
         b.addEventListener(new MessageDeleteListener());
-<<<<<<< HEAD
         b.addEventListener(new MemberLeaveListener());
-=======
         b.addEventListener(new ServerLogHandler());
->>>>>>> master
+
     }
 }

@@ -35,10 +35,7 @@ import net.dv8tion.jda.core.hooks.EventListener;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
-<<<<<<< HEAD
 import java.sql.Connection;
-=======
->>>>>>> master
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
@@ -89,14 +86,11 @@ public class RubiconBot {
         mySQL = new MySQL(Info.MYSQL_HOST, Info.MYSQL_PORT, Info.MYSQL_USER, Info.MYSQL_PASSWORD, Info.MYSQL_DATABASE);
         mySQL.connect();
         //Create databases if neccesary
-<<<<<<< HEAD
         Connection connection = mySQL.getConnection();
         /*try{
         /*Connection connection = mySQL.getConnection();
-=======
         /*
         Connection connection = mySQL.getConnection();
->>>>>>> master
         try{
             PreparedStatement guilds = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `guilds` ( `serverid` VARCHAR(100) NOT NULL AUTO_INCREMENT , `prefix` VARCHAR(25) NOT NULL , `joinmsg` TEXT NOT NULL , `leavemsg` TEXT NOT NULL , `channel` TEXT NOT NULL , `logchannel` TEXT NOT NULL , `autorole` TEXT NOT NULL , `portal` VARCHAR(250) NOT NULL , `welmsg` TEXT NOT NULL , `autochannels` VARCHAR(250) NOT NULL , `cases` INT(11) NOT NULL , `blacklist` INT NOT NULL , PRIMARY KEY (`serverid`)) ENGINE = InnoDB;");        
             PreparedStatement member = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `member` ( `id` INT(250) NOT NULL , `userid` VARCHAR(100) NOT NULL , `guildid` VARCHAR(100) NOT NULL , `permissionlevel` VARCHAR(2) NOT NULL , `permissions` VARCHAR(250) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
@@ -239,11 +233,8 @@ public class RubiconBot {
                 new CommandPrefix(),
                 new CommandWelcomeChannel(),
                 new CommandBlacklist(),
-<<<<<<< HEAD
-                new CommandLeaveMessage()
-=======
+                new CommandLeaveMessage(),
                 new CommandLog()
->>>>>>> master
         );
         // tools commands package
         commandManager.registerCommandHandlers(
