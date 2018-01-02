@@ -1,19 +1,11 @@
 package fun.rubicon.listener;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.core.Main;
 import fun.rubicon.util.DBLUtil;
-import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Category;
 import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Rubicon Discord bot
@@ -31,17 +23,18 @@ public class BotJoinListener extends ListenerAdapter {
 
     /**
      * Creates the new guild in the database
-     * @param e
+     * @param event
      */
     @Override
-    public void onGuildJoin(GuildJoinEvent e) {
+    public void onGuildJoin(GuildJoinEvent event) {
         //post statistics to discordbots.org
-        DBLUtil.postStats(e.getJDA());
+        DBLUtil.postStats(event.getJDA());
         try {
-            Guild g = e.getGuild();
-            if (!RubiconBot.getMySQL().ifGuildExits(e.getGuild())) {
+            Guild g = event.getGuild();
+            if (!RubiconBot.getMySQL().ifGuildExits(event.getGuild())) {
                 RubiconBot.getMySQL().createGuildServer(g);
-                RubiconBot.getMySQL().createMember(e.getGuild().getOwner());
+                RubiconBot.getMySQL().createMember(event.getGuild().getOwner());
+                new ServerLogHandler.ServerLogSQL(event.getGuild()).createDefaultEntryIfNotExist();
             }
         } catch (Exception ex) {
             Logger.error(ex);

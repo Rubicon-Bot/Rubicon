@@ -10,10 +10,11 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
+import fun.rubicon.listener.ServerLogHandler;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.*;
 
 import static fun.rubicon.util.EmbedUtil.info;
 import static fun.rubicon.util.EmbedUtil.message;
@@ -30,6 +31,12 @@ public abstract class CommandHandler {
     private final String description;
     private final String parameterUsage;
     private boolean disabled = false;
+
+    public Guild guild;
+    public User author;
+    public String[] args;
+    public Member member;
+    public TextChannel textChannel;
 
     /**
      * Constructs a new CommandHandler.
@@ -82,7 +89,7 @@ public abstract class CommandHandler {
      */
     public Message call(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         if(disabled) {
-            return new MessageBuilder().setEmbed(EmbedUtil.info("Vote Command disabled", "Vote Command is currently disabled due to an error.\nWe are working on that problem.").setFooter("RubiconBot Dev Team", null).build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.info("Command disabled", "Command is currently disabled.").setFooter("RubiconBot Dev Team", null).build()).build();
         }
         UserPermissions userPermissions = new UserPermissions(parsedCommandInvocation.invocationMessage.getAuthor(),
                 parsedCommandInvocation.invocationMessage.getGuild());
@@ -90,7 +97,13 @@ public abstract class CommandHandler {
         if (permissionRequirements.coveredBy(userPermissions)) {
             // execute command
             try {
-                ChannelLog.logCommand(parsedCommandInvocation);
+                ServerLogHandler.logCommand(parsedCommandInvocation);
+                this.guild = parsedCommandInvocation.invocationMessage.getGuild();
+                this.args = parsedCommandInvocation.args;
+                this.author = parsedCommandInvocation.invocationMessage.getAuthor();
+                this.member = parsedCommandInvocation.invocationMessage.getMember();
+                this.textChannel = parsedCommandInvocation.invocationMessage.getTextChannel();
+
                 return execute(parsedCommandInvocation, userPermissions);
             } catch (Exception e) { // catch exceptions in command and provide an answer
                 Logger.error("Unknown error during the execution of the '" + parsedCommandInvocation.invocationCommand + "' command. ");

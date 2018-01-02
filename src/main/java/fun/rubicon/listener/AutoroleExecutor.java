@@ -1,16 +1,8 @@
 package fun.rubicon.listener;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.command.CommandHandler;
-import fun.rubicon.core.Main;
 import fun.rubicon.util.EmbedUtil;
-import fun.rubicon.util.Logger;
-import fun.rubicon.util.MySQL;
-import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.PrivateChannel;
-import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 

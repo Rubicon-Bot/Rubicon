@@ -6,10 +6,12 @@
 
 package fun.rubicon.data;
 
+import java.util.Comparator;
+
 /**
  * Specifies a group of users that can access permission-locked features.
  */
-public enum PermissionLevel {
+public enum PermissionLevel implements Comparator<PermissionLevel> {
     /**
      * Every user can access the feature.
      */
@@ -19,12 +21,15 @@ public enum PermissionLevel {
      */
     WITH_PERMISSION(1),
     /**
-     * Only administrators can access the feature.
+     * @deprecated Administrator permissions should be defined by server owners, not by defaults.
      */
+    @Deprecated
     ADMINISTRATOR(2),
     /**
-     * Only the guild owner can access the feature.
+     * @deprecated As server owners have access to all permission-restricted things (except author exclusive ones),
+     * this level is redundant.
      */
+    @Deprecated
     SERVER_OWNER(3),
     /**
      * Only bot authors can access the feature.
@@ -49,5 +54,10 @@ public enum PermissionLevel {
             if (level.value == value)
                 return level;
         return null;
+    }
+
+    @Override
+    public int compare(PermissionLevel o1, PermissionLevel o2) {
+        return Integer.compare(o1.value, o2.value);
     }
 }

@@ -15,12 +15,11 @@ import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.Info;
-import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
-import java.util.*;
+import java.util.HashSet;
 
 /**
  * Handles the 'help' command which prints command description, aliases and usage.
@@ -71,34 +70,12 @@ public class CommandHelp extends CommandHandler {
                     .setTitle(":information_source: Rubicon Bot command manual")
                     .setDescription("Use `" + parsedCommandInvocation.serverPrefix
                             + parsedCommandInvocation.invocationCommand + " <command>` to get a more detailed command help");
-            Map<CommandCategory, List<CommandHandler>> commandCategoryListMap = new HashMap<>();
-            for (CommandHandler commandHandler : RubiconBot.getCommandManager().getCommandAssociations().values()) {
-                if (!commandCategoryListMap.containsKey(commandHandler.getCategory()))
-                    commandCategoryListMap.put(commandHandler.getCategory(), new ArrayList<>());
-                List<CommandHandler> categoryList = commandCategoryListMap.get(commandHandler.getCategory());
-                if (!categoryList.contains(commandHandler))
-                    categoryList.add(commandHandler);
-            }
-            /*for (Map.Entry<CommandCategory, List<CommandHandler>> categoryEntry : commandCategoryListMap.entrySet()) {
-                if (categoryEntry.getKey().equals(CommandCategory.BOT_OWNER))
-                    continue;
-                StringBuilder builder = new StringBuilder();
-                categoryEntry.getValue().forEach(handler -> builder.append('`').append(parsedCommandInvocation.serverPrefix)
-                        .append(handler.getInvocationAliases()[0]).append("` — ").append(handler.getDescription()).append('\n'));
-                embedBuilder.addField(categoryEntry.getKey().getDisplayname() + " — "
-                        + categoryEntry.getValue().size(), builder.toString(), false);
-            }*/
             embedBuilder.addField("Documentation", "Take a look at my [Documentation](https://rubicon.fun)", false);
             embedBuilder.setFooter("Loaded a total of "
                     + new HashSet<>(RubiconBot.getCommandManager().getCommandAssociations().values()).size()
                     + " commands.", null);
-            parsedCommandInvocation.invocationMessage.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(new MessageBuilder().setEmbed(embedBuilder.build()).build()).queue());
-            return new MessageBuilder().setEmbed(new EmbedBuilder()
-                    .setColor(Colors.COLOR_PRIMARY)
-                    .setTitle(":white_check_mark: Command help sent")
-                    .setDescription("Check your private messages <@"
-                            + parsedCommandInvocation.invocationMessage.getAuthor().getId() + ">!")
-                    .build()).build();
+            textChannel.sendMessage(new MessageBuilder().setEmbed(embedBuilder.build()).build()).queue();
+            return null;
         } else {
             CommandHandler handler = RubiconBot.getCommandManager().getCommandHandler(parsedCommandInvocation.args[0]);
             return handler == null

@@ -10,6 +10,7 @@ import fun.rubicon.commands.admin.CommandAutochannel;
 import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.admin.CommandVerification;
 import fun.rubicon.commands.botowner.*;
+import fun.rubicon.commands.fun.CommandOK;
 import fun.rubicon.commands.fun.CommandRip;
 import fun.rubicon.commands.fun.CommandRoulette;
 import fun.rubicon.commands.fun.CommandSlot;
@@ -21,6 +22,8 @@ import fun.rubicon.core.CommandManager;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.ListenerManager;
 import fun.rubicon.features.GiveawayHandler;
+import fun.rubicon.listener.ServerLogHandler;
+import fun.rubicon.permission.PermissionManager;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -31,9 +34,11 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.hooks.EventListener;
 
 import javax.security.auth.login.LoginException;
-
 import java.io.File;
+<<<<<<< HEAD
 import java.sql.Connection;
+=======
+>>>>>>> master
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
@@ -46,7 +51,7 @@ import java.util.Timer;
  * @author tr808axm
  */
 public class RubiconBot {
-    private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+    private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
     private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token", "twitterConsumerKey", "twitterConsumerSecret", "twitterAccessToken", "twitterAccessTokenSecret"};
     private static final String dataFolder = "data/";
     private static RubiconBot instance;
@@ -56,6 +61,7 @@ public class RubiconBot {
     private JDA jda;
     private final Timer timer;
     private final Set<EventListener> eventListeners;
+    private final PermissionManager permissionManager;
 
     /**
      * Constructs the RubiconBot.
@@ -83,9 +89,14 @@ public class RubiconBot {
         mySQL = new MySQL(Info.MYSQL_HOST, Info.MYSQL_PORT, Info.MYSQL_USER, Info.MYSQL_PASSWORD, Info.MYSQL_DATABASE);
         mySQL.connect();
         //Create databases if neccesary
+<<<<<<< HEAD
         Connection connection = mySQL.getConnection();
         /*try{
         /*Connection connection = mySQL.getConnection();
+=======
+        /*
+        Connection connection = mySQL.getConnection();
+>>>>>>> master
         try{
             PreparedStatement guilds = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `guilds` ( `serverid` VARCHAR(100) NOT NULL AUTO_INCREMENT , `prefix` VARCHAR(25) NOT NULL , `joinmsg` TEXT NOT NULL , `leavemsg` TEXT NOT NULL , `channel` TEXT NOT NULL , `logchannel` TEXT NOT NULL , `autorole` TEXT NOT NULL , `portal` VARCHAR(250) NOT NULL , `welmsg` TEXT NOT NULL , `autochannels` VARCHAR(250) NOT NULL , `cases` INT(11) NOT NULL , `blacklist` INT NOT NULL , PRIMARY KEY (`serverid`)) ENGINE = InnoDB;");        
             PreparedStatement member = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `member` ( `id` INT(250) NOT NULL , `userid` VARCHAR(100) NOT NULL , `guildid` VARCHAR(100) NOT NULL , `permissionlevel` VARCHAR(2) NOT NULL , `permissions` VARCHAR(250) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
@@ -94,15 +105,15 @@ public class RubiconBot {
             PreparedStatement roles = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `roles` ( `id` INT(250) NOT NULL AUTO_INCREMENT , `roleid` VARCHAR(100) NOT NULL , `permissions` VARCHAR(250) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
             PreparedStatement user = connection.prepareStatement("CREATE TABLE IF NOT EXSITS `user` ( `id` INT(250) NOT NULL AUTO_INCREMENT , `userid` VARCHAR(250) NOT NULL , `bio` VARCHAR(250) NULL , `bday` VARCHAR NULL , `level` TEXT NULL DEFAULT NULL , `points` TEXT NULL DEFAULT NULL , `money` TEXT NULL DEFAULT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
             PreparedStatement verifications = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `verifications_b` ( `id` INT(11) NOT NULL AUTO_INCREMENT , `guildid` TEXT NOT NULL , `channelid` TEXT NOT NULL , `roleid` TEXT NOT NULL , `text` TEXT NOT NULL , `verifiedtext` TEXT NOT NULL , `kicktime` TEXT NOT NULL , `kicktext` TEXT NOT NULL , `emote` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
-            mySQL.executePreparedStatements(guilds, member, mutes, portal, roles, user, verifications);            
+            mySQL.executePreparedStatements(guilds, member, mutes, portal, roles, user, verifications);
         } catch(SQLException ex){
             ex.printStackTrace();
-        }*/
-
-
+        }
+        */
 
         commandManager = new fun.rubicon.command2.CommandManager();
         registerCommandHandlers();
+        permissionManager = new PermissionManager();
 
         // init JDA
         initJDA();
@@ -149,7 +160,7 @@ public class RubiconBot {
         }
         GameAnimator.start();
         CommandVote.loadPolls(instance.jda);
-//        CommandGiveaway.startGiveawayManager(instance.jda);
+//      CommandGiveaway.startGiveawayManager(instance.jda);
 
         int memberCount = 0;
         for (Guild guild : getJDA().getGuilds())
@@ -205,7 +216,8 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(
                 new CommandRip(),
                 new CommandSlot(),
-                new CommandRoulette()
+                new CommandRoulette(),
+                new CommandOK()
         );
         // general commands package
         commandManager.registerCommandHandlers(
@@ -224,18 +236,21 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(
                 new CommandAutorole(),
                 new CommandJoinMessage(),
-                new CommandLogChannel(),
                 new CommandPrefix(),
                 new CommandWelcomeChannel(),
                 new CommandBlacklist(),
+<<<<<<< HEAD
                 new CommandLeaveMessage()
+=======
+                new CommandLog()
+>>>>>>> master
         );
         // tools commands package
         commandManager.registerCommandHandlers(
                 new CommandASCII(),
                 new CommandChoose(),
                 new CommandClear(),
-                new CommandColor(),
+                new CommandRandomColor(),
                 new CommandDice(),
                 new CommandGoogle(),
                 new CommandLmgtfy(),
@@ -281,6 +296,20 @@ public class RubiconBot {
      */
     public static fun.rubicon.command2.CommandManager getCommandManager() {
         return instance == null ? null : instance.commandManager;
+    }
+
+    /**
+     * @return the {@link PermissionManager}.
+     */
+    public PermissionManager getPermissionManager() {
+        return permissionManager;
+    }
+
+    /**
+     * @return the {@link PermissionManager} via a static reference.
+     */
+    public static PermissionManager sGetPermissionManager() {
+        return instance == null ? null : instance.permissionManager;
     }
 
     /**

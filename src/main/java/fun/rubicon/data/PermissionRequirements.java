@@ -6,6 +6,8 @@
 
 package fun.rubicon.data;
 
+import fun.rubicon.permission.Permission;
+
 /**
  * Permission requirements.
  *
@@ -44,24 +46,23 @@ public class PermissionRequirements {
      * @return true if all conditions are met, false otherwise.
      */
     public boolean coveredBy(UserPermissions userPermissions) {
+        // bot author
         if (userPermissions.isBotAuthor())
             return true;
         else if (requiredPermissionLevel == PermissionLevel.BOT_AUTHOR)
             return false;
 
-        if (userPermissions.getMemberPermissionLevel() > requiredPermissionLevel.value)
+        // server owner
+        if(userPermissions.isServerOwner())
             return true;
 
-        if (requiredPermissionLevel == PermissionLevel.WITH_PERMISSION && userPermissions.hasPermissionNode(requiredPermissionNode))
-            return true;
-
-        if (requiredPermissionLevel == PermissionLevel.EVERYONE)
-            return true;
-
-        if (requiredPermissionLevel == PermissionLevel.ADMINISTRATOR && userPermissions.isAdministrator())
-            return true;
-
-        return requiredPermissionLevel == PermissionLevel.SERVER_OWNER && userPermissions.isServerOwner();
+        Permission effectiveEntry = userPermissions.getEffectivePermissionEntry(null, requiredPermissionNode);
+        if(effectiveEntry == null) {
+            // defaults
+            return requiredPermissionLevel == PermissionLevel.EVERYONE; // everyone -> true, with_permission -> false
+        } else
+            // check permission
+            return !effectiveEntry.isNegated();
     }
 
     /**
