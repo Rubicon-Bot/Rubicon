@@ -6,6 +6,7 @@
 
 package fun.rubicon;
 
+import fun.rubicon.command.CommandManager;
 import fun.rubicon.commands.admin.CommandAutochannel;
 import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.admin.CommandVerification;
@@ -18,11 +19,9 @@ import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.*;
 import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
-import fun.rubicon.core.CommandManager;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.ListenerManager;
 import fun.rubicon.features.GiveawayHandler;
-import fun.rubicon.listener.ServerLogHandler;
 import fun.rubicon.permission.PermissionManager;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.core.AccountType;
@@ -53,7 +52,7 @@ public class RubiconBot {
     private static RubiconBot instance;
     private final MySQL mySQL;
     private final Configuration configuration;
-    private final fun.rubicon.command2.CommandManager commandManager;
+    private final CommandManager commandManager;
     private JDA jda;
     private final Timer timer;
     private final Set<EventListener> eventListeners;
@@ -101,7 +100,7 @@ public class RubiconBot {
         }
         */
 
-        commandManager = new fun.rubicon.command2.CommandManager();
+        commandManager = new CommandManager();
         registerCommandHandlers();
         permissionManager = new PermissionManager();
 
@@ -171,7 +170,7 @@ public class RubiconBot {
     /**
      * Registers all command handlers used in this project.
      *
-     * @see fun.rubicon.command2.CommandManager
+     * @see CommandManager
      */
     private void registerCommandHandlers() {
         // Usage: commandManager.registerCommandHandler(yourCommandHandler...);
@@ -207,7 +206,8 @@ public class RubiconBot {
                 new CommandRip(),
                 new CommandSlot(),
                 new CommandRoulette(),
-                new CommandOK()
+                new CommandOK(),
+                new CommandMusic()
         );
         // general commands package
         commandManager.registerCommandHandlers(
@@ -279,7 +279,7 @@ public class RubiconBot {
     /**
      * @return the CommandManager.
      */
-    public static fun.rubicon.command2.CommandManager getCommandManager() {
+    public static CommandManager getCommandManager() {
         return instance == null ? null : instance.commandManager;
     }
 

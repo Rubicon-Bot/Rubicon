@@ -1,7 +1,7 @@
 package fun.rubicon.listener;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.command2.CommandManager;
+import fun.rubicon.command.CommandManager;
 import fun.rubicon.util.Logger;
 import fun.rubicon.util.MySQL;
 import net.dv8tion.jda.core.EmbedBuilder;

@@ -4,9 +4,8 @@
  * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
  */
 
-package fun.rubicon.command2;
+package fun.rubicon.command;
 
-import fun.rubicon.command.CommandCategory;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;

@@ -1,7 +1,6 @@
 package fun.rubicon.listener;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.core.Main;
 import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.VoiceChannel;
