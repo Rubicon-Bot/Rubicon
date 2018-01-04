@@ -1,5 +1,6 @@
 package fun.rubicon.commands.tools;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command2.CommandHandler;
 import fun.rubicon.command2.CommandManager;
@@ -141,6 +142,7 @@ public class CommandVote extends CommandHandler implements Serializable {
 
 
     private static EmbedBuilder getParsedPoll(Poll poll, Guild guild) {
+        String prefix = RubiconBot.getMySQL().getGuildValue(guild, "prefix");
 
         StringBuilder ansSTR = new StringBuilder();
         final AtomicInteger count = new AtomicInteger();
@@ -154,7 +156,7 @@ public class CommandVote extends CommandHandler implements Serializable {
         return new EmbedBuilder()
                 .setAuthor(poll.getCreator(guild).getEffectiveName() + "'s poll", null, poll.getCreator(guild).getUser().getAvatarUrl())
                 .setDescription(":pencil:   " + poll.heading + "\n\n" + ansSTR.toString())
-                .setFooter("Enter: 'vote v <number>' or react to vote", null)
+                .setFooter("Enter: '" + prefix + "vote v <number>' or react to vote", null)
                 .setColor(Color.CYAN);
 
     }
