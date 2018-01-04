@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Rubicon Bot Development Team
+ * Copyright (c) 2018 Rubicon Bot Development Team
  *
  * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
  */
@@ -141,12 +141,16 @@ public class PermissionCommandHandler extends CommandHandler {
             case "u":
             case "user":
                 type = PermissionTarget.Type.USER;
+                if(Message.MentionType.USER.getPattern().matcher(idInput).matches())
+                    idInput = idInput.substring(2, idInput.length() - 1);
                 break;
             case "g":
             case "group":
             case "r":
             case "role":
                 type = PermissionTarget.Type.ROLE;
+                if(Message.MentionType.ROLE.getPattern().matcher(idInput).matches())
+                    idInput = idInput.substring(3, idInput.length() - 1);
                 break;
             case "dp":
             case "dperm":
@@ -173,12 +177,13 @@ public class PermissionCommandHandler extends CommandHandler {
         return message(info('\'' + aliasToUse + "' command help", getDescription())
                 .addField("Aliases", String.join(", ", getInvocationAliases()), false)
                 .addField("Usage", usage.toString(), false)
-                .addField("Parameters", "`<target-type>`\n" +
+                .addField("Parameters",
+                        "`<target-type>`\n" +
                         "Use `user` for user targets, `role` for role targets and `discordpermission` for " +
                         "discord-permission targets.\n\n" +
 
                         "`<target-id>`\n" +
-                        "Specify the id of the target. User the user-id for users, the role id for roles and the " +
+                        "Mention the target or specify it's id. User the user-id for users, the role id for roles and the " +
                         "permission offset for discord-permissions. Type `" + serverPrefix + aliasToUse + " " +
                         "show-discord-permissions` for a list of discord permissions.", false));
     }

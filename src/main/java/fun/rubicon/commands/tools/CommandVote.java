@@ -124,6 +124,15 @@ public class CommandVote extends CommandHandler implements Serializable {
             return votes;
         }
 
+        public List<Message> getPollMessages(Guild guild){
+            List<Message> messages = new ArrayList<>();
+            Poll poll = this;
+            poll.pollmsgs.keySet().forEach(m -> {
+                messages.add(guild.getTextChannelById(m).getMessageById(poll.pollmsgs.get(m)).complete());
+            });
+            return messages;
+        }
+
         HashMap<String, Integer> getReacts() {
             return reacts;
         }
@@ -189,6 +198,13 @@ public class CommandVote extends CommandHandler implements Serializable {
             });
         } catch (ErrorResponseException e) {
             //This is an empty Catch Block
+        }
+        try{
+            poll.getPollMessages(guild).forEach(m -> {
+                m.delete().queue();
+            });
+        } catch (Exception ignored){
+
         }
     }
 

@@ -35,6 +35,7 @@ import net.dv8tion.jda.core.hooks.EventListener;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
+import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
@@ -86,6 +87,9 @@ public class RubiconBot {
         mySQL.connect();
         generateDatabases();
         //Create databases if neccesary
+        Connection connection = mySQL.getConnection();
+        /*try{
+        /*Connection connection = mySQL.getConnection();
         /*
         Connection connection = mySQL.getConnection();
         try{
@@ -231,6 +235,7 @@ public class RubiconBot {
                 new CommandPrefix(),
                 new CommandWelcomeChannel(),
                 new CommandBlacklist(),
+                new CommandLeaveMessage(),
                 new CommandLog()
         );
         // tools commands package
@@ -249,7 +254,8 @@ public class RubiconBot {
                 new CommandShorten(),
                 new CommandUserInfo(),
                 new CommandVote(),
-                new CommandMoveAll()
+                new CommandMoveAll(),
+                new CommandNick()
         );
 
         // also register commands from the old framework
