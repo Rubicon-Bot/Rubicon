@@ -15,7 +15,7 @@ import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Logger;
-import fun.rubicon.util.MySQL;
+import fun.rubicon.sql.MySQL;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;

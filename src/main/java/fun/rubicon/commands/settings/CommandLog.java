@@ -8,6 +8,7 @@ import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.listener.ServerLogHandler;
 import fun.rubicon.listener.ServerLogHandler.LogEventKeys;
+import fun.rubicon.sql.ServerLogSQL;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -23,6 +24,9 @@ public class CommandLog extends CommandHandler {
 
     private CommandManager.ParsedCommandInvocation parsedCommandInvocation;
 
+    private ServerLogSQL serverLogSQL;
+    private String[] args;
+
     public CommandLog() {
         super(new String[]{"log", "logsettings"}, CommandCategory.SETTINGS, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command."), "Enable/Disable log settings", "list\n" +
                 "channel <#channel>\n" +
@@ -36,6 +40,8 @@ public class CommandLog extends CommandHandler {
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         this.parsedCommandInvocation = parsedCommandInvocation;
+        this.args = parsedCommandInvocation.args;
+        this.serverLogSQL = new ServerLogSQL(parsedCommandInvocation.invocationMessage.getGuild());
         if (args.length == 0)
             return createHelpMessage();
         if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
@@ -45,7 +51,7 @@ public class CommandLog extends CommandHandler {
                 case "channel":
                     if(parsedCommandInvocation.invocationMessage.getMentionedChannels().size() != 1)
                         return EmbedUtil.message(EmbedUtil.error("Error!", "You have to mention `one` channel."));
-                    new ServerLogHandler.ServerLogSQL(guild).set("channel", parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0).getId());
+                   serverLogSQL.set("channel", parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0).getId());
                     return EmbedUtil.message(EmbedUtil.success("Success!", "Successfully set logchannel to `" + parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0).getName() + "`"));
                 case "join":
                     return EmbedUtil.message(handleEventUpdate(LogEventKeys.JOIN, args[1]));
@@ -64,10 +70,10 @@ public class CommandLog extends CommandHandler {
 
     private EmbedBuilder handleEventUpdate(ServerLogHandler.LogEventKeys event, String option) {
         if(option.equalsIgnoreCase("true") || option.equalsIgnoreCase("enable")) {
-            new ServerLogHandler.ServerLogSQL(guild).set(event.getKey(), "true");
+            serverLogSQL.set(event.getKey(), "true");
             return EmbedUtil.success("Success!", "Successfully **enabled** " + event.getDisplayname().toLowerCase() + " logging");
         } else if(option.equalsIgnoreCase("false") || option.equalsIgnoreCase("disable")) {
-            new ServerLogHandler.ServerLogSQL(guild).set(event.getKey(), "false");
+            serverLogSQL.set(event.getKey(), "false");
             return EmbedUtil.success("Success!", "Successfully **disabled** " + event.getDisplayname().toLowerCase() + " logging");
         } else
             return EmbedUtil.error("Error!", "Wrong arguments. Use `enable` or `disable`");
@@ -77,7 +83,7 @@ public class CommandLog extends CommandHandler {
         HashMap<LogEventKeys, Boolean> eventStats = new HashMap<>();
 
         for (LogEventKeys event : LogEventKeys.getAllKeys()) {
-            String entry = new ServerLogHandler.ServerLogSQL(guild).get(event.getKey());
+            String entry = serverLogSQL.get(event.getKey());
             if (entry.equalsIgnoreCase("true"))
                 eventStats.put(event, true);
             else
@@ -86,7 +92,7 @@ public class CommandLog extends CommandHandler {
 
         EmbedBuilder builder = new EmbedBuilder();
         builder.setColor(Colors.COLOR_PRIMARY);
-        builder.setAuthor("List of log events", null, guild.getIconUrl());
+        builder.setAuthor("List of log events", null, parsedCommandInvocation.invocationMessage.getGuild().getIconUrl());
 
         for (Map.Entry entry : eventStats.entrySet()) {
             builder.addField(((LogEventKeys) entry.getKey()).getDisplayname() + " Event", ((boolean) entry.getValue()) ? "enabled" : "disabled", false);

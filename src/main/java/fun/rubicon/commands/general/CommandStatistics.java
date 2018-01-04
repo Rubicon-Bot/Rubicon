@@ -41,7 +41,7 @@ public class CommandStatistics extends CommandHandler {
                 .addField("Total servers", String.valueOf(RubiconBot.getJDA().getGuilds().size()), true)
                 .addField("Total users", String.valueOf(RubiconBot.getJDA().getUsers().stream()
                         .filter(u -> !u.isBot()).collect(Collectors.toList()).size()), true));
-        textChannel.sendMessage(message).queue();
+        parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(message).queue();
         return null;
     }
 }

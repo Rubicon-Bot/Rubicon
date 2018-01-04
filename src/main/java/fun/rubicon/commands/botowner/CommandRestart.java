@@ -12,7 +12,7 @@ import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
-import fun.rubicon.util.MySQL;
+import fun.rubicon.sql.MySQL;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;

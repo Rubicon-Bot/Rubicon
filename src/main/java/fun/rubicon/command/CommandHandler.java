@@ -31,12 +31,6 @@ public abstract class CommandHandler {
     private final String parameterUsage;
     private boolean disabled = false;
 
-    public Guild guild;
-    public User author;
-    public String[] args;
-    public Member member;
-    public TextChannel textChannel;
-
     /**
      * Constructs a new CommandHandler.
      *
@@ -97,12 +91,6 @@ public abstract class CommandHandler {
             // execute command
             try {
                 ServerLogHandler.logCommand(parsedCommandInvocation);
-                this.guild = parsedCommandInvocation.invocationMessage.getGuild();
-                this.args = parsedCommandInvocation.args;
-                this.author = parsedCommandInvocation.invocationMessage.getAuthor();
-                this.member = parsedCommandInvocation.invocationMessage.getMember();
-                this.textChannel = parsedCommandInvocation.invocationMessage.getTextChannel();
-
                 return execute(parsedCommandInvocation, userPermissions);
             } catch (Exception e) { // catch exceptions in command and provide an answer
                 Logger.error("Unknown error during the execution of the '" + parsedCommandInvocation.invocationCommand + "' command. ");

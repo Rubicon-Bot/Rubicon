@@ -11,10 +11,7 @@ import fun.rubicon.commands.admin.CommandAutochannel;
 import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.admin.CommandVerification;
 import fun.rubicon.commands.botowner.*;
-import fun.rubicon.commands.fun.CommandOK;
-import fun.rubicon.commands.fun.CommandRip;
-import fun.rubicon.commands.fun.CommandRoulette;
-import fun.rubicon.commands.fun.CommandSlot;
+import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.*;
 import fun.rubicon.commands.settings.*;
@@ -23,6 +20,10 @@ import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.ListenerManager;
 import fun.rubicon.features.GiveawayHandler;
 import fun.rubicon.permission.PermissionManager;
+import fun.rubicon.sql.GuildMusicSQL;
+import fun.rubicon.sql.MySQL;
+import fun.rubicon.sql.ServerLogSQL;
+import fun.rubicon.sql.UserMusicSQL;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -83,6 +84,7 @@ public class RubiconBot {
         // load MySQL adapter
         mySQL = new MySQL(Info.MYSQL_HOST, Info.MYSQL_PORT, Info.MYSQL_USER, Info.MYSQL_PASSWORD, Info.MYSQL_DATABASE);
         mySQL.connect();
+        generateDatabases();
         //Create databases if neccesary
         /*
         Connection connection = mySQL.getConnection();
@@ -219,8 +221,8 @@ public class RubiconBot {
                 new CommandInvite(),
                 new CommandSpeedTest(),
                 new CommandStatistics(),
-                new CommandMoney(),
-                new CommandLevel()
+                new CommandMoney()
+                //TODO Ambiguous new CommandLevel()
         );
         // settings commands package
         commandManager.registerCommandHandlers(
@@ -234,7 +236,7 @@ public class RubiconBot {
         // tools commands package
         commandManager.registerCommandHandlers(
                 new CommandASCII(),
-                new CommandChoose(),
+                //TODO Ambiguous new CommandChoose(),
                 new CommandClear(),
                 new CommandRandomColor(),
                 new CommandDice(),
@@ -253,6 +255,12 @@ public class RubiconBot {
         // also register commands from the old framework
         //noinspection deprecation
         new CommandManager();
+    }
+
+    private void generateDatabases() {
+        new ServerLogSQL().createTableIfNotExist();
+        new UserMusicSQL().createTableIfNotExist();
+        new GuildMusicSQL().createTableIfNotExist();
     }
 
     /**

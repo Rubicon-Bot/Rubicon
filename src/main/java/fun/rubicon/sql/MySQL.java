@@ -4,10 +4,11 @@
  * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
  */
 
-package fun.rubicon.util;
+package fun.rubicon.sql;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.admin.CommandVerification;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 

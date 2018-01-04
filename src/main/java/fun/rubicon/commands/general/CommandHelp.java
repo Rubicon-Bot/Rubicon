@@ -74,7 +74,7 @@ public class CommandHelp extends CommandHandler {
             embedBuilder.setFooter("Loaded a total of "
                     + new HashSet<>(RubiconBot.getCommandManager().getCommandAssociations().values()).size()
                     + " commands.", null);
-            textChannel.sendMessage(new MessageBuilder().setEmbed(embedBuilder.build()).build()).queue();
+            parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(new MessageBuilder().setEmbed(embedBuilder.build()).build()).queue();
             return null;
         } else {
             CommandHandler handler = RubiconBot.getCommandManager().getCommandHandler(parsedCommandInvocation.args[0]);

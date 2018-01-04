@@ -8,7 +8,7 @@ package fun.rubicon.listener;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.util.Cooldown;
-import fun.rubicon.util.MySQL;
+import fun.rubicon.sql.MySQL;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 

@@ -1,9 +1,7 @@
 package fun.rubicon.listener;
 
-import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.util.Logger;
-import fun.rubicon.util.MySQL;
+import fun.rubicon.sql.ServerLogSQL;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -16,10 +14,6 @@ import net.dv8tion.jda.core.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -171,68 +165,6 @@ public class ServerLogHandler extends ListenerAdapter {
     private static boolean isEventEnabled(Guild guild, LogEventKeys key) {
         String entry = new ServerLogSQL(guild).get(key.getKey());
         return entry.equalsIgnoreCase("true");
-    }
-
-    public static class ServerLogSQL {
-
-        private Guild guild;
-        private Connection connection;
-        private MySQL mySQL;
-
-        public ServerLogSQL(Guild guild) {
-            this.guild = guild;
-            this.mySQL = RubiconBot.getMySQL();
-            this.connection = MySQL.getConnection();
-        }
-
-        public String get(String type) {
-            createDefaultEntryIfNotExist();
-            try {
-                if (connection.isClosed())
-                    mySQL.connect();
-                PreparedStatement ps = connection.prepareStatement("SELECT * FROM serverlog WHERE `guildid` = ?");
-                ps.setString(1, guild.getId());
-                ResultSet rs = ps.executeQuery();
-                if (rs.next()) {
-                    return rs.getString(type);
-                }
-            } catch (SQLException e) {
-                Logger.error(e);
-            }
-            return null;
-        }
-
-
-        public void set(String type, String value) {
-            createDefaultEntryIfNotExist();
-            try {
-                if (connection.isClosed())
-                    mySQL.connect();
-                PreparedStatement ps = connection.prepareStatement("UPDATE serverlog SET " + type + "=? WHERE guildid=?");
-                ps.setString(1, value);
-                ps.setString(2, guild.getId());
-                ps.execute();
-            } catch (SQLException e) {
-                Logger.error(e);
-            }
-        }
-
-        public void createDefaultEntryIfNotExist() {
-            try {
-                if (connection.isClosed())
-                    mySQL.connect();
-                PreparedStatement checkStatement = connection.prepareStatement("SELECT * FROM serverlog WHERE guildid = ?");
-                checkStatement.setString(1, guild.getId());
-                ResultSet checkResult = checkStatement.executeQuery();
-                if (checkResult.next())
-                    return;
-                PreparedStatement ps = connection.prepareStatement("INSERT INTO serverlog (guildid, channel, ev_join, ev_leave, ev_command, ev_ban, ev_voice) VALUES (?, '0', 'false', 'false', 'false', 'false', 'false')");
-                ps.setString(1, guild.getId());
-                ps.execute();
-            } catch (SQLException e) {
-                Logger.error(e);
-            }
-        }
     }
 
     public enum LogEventKeys {
