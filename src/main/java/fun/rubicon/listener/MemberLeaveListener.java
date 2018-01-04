@@ -18,6 +18,7 @@ public class MemberLeaveListener extends ListenerAdapter{
         if(message.equals("0")) return;
         TextChannel channel = event.getGuild().getTextChannelById(RubiconBot.getMySQL().getGuildValue(event.getGuild(), "channel"));
         if(channel == null) return;
+
         channel.sendMessage(message).queue();
     }
 }
