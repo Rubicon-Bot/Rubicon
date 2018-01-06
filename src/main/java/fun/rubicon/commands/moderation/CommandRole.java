@@ -18,7 +18,7 @@ import java.util.Arrays;
 
 public class CommandRole extends CommandHandler{
     public CommandRole() {
-        super(new String[] {"role"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.role"), "Easily add or remove roles to users", "role add/remove <@User> <role>", false);
+        super(new String[] {"role"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.role"), "Easily add or remove roles to users", "add/remove <@User> <role>", false);
     }
 
     @Override
@@ -31,13 +31,13 @@ public class CommandRole extends CommandHandler{
         Member member = message.getGuild().getMember(message.getMentionedUsers().get(0));
         String rolename = String.join(" ", new ArrayList<>(Arrays.asList(args).subList(1, args.length))).replace("@", "").replace("<" + member.getUser().getId() + ">", "").replace("<!" + member.getUser().getId() + ">", "").replaceFirst(" ", "");
         if(member.getGuild().getRolesByName(rolename, true).isEmpty())
-            return new MessageBuilder().setEmbed(EmbedUtil.error("Unknown role", "That role doesen't exist").build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error("Unknown role", "That role doesn't exist").build()).build();
         Role role = member.getGuild().getRolesByName(rolename, true).get(0);
         Member issuer = message.getMember();
         if(!issuer.canInteract(role))
-            return new MessageBuilder().setEmbed(EmbedUtil.error("Not permitted", "You are not permitted to assign or remove that role").build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error("Not permitted", "You are not permitted to assign or remove that role.").build()).build();
         if(!message.getGuild().getSelfMember().canInteract(role))
-            return new MessageBuilder().setEmbed(EmbedUtil.error("Not permitted", "Rubicon is not permitted to assign or remove that role").build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error("Not permitted", "I'm not permitted to assign or remove that role.").build()).build();
 
         if(args[0].equals("add")){
             controller.addRolesToMember(member, role).queue();
