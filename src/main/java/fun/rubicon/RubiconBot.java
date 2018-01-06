@@ -149,7 +149,7 @@ public class RubiconBot {
 
         try {
             instance.jda = builder.buildBlocking();
-        } catch (LoginException | InterruptedException | RateLimitedException e) {
+        } catch (LoginException | InterruptedException e) {
             Logger.error(e.getMessage());
         }
         GameAnimator.start();
@@ -191,7 +191,8 @@ public class RubiconBot {
                 new CommandWarn(),
                 new CommandPortal(),
                 new CommandVerification(),
-                new CommandAutochannel()
+                new CommandAutochannel(),
+                new CommandRole()
         );
         // botowner commands package
         commandManager.registerCommandHandlers(
