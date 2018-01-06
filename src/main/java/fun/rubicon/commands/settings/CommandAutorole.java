@@ -22,7 +22,7 @@ import net.dv8tion.jda.core.entities.Message;
  */
 public class CommandAutorole extends CommandHandler{
     public CommandAutorole(){
-        super(new String[]{"autorole", "role"}, CommandCategory.ADMIN, new PermissionRequirements(2, "command.autorole"), "Set the Autorole.Triggers when a User Join your Guild", "<RoleMention or RoleName>");
+        super(new String[]{"autorole"}, CommandCategory.ADMIN, new PermissionRequirements(2, "command.autorole"), "Set the Autorole.Triggers when a User Join your Guild", "<RoleMention or RoleName>");
     }
 
     @Override

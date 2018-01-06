@@ -15,6 +15,7 @@ import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.core.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.core.exceptions.ErrorResponseException;
 
 import java.awt.*;
@@ -85,17 +86,28 @@ public class CommandVote extends CommandHandler implements Serializable {
         return null;
     }
 
+    public static void handleReactionDeletion(MessageReactionRemoveEvent event) {
+        if (!polls.containsKey(event.getGuild())) return;
+        Poll poll = polls.get(event.getGuild());
+        if (!poll.isPollmsg(event.getMessageId())) return;
+        if(!poll.getReacts().keySet().contains(event.getReactionEmote().getName())) return;
+        Message message = event.getTextChannel().getMessageById(event.getMessageId()).complete();
+        message.addReaction(event.getReactionEmote().getName()).queue();
+    }
+
     private static class Poll implements Serializable {
         private String creator;
         private String heading;
+        private String guild;
         private List<String> answers;
         private HashMap<String, String> pollmsgs;
         private HashMap<String, Integer> votes;
         private String channel;
         private HashMap<String, Integer> reacts;
 
-        private Poll(Member creator, String heading, List<String> answers, Message pollmsg, TextChannel channel) {
+        private Poll(Member creator, Guild guild, String heading, List<String> answers, Message pollmsg, TextChannel channel) {
             this.creator = creator.getUser().getId();
+            this.guild = guild.getId();
             this.heading = heading;
             this.answers = answers;
             this.pollmsgs = new HashMap<>();
@@ -126,7 +138,7 @@ public class CommandVote extends CommandHandler implements Serializable {
             return votes;
         }
 
-        public List<Message> getPollMessages(Guild guild){
+        public List<Message> getPollMessages(Guild guild) {
             List<Message> messages = new ArrayList<>();
             Poll poll = this;
             poll.pollmsgs.keySet().forEach(m -> {
@@ -202,11 +214,11 @@ public class CommandVote extends CommandHandler implements Serializable {
         } catch (ErrorResponseException e) {
             //This is an empty Catch Block
         }
-        try{
+        try {
             poll.getPollMessages(guild).forEach(m -> {
                 m.delete().queue();
             });
-        } catch (Exception ignored){
+        } catch (Exception ignored) {
 
         }
     }
@@ -235,7 +247,7 @@ public class CommandVote extends CommandHandler implements Serializable {
             toAddEmojis.remove(0);
             count.addAndGet(1);
         });
-        Poll poll = new Poll(message.getMember(), heading, answers, pollmessage, message.getTextChannel());
+        Poll poll = new Poll(message.getMember(), member.getGuild(), heading, answers, pollmessage, message.getTextChannel());
         polls.put(message.getGuild(), poll);
         poll.getReacts().putAll(reactions);
 
@@ -289,6 +301,10 @@ public class CommandVote extends CommandHandler implements Serializable {
             return;
         Poll poll = polls.get(event.getGuild());
         if (!poll.isPollmsg(event.getMessageId())) return;
+        if(!poll.getReacts().keySet().contains(event.getReactionEmote().getName())){
+            event.getReaction().removeReaction(event.getUser()).queue();
+            return;
+        }
         if (poll.votes.containsKey(event.getUser().getId())) {
             new Timer().schedule(new TimerTask() {
                 @Override
@@ -365,6 +381,7 @@ public class CommandVote extends CommandHandler implements Serializable {
                     e.printStackTrace();
                 }
         });
+        verifyPollReactions(polls.values());
     }
 
     public static void handleMessageDeletion(MessageDeleteEvent event) {
@@ -378,6 +395,30 @@ public class CommandVote extends CommandHandler implements Serializable {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         } catch (NullPointerException ignored) {
+
+        }
+    }
+
+    private static void verifyPollReactions(Collection<Poll> pollList) {
+        try {
+            pollList.forEach(p -> {
+                p.pollmsgs.forEach((c, m) -> {
+                    Message message = RubiconBot.getJDA().getGuildById(p.guild).getTextChannelById(c).getMessageById(m).complete();
+                    List<String> emoteNames = new ArrayList<>();
+                    message.getReactions().forEach(mr -> {
+                        emoteNames.add(mr.getReactionEmote().getName());
+                        if (!p.getReacts().keySet().contains(mr.getReactionEmote().getName()))
+                            mr.getUsers().forEach(u -> {
+                                mr.removeReaction(u).queue();
+                            });
+                    });
+                    p.getReacts().keySet().forEach(r -> {
+                        if (!emoteNames.contains(r))
+                            message.addReaction(r).queue();
+                    });
+                });
+            });
+        } catch (Exception ignored){
 
         }
     }
