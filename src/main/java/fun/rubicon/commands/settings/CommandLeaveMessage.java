@@ -2,8 +2,8 @@ package fun.rubicon.commands.settings;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
-import fun.rubicon.command2.CommandHandler;
-import fun.rubicon.command2.CommandManager;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
@@ -12,7 +12,7 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
-public class CommandLeaveMessage extends CommandHandler{
+public class CommandLeaveMessage extends CommandHandler {
     public CommandLeaveMessage() {
         super(new String[] {"leavemsg", "leavemessage"}, CommandCategory.SETTINGS, new PermissionRequirements(PermissionLevel.getByValue(2), "command.joinmsg"), "Set the server's leave message!", " <disable/Message(%user% for username, %guild% for guildname)>", false);
     }

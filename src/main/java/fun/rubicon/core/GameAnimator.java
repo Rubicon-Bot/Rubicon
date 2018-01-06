@@ -44,12 +44,10 @@ public class GameAnimator {
                                 last = System.currentTimeMillis();
                             } else {
                                 String[] gameAnimations = {
-                                        "Running on " + RubiconBot.getJDA().getGuilds().size() + " servers!",
-                                        "Helping " + RubiconBot.getJDA().getUsers().stream().filter(u -> !u.isBot()).collect(Collectors.toList()).size() + " users!",
-                                        Info.BOT_NAME + " " + Info.BOT_VERSION,
-                                        "rc!help"
+                                    Info.BOT_VERSION,
+
                                 };
-                                RubiconBot.getJDA().getPresence().setGame(Game.playing(gameAnimations[currentGame]));
+                                RubiconBot.getJDA().getPresence().setGame(Game.playing("rc!help | " + gameAnimations[currentGame]));
 
                                 if (currentGame == gameAnimations.length - 1)
                                     currentGame = 0;
