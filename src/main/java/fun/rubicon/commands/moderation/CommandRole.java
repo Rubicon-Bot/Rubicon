@@ -1,8 +1,8 @@
 package fun.rubicon.commands.moderation;
 
 import fun.rubicon.command.CommandCategory;
-import fun.rubicon.command2.CommandHandler;
-import fun.rubicon.command2.CommandManager;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
@@ -13,36 +13,37 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.managers.GuildController;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
-public class CommandRole extends CommandHandler{
+public class CommandRole extends CommandHandler {
     public CommandRole() {
-        super(new String[] {"role"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.role"), "Easily add or remove roles to users", "add/remove <@User> <role>", false);
+        super(new String[]{"role"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.role"), "Easily add or remove roles to users", "add/remove <@User> <role>", false);
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         Message message = parsedCommandInvocation.invocationMessage;
         String[] args = parsedCommandInvocation.args;
-        if(args.length < 2 || message.getMentionedUsers().isEmpty())
+        if (args.length < 2 || message.getMentionedUsers().isEmpty())
             return createHelpMessage();
         GuildController controller = message.getGuild().getController();
         Member member = message.getGuild().getMember(message.getMentionedUsers().get(0));
-        String rolename = String.join(" ", new ArrayList<>(Arrays.asList(args).subList(1, args.length))).replace("@", "").replace("<" + member.getUser().getId() + ">", "").replace("<!" + member.getUser().getId() + ">", "").replaceFirst(" ", "");
-        if(member.getGuild().getRolesByName(rolename, true).isEmpty())
+
+        //Get Role
+        int userNameArgsLength = message.getMentionedUsers().get(0).getAsMention().split(" ").length;
+        String rolename = args[userNameArgsLength + 1];
+
+        if (member.getGuild().getRolesByName(rolename, true).isEmpty())
             return new MessageBuilder().setEmbed(EmbedUtil.error("Unknown role", "That role doesn't exist").build()).build();
         Role role = member.getGuild().getRolesByName(rolename, true).get(0);
         Member issuer = message.getMember();
-        if(!issuer.canInteract(role))
-            return new MessageBuilder().setEmbed(EmbedUtil.error("Not permitted", "You are not permitted to assign or remove that role.").build()).build();
-        if(!message.getGuild().getSelfMember().canInteract(role))
-            return new MessageBuilder().setEmbed(EmbedUtil.error("Not permitted", "I'm not permitted to assign or remove that role.").build()).build();
+        if (!issuer.canInteract(role))
+            return new MessageBuilder().setEmbed(EmbedUtil.error("Not permitted", "You are not permitted to assign or remove that role").build()).build();
+        if (!message.getGuild().getSelfMember().canInteract(role))
+            return new MessageBuilder().setEmbed(EmbedUtil.error("Not permitted", "I'm not permitted to assign or remove that role").build()).build();
 
-        if(args[0].equals("add")){
+        if (args[0].equals("add")) {
             controller.addRolesToMember(member, role).queue();
-            return new MessageBuilder().setEmbed(EmbedUtil.success("Assigned role", "Successfully aligned role `" + role.getName() + "` to " + member.getAsMention()).build()).build();
-        } else if (args[0].equals("remove")){
+            return new MessageBuilder().setEmbed(EmbedUtil.success("Assigned role", "Successfully asigned role `" + role.getName() + "` to " + member.getAsMention()).build()).build();
+        } else if (args[0].equals("remove")) {
             controller.removeRolesFromMember(member, role).queue();
             return new MessageBuilder().setEmbed(EmbedUtil.success("Removed role", "Successfully removed role `" + role.getName() + "` from " + member.getAsMention()).build()).build();
         } else
