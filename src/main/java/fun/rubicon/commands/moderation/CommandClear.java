@@ -14,6 +14,7 @@ import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.StringUtil;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.User;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 public class CommandClear extends CommandHandler {
 
     public CommandClear() {
-        super(new String[]{"clear", "purge"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.clear"), "Clear the chat.", "<amount of messages>");
+        super(new String[]{"clear", "purge"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.clear"), "Clear the chat.", "<amount of messages> [@User]");
     }
 
     @Override
@@ -37,7 +38,7 @@ public class CommandClear extends CommandHandler {
         }
 
         int messageAmount = Integer.parseInt(parsedCommandInvocation.args[0]);
-
+        User user = (parsedCommandInvocation.invocationMessage.getMentionedUsers().size() == 1) ? parsedCommandInvocation.invocationMessage.getMentionedUsers().get(0) : null;
         if (messageAmount > 100) {
             return EmbedUtil.message(EmbedUtil.error("Error!", "I can't delete more than 100 messages."));
         }
@@ -49,6 +50,8 @@ public class CommandClear extends CommandHandler {
         List<Message> messagesToDelete;
         messagesToDelete = parsedCommandInvocation.invocationMessage.getTextChannel().getHistory().retrievePast(messageAmount).complete();
         messagesToDelete = messagesToDelete.stream().filter(message -> !message.getCreationTime().isBefore(OffsetDateTime.now().minusWeeks(2))).collect(Collectors.toList());
+        if(user != null)
+            messagesToDelete = messagesToDelete.stream().filter(message -> message.getAuthor() == user).collect(Collectors.toList());
         int deletedMessagesSize = messagesToDelete.size();
         parsedCommandInvocation.invocationMessage.getTextChannel().deleteMessages(messagesToDelete).complete();
         return EmbedUtil.message(EmbedUtil.success("Cleared channel!", "Successfully cleared `" + deletedMessagesSize + "` messages"));

@@ -16,17 +16,12 @@ public class GameAnimator {
 
     private static Thread t;
     private static boolean running = false;
-
     private static int currentGame = 0;
 
-    private static String authors() {
-        String text = "";
-        for (int i = 1; i < Info.BOT_AUTHOR_IDS.length; i++) {
-            text += Info.BOT_AUTHOR_IDS[i];
-        }
+    private static final String[] gameAnimations = {
+            Info.BOT_VERSION,
 
-        return text;
-    }
+    };
 
     public static synchronized void start() {
         if (!RubiconBot.getConfiguration().has("playingStatus")) {
@@ -43,10 +38,6 @@ public class GameAnimator {
                                 RubiconBot.getJDA().getPresence().setGame(Game.playing(playStat));
                                 last = System.currentTimeMillis();
                             } else {
-                                String[] gameAnimations = {
-                                    Info.BOT_VERSION,
-
-                                };
                                 RubiconBot.getJDA().getPresence().setGame(Game.playing("rc!help | " + gameAnimations[currentGame]));
 
                                 if (currentGame == gameAnimations.length - 1)
