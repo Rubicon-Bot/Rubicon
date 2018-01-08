@@ -22,7 +22,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class CommandStop extends CommandHandler {
 
     public CommandStop() {
-        super(new String[]{"stop"}, CommandCategory.BOT_OWNER, new PermissionRequirements(4, "command.stop"), "Stops the bot.", "");
+        super(new String[]{"botstop"}, CommandCategory.BOT_OWNER, new PermissionRequirements(4, "command.botstop"), "Stops the bot.", "");
     }
 
     @Override

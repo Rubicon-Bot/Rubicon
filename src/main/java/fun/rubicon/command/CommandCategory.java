@@ -19,7 +19,8 @@ public enum CommandCategory {
     GUILD_OWNER("guildOwner", "Server Owner"),
     BOT_OWNER("botOwner", "Bot Owner"),
     TOOLS("tools", "Tools"),
-    SETTINGS("settings", "Settings");
+    SETTINGS("settings", "Settings"),
+    MUSIC("music", "Music");
 
     private String id;
     private String displayname;

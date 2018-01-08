@@ -24,7 +24,7 @@ public class CommandPlay extends CommandHandler {
     private String configKey = "playingStatus";
 
     public CommandPlay() {
-        super(new String[]{"play"}, CommandCategory.BOT_OWNER, new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.play"), "Change bot's playing status.", "<text>");
+        super(new String[]{"botplay"}, CommandCategory.BOT_OWNER, new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.botplay"), "Change bot's playing status.", "<text>");
     }
 
     @Override

@@ -7,15 +7,18 @@
 package fun.rubicon.command;
 
 import fun.rubicon.RubiconBot;
+import fun.rubicon.commands.fun.CommandMusic;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.GlobalBlacklist;
 import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -66,9 +69,18 @@ public class CommandManager extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent event) {
         if (event.isFromType(ChannelType.PRIVATE)) return;
         if (RubiconBot.getMySQL().isBlacklisted(event.getTextChannel())) return;
+        CommandMusic.handleTrackChoose(event);
         super.onMessageReceived(event);
         ParsedCommandInvocation commandInvocation = parse(event.getMessage());
         if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake() && !event.isWebhookMessage()) {
+            if(event.getAuthor().getId().equals("343825218718007296")) {
+                event.getTextChannel().sendMessage(new EmbedBuilder()
+                .setTitle(":rotating_light: __**ERROR**__ :rotating_light:")
+                .setDescription("403 WRONG GUY")
+                .setColor(Color.RED)
+                .build()).queue();
+                return;
+            }
             if (GlobalBlacklist.isOnBlacklist(event.getAuthor())) {
                 event.getTextChannel().sendMessage(EmbedUtil.message(EmbedUtil.error("Blacklisted", "You are on the RubiconBot blacklist! ;)"))).queue(msg -> msg.delete().queueAfter(20, TimeUnit.SECONDS));
                 return;

@@ -33,6 +33,10 @@ public class CommandClear extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        if (parsedCommandInvocation.args.length == 0) {
+            return createHelpMessage();
+        }
+
         if (!StringUtil.isNumeric(parsedCommandInvocation.args[0])) {
             return EmbedUtil.message(EmbedUtil.error("Error!", "Parameter must be numeric."));
         }
