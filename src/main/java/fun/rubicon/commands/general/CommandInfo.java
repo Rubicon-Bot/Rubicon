@@ -29,7 +29,7 @@ public class CommandInfo extends CommandHandler {
     private String[] arrSupporter = {"Greg"};
 
     public CommandInfo(){
-        super(new String[]{"Info", "inf"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.info"), "Shows some information about the bot!", "");
+        super(new String[]{"Info", "inf", "version"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.info"), "Shows some information about the bot!", "");
     }
 
     @Override

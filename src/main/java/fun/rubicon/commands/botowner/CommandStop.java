@@ -34,6 +34,4 @@ public class CommandStop extends CommandHandler {
         System.exit(0);
         return null;
     }
-
-
 }

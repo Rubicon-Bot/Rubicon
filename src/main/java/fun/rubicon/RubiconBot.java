@@ -70,7 +70,9 @@ public class RubiconBot {
     private RubiconBot() {
         instance = this;
         // initialize logger
-        Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, new File("latest.log"));
+        new File("rubicon_logs").mkdirs();
+        String filename = new SimpleDateFormat("dd_MM_yyyy HH_mm").format(new Date());
+        Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, new File("rubicon_logs/" + filename + ".log"));
 
         timer = new Timer();
         eventListeners = new HashSet<>();
