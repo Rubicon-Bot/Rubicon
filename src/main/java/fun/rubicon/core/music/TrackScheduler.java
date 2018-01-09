@@ -16,8 +16,8 @@ import java.util.Queue;
 public class TrackScheduler extends AudioEventAdapter {
 
     private boolean repeating = false;
-    final AudioPlayer player;
-    final Queue<AudioTrack> queue;
+    private final AudioPlayer player;
+    private final Queue<AudioTrack> queue;
     AudioTrack lastTrack;
 
     public TrackScheduler(AudioPlayer player) {
@@ -55,7 +55,24 @@ public class TrackScheduler extends AudioEventAdapter {
         this.repeating = repeating;
     }
 
+    /**
+     * @deprecated Use {@link TrackScheduler#getQueue()}
+     * @return
+     */
+    @Deprecated
+    public int getQueueSize() {
+        return queue.size();
+    }
+
     public void shuffle() {
         Collections.shuffle((List<?>) queue);
+    }
+
+    public AudioPlayer getPlayer() {
+        return player;
+    }
+
+    public Queue<AudioTrack> getQueue() {
+        return queue;
     }
 }

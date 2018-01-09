@@ -6,15 +6,19 @@
 
 package fun.rubicon;
 
-import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.commands.admin.CommandAutochannel;
 import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.admin.CommandVerification;
 import fun.rubicon.commands.botowner.*;
-import fun.rubicon.commands.fun.*;
+import fun.rubicon.commands.botowner.CommandPlay;
+import fun.rubicon.commands.fun.CommandOK;
+import fun.rubicon.commands.fun.CommandRip;
+import fun.rubicon.commands.fun.CommandRoulette;
+import fun.rubicon.commands.fun.CommandSlot;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.*;
+import fun.rubicon.commands.music.*;
 import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.GameAnimator;
@@ -31,7 +35,6 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.hooks.EventListener;
 
 import javax.security.auth.login.LoginException;
@@ -209,13 +212,24 @@ public class RubiconBot {
                 new CommandTwitter(),
                 new CommandGlobalBlacklist()
         );
+        // music commands package
+        commandManager.registerCommandHandlers(
+                new fun.rubicon.commands.music.CommandPlay(),
+                new CommandSkip(),
+                new CommandJoin(),
+                new CommandLeave(),
+                new CommandShuffle(),
+                new CommandNow(),
+                new CommandPause(),
+                new CommandResume(),
+                new CommandQueue()
+        );
         // fun commands package
         commandManager.registerCommandHandlers(
                 new CommandRip(),
                 new CommandSlot(),
                 new CommandRoulette(),
-                new CommandOK(),
-                new CommandMusic()
+                new CommandOK()
         );
         // general commands package
         commandManager.registerCommandHandlers(
@@ -227,8 +241,8 @@ public class RubiconBot {
                 new CommandInvite(),
                 new CommandSpeedTest(),
                 new CommandStatistics(),
-                new CommandMoney()
-                //TODO Ambiguous new CommandLevel()
+                new CommandMoney(),
+                new CommandLevel()
         );
         // settings commands package
         commandManager.registerCommandHandlers(
@@ -243,7 +257,7 @@ public class RubiconBot {
         // tools commands package
         commandManager.registerCommandHandlers(
                 new CommandASCII(),
-                //TODO Ambiguous new CommandChoose(),
+                new CommandChoose(),
                 new CommandClear(),
                 new CommandRandomColor(),
                 new CommandDice(),

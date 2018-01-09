@@ -16,7 +16,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class CommandOK extends CommandHandler {
 
     public CommandOK() {
-        super(new String[]{"ok", "okay", "k", "mkay"}, CommandCategory.FUN, new PermissionRequirements(PermissionLevel.EVERYONE, "command.ok"), "OK", "");
+        super(new String[]{"ok", "okay", "k", "mkay"}, CommandCategory.FUN, new PermissionRequirements(PermissionLevel.EVERYONE, "command.ok"), "OK", "This command makes no sense :(");
     }
 
     @Override

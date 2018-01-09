@@ -54,7 +54,7 @@ public class MusicSearchResult {
            description.append(emotes[i]).append("  [").append(track.getInfo().title).append("](").append(track.getInfo().uri).append(")\n\n");
             i++;
         }
-        builder.setFooter("Type in your choose. <1-5>", null);
+        builder.setFooter("Type in your choose. <1-5> (After 15 seconds the request will be deleted)", null);
         builder.setDescription(description.toString());
         return builder;
     }
