@@ -40,9 +40,7 @@ public class CommandBroadcast extends CommandHandler {
         if (args.length < 3) {
             return new MessageBuilder().setEmbed(EmbedUtil.error("You have to use more arguments!", "Use at least 3 arguments.").build()).build();
         }
-        String ownerMessage = "";
-        for(String s : args)
-            ownerMessage += s + " ";
+        String ownerMessage = parsedCommandInvocation.invocationMessage.getContentDisplay().replace(parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand, "");
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setAuthor("Broadcast - Awaiting Confirmation", null, parsedCommandInvocation.invocationMessage.getJDA().getSelfUser().getEffectiveAvatarUrl());
         embedBuilder.setDescription(ownerMessage);
