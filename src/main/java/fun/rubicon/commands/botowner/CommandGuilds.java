@@ -45,14 +45,20 @@ public class CommandGuilds extends CommandHandler {
         } else {
             guild_sublist = RubiconBot.getJDA().getGuilds();
         }
-        for (Guild guild : guild_sublist) {
-            runningOnServers.append("`\t " + (SideNumbInput * count_server) + ". ").append(guild.getName()).append("(").append(guild.getId()).append(")`\n");
-            count_server++;
-        }
+
+
         int sideNumbAll;
         if (RubiconBot.getJDA().getGuilds().size() >= 20) {
+            for (Guild guild : guild_sublist) {
+                runningOnServers.append("`\t " + ((SideNumbInput *10) + count_server) + ". ").append(guild.getName()).append("(").append(guild.getId()).append(")`\n");
+                count_server++;
+            }
             sideNumbAll = RubiconBot.getJDA().getGuilds().size() / 20;
         } else {
+            for (Guild guild : guild_sublist) {
+                runningOnServers.append("`\t " + count_server + ". ").append(guild.getName()).append("(").append(guild.getId()).append(")`\n");
+                count_server++;
+            }
             sideNumbAll = 1;
         }
         int sideNumb = SideNumbInput;
