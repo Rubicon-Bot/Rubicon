@@ -13,6 +13,7 @@ import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
@@ -31,11 +32,7 @@ public class CommandSay extends CommandHandler {
         if (parsedCommandInvocation.invocationMessage.getMentionedChannels().size() != 1) {
             return createHelpMessage();
         }
-
-        String text = "";
-        for (int i = parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0).getAsMention().split(" ").length; i < parsedCommandInvocation.args.length; i++) {
-            text += parsedCommandInvocation.args[i] + " ";
-        }
+        String text = parsedCommandInvocation.invocationMessage.getContentDisplay().replace(parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand + " #" + parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0).getName(), "");
         parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0).sendMessage(text).queue();
         return new MessageBuilder().setEmbed(EmbedUtil.success("Successful", "Successful sent message in " + parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0).getAsMention()).build()).build();
     }

@@ -307,10 +307,11 @@ public class MusicManager {
             return message(error("Error!", "Bot is not in a voice channel."));
 
         EmbedBuilder builder = new EmbedBuilder();
+        builder.setColor(Colors.COLOR_PRIMARY);
         builder.setTitle("Queue");
 
         StringBuilder content = new StringBuilder();
-        for(AudioTrack track : getCurrentMusicManager().getScheduler().getQueue()) {
+        for (AudioTrack track : getCurrentMusicManager().getScheduler().getQueue()) {
             content.append(":small_orange_diamond: [" + track.getInfo().title + "](" + track.getInfo().uri + ")\n");
         }
         builder.setDescription(content.toString());
@@ -323,11 +324,11 @@ public class MusicManager {
         if (storage.size() == 0) {
             return;
         }
-        String respone = event.getMessage().getContentDisplay();
-        if (!StringUtil.isNumeric(respone)) {
+        String response = event.getMessage().getContentDisplay();
+        if (!StringUtil.isNumeric(response)) {
             return;
         }
-        int ans = Integer.parseInt(respone);
+        int ans = Integer.parseInt(response);
         if (ans < 1 || ans > 5) {
             return;
         }
@@ -414,6 +415,7 @@ public class MusicManager {
 
     private GuildMusicManager getMusicManager(Guild guild) {
         long guildId = guild.getIdLong();
+        Logger.debug("Music managers: " + musicManagers.size());
         GuildMusicManager musicManager = musicManagers.get(guildId);
         if (musicManager == null) {
             synchronized (musicManagers) {
