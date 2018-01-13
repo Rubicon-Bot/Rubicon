@@ -14,6 +14,7 @@ import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.managers.GuildController;
@@ -29,11 +30,13 @@ public class CommandMoveAll extends CommandHandler {
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         String[] args = parsedCommandInvocation.args;
         Message message = parsedCommandInvocation.invocationMessage;
+        Guild guild = parsedCommandInvocation.invocationMessage.getGuild();
         if (args.length == 0) {
             return createHelpMessage(parsedCommandInvocation);
         }
         if (!message.getMember().getVoiceState().inVoiceChannel())
             return new MessageBuilder().setEmbed(EmbedUtil.error("Not connected", "Please connect to a voice channel to use this command").build()).build();
+
         String name;
         name = message.getContentRaw().replace(parsedCommandInvocation.invocationCommand, "");
         name = name.replace(parsedCommandInvocation.serverPrefix,"");
@@ -49,6 +52,11 @@ public class CommandMoveAll extends CommandHandler {
         message.getMember().getVoiceState().getChannel().getMembers().forEach(m -> {
             controller.moveVoiceMember(m, channel).queue();
         });
+        message.getMember().getVoiceState().getChannel().getMembers().forEach(m -> {
+            if(!guild.getSelfMember().canInteract(m)) {
+                message.getTextChannel().sendMessage(EmbedUtil.error("Cannot move you!","Cannot move all members in the Channel").build());
+               return;
+            }});
         return new MessageBuilder().setEmbed(EmbedUtil.success("Connected", "Connected all users in your channel to `" + channel.getName() + "`").build()).build();
     }
 }
