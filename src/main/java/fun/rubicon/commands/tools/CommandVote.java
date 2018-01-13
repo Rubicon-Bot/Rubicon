@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class CommandVote extends CommandHandler implements Serializable {
+    public static final long serialVersionUID = 13902;
 
     private static TextChannel channel;
 
