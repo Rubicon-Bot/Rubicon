@@ -13,7 +13,6 @@ public class MemberLeaveListener extends ListenerAdapter {
         /* Leave message */
         String message = RubiconBot.getMySQL().getGuildValue(event.getGuild(), "leavemsg").replace("%user%", event.getMember().getAsMention()).replace("%guild%", event.getGuild().getName());
         if (message == null) return;
-        Logger.debug("Message: " + message);
         if (message.equalsIgnoreCase("0") || message.equalsIgnoreCase(" 0")) return;
         TextChannel channel = event.getGuild().getTextChannelById(RubiconBot.getMySQL().getGuildValue(event.getGuild(), "channel"));
         if (channel == null) return;

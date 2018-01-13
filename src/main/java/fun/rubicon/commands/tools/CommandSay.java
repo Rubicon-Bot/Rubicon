@@ -14,8 +14,10 @@ import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.Logger;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 public class CommandSay extends CommandHandler {
 
@@ -31,6 +33,10 @@ public class CommandSay extends CommandHandler {
 
         if (parsedCommandInvocation.invocationMessage.getMentionedChannels().size() != 1) {
             return createHelpMessage();
+        }
+        TextChannel textChannel = parsedCommandInvocation.invocationMessage.getTextChannel();
+        if(!canWrite(parsedCommandInvocation.invocationMessage.getGuild(), textChannel)) {
+            return EmbedUtil.message(EmbedUtil.error("Error!", "I can't write in this channel."));
         }
         String text = parsedCommandInvocation.invocationMessage.getContentDisplay().replace(parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand + " #" + parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0).getName(), "");
         parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0).sendMessage(text).queue();
