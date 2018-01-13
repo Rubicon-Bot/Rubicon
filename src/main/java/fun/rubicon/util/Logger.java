@@ -16,10 +16,17 @@ public class Logger {
     private static boolean fileLogging = false;
     private static SimpleDateFormat logDateFormatter = new SimpleDateFormat("HH:mm:ss");
 
-    public static void logInFile(String appName, String appVersion, File file) {
+    public static void logInFile(String appName, String appVersion, String logDirectory, boolean logAllOutput) {
         String date = new SimpleDateFormat("dd_MM_yyyy-HH:mm:ss").format(new Date());
-
-        logFile = file;
+        String filename = new SimpleDateFormat("dd_MM_yyyy HH_mm").format(new Date());
+        File newFile = new File(logDirectory + filename + ".log");
+        try {
+            if (!newFile.exists())
+                newFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        logFile = newFile;
         if (!logFile.exists())
             try {
                 logFile.createNewFile();
@@ -39,10 +46,19 @@ public class Logger {
                 "\n" +
                 "-- Log --\n";
         addLogEntry(logHeader);
+
+        if (logAllOutput)
+            try {
+                FileOutputStream f = new FileOutputStream("latest.log");
+                System.setOut(new PrintStream(f, true));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        System.out.println(logHeader);
     }
 
     private static void addLogEntry(String text) {
-        if(!fileLogging)
+        if (!fileLogging)
             return;
         try {
             loggerText += text;
@@ -126,8 +142,8 @@ public class Logger {
                 maxMemory + " bytes (" + maxMemoryInMB + " MB)";
     }
 
-    public static String getFullLog() {
-        return loggerText;
+    public static File getLogFile() {
+        return logFile;
     }
 
     public enum LoggerLevel {
