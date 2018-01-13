@@ -12,10 +12,7 @@ import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.admin.CommandVerification;
 import fun.rubicon.commands.botowner.*;
 import fun.rubicon.commands.botowner.CommandPlay;
-import fun.rubicon.commands.fun.CommandOK;
-import fun.rubicon.commands.fun.CommandRip;
-import fun.rubicon.commands.fun.CommandRoulette;
-import fun.rubicon.commands.fun.CommandSlot;
+import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.*;
 import fun.rubicon.commands.music.*;
@@ -230,7 +227,6 @@ public class RubiconBot {
                 new CommandClear(),
                 new CommandRandomColor(),
                 new CommandDice(),
-                new CommandGoogle(),
                 new CommandLmgtfy(),
                 new CommandSay(),
                 new CommandQRCode(),
