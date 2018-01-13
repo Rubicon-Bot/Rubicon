@@ -35,7 +35,7 @@ public class CommandSay extends CommandHandler {
             return createHelpMessage();
         }
         TextChannel textChannel = parsedCommandInvocation.invocationMessage.getTextChannel();
-        if(!canWrite(parsedCommandInvocation.invocationMessage.getGuild(), textChannel)) {
+        if(!canRead(parsedCommandInvocation.invocationMessage.getGuild(), textChannel)) {
             return EmbedUtil.message(EmbedUtil.error("Error!", "I can't write in this channel."));
         }
         String text = parsedCommandInvocation.invocationMessage.getContentDisplay().replace(parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand + " #" + parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0).getName(), "");
