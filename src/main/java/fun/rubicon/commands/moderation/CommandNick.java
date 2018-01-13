@@ -1,4 +1,4 @@
-package fun.rubicon.commands.tools;
+package fun.rubicon.commands.moderation;
 
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
@@ -31,6 +31,7 @@ public class CommandNick extends CommandHandler {
             member = message.getGuild().getMember(message.getMentionedUsers().get(0));
         else
             member = message.getMember();
+        String oldName = member.getEffectiveName();
         String nickname = String.join(" ", new ArrayList<>(Arrays.asList(args).subList(1, args.length))).replace(member.getEffectiveName(), "").replace("@", "");
         if (!message.getGuild().getSelfMember().canInteract(member))
             return new MessageBuilder().setEmbed(EmbedUtil.error("No permission", "Sorry but Rubicon has no permission to change " + member.getAsMention() + "'s nickname").build()).build();
@@ -39,10 +40,10 @@ public class CommandNick extends CommandHandler {
         }
         if (nickname.equals("reset")) {
             message.getGuild().getController().setNickname(member, member.getUser().getName()).queue();
-            return new MessageBuilder().setEmbed(EmbedUtil.success("Reseted Nickname", "Succesfully reseted " + member.getAsMention() + "'s nickname").build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.success("Reset Nickname", "Succesfully reset " + member.getAsMention() + "'s nickname").build()).build();
         } else {
             message.getGuild().getController().setNickname(member, nickname).queue();
-            return new MessageBuilder().setEmbed(EmbedUtil.success("Changed nickname", "Successfully changed nickname of " + member.getAsMention() + " to `" + nickname + "`").build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.success("Changed nickname", "Successfully changed nickname of " + oldName + " to `" + nickname + "`").build()).build();
         }
     }
 }
