@@ -168,24 +168,69 @@ public class CommandManager extends ListenerAdapter {
     }
 
     public static final class ParsedCommandInvocation {
+        @Deprecated
         public final Message invocationMessage;
+        @Deprecated
         public final String serverPrefix;
+        @Deprecated
         public final String invocationCommand;
+        @Deprecated
         public final String[] args;
-        public final Guild guild;
-        public final Member selfMember;
-        public final User author;
-        public final Member member;
+
+        private final String[] argsNew;
+        private final String commandInvocation;
+        private final Message message;
+        private final String prefix;
+        private final Guild guild;
+        private final Member selfMember;
+        private final User author;
+        private final Member member;
 
         private ParsedCommandInvocation(Message invocationMessage, String serverPrefix, String invocationCommand, String[] args, Guild guild, Member selfMember, User author, Member member) {
             this.invocationMessage = invocationMessage;
+            this.message = invocationMessage;
             this.serverPrefix = serverPrefix;
+            this.prefix = serverPrefix;
             this.invocationCommand = invocationCommand;
+            this.commandInvocation = invocationCommand;
             this.args = args;
+            this.argsNew = args;
             this.guild = guild;
             this.selfMember = selfMember;
             this.author = author;
             this.member = member;
+        }
+
+        public Message getMessage() {
+            return message;
+        }
+
+        public Guild getGuild() {
+            return guild;
+        }
+
+        public String[] getArgs() {
+            return argsNew;
+        }
+
+        public String getCommandInvocation() {
+            return commandInvocation;
+        }
+
+        public String getPrefix() {
+            return prefix;
+        }
+
+        public Member getSelfMember() {
+            return selfMember;
+        }
+
+        public User getAuthor() {
+            return author;
+        }
+
+        public Member getMember() {
+            return member;
         }
     }
 }
