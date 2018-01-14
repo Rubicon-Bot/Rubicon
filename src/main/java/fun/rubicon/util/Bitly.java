@@ -7,8 +7,7 @@
 package fun.rubicon.util;
 
 import de.foryasee.httprequest.HttpRequest;
-import de.foryasee.httprequest.RequestParameter;
-import de.foryasee.httprequest.RequestResult;
+import de.foryasee.httprequest.RequestResponse;
 import org.json.JSONObject;
 
 import javax.xml.ws.http.HTTPException;
@@ -23,16 +22,19 @@ public class Bitly {
 
     /**
      * Shortens a URL with bit.ly.
+     *
      * @param longURL the URL to shorten.
      * @return the shortened URL.
      * @throws IllegalArgumentException if the long URI was invalid.
-     * @throws HTTPException if the bit.ly API returns a response code unlike 200 'OK'.
-     * @throws RuntimeException if the http request threw an unknown error.
+     * @throws HTTPException            if the bit.ly API returns a response code unlike 200 'OK'.
+     * @throws RuntimeException         if the http request threw an unknown error.
      */
     public static String shorten(String longURL) {
-        HttpRequest request = new HttpRequest(API_URL, new RequestParameter("access_token", Info.BITLY_TOKEN),
-                new RequestParameter("longUrl", longURL), new RequestParameter("format", "json"));
-        RequestResult result;
+        HttpRequest request = new HttpRequest(API_URL);
+        request.addParameter("access_token", Info.BITLY_TOKEN);
+        request.addParameter("longUrl", longURL);
+        request.addParameter("format", "json");
+        RequestResponse result;
         try {
             result = request.sendGETRequest();
         } catch (Exception e) {
@@ -46,7 +48,7 @@ public class Bitly {
             // ensure 'OK' status response
         else if (response.getInt("status_code") == 400)
             throw new HTTPException(response.getInt("status_code"));
-        
+
         // return shortened url
         return response.getJSONObject("data").getString("url");
     }

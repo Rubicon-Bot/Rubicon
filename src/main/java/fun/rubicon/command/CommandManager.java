@@ -73,7 +73,6 @@ public class CommandManager extends ListenerAdapter {
         super.onMessageReceived(event);
         ParsedCommandInvocation commandInvocation = parse(event.getMessage());
         //Send typing because it's useless
-        event.getTextChannel().sendTyping().queue();
         if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake() && !event.isWebhookMessage()) {
             if (event.getAuthor().getId().equals("343825218718007296")) {
                 event.getTextChannel().sendMessage(new EmbedBuilder()

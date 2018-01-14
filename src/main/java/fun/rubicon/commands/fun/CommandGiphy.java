@@ -1,19 +1,23 @@
 package fun.rubicon.commands.fun;
 
-import at.mukprojects.giphy4j.Giphy;
-import at.mukprojects.giphy4j.entity.search.SearchFeed;
-import at.mukprojects.giphy4j.exception.GiphyException;
+import de.foryasee.httprequest.HttpRequest;
+import de.foryasee.httprequest.RequestResponse;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
+import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
+import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.Info;
-import fun.rubicon.util.StringUtil;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -27,51 +31,29 @@ import java.util.TimerTask;
  * @license MIT License <http://rubicon.fun/license>
  * @package fun.rubicon.commands.fun
  */
-public class CommandGiphy extends CommandHandler{
+public class CommandGiphy extends CommandHandler {
+
     public CommandGiphy() {
-        super(new String[]{"giphy","gif",}, CommandCategory.FUN,new PermissionRequirements(0,"command.giphy"),"Search a Gif on Giphy and post it to the Channel","<SearchQuery> [ofset]",false);
+        super(new String[]{"giphy", "gif",}, CommandCategory.FUN, new PermissionRequirements(PermissionLevel.EVERYONE, "command.giphy"), "Search a Gif on Giphy and post it to the Channel", "<keyword>", false);
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        Message message = parsedCommandInvocation.getMessage();
-        MessageChannel channel = message.getChannel();
         String[] args = parsedCommandInvocation.getArgs();
-        if (args.length < 1){
+        if (args.length < 1) {
             return createHelpMessage();
         }
-        Message gifmessage = channel.sendMessage(new EmbedBuilder().setDescription("Collecting Gif´s ...").setColor(Colors.COLOR_SECONDARY).build()).complete();
-        String query ="";
-        Giphy giphy =  new Giphy(Info.GIPHY_TOKEN);
-        int ofset = 0;
-        if(StringUtil.isNumeric(args[args.length-1])){
-            ofset = Integer.parseInt(args[args.length-1]);
-            for (int i = 0;i< args.length-1;i++){
-                query += args[i] + " ";
-            }
-        }else {
-            for (int i = 0;i< args.length;i++){
-                query += args[i] + " ";
-            }
-        }
+        String query = parsedCommandInvocation.getMessage().getContentDisplay().replace(parsedCommandInvocation.getPrefix() + parsedCommandInvocation.getCommandInvocation(), "");
+        HttpRequest request = new HttpRequest("https://api.giphy.com/v1/gifs/search");
+        request.addParameter("api_key", Info.GIPHY_TOKEN);
+        request.addParameter("q", query);
         try {
-            SearchFeed feed =  giphy.search(query,1,ofset);
-            try {
-                String gifurl = feed.getDataList().get(0).getImages().getOriginal().getUrl();
-                gifmessage.delete().queue();
-                channel.sendMessage(gifurl).queue();
-            }catch (IndexOutOfBoundsException e){
-                gifmessage.editMessage(new EmbedBuilder().setDescription("No Gif Found .").setColor(Colors.COLOR_ERROR).build()).queue();
-                new Timer().schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        gifmessage.delete().queue();
-                    }
-                }, 5000);
-            }
-        }catch (GiphyException e){
-            gifmessage.editMessage(new EmbedBuilder().setDescription("No Gif Found .").setColor(Colors.COLOR_ERROR).build()).queue();
-            e.printStackTrace();
+            RequestResponse response = request.sendGETRequest();
+            JSONObject json = (JSONObject) new JSONParser().parse(response.getResponse());
+            JSONArray data = (JSONArray) json.get("data");
+            parsedCommandInvocation.getTextChannel().sendMessage((String) ((JSONObject) data.get(0)).get("url")).queue();
+        } catch (Exception e) {
+            return EmbedUtil.message(EmbedUtil.error("Error!", "Found no gif."));
         }
         return null;
     }

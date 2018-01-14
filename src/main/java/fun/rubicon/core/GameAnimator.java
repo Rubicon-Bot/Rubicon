@@ -6,18 +6,9 @@
 
 package fun.rubicon.core;
 
-
 import fun.rubicon.RubiconBot;
 import fun.rubicon.util.Info;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.WebSocketCode;
 import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.entities.RichPresence;
-import net.dv8tion.jda.core.entities.impl.JDAImpl;
-import org.json.JSONObject;
-
-import java.util.HashSet;
-import java.util.stream.Collectors;
 
 public class GameAnimator {
 
@@ -43,6 +34,7 @@ public class GameAnimator {
                             String playStat = RubiconBot.getConfiguration().getString("playingStatus");
                             if (!playStat.equals("0") && !playStat.equals("")) {
                                 RubiconBot.getJDA().getPresence().setGame(Game.playing(playStat));
+                                last = System.currentTimeMillis();
                             } else {
                                 RubiconBot.getJDA().getPresence().setGame(Game.playing("rc!help | " + gameAnimations[currentGame]));
 
@@ -72,8 +64,4 @@ public class GameAnimator {
             }
         }
     }
-
-
-
-
 }
