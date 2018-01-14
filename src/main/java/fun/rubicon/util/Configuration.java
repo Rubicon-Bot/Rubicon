@@ -70,10 +70,10 @@ public class Configuration {
      * @param key
      * @description Removes key from config
      */
-    private Configuration unset(final String key) {
-        if (this.json.has(key)) {
+    public Configuration unset(final String key) {
+        if (this.json.has(key))
             this.json.remove(key);
-        }
+
         return this.save();
     }
 

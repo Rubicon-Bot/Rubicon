@@ -13,12 +13,14 @@ import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
+import fun.rubicon.sql.MySQL;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.events.channel.text.TextChannelDeleteEvent;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
@@ -78,9 +80,7 @@ public class CommandBlacklist extends CommandHandler {
             message.getTextChannel().sendMessage(EmbedUtil.error("Unblacklisted channel", "That channel is not blacklisted").build()).queue(msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
             return;
         }
-        String oldEntry = RubiconBot.getMySQL().getGuildValue(message.getGuild(), "blacklist");
-        String newEntry = oldEntry.replace("," + channel.getId(), "");
-        RubiconBot.getMySQL().updateGuildValue(message.getGuild(), "blacklist", newEntry);
+        unblockChannel(channel);
         message.getTextChannel().sendMessage(EmbedUtil.success("Unblacklisted channel!", "Successfully removed channel from blacklist").build()).queue(msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
 
     }
@@ -120,6 +120,18 @@ public class CommandBlacklist extends CommandHandler {
         embed.setAuthor(guild.getName(), guild.getIconUrl());
         embed.setDescription(channelnames.toString());
         return embed;
+    }
+
+    private static MySQL unblockChannel(TextChannel channel){
+        String oldEntry = RubiconBot.getMySQL().getGuildValue(channel.getGuild(), "blacklist");
+        String newEntry = oldEntry.replace("," + channel.getId(), "");
+        return RubiconBot.getMySQL().updateGuildValue(channel.getGuild(), "blacklist", newEntry);
+    }
+
+    public static void handleChannelDeletion(TextChannelDeleteEvent event){
+        TextChannel channel = event.getChannel();
+        if(RubiconBot.getMySQL().isBlacklisted(channel))
+            unblockChannel(channel);
     }
 
 }

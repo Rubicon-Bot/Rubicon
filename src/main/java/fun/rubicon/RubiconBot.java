@@ -35,6 +35,7 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.impl.JDAImpl;
 import net.dv8tion.jda.core.hooks.EventListener;
 
 import javax.security.auth.login.LoginException;
@@ -146,7 +147,7 @@ public class RubiconBot {
 
         JDABuilder builder = new JDABuilder(AccountType.BOT);
         builder.setToken(instance.configuration.getString("token"));
-        builder.setGame(Game.playing(Info.BOT_NAME + " " + Info.BOT_VERSION));
+        //builder.setGame(Game.playing(Info.BOT_NAME + " " + Info.BOT_VERSION));
 
         // add all EventListeners
         for (EventListener listener : instance.eventListeners)
@@ -154,14 +155,18 @@ public class RubiconBot {
 
         new ListenerManager(builder);
 
+
+
         try {
             instance.jda = builder.buildBlocking();
         } catch (LoginException | InterruptedException e) {
             Logger.error(e.getMessage());
         }
-        GameAnimator.start();
+        //GameAnimator.start();
         CommandVote.loadPolls(instance.jda);
 //      CommandGiveaway.startGiveawayManager(instance.jda);
+        GameAnimator.updateRichPresence(instance.jda, "Test");
+
 
         int memberCount = 0;
         for (Guild guild : getJDA().getGuilds())
@@ -273,7 +278,8 @@ public class RubiconBot {
                 new CommandUserInfo(),
                 new CommandVote(),
                 new CommandMoveAll(),
-                new CommandNick()
+                new CommandNick(),
+                new CommandRanks()
         );
 
         // also register commands from the old framework

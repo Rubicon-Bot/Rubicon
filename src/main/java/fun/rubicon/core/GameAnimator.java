@@ -6,10 +6,17 @@
 
 package fun.rubicon.core;
 
+
 import fun.rubicon.RubiconBot;
 import fun.rubicon.util.Info;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.WebSocketCode;
 import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.RichPresence;
+import net.dv8tion.jda.core.entities.impl.JDAImpl;
+import org.json.JSONObject;
 
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 public class GameAnimator {
@@ -35,10 +42,14 @@ public class GameAnimator {
                         if (RubiconBot.getConfiguration().has("playingStatus")) {
                             String playStat = RubiconBot.getConfiguration().getString("playingStatus");
                             if (!playStat.equals("0") && !playStat.equals("")) {
-                                RubiconBot.getJDA().getPresence().setGame(Game.playing(playStat));
+                                //RubiconBot.getJDA().getPresence().setGame(Game.playing(playStat));
+                                System.out.println("Hey");
+                                updateRichPresence(RubiconBot.getJDA(), playStat);
                                 last = System.currentTimeMillis();
                             } else {
-                                RubiconBot.getJDA().getPresence().setGame(Game.playing("rc!help | " + gameAnimations[currentGame]));
+                                //RubiconBot.getJDA().getPresence().setGame(Game.playing("rc!help | " + gameAnimations[currentGame]));
+                                System.out.println("Hey");
+                                updateRichPresence(RubiconBot.getJDA(), gameAnimations[currentGame]);
 
                                 if (currentGame == gameAnimations.length - 1)
                                     currentGame = 0;
@@ -66,4 +77,36 @@ public class GameAnimator {
             }
         }
     }
+
+    public static void updateRichPresence(JDA jda, String gametext){
+        JDAImpl jdaimpl = (JDAImpl) jda;
+        /* General RPC object*/
+        JSONObject rpcObject = new JSONObject();
+        rpcObject.put("afk", false);
+        rpcObject.put("status", "dnd");
+        rpcObject.put("since", System.currentTimeMillis());
+        /*Game object*/
+        JSONObject gameObject = new JSONObject();
+        gameObject.put("name", gametext);
+        gameObject.put("type", 0);
+        gameObject.put("state", "Loaded Commands: " + new HashSet<>(RubiconBot.getCommandManager().getCommandAssociations().values()).size());
+        gameObject.put("details", "Running on " + RubiconBot.getJDA().getGuilds().size() + " servers and helping " + RubiconBot.getJDA().getUsers().stream().filter(u -> !u.isBot()).collect(Collectors.toList()).size() + " users");
+        gameObject.put("application_id", "386841318372147202");
+
+        /* Assets object*/
+        JSONObject assetsObject = new JSONObject();
+        assetsObject.put("large_image", "discord-small");
+        assetsObject.put("small_image", "schlaubi-large");
+        assetsObject.put("large_text", "Bot invite: http://inv.rucb.co");
+        assetsObject.put("small_text", "Community discord: http://dc.rucb.co");
+
+        //gameObject.put("assets", assetsObject);
+        rpcObject.put("game", gameObject);
+
+        System.out.println(gameObject);
+
+        jdaimpl.getClient().send(new JSONObject().put("d", rpcObject).put("op", WebSocketCode.PRESENCE).toString());
+    }
+
+
 }

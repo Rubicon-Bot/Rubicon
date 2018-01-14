@@ -33,6 +33,7 @@ public class ListenerManager {
         b.addEventListener(new MessageDeleteListener());
         b.addEventListener(new MemberLeaveListener());
         b.addEventListener(new ServerLogHandler());
+        b.addEventListener(new ChannelDeleteListener());
 
     }
 }
