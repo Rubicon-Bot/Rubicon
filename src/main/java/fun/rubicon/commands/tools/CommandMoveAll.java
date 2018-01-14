@@ -14,6 +14,8 @@ import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.managers.GuildController;
@@ -22,29 +24,35 @@ import java.util.List;
 
 public class CommandMoveAll extends CommandHandler {
     public CommandMoveAll() {
-        super(new String[] {"moveall", "mvall", "mva"}, CommandCategory.ADMIN, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.moveall"), "Move all members in your channel into another channel", "moveall <Channel>", false);
+        super(new String[] {"moveall", "mvall", "mva"}, CommandCategory.ADMIN, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.moveall"), "Move all members in your channel into another channel", "<Channel>", false);
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         String[] args = parsedCommandInvocation.args;
         Message message = parsedCommandInvocation.invocationMessage;
+        Guild guild = parsedCommandInvocation.invocationMessage.getGuild();
         if (args.length == 0) {
             return createHelpMessage(parsedCommandInvocation);
         }
         if (!message.getMember().getVoiceState().inVoiceChannel())
             return new MessageBuilder().setEmbed(EmbedUtil.error("Not connected", "Please connect to a voice channel to use this command").build()).build();
-        StringBuilder name = new StringBuilder();
-        for (int i = 0; i < args.length; i++) {
-            name.append(args[i]);
-        }
-        List<VoiceChannel> channels = message.getGuild().getVoiceChannelsByName(name.toString(), false);
+
+        String name;
+        name = message.getContentRaw().replace(parsedCommandInvocation.invocationCommand, "");
+        name = name.replace(parsedCommandInvocation.serverPrefix,"");
+        name = name.substring(1);
+        System.out.println(name);
+        List<VoiceChannel> channels = message.getGuild().getVoiceChannelsByName(name.toString(), true);
         if (channels.isEmpty())
-            return new MessageBuilder().setEmbed(EmbedUtil.error("Channel not found", "This channel doesen't exits").build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error("Channel not found", "This channel doesen't exist").build()).build();
         VoiceChannel channel = channels.get(0);
         if (channel.equals(message.getMember().getVoiceState().getChannel()))
             return new MessageBuilder().setEmbed(EmbedUtil.error("Same channel", "You are already connected to that channel").build()).build();
         GuildController controller = message.getGuild().getController();
+        if(!guild.getSelfMember().hasPermission(Permission.VOICE_MOVE_OTHERS)) {
+            return  new MessageBuilder().setEmbed(EmbedUtil.error("Cannot move you!","Cannot move all members in the Channel").build()).build();
+        }
         message.getMember().getVoiceState().getChannel().getMembers().forEach(m -> {
             controller.moveVoiceMember(m, channel).queue();
         });

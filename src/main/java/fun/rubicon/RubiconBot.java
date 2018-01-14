@@ -12,10 +12,7 @@ import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.admin.CommandVerification;
 import fun.rubicon.commands.botowner.*;
 import fun.rubicon.commands.botowner.CommandPlay;
-import fun.rubicon.commands.fun.CommandOK;
-import fun.rubicon.commands.fun.CommandRip;
-import fun.rubicon.commands.fun.CommandRoulette;
-import fun.rubicon.commands.fun.CommandSlot;
+import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.*;
 import fun.rubicon.commands.music.*;
@@ -51,7 +48,7 @@ import java.util.Timer;
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token", "twitterConsumerKey", "twitterConsumerSecret", "twitterAccessToken", "twitterAccessTokenSecret"};
+    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token", "gip_token", "twitterConsumerKey", "twitterConsumerSecret", "twitterAccessToken", "twitterAccessTokenSecret"};
     private static final String dataFolder = "data/";
     private static RubiconBot instance;
     private final MySQL mySQL;
@@ -198,7 +195,8 @@ public class RubiconBot {
                 new CommandRip(),
                 new CommandSlot(),
                 new CommandRoulette(),
-                new CommandOK()
+                new CommandOK(),
+                new CommandGiphy()
         );
         // general commands package
         commandManager.registerCommandHandlers(
@@ -230,7 +228,6 @@ public class RubiconBot {
                 new CommandClear(),
                 new CommandRandomColor(),
                 new CommandDice(),
-                new CommandGoogle(),
                 new CommandLmgtfy(),
                 new CommandSay(),
                 new CommandQRCode(),

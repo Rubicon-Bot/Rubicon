@@ -36,7 +36,7 @@ public class CommandSay extends CommandHandler {
             return createHelpMessage();
         }
         TextChannel textChannel = parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0);
-        if(!parsedCommandInvocation.selfMember.hasPermission(textChannel, Permission.MESSAGE_READ)) {
+        if (!parsedCommandInvocation.selfMember.hasPermission(textChannel, Permission.MESSAGE_READ)) {
             return EmbedUtil.message(EmbedUtil.error("Error!", "I have no permissions to write in this channel."));
         }
         String text = parsedCommandInvocation.invocationMessage.getContentDisplay().replace(parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand + " #" + textChannel.getName(), "");

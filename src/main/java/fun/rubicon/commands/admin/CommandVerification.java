@@ -120,6 +120,8 @@ public class CommandVerification extends CommandHandler {
 
     public static void handleReaction(MessageReactionAddEvent event) {
         Message message = event.getTextChannel().getMessageById(event.getMessageId()).complete();
+        if(message == null) return;
+        if(message.equals("0")) return;
         if (!message.getAuthor().equals(event.getJDA().getSelfUser())) return;
         if (!event.getUser().equals(users.get(message))) return;
         if (RubiconBot.getMySQL().verificationEnabled(event.getGuild())) {
@@ -195,7 +197,7 @@ public class CommandVerification extends CommandHandler {
         Message message = event.getTextChannel().getMessageById(event.getMessageId()).complete();
         VerificationSettings settings = settingslist.get(event.getGuild());
         MessageReaction.ReactionEmote emote = event.getReactionEmote();
-        System.out.println(event.getReactionEmote().getEmote().isManaged());
+        //System.out.println(event.getReactionEmote().getEmote().isManaged());
         if(!event.getReactionEmote().getEmote().isManaged()){
                 if(!event.getGuild().getEmotes().contains(emote.getEmote())) {
                     message.getTextChannel().sendMessage(EmbedUtil.error("Unsupported emote", "You can only use global or custom emotes of your server").build()).queue(msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));

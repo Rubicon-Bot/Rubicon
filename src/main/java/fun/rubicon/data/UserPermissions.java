@@ -70,7 +70,7 @@ public class UserPermissions extends fun.rubicon.permission.UserPermissions {
 
     /**
      * @return the member permission level. Also 0 if no guild was specified.
-     * @see fun.rubicon.core.permission.PermissionManager for usage definitions.
+     * @see fun.rubicon.permission.PermissionManager for usage definitions.
      * @deprecated use {@link #getNewMemberPermissionLevel().value} instead.
      */
     @Deprecated
