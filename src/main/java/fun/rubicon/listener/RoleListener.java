@@ -1,6 +1,6 @@
 package fun.rubicon.listener;
 
-import fun.rubicon.commands.tools.CommandRanks;
+import fun.rubicon.commands.moderation.CommandRanks;
 import net.dv8tion.jda.core.events.role.RoleDeleteEvent;
 import net.dv8tion.jda.core.events.role.update.RoleUpdateNameEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;

@@ -1,4 +1,4 @@
-package fun.rubicon.commands.tools;
+package fun.rubicon.commands.moderation;
 
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
@@ -31,6 +31,7 @@ public class CommandRanks extends CommandHandler {
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         Message message = parsedCommandInvocation.invocationMessage;
         String[] args = parsedCommandInvocation.args;
+        new File("data/ranks").mkdirs();
         File file = new File("data/ranks/" + message.getGuild().getId() + ".dat");
         Configuration ranks = new Configuration(file);
         //Fixes bug, that roles cannot be deleted
