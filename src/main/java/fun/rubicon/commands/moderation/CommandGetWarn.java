@@ -33,15 +33,15 @@ public class CommandGetWarn extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        if (parsedCommandInvocation.invocationMessage.getMentionedUsers().size() < 1) {
+        if (parsedCommandInvocation.getMessage().getMentionedUsers().size() < 1) {
             return new MessageBuilder().setEmbed(EmbedUtil.error("Oh something went wrong!", getParameterUsage()).build()).build();
         }
         MySQL sql = RubiconBot.getMySQL();
-        User unmuteuser = parsedCommandInvocation.invocationMessage.getMentionedUsers().get(0);
-        if (!sql.ifWarning(unmuteuser, parsedCommandInvocation.invocationMessage.getGuild())) {
+        User unmuteuser = parsedCommandInvocation.getMessage().getMentionedUsers().get(0);
+        if (!sql.ifWarning(unmuteuser, parsedCommandInvocation.getMessage().getGuild())) {
             return new MessageBuilder().setEmbed(EmbedUtil.info(unmuteuser.getName() + " has 0 warns!", "There are no warns.").build()).build();
         }
-        Guild g = parsedCommandInvocation.invocationMessage.getGuild();
+        Guild g = parsedCommandInvocation.getMessage().getGuild();
         String Reason = sql.getWarning(unmuteuser, g, "reason");
         User author = g.getMemberById(sql.getWarning(unmuteuser, g, "authorid")).getUser();
         return new MessageBuilder().setEmbed(EmbedUtil.info("Warn of " + unmuteuser.getName(), "Warned by: " + author.getAsMention() + "\nReason: `" + Reason + "`!").build()).build();

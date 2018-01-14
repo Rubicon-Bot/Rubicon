@@ -33,16 +33,16 @@ public class CommandClear extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        if (parsedCommandInvocation.args.length == 0) {
+        if (parsedCommandInvocation.getArgs().length == 0) {
             return createHelpMessage();
         }
 
-        if (!StringUtil.isNumeric(parsedCommandInvocation.args[0])) {
+        if (!StringUtil.isNumeric(parsedCommandInvocation.getArgs()[0])) {
             return EmbedUtil.message(EmbedUtil.error("Error!", "Parameter must be numeric."));
         }
 
-        int messageAmount = Integer.parseInt(parsedCommandInvocation.args[0]);
-        User user = (parsedCommandInvocation.invocationMessage.getMentionedUsers().size() == 1) ? parsedCommandInvocation.invocationMessage.getMentionedUsers().get(0) : null;
+        int messageAmount = Integer.parseInt(parsedCommandInvocation.getArgs()[0]);
+        User user = (parsedCommandInvocation.getMessage().getMentionedUsers().size() == 1) ? parsedCommandInvocation.getMessage().getMentionedUsers().get(0) : null;
         if (messageAmount > 100) {
             return EmbedUtil.message(EmbedUtil.error("Error!", "I can't delete more than 100 messages."));
         }
@@ -52,12 +52,12 @@ public class CommandClear extends CommandHandler {
         }
 
         List<Message> messagesToDelete;
-        messagesToDelete = parsedCommandInvocation.invocationMessage.getTextChannel().getHistory().retrievePast(messageAmount).complete();
+        messagesToDelete = parsedCommandInvocation.getMessage().getTextChannel().getHistory().retrievePast(messageAmount).complete();
         messagesToDelete = messagesToDelete.stream().filter(message -> !message.getCreationTime().isBefore(OffsetDateTime.now().minusWeeks(2))).collect(Collectors.toList());
         if(user != null)
             messagesToDelete = messagesToDelete.stream().filter(message -> message.getAuthor() == user).collect(Collectors.toList());
         int deletedMessagesSize = messagesToDelete.size();
-        parsedCommandInvocation.invocationMessage.getTextChannel().deleteMessages(messagesToDelete).complete();
+        parsedCommandInvocation.getMessage().getTextChannel().deleteMessages(messagesToDelete).complete();
         return EmbedUtil.message(EmbedUtil.success("Cleared channel!", "Successfully cleared `" + deletedMessagesSize + "` messages"));
     }
 }

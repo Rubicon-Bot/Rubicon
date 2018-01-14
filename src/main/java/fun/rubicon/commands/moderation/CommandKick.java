@@ -29,7 +29,7 @@ public class CommandKick extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        Message msg = parsedCommandInvocation.invocationMessage;
+        Message msg = parsedCommandInvocation.getMessage();
         if (msg.getMentionedUsers().isEmpty()) {
             return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "kick <@User>").build()).build();
         }

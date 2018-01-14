@@ -32,15 +32,15 @@ public class CommandUnWarn extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        if (parsedCommandInvocation.invocationMessage.getMentionedUsers().size() < 1) {
-            return new MessageBuilder().setEmbed(EmbedUtil.error("Oh something went wrong!", getUsage()).build()).build();
+        if (parsedCommandInvocation.getMessage().getMentionedUsers().size() < 1) {
+            return new MessageBuilder().setEmbed(EmbedUtil.error("Oh something went wrong!", getParameterUsage()).build()).build();
         }
         MySQL sql = RubiconBot.getMySQL();
-        User unmuteuser = parsedCommandInvocation.invocationMessage.getMentionedUsers().get(0);
-        if (!sql.ifWarning(unmuteuser, parsedCommandInvocation.invocationMessage.getGuild())) {
+        User unmuteuser = parsedCommandInvocation.getMessage().getMentionedUsers().get(0);
+        if (!sql.ifWarning(unmuteuser, parsedCommandInvocation.getMessage().getGuild())) {
             return new MessageBuilder().setEmbed(EmbedUtil.error("Oh " + unmuteuser.getName() + " is not warned!", "warn <User Mention> <reason>").build()).build();
         }
-        sql.deleteWarning(unmuteuser, parsedCommandInvocation.invocationMessage.getGuild());
+        sql.deleteWarning(unmuteuser, parsedCommandInvocation.getMessage().getGuild());
         return new MessageBuilder().setEmbed(EmbedUtil.success("", "Unwarned User " + unmuteuser.getAsMention()).build()).build();
     }
 }

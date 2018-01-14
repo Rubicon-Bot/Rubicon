@@ -35,7 +35,7 @@ public class CommandFeedback extends CommandHandler {
             return message(error("Text too short", "Please use at least three words in your feedback message."));
         else {
             RubiconBot.getJDA().getTextChannelById(383324255380701194L).sendMessage(
-                    message(embed("New feedback", "```" + invocation.getMessage().getContentDisplay().replace(invocation.serverPrefix + invocation.invocationCommand + " ", ""))
+                    message(embed("New feedback", "```" + invocation.getMessage().getContentDisplay().replace(invocation.getPrefix() + invocation.getCommandInvocation() + " ", ""))
                             .setAuthor(invocation.getMessage().getAuthor().getName() + '#'
                                     + invocation.getMessage().getAuthor().getDiscriminator(), null,
                                     invocation.getMessage().getAuthor().getEffectiveAvatarUrl()))).queue();

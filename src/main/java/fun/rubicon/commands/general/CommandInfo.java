@@ -35,7 +35,7 @@ public class CommandInfo extends CommandHandler {
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         //Set some Var´s
-        Message message = parsedCommandInvocation.invocationMessage;
+        Message message = parsedCommandInvocation.getMessage();
         EmbedBuilder builder = new EmbedBuilder();
         builder.setColor(Colors.COLOR_PRIMARY);
         builder.setAuthor(Info.BOT_NAME + " - Info", "https://rubicon.fun", message.getJDA().getSelfUser().getEffectiveAvatarUrl());
