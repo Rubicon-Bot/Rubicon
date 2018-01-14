@@ -6,7 +6,6 @@
 
 package fun.rubicon.commands.botowner;
 
-import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
@@ -17,6 +16,7 @@ import net.dv8tion.jda.core.entities.Message;
 
 /**
  * Handles the 'stop' command.
+ *
  * @author Leon Kappes / Lee
  */
 public class CommandStop extends CommandHandler {
@@ -27,9 +27,6 @@ public class CommandStop extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        if (RubiconBot.getMySQL() != null) {
-            RubiconBot.getMySQL().disconnect();
-        }
         parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(new EmbedBuilder().setDescription(":battery: System Shutdown :battery:").build()).queue();
         System.exit(0);
         return null;

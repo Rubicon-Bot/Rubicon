@@ -446,23 +446,6 @@ public class MySQL {
         return null;
     }
 
-    public List<Guild> getGuildsByContainingValue(String type, String value) {
-        try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM guilds");
-            List<Guild> guilds = new ArrayList<>();
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                if (rs.getString(type).contains(value)) {
-                    guilds.add(RubiconBot.getJDA().getGuildById(rs.getString("serverid")));
-                }
-            }
-            return guilds;
-        } catch (SQLException ex) {
-            Logger.error(ex);
-        }
-        return null;
-    }
-
     public boolean ifGuildExits(Guild guild) {
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM guilds WHERE serverid =?");

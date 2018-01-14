@@ -13,8 +13,11 @@ import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
+import fun.rubicon.util.Logger;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 public class CommandSay extends CommandHandler {
 
@@ -31,11 +34,11 @@ public class CommandSay extends CommandHandler {
         if (parsedCommandInvocation.invocationMessage.getMentionedChannels().size() != 1) {
             return createHelpMessage();
         }
-
-        String text = "";
-        for (int i = parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0).getAsMention().split(" ").length; i < parsedCommandInvocation.args.length; i++) {
-            text += parsedCommandInvocation.args[i] + " ";
+        TextChannel textChannel = parsedCommandInvocation.invocationMessage.getTextChannel();
+        if(!canRead(parsedCommandInvocation.invocationMessage.getGuild(), textChannel)) {
+            return EmbedUtil.message(EmbedUtil.error("Error!", "I can't write in this channel."));
         }
+        String text = parsedCommandInvocation.invocationMessage.getContentDisplay().replace(parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand + " #" + parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0).getName(), "");
         parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0).sendMessage(text).queue();
         return new MessageBuilder().setEmbed(EmbedUtil.success("Successful", "Successful sent message in " + parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0).getAsMention()).build()).build();
     }

@@ -32,7 +32,7 @@ public class AutoroleExecutor extends ListenerAdapter {
             e.getGuild().getController().addRolesToMember(e.getMember(), e.getGuild().getRoleById(roleEntry)).queue();
         } catch (Exception ignored) {
             // Ignored because role can be deleted or higher than the bot role
-            e.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(EmbedUtil.error("Error!", "Your autotole is invalid. Please choose an other role.").build()).queue());
+            e.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(EmbedUtil.error("Error!", "Your autorole is invalid. That means the role doesn't exist, the id is invalid or the role is higher than bot's role. Please try again setting an autorole or choose an other role.").build()).queue());
         }
 
     }

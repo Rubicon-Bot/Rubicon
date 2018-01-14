@@ -12,10 +12,7 @@ import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.admin.CommandVerification;
 import fun.rubicon.commands.botowner.*;
 import fun.rubicon.commands.botowner.CommandPlay;
-import fun.rubicon.commands.fun.CommandOK;
-import fun.rubicon.commands.fun.CommandRip;
-import fun.rubicon.commands.fun.CommandRoulette;
-import fun.rubicon.commands.fun.CommandSlot;
+import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.*;
 import fun.rubicon.commands.music.*;
@@ -34,13 +31,15 @@ import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Game;
+<<<<<<< HEAD
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.impl.JDAImpl;
+=======
+>>>>>>> master
 import net.dv8tion.jda.core.hooks.EventListener;
 
 import javax.security.auth.login.LoginException;
-import java.io.File;
-import java.sql.Connection;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
@@ -54,7 +53,7 @@ import java.util.Timer;
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token", "twitterConsumerKey", "twitterConsumerSecret", "twitterAccessToken", "twitterAccessTokenSecret"};
+    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token", "gip_token", "twitterConsumerKey", "twitterConsumerSecret", "twitterAccessToken", "twitterAccessTokenSecret"};
     private static final String dataFolder = "data/";
     private static RubiconBot instance;
     private final MySQL mySQL;
@@ -72,8 +71,7 @@ public class RubiconBot {
         instance = this;
         // initialize logger
         new File("rubicon_logs").mkdirs();
-        String filename = new SimpleDateFormat("dd_MM_yyyy HH_mm").format(new Date());
-        Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, new File("rubicon_logs/" + filename + ".log"));
+        Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, "rubicon_logs/", true);
 
         timer = new Timer();
         eventListeners = new HashSet<>();
@@ -92,26 +90,9 @@ public class RubiconBot {
         // load MySQL adapter
         mySQL = new MySQL(Info.MYSQL_HOST, Info.MYSQL_PORT, Info.MYSQL_USER, Info.MYSQL_PASSWORD, Info.MYSQL_DATABASE);
         mySQL.connect();
-        generateDatabases();
+
         //Create databases if neccesary
-        Connection connection = mySQL.getConnection();
-        /*try{
-        /*Connection connection = mySQL.getConnection();
-        /*
-        Connection connection = mySQL.getConnection();
-        try{
-            PreparedStatement guilds = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `guilds` ( `serverid` VARCHAR(100) NOT NULL AUTO_INCREMENT , `prefix` VARCHAR(25) NOT NULL , `joinmsg` TEXT NOT NULL , `leavemsg` TEXT NOT NULL , `channel` TEXT NOT NULL , `logchannel` TEXT NOT NULL , `autorole` TEXT NOT NULL , `portal` VARCHAR(250) NOT NULL , `welmsg` TEXT NOT NULL , `autochannels` VARCHAR(250) NOT NULL , `cases` INT(11) NOT NULL , `blacklist` INT NOT NULL , PRIMARY KEY (`serverid`)) ENGINE = InnoDB;");        
-            PreparedStatement member = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `member` ( `id` INT(250) NOT NULL , `userid` VARCHAR(100) NOT NULL , `guildid` VARCHAR(100) NOT NULL , `permissionlevel` VARCHAR(2) NOT NULL , `permissions` VARCHAR(250) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
-            PreparedStatement mutes = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `mutes` ( `id` INT NOT NULL AUTO_INCREMENT , `serverid` BIGINT(18) NOT NULL , `userid` BIGINT(18) NOT NULL , `authorid` BIGINT(18) NOT NULL , `add_date` VARCHAR(10) NOT NULL , `del_date` VARCHAR(10) NOT NULL , `reason` VARCHAR(300) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
-            PreparedStatement portal = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `portal` ( `id` INT(250) NOT NULL AUTO_INCREMENT , `guildid` VARCHAR(250) NOT NULL , `partnerid` VARCHAR(250) NOT NULL , `channelid` VARCHAR(250) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
-            PreparedStatement roles = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `roles` ( `id` INT(250) NOT NULL AUTO_INCREMENT , `roleid` VARCHAR(100) NOT NULL , `permissions` VARCHAR(250) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
-            PreparedStatement user = connection.prepareStatement("CREATE TABLE IF NOT EXSITS `user` ( `id` INT(250) NOT NULL AUTO_INCREMENT , `userid` VARCHAR(250) NOT NULL , `bio` VARCHAR(250) NULL , `bday` VARCHAR NULL , `level` TEXT NULL DEFAULT NULL , `points` TEXT NULL DEFAULT NULL , `money` TEXT NULL DEFAULT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
-            PreparedStatement verifications = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `verifications_b` ( `id` INT(11) NOT NULL AUTO_INCREMENT , `guildid` TEXT NOT NULL , `channelid` TEXT NOT NULL , `roleid` TEXT NOT NULL , `text` TEXT NOT NULL , `verifiedtext` TEXT NOT NULL , `kicktime` TEXT NOT NULL , `kicktext` TEXT NOT NULL , `emote` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
-            mySQL.executePreparedStatements(guilds, member, mutes, portal, roles, user, verifications);
-        } catch(SQLException ex){
-            ex.printStackTrace();
-        }
-        */
+        generateDatabases();
 
         commandManager = new CommandManager();
         registerCommandHandlers();
@@ -147,7 +128,11 @@ public class RubiconBot {
 
         JDABuilder builder = new JDABuilder(AccountType.BOT);
         builder.setToken(instance.configuration.getString("token"));
+<<<<<<< HEAD
         //builder.setGame(Game.playing(Info.BOT_NAME + " " + Info.BOT_VERSION));
+=======
+        builder.setGame(Game.playing("Starting...."));
+>>>>>>> master
 
         // add all EventListeners
         for (EventListener listener : instance.eventListeners)
@@ -162,26 +147,17 @@ public class RubiconBot {
         } catch (LoginException | InterruptedException e) {
             Logger.error(e.getMessage());
         }
+<<<<<<< HEAD
         //GameAnimator.start();
+=======
+>>>>>>> master
         CommandVote.loadPolls(instance.jda);
 //      CommandGiveaway.startGiveawayManager(instance.jda);
         GameAnimator.updateRichPresence(instance.jda, "Test");
 
 
-        int memberCount = 0;
-        for (Guild guild : getJDA().getGuilds())
-            memberCount += guild.getMembers().size();
-
-        StringBuilder infoOnStart = new StringBuilder();
-        infoOnStart.append("\n");
-        infoOnStart.append("---------- " + Info.BOT_NAME + " v." + Info.BOT_VERSION + " ---------- \n");
-        infoOnStart.append("Running on " + getJDA().getGuilds().size() + " Guilds \n");
-        infoOnStart.append("Supplying " + getJDA().getUsers().size() + " Users \n");
-        infoOnStart.append("Supplying " + memberCount + " Members \n");
-        infoOnStart.append("---------------------------------------");
-        infoOnStart.append("\n");
-
-        System.out.println(infoOnStart.toString());
+        getJDA().getPresence().setGame(Game.playing("Started."));
+        GameAnimator.start();
     }
 
     /**
@@ -236,7 +212,8 @@ public class RubiconBot {
                 new CommandRip(),
                 new CommandSlot(),
                 new CommandRoulette(),
-                new CommandOK()
+                new CommandOK(),
+                new CommandGiphy()
         );
         // general commands package
         commandManager.registerCommandHandlers(
@@ -268,7 +245,6 @@ public class RubiconBot {
                 new CommandClear(),
                 new CommandRandomColor(),
                 new CommandDice(),
-                new CommandGoogle(),
                 new CommandLmgtfy(),
                 new CommandSay(),
                 new CommandQRCode(),

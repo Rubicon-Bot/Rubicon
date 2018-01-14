@@ -57,7 +57,7 @@ public class CommandInfo extends CommandHandler {
         builder.addField("Github Link", "[Github Link](" + Info.BOT_GITHUB + ")", true);
         builder.addField("Patreon Link", "[Rubicon Dev Team](https://www.patreon.com/rubiconbot)", true);
         builder.addField("Authors", authors.toString(), true);
-        builder.addField("Donator & Supporter", String.join("\n", arrSupporter), false);
+        builder.addField("Donators", String.join("\n", arrSupporter), false);
         //Send Message and delete it after 2 Minutes
         return new MessageBuilder().setEmbed(builder.build()).build();
     }

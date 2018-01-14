@@ -21,7 +21,7 @@ public class CommandLeaveMessage extends CommandHandler {
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         if (parsedCommandInvocation.args.length == 0)
             return createHelpMessage();
-        String content = parsedCommandInvocation.invocationMessage.getContentDisplay().replace(parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationMessage, "");
+        String content = parsedCommandInvocation.invocationMessage.getContentDisplay().replace(parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand, "");
         if(content.equalsIgnoreCase("disable") || content.equalsIgnoreCase("false") || content.equalsIgnoreCase("0")){
             RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.invocationMessage.getGuild(), "leavemsg", "0");
             return new MessageBuilder().setEmbed(EmbedUtil.success("Disabled", "Succesfully disabled leavemessages").build()).build();
