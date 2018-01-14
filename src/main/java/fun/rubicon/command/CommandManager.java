@@ -13,8 +13,7 @@ import fun.rubicon.util.GlobalBlacklist;
 import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.ChannelType;
-import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -76,12 +75,12 @@ public class CommandManager extends ListenerAdapter {
         //Send typing because it's useless
         event.getTextChannel().sendTyping().queue();
         if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake() && !event.isWebhookMessage()) {
-            if(event.getAuthor().getId().equals("343825218718007296")) {
+            if (event.getAuthor().getId().equals("343825218718007296")) {
                 event.getTextChannel().sendMessage(new EmbedBuilder()
-                .setTitle(":rotating_light: __**ERROR**__ :rotating_light:")
-                .setDescription("403 WRONG GUY")
-                .setColor(Color.RED)
-                .build()).queue();
+                        .setTitle(":rotating_light: __**ERROR**__ :rotating_light:")
+                        .setDescription("403 WRONG GUY")
+                        .setColor(Color.RED)
+                        .build()).queue();
                 return;
             }
             if (GlobalBlacklist.isOnBlacklist(event.getAuthor())) {
@@ -172,16 +171,65 @@ public class CommandManager extends ListenerAdapter {
     }
 
     public static final class ParsedCommandInvocation {
+        @Deprecated
         public final Message invocationMessage;
+        @Deprecated
         public final String serverPrefix;
+        @Deprecated
         public final String invocationCommand;
+        @Deprecated
         public final String[] args;
+
+        private final String[] argsNew;
+        private final String commandInvocation;
+        private final Message message;
+        private final String prefix;
 
         private ParsedCommandInvocation(Message invocationMessage, String serverPrefix, String invocationCommand, String[] args) {
             this.invocationMessage = invocationMessage;
+            this.message = invocationMessage;
             this.serverPrefix = serverPrefix;
+            this.prefix = serverPrefix;
             this.invocationCommand = invocationCommand;
+            this.commandInvocation = invocationCommand;
             this.args = args;
+            this.argsNew = args;
+        }
+
+        public Message getMessage() {
+            return message;
+        }
+
+        public Guild getGuild() {
+            return message.getGuild();
+        }
+
+        public String[] getArgs() {
+            return argsNew;
+        }
+
+        public String getCommandInvocation() {
+            return commandInvocation;
+        }
+
+        public String getPrefix() {
+            return prefix;
+        }
+
+        public Member getSelfMember() {
+            return message.getGuild().getSelfMember();
+        }
+
+        public User getAuthor() {
+            return message.getAuthor();
+        }
+
+        public Member getMember() {
+            return message.getMember();
+        }
+
+        public TextChannel getTextChannel() {
+            return message.getTextChannel();
         }
     }
 }

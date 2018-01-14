@@ -16,7 +16,7 @@ public class Logger {
     private static boolean fileLogging = false;
     private static SimpleDateFormat logDateFormatter = new SimpleDateFormat("HH:mm:ss");
 
-    public static void logInFile(String appName, String appVersion, String logDirectory, boolean logAllOutput) {
+    public static void logInFile(String appName, String appVersion, String logDirectory) {
         String date = new SimpleDateFormat("dd_MM_yyyy-HH:mm:ss").format(new Date());
         String filename = new SimpleDateFormat("dd_MM_yyyy HH_mm").format(new Date());
         File newFile = new File(logDirectory + filename + ".log");
@@ -46,15 +46,6 @@ public class Logger {
                 "\n" +
                 "-- Log --\n";
         addLogEntry(logHeader);
-
-        if (logAllOutput)
-            try {
-                FileOutputStream f = new FileOutputStream("latest.log");
-                System.setOut(new PrintStream(f, true));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        System.out.println(logHeader);
     }
 
     private static void addLogEntry(String text) {
@@ -65,6 +56,10 @@ public class Logger {
             FileWriter writer = new FileWriter(logFile);
             writer.write(loggerText);
             writer.close();
+            //latest
+            FileWriter writer2 = new FileWriter("latest.log");
+            writer2.write(loggerText);
+            writer2.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

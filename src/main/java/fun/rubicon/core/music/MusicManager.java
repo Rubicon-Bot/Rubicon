@@ -5,22 +5,12 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import fun.rubicon.RubiconBot;
-import fun.rubicon.command.CommandCategory;
-import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.core.music.GuildMusicManager;
-import fun.rubicon.core.music.MusicSearchResult;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
-import fun.rubicon.permission.PermissionManager;
-import fun.rubicon.permission.PermissionTarget;
 import fun.rubicon.sql.GuildMusicSQL;
 import fun.rubicon.sql.UserMusicSQL;
 import fun.rubicon.util.Colors;
@@ -28,11 +18,9 @@ import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.Logger;
 import fun.rubicon.util.StringUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.core.exceptions.PermissionException;
 
 import java.util.*;
@@ -65,11 +53,11 @@ public class MusicManager {
 
     public MusicManager(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         this.parsedCommandInvocation = parsedCommandInvocation;
-        this.guild = parsedCommandInvocation.invocationMessage.getGuild();
-        this.args = parsedCommandInvocation.args;
-        this.userMusicSQL = new UserMusicSQL(parsedCommandInvocation.invocationMessage.getAuthor());
+        this.guild = parsedCommandInvocation.getGuild();
+        this.args = parsedCommandInvocation.getArgs();
+        this.userMusicSQL = new UserMusicSQL(parsedCommandInvocation.getAuthor());
         this.guildMusicSQL = new GuildMusicSQL(guild);
-        this.userPermissions = new fun.rubicon.permission.UserPermissions(parsedCommandInvocation.invocationMessage.getAuthor().getIdLong(), parsedCommandInvocation.invocationMessage.getGuild().getIdLong());
+        this.userPermissions = new fun.rubicon.permission.UserPermissions(parsedCommandInvocation.getAuthor().getIdLong(), parsedCommandInvocation.getGuild().getIdLong());
 
         playerManager = new DefaultAudioPlayerManager();
         playerManager.registerSourceManager(new YoutubeAudioSourceManager());
@@ -88,7 +76,7 @@ public class MusicManager {
             if (voiceChannel == null)
                 return message(error("Error!", "Predefined channel doesn't exist."));
         } else {
-            voiceChannel = parsedCommandInvocation.invocationMessage.getMember().getVoiceState().getChannel();
+            voiceChannel = parsedCommandInvocation.getMember().getVoiceState().getChannel();
             if (isBotInVoiceChannel()) {
                 if (getBotsVoiceChannel() == voiceChannel)
                     return message(error("Error!", "Bot is already in your voice channel."));
@@ -110,7 +98,7 @@ public class MusicManager {
         if (!isBotInVoiceChannel())
             return message(error("Error!", "Bot is not in a voice channel."));
         VoiceChannel channel = getBotsVoiceChannel();
-        if (parsedCommandInvocation.invocationMessage.getMember().getVoiceState().getChannel() != channel)
+        if (parsedCommandInvocation.getMember().getVoiceState().getChannel() != channel)
             return message(error("Error!", "You have to be in the same voice channel as the bot."));
 
         guild.getAudioManager().setSendingHandler(null);
@@ -124,7 +112,7 @@ public class MusicManager {
         if (!isBotInVoiceChannel())
             return message(error("Error!", "Bot is not in a voice channel."));
         VoiceChannel channel = getBotsVoiceChannel();
-        if (parsedCommandInvocation.invocationMessage.getMember().getVoiceState().getChannel() != channel)
+        if (parsedCommandInvocation.getMember().getVoiceState().getChannel() != channel)
             return message(error("Error!", "You have to be in the same voice channel as the bot."));
         getCurrentMusicManager().getPlayer().setPaused(true);
         return message(success("Paused!", "Successfully paused playing music."));
@@ -134,7 +122,7 @@ public class MusicManager {
         if (!isBotInVoiceChannel())
             return message(error("Error!", "Bot is not in a voice channel."));
         VoiceChannel channel = getBotsVoiceChannel();
-        if (parsedCommandInvocation.invocationMessage.getMember().getVoiceState().getChannel() != channel)
+        if (parsedCommandInvocation.getMember().getVoiceState().getChannel() != channel)
             return message(error("Error!", "You have to be in the same voice channel as the bot."));
         getCurrentMusicManager().getPlayer().setPaused(false);
         return message(success("Resumed!", "Successfully resumed playing music."));
@@ -154,7 +142,7 @@ public class MusicManager {
     }
 
     public void loadSong() {
-        TextChannel textChannel = parsedCommandInvocation.invocationMessage.getTextChannel();
+        TextChannel textChannel = parsedCommandInvocation.getMessage().getTextChannel();
         boolean isURL = false;
         StringBuilder searchParam = new StringBuilder();
         for (int i = 0; i < args.length; i++)
@@ -190,7 +178,7 @@ public class MusicManager {
             public void playlistLoaded(AudioPlaylist audioPlaylist) {
                 AudioTrack firstTrack = audioPlaylist.getSelectedTrack();
                 List<AudioTrack> playlistTracks = audioPlaylist.getTracks();
-                playlistTracks = playlistTracks.stream().limit(QUEUE_MAXIMUM - getCurrentMusicManager().getScheduler().getQueueSize()).collect(Collectors.toList());
+                playlistTracks = playlistTracks.stream().limit(QUEUE_MAXIMUM - getCurrentMusicManager().getScheduler().getQueue().size()).collect(Collectors.toList());
 
                 if (firstTrack == null)
                     firstTrack = playlistTracks.get(0);
@@ -207,7 +195,7 @@ public class MusicManager {
                     embedBuilder.setColor(Colors.COLOR_PRIMARY);
                     textChannel.sendMessage(embedBuilder.build()).queue();
                 } else {
-                    MusicSearchResult musicSearchResult = new MusicSearchResult(parsedCommandInvocation.invocationMessage.getAuthor(), guild, getCurrentMusicManager());
+                    MusicSearchResult musicSearchResult = new MusicSearchResult(parsedCommandInvocation.getAuthor(), guild, getCurrentMusicManager());
                     audioPlaylist.getTracks().stream().limit(5).collect(Collectors.toList()).forEach(track -> {
                         try {
                             musicSearchResult.addTrack(track);
@@ -251,7 +239,7 @@ public class MusicManager {
         if (!isBotInVoiceChannel())
             return message(error("Error!", "Bot is not in a voice channel."));
         VoiceChannel channel = getBotsVoiceChannel();
-        if (parsedCommandInvocation.invocationMessage.getMember().getVoiceState().getChannel() != channel)
+        if (parsedCommandInvocation.getMember().getVoiceState().getChannel() != channel)
             return message(error("Error!", "You have to be in the same voice channel as the bot."));
 
         getCurrentMusicManager().getScheduler().shuffle();
@@ -262,12 +250,12 @@ public class MusicManager {
         if (!isBotInVoiceChannel())
             return message(error("Error!", "Bot is not in a voice channel."));
         VoiceChannel channel = getBotsVoiceChannel();
-        if (parsedCommandInvocation.invocationMessage.getMember().getVoiceState().getChannel() != channel)
+        if (parsedCommandInvocation.getMember().getVoiceState().getChannel() != channel)
             return message(error("Error!", "You have to be in the same voice channel as the bot."));
         int amount = 1;
-        if (parsedCommandInvocation.args.length == 1) {
-            if (StringUtil.isNumeric(parsedCommandInvocation.args[0])) {
-                amount = Integer.parseInt(parsedCommandInvocation.args[0]);
+        if (parsedCommandInvocation.getArgs().length == 1) {
+            if (StringUtil.isNumeric(parsedCommandInvocation.getArgs()[0])) {
+                amount = Integer.parseInt(parsedCommandInvocation.getArgs()[0]);
             }
         }
         if (amount > SKIP_MAXIMUM)
@@ -280,7 +268,7 @@ public class MusicManager {
         if (!isBotInVoiceChannel())
             return message(error("Error!", "Bot is not in a voice channel."));
         VoiceChannel channel = getBotsVoiceChannel();
-        if (parsedCommandInvocation.invocationMessage.getMember().getVoiceState().getChannel() != channel)
+        if (parsedCommandInvocation.getMember().getVoiceState().getChannel() != channel)
             return message(error("Error!", "You have to be in the same voice channel as the bot."));
         if (getCurrentMusicManager().getPlayer().getPlayingTrack() == null) {
             return message(error("Error!", "Bot is playing nothing."));
@@ -292,7 +280,7 @@ public class MusicManager {
         embedBuilder.addField("Author", track.getInfo().author, true);
         embedBuilder.addField("Duration", (track.getInfo().isStream) ? "Stream" : getTimestamp(track.getDuration()), false);
         embedBuilder.setColor(Colors.COLOR_PRIMARY);
-        parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(embedBuilder.build()).queue();
+        parsedCommandInvocation.getMessage().getTextChannel().sendMessage(embedBuilder.build()).queue();
         return null;
     }
 
@@ -315,7 +303,7 @@ public class MusicManager {
             content.append(":small_orange_diamond: [" + track.getInfo().title + "](" + track.getInfo().uri + ")\n");
         }
         builder.setDescription(content.toString());
-        parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(builder.build()).queue();
+        parsedCommandInvocation.getMessage().getTextChannel().sendMessage(builder.build()).queue();
         return null;
     }
 
@@ -349,7 +337,7 @@ public class MusicManager {
     }
 
     private boolean isMemberInVoiceChannel() {
-        if (parsedCommandInvocation.invocationMessage.getMember().getVoiceState().inVoiceChannel())
+        if (parsedCommandInvocation.getMember().getVoiceState().inVoiceChannel())
             return true;
         return false;
     }
@@ -369,7 +357,7 @@ public class MusicManager {
     private boolean isDJ(Member member) {
         Role role = getDJRole();
         if (role == null)
-            return true; //TODO or false?
+            return true;
         if (member.getRoles().contains(role))
             return true;
         return false;
@@ -431,7 +419,7 @@ public class MusicManager {
     }
 
     private GuildMusicManager getCurrentMusicManager() {
-        return getMusicManager(parsedCommandInvocation.invocationMessage.getGuild());
+        return getMusicManager(parsedCommandInvocation.getGuild());
     }
 
     private static String getTimestamp(long milliseconds) {

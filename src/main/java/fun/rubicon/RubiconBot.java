@@ -66,7 +66,7 @@ public class RubiconBot {
         instance = this;
         // initialize logger
         new File("rubicon_logs").mkdirs();
-        Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, "rubicon_logs/", true);
+        Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, "rubicon_logs/");
 
         timer = new Timer();
         eventListeners = new HashSet<>();
@@ -209,7 +209,7 @@ public class RubiconBot {
                 new CommandSpeedTest(),
                 new CommandStatistics(),
                 new CommandMoney(),
-                new CommandLevel()
+                new fun.rubicon.commands.general.CommandLevel()
         );
         // settings commands package
         commandManager.registerCommandHandlers(
@@ -224,7 +224,7 @@ public class RubiconBot {
         // tools commands package
         commandManager.registerCommandHandlers(
                 new CommandASCII(),
-                new CommandChoose(),
+                new fun.rubicon.commands.tools.CommandChoose(),
                 new CommandClear(),
                 new CommandRandomColor(),
                 new CommandDice(),
