@@ -29,7 +29,7 @@ public class CommandSpeedTest extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        Message message = parsedCommandInvocation.invocationMessage;
+        Message message = parsedCommandInvocation.getMessage();
         //Set some Var´s and delete Message
         SpeedTestSocket DSpeed = new SpeedTestSocket();
         SpeedTestSocket USpeed = new SpeedTestSocket();

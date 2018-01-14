@@ -31,7 +31,7 @@ public class CommandUnmute extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        Message message = parsedCommandInvocation.invocationMessage;
+        Message message = parsedCommandInvocation.getMessage();
         if (message.getMentionedUsers().isEmpty())
             return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "unmute <@User>").build()).build();
         Member target = message.getGuild().getMember(message.getMentionedUsers().get(0));

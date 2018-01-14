@@ -27,7 +27,7 @@ public class CommandInvite extends CommandHandler {
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setColor(Colors.COLOR_SECONDARY);
-        builder.setAuthor(Info.BOT_NAME + " - Invite", null, parsedCommandInvocation.invocationMessage.getJDA().getSelfUser().getAvatarUrl());
+        builder.setAuthor(Info.BOT_NAME + " - Invite", null, parsedCommandInvocation.getMessage().getJDA().getSelfUser().getAvatarUrl());
         builder.setDescription("[Invite Rubicon Bot](https://discordapp.com/oauth2/authorize?client_id=380713705073147915&scope=bot&permissions=1898982486)\n" +
                 "[Join Rubicon Server](https://discord.gg/UrHvXY9)");
         return new MessageBuilder().setEmbed(builder.build()).build();

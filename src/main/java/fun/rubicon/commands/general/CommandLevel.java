@@ -28,7 +28,7 @@ public class CommandLevel extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        User user = parsedCommandInvocation.invocationMessage.getAuthor();
+        User user = parsedCommandInvocation.getMessage().getAuthor();
         EmbedBuilder builder = new EmbedBuilder();
         builder.setColor(Colors.COLOR_PRIMARY);
         builder.setAuthor(user.getName(), null, user.getAvatarUrl());
