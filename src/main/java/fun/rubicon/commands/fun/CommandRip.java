@@ -37,13 +37,13 @@ public class CommandRip extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
-        if (invocation.args.length < 2)
+        if (invocation.getArgs().length < 2)
             return createHelpMessage(invocation);
         else {
-            String whoDied = invocation.args[0];
-            StringBuilder sign = new StringBuilder(invocation.args[1]);
-            for (int i = 2; i < invocation.args.length; i++)
-                sign.append(' ').append(invocation.args[i]);
+            String whoDied = invocation.getArgs()[0];
+            StringBuilder sign = new StringBuilder(invocation.getArgs()[1]);
+            for (int i = 2; i < invocation.getArgs().length; i++)
+                sign.append(' ').append(invocation.getArgs()[i]);
 
             // compile url
             String tombstoneURL;
@@ -60,7 +60,7 @@ public class CommandRip extends CommandHandler {
             }
 
             // respond
-            invocation.invocationMessage.getTextChannel().sendMessage(success("Buried " + whoDied, "Here's an image of his tombstone:")
+            invocation.getMessage().getTextChannel().sendMessage(success("Buried " + whoDied, "Here's an image of his tombstone:")
                     .setImage(tombstoneURL).build()).queue();
             return null;
         }

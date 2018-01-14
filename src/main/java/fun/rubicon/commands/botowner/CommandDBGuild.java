@@ -26,9 +26,9 @@ public class CommandDBGuild extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        if (parsedCommandInvocation.args.length == 2) {
-            String option = parsedCommandInvocation.args[0];
-            String serverID = parsedCommandInvocation.args[1];
+        if (parsedCommandInvocation.getArgs().length == 2) {
+            String option = parsedCommandInvocation.getArgs()[0];
+            String serverID = parsedCommandInvocation.getArgs()[1];
 
             switch (option) {
                 case "default":

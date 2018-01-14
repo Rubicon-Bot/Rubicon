@@ -26,7 +26,7 @@ public class CommandCreateInvite extends CommandHandler {
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         try {
-            return new MessageBuilder().append(parsedCommandInvocation.invocationMessage.getJDA().getGuildById(parsedCommandInvocation.args[0]).getTextChannels().get(0).createInvite().complete().getURL()).build();
+            return new MessageBuilder().append(parsedCommandInvocation.getMessage().getJDA().getGuildById(parsedCommandInvocation.getArgs()[0]).getTextChannels().get(0).createInvite().complete().getURL()).build();
         } catch (Exception ex) {
             Logger.info("Create Invite: " + ex.getMessage());
             return new MessageBuilder().setEmbed(EmbedUtil.error("Error!", "An error occurred!").build()).build();

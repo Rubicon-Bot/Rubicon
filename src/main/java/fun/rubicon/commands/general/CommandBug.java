@@ -27,14 +27,14 @@ public class CommandBug extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        String[] args = parsedCommandInvocation.args;
-        Message message = parsedCommandInvocation.invocationMessage;
+        String[] args = parsedCommandInvocation.getArgs();
+        Message message = parsedCommandInvocation.getMessage();
         //Check if enough args
         if (args.length < 3) {
             return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "bug [message] (min. 3 args)").build()).build();
         }
         //Make String out of args
-        String text = parsedCommandInvocation.invocationMessage.getContentDisplay().replace(parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand + " ", "");
+        String text = parsedCommandInvocation.getMessage().getContentDisplay().replace(parsedCommandInvocation.getPrefix() + parsedCommandInvocation.invocationCommand + " ", "");
 
         //Post Report to Dev Server
         RubiconBot.getJDA().getTextChannelById("382231366064144384").sendMessage(

@@ -46,8 +46,8 @@ public class CommandTwitter extends CommandHandler {
         TwitterFactory tf = new TwitterFactory(cb.build());
         Twitter twitter = tf.getInstance();
         try {
-            Status status = twitter.updateStatus(String.join(" ", parsedCommandInvocation.args));
-            parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(new EmbedBuilder()
+            Status status = twitter.updateStatus(String.join(" ", parsedCommandInvocation.getArgs()));
+            parsedCommandInvocation.getMessage().getTextChannel().sendMessage(new EmbedBuilder()
                     .setDescription(status.getText())
                     .setColor(new Color(0, 153, 229))
                     .setAuthor("Take a look at the tweet on Twitter", "https://twitter.com/" + status.getUser().getScreenName() + "/status/" + status.getId(), "http://icons.iconarchive.com/icons/sicons/basic-round-social/512/twitter-icon.png")

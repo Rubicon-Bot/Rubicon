@@ -34,9 +34,12 @@ public class CommandGiphy extends CommandHandler{
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        Message message = parsedCommandInvocation.invocationMessage;
+        Message message = parsedCommandInvocation.getMessage();
         MessageChannel channel = message.getChannel();
-        String[] args = parsedCommandInvocation.args;
+        String[] args = parsedCommandInvocation.getArgs();
+        if (args.length < 1){
+            return createHelpMessage();
+        }
         Message gifmessage = channel.sendMessage(new EmbedBuilder().setDescription("Collecting Gif´s ...").setColor(Colors.COLOR_SECONDARY).build()).complete();
         String query ="";
         Giphy giphy =  new Giphy(Info.GIPHY_TOKEN);

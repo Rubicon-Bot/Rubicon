@@ -42,7 +42,7 @@ public class CommandPlay extends CommandHandler {
             message += s + " ";
 
         RubiconBot.getConfiguration().set(configKey, message);
-        parsedCommandInvocation.invocationMessage.getJDA().getPresence().setGame(Game.playing(message));
+        parsedCommandInvocation.getMessage().getJDA().getPresence().setGame(Game.playing(message));
 
         return new MessageBuilder().setEmbed(EmbedUtil.success("Status set!", "Successfully set the playing status!").build()).build();
     }

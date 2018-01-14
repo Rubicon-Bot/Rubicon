@@ -36,15 +36,15 @@ public class CommandRoulette extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions permissions) {
-        if (invocation.args.length < 2)
+        if (invocation.getArgs().length < 2)
             return createHelpMessage(invocation);
         else {
             int betAmount;
             // parse bet amount
             try {
-                betAmount = Integer.parseInt(invocation.args[0]);
+                betAmount = Integer.parseInt(invocation.getArgs()[0]);
             } catch (NumberFormatException e) {
-                return message(error("Invalid value", "The minimum value `" + invocation.args[0]
+                return message(error("Invalid value", "The minimum value `" + invocation.getArgs()[0]
                         + "` is not an integer number."));
             }
 
@@ -53,12 +53,12 @@ public class CommandRoulette extends CommandHandler {
                 return message(error("Bet too little", "You need to bet at least 1 ruby to play Roulette."));
 
             // check if the user has enough money to cover his bet
-            if (betAmount > Integer.parseInt(RubiconBot.getMySQL().getUserValue(invocation.invocationMessage.getAuthor(), "money")))
+            if (betAmount > Integer.parseInt(RubiconBot.getMySQL().getUserValue(invocation.getMessage().getAuthor(), "money")))
                 return message(error("Not enough money", "You don't have `" + betAmount + "` rubys. " +
-                        "Check your money with `" + invocation.serverPrefix + "money`."));
+                        "Check your money with `" + invocation.getPrefix() + "money`."));
 
             // already generate random number
-            String betOption = invocation.args[1];
+            String betOption = invocation.getArgs()[1];
             int rolledNumber = (int) (Math.random() * 37); // 0 - 36
             int multiplier;
             boolean wins;
@@ -119,27 +119,27 @@ public class CommandRoulette extends CommandHandler {
                             throw new IllegalArgumentException();
                     } catch (IllegalArgumentException e) { // NumberFormatException is an IllegalArgumentException
                         return message(error("Invalid bet option", "You can not bid on `" + betOption
-                                + "`. Use `" + invocation.serverPrefix + invocation.invocationCommand + "` for a full bet option list."));
+                                + "`. Use `" + invocation.getPrefix() + invocation.getCommandInvocation() + "` for a full bet option list."));
                     }
                     multiplier = 36;
                     wins = betNumber == rolledNumber;
                     break;
             }
-            sendAndDeleteOnGuilds(invocation.invocationMessage.getChannel(), message(info("Rien ne va plus!",
+            sendAndDeleteOnGuilds(invocation.getMessage().getChannel(), message(info("Rien ne va plus!",
                     "The number is " + rolledNumber + ".\nIt's color is " + RouletteNumber.RouletteColor[rolledNumber] + ".")));
             if (wins) {
                 int wonMoney = betAmount * (multiplier - 1);
                 // update money
-                RubiconBot.getMySQL().updateUserValue(invocation.invocationMessage.getAuthor(), "money",
-                        String.valueOf(Integer.parseInt(RubiconBot.getMySQL().getUserValue(invocation.invocationMessage.getAuthor(), "money")) + wonMoney));
+                RubiconBot.getMySQL().updateUserValue(invocation.getMessage().getAuthor(), "money",
+                        String.valueOf(Integer.parseInt(RubiconBot.getMySQL().getUserValue(invocation.getMessage().getAuthor(), "money")) + wonMoney));
                 // respond
                 return message(embed(":star: You win", "Congratulations "
-                        + invocation.invocationMessage.getAuthor().getAsMention() + "! You won " + wonMoney + " rubys.")
+                        + invocation.getMessage().getAuthor().getAsMention() + "! You won " + wonMoney + " rubys.")
                         .setColor(Color.YELLOW));
             } else {
                 // update money
-                RubiconBot.getMySQL().updateUserValue(invocation.invocationMessage.getAuthor(), "money",
-                        String.valueOf(Integer.parseInt(RubiconBot.getMySQL().getUserValue(invocation.invocationMessage.getAuthor(), "money")) - betAmount));
+                RubiconBot.getMySQL().updateUserValue(invocation.getMessage().getAuthor(), "money",
+                        String.valueOf(Integer.parseInt(RubiconBot.getMySQL().getUserValue(invocation.getMessage().getAuthor(), "money")) - betAmount));
                 // respond
                 return message(embed(":cry: You lose", "Sorry, no luck this time!"));
             }

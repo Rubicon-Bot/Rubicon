@@ -39,20 +39,20 @@ public class CommandSlot extends CommandHandler {
         int payed_money = 0;
         int user_set_money = 0;
         int multiplicator = 0;
-        int user_has_money = Integer.parseInt(RubiconBot.getMySQL().getUserValue(parsedCommandInvocation.invocationMessage.getAuthor(),"money"));
+        int user_has_money = Integer.parseInt(RubiconBot.getMySQL().getUserValue(parsedCommandInvocation.getMessage().getAuthor(),"money"));
 
-        if(parsedCommandInvocation.args.length  >= 1){
+        if(parsedCommandInvocation.getArgs().length  >= 1){
             try{
-                payed_money = Integer.parseInt(parsedCommandInvocation.args[0]);
+                payed_money = Integer.parseInt(parsedCommandInvocation.getArgs()[0]);
             } catch(NumberFormatException exception){
-                sendHelpMessage(parsedCommandInvocation.invocationMessage.getChannel());
+                sendHelpMessage(parsedCommandInvocation.getMessage().getChannel());
                 return message(error("Invalid argument", "Your bet must be an integer number."));
             }
             if(payed_money <= user_has_money && payed_money > 0){
                 slot_one = ThreadLocalRandom.current().nextInt(0, SlotMachine.Slots.length);
                 slot_two = ThreadLocalRandom.current().nextInt(0, SlotMachine.Slots.length);
                 slot_three = ThreadLocalRandom.current().nextInt(0, SlotMachine.Slots.length);
-                parsedCommandInvocation.invocationMessage.getChannel().sendMessage(message(info("The slot machine rolled!",
+                parsedCommandInvocation.getMessage().getChannel().sendMessage(message(info("The slot machine rolled!",
                         "The slot machine rolled: " + SlotMachine.Slots[slot_one] + "  " + SlotMachine.Slots[slot_two] + "  " + SlotMachine.Slots[slot_three]))).queue();
                 if(slot_one == slot_two && slot_one == slot_three){
                     if(slot_one <= 7){
@@ -65,28 +65,28 @@ public class CommandSlot extends CommandHandler {
                         multiplicator = 8;
                     }
                     user_set_money = user_has_money + (payed_money*multiplicator);
-                    RubiconBot.getMySQL().updateUserValue(parsedCommandInvocation.invocationMessage.getAuthor(),"money",String.valueOf(user_set_money));
+                    RubiconBot.getMySQL().updateUserValue(parsedCommandInvocation.getMessage().getAuthor(),"money",String.valueOf(user_set_money));
                     return message(embed("You win!",
-                            "Congratulations! " + parsedCommandInvocation.invocationMessage.getAuthor().getAsMention()
+                            "Congratulations! " + parsedCommandInvocation.getMessage().getAuthor().getAsMention()
                                     + " You won " + (payed_money*multiplicator) + " Ruby's. :tada:").setColor(Colors.COLOR_SECONDARY));
                 }else{
                     user_set_money = user_has_money - payed_money;
-                    RubiconBot.getMySQL().updateUserValue(parsedCommandInvocation.invocationMessage.getAuthor(),
+                    RubiconBot.getMySQL().updateUserValue(parsedCommandInvocation.getMessage().getAuthor(),
                             "money",String.valueOf(user_set_money));
-                    return message(embed("You lose!", "Sorry. " + parsedCommandInvocation.invocationMessage.getAuthor().getAsMention()
+                    return message(embed("You lose!", "Sorry. " + parsedCommandInvocation.getMessage().getAuthor().getAsMention()
                                     + " you lose. :cry: More luck next time!").setColor(Colors.COLOR_SECONDARY));
                 }
             }else{
                 if(payed_money == 0){
-                    return message(error("You didn't pay", parsedCommandInvocation.invocationMessage.getAuthor().getAsMention()
+                    return message(error("You didn't pay", parsedCommandInvocation.getMessage().getAuthor().getAsMention()
                             + " you have to pay Ruby's to play at a slot machine."));
                 }
-                return message(error("Not enough money", parsedCommandInvocation.invocationMessage.getAuthor().getAsMention()
+                return message(error("Not enough money", parsedCommandInvocation.getMessage().getAuthor().getAsMention()
                         + " you don't have enough Ruby's. You only have " + user_has_money + " Ruby's."));
             }
         }
-        sendHelpMessage(parsedCommandInvocation.invocationMessage.getChannel());
-        return message(error("You didn't pay", parsedCommandInvocation.invocationMessage.getAuthor().getAsMention()
+        sendHelpMessage(parsedCommandInvocation.getMessage().getChannel());
+        return message(error("You didn't pay", parsedCommandInvocation.getMessage().getAuthor().getAsMention()
                 + " you have to pay Ruby's to play at a slot machine."));
     }
 

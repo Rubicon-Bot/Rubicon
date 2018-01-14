@@ -38,15 +38,15 @@ public class CommandPortal extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        if (parsedCommandInvocation.args.length == 0) {
+        if (parsedCommandInvocation.getArgs().length == 0) {
             return createHelpMessage(parsedCommandInvocation);
         }
 
-        switch (parsedCommandInvocation.args[0].toLowerCase()) {
+        switch (parsedCommandInvocation.getArgs()[0].toLowerCase()) {
             case "open":
             case "o":
             case "create":
-                if (parsedCommandInvocation.args.length == 1) {
+                if (parsedCommandInvocation.getArgs().length == 1) {
                     createPortalWithRandomGuild(parsedCommandInvocation);
                     return null;
                 }
@@ -55,14 +55,14 @@ public class CommandPortal extends CommandHandler {
                 closePortal(parsedCommandInvocation);
                 return null;
             case "invite":
-                if (parsedCommandInvocation.args.length == 2) {
+                if (parsedCommandInvocation.getArgs().length == 2) {
                     inviteGuild(parsedCommandInvocation);
                 } else {
                     return createHelpMessage();
                 }
                 return null;
             case "accept":
-                if (parsedCommandInvocation.args.length == 2) {
+                if (parsedCommandInvocation.getArgs().length == 2) {
                     acceptInvite(parsedCommandInvocation);
                 } else {
                     createHelpMessage();
@@ -79,8 +79,8 @@ public class CommandPortal extends CommandHandler {
      * @param parsedCommandInvocation parsedCommandInvocation
      */
     private void createPortalWithRandomGuild(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
-        Guild messageGuild = parsedCommandInvocation.invocationMessage.getGuild();
-        TextChannel messageChannel = parsedCommandInvocation.invocationMessage.getTextChannel();
+        Guild messageGuild = parsedCommandInvocation.getMessage().getGuild();
+        TextChannel messageChannel = parsedCommandInvocation.getMessage().getTextChannel();
 
         //Check if portal exists
         String oldGuildPortalEntry = RubiconBot.getMySQL().getGuildValue(messageGuild, "portal");
@@ -98,14 +98,14 @@ public class CommandPortal extends CommandHandler {
     }
 
     private void inviteGuild(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
-        Guild messageGuild = parsedCommandInvocation.invocationMessage.getGuild();
-        TextChannel messageChannel = parsedCommandInvocation.invocationMessage.getTextChannel();
-        if (!StringUtil.isNumeric(parsedCommandInvocation.args[1])) {
-            parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(EmbedUtil.error("Portal error", "Invalid guild id.").build()).queue(msg -> msg.delete().queueAfter(30, TimeUnit.SECONDS));
+        Guild messageGuild = parsedCommandInvocation.getMessage().getGuild();
+        TextChannel messageChannel = parsedCommandInvocation.getMessage().getTextChannel();
+        if (!StringUtil.isNumeric(parsedCommandInvocation.getArgs()[1])) {
+            parsedCommandInvocation.getMessage().getTextChannel().sendMessage(EmbedUtil.error("Portal error", "Invalid guild id.").build()).queue(msg -> msg.delete().queueAfter(30, TimeUnit.SECONDS));
             return;
         }
 
-        if (parsedCommandInvocation.args[1].equalsIgnoreCase(messageGuild.getId())) {
+        if (parsedCommandInvocation.getArgs()[1].equalsIgnoreCase(messageGuild.getId())) {
             messageChannel.sendMessage(EmbedUtil.error("Portal error!", "Portal you can't invite yourself.").build()).queue();
             return;
         }
@@ -116,21 +116,21 @@ public class CommandPortal extends CommandHandler {
             messageChannel.sendMessage(EmbedUtil.error("Portal error!", "Portal is already open.").build()).queue();
             return;
         }
-        String guildId = parsedCommandInvocation.args[1];
+        String guildId = parsedCommandInvocation.getArgs()[1];
         Guild guildTwo = null;
         try {
-            guildTwo = parsedCommandInvocation.invocationMessage.getJDA().getGuildById(guildId);
+            guildTwo = parsedCommandInvocation.getMessage().getJDA().getGuildById(guildId);
         } catch (NullPointerException ignored) {
             // Guild doesn't exist
         }
 
         if (guildTwo == null) {
-            parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(EmbedUtil.error("Portal error", "Invalid guild id.").build()).queue(msg -> msg.delete().queueAfter(30, TimeUnit.SECONDS));
+            parsedCommandInvocation.getMessage().getTextChannel().sendMessage(EmbedUtil.error("Portal error", "Invalid guild id.").build()).queue(msg -> msg.delete().queueAfter(30, TimeUnit.SECONDS));
             return;
         }
 
         if (RubiconBot.getMySQL().getGuildValue(guildTwo, "portal").equals("waiting") || RubiconBot.getMySQL().getGuildValue(guildTwo, "portal").equals("closed")) {
-            EmbedBuilder builder = EmbedUtil.embed("Portal Invite", parsedCommandInvocation.invocationMessage.getGuild().getName() + "(" + parsedCommandInvocation.invocationMessage.getGuild().getId() + ") has sent you an portal invite.\n`Accept with rc!portal accept <serverid>`");
+            EmbedBuilder builder = EmbedUtil.embed("Portal Invite", parsedCommandInvocation.getMessage().getGuild().getName() + "(" + parsedCommandInvocation.getMessage().getGuild().getId() + ") has sent you an portal invite.\n`Accept with rc!portal accept <serverid>`");
             builder.setFooter("Execute this command on your server", null);
             builder.setColor(Colors.COLOR_PRIMARY);
             guildTwo.getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(builder.build()).queue());
@@ -145,32 +145,32 @@ public class CommandPortal extends CommandHandler {
             Configuration configuration = new Configuration(inviteFile);
             createInviteEntryIfNotExists(configuration, guildTwo);
             configuration.set(guildTwo.getId() + "." + messageGuild.getId(), 1);
-            parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(EmbedUtil.success("Portal Invite sent", "Successfully sent an portal invite to " + guildTwo.getName()).build()).queue();
+            parsedCommandInvocation.getMessage().getTextChannel().sendMessage(EmbedUtil.success("Portal Invite sent", "Successfully sent an portal invite to " + guildTwo.getName()).build()).queue();
         }
     }
 
     private void acceptInvite(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
-        Guild guildOne = parsedCommandInvocation.invocationMessage.getGuild();
+        Guild guildOne = parsedCommandInvocation.getMessage().getGuild();
         if (guildOne == null) {
-            parsedCommandInvocation.invocationMessage.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(EmbedUtil.error("Portal error!", "You only can execute this command on your server.").build()).queue());
+            parsedCommandInvocation.getMessage().getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(EmbedUtil.error("Portal error!", "You only can execute this command on your server.").build()).queue());
             return;
         }
         Guild guildTwo;
 
-        if (!StringUtil.isNumeric(parsedCommandInvocation.args[1])) {
-            parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(EmbedUtil.error("Portal error", "Invalid guild id!").build()).queue(msg -> msg.delete().queueAfter(30, TimeUnit.SECONDS));
+        if (!StringUtil.isNumeric(parsedCommandInvocation.getArgs()[1])) {
+            parsedCommandInvocation.getMessage().getTextChannel().sendMessage(EmbedUtil.error("Portal error", "Invalid guild id!").build()).queue(msg -> msg.delete().queueAfter(30, TimeUnit.SECONDS));
             return;
         }
 
         try {
-            guildTwo = parsedCommandInvocation.invocationMessage.getJDA().getGuildById(parsedCommandInvocation.args[1]);
+            guildTwo = parsedCommandInvocation.getMessage().getJDA().getGuildById(parsedCommandInvocation.getArgs()[1]);
         } catch (NullPointerException ex) {
-            parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(EmbedUtil.error("Portal error", "Invalid guild id!").build()).queue(msg -> msg.delete().queueAfter(30, TimeUnit.SECONDS));
+            parsedCommandInvocation.getMessage().getTextChannel().sendMessage(EmbedUtil.error("Portal error", "Invalid guild id!").build()).queue(msg -> msg.delete().queueAfter(30, TimeUnit.SECONDS));
             return;
         }
 
         if (guildTwo == null) {
-            parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(EmbedUtil.error("Portal error", "Invalid guild id!").build()).queue(msg -> msg.delete().queueAfter(30, TimeUnit.SECONDS));
+            parsedCommandInvocation.getMessage().getTextChannel().sendMessage(EmbedUtil.error("Portal error", "Invalid guild id!").build()).queue(msg -> msg.delete().queueAfter(30, TimeUnit.SECONDS));
             return;
         }
 
@@ -178,10 +178,10 @@ public class CommandPortal extends CommandHandler {
         createInviteEntryIfNotExists(configuration, guildTwo);
 
         if (configuration.has(guildOne.getId() + "." + guildTwo.getId())) {
-            connectGuilds(guildOne, guildTwo, parsedCommandInvocation.invocationMessage.getTextChannel());
+            connectGuilds(guildOne, guildTwo, parsedCommandInvocation.getMessage().getTextChannel());
             configuration.set(guildOne.getId() + "." + guildTwo.getId(), null);
         } else {
-            parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(EmbedUtil.error("Portal error!", "You don't have an invite from this guild!").build()).queue();
+            parsedCommandInvocation.getMessage().getTextChannel().sendMessage(EmbedUtil.error("Portal error!", "You don't have an invite from this guild!").build()).queue();
         }
     }
 
@@ -259,9 +259,9 @@ public class CommandPortal extends CommandHandler {
     }
 
     private void closePortal(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
-        JDA jda = parsedCommandInvocation.invocationMessage.getJDA();
-        Guild messageGuild = parsedCommandInvocation.invocationMessage.getGuild();
-        TextChannel messageChannel = parsedCommandInvocation.invocationMessage.getTextChannel();
+        JDA jda = parsedCommandInvocation.getMessage().getJDA();
+        Guild messageGuild = parsedCommandInvocation.getMessage().getGuild();
+        TextChannel messageChannel = parsedCommandInvocation.getMessage().getTextChannel();
 
         //Check if portal exists
         String oldGuildPortalEntry = RubiconBot.getMySQL().getGuildValue(messageGuild, "portal");
@@ -299,11 +299,11 @@ public class CommandPortal extends CommandHandler {
 
         EmbedBuilder portalClosedMessage = new EmbedBuilder();
         portalClosedMessage.setAuthor("Portal closed!", null, jda.getSelfUser().getEffectiveAvatarUrl());
-        portalClosedMessage.setDescription("Portal was closed. Create a new one with `" + parsedCommandInvocation.serverPrefix + "portal create`");
+        portalClosedMessage.setDescription("Portal was closed. Create a new one with `" + parsedCommandInvocation.getPrefix() + "portal create`");
         portalClosedMessage.setColor(Colors.COLOR_ERROR);
 
         channelOne.sendMessage(portalClosedMessage.build()).queue();
-        portalClosedMessage.setDescription("Portal was closed. Create a new one with `" + parsedCommandInvocation.serverPrefix + "portal create`");
+        portalClosedMessage.setDescription("Portal was closed. Create a new one with `" + parsedCommandInvocation.getPrefix() + "portal create`");
         channelTwo.sendMessage(portalClosedMessage.build()).queue();
 
         channelOne.getManager().setTopic("Portal closed").queue();

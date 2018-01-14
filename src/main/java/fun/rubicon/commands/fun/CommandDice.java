@@ -31,21 +31,21 @@ public class CommandDice extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions permissions) {
-        if (invocation.args.length < 2)
+        if (invocation.getArgs().length < 2)
             return createHelpMessage(invocation);
         else {
             int min, max;
             // parse values
             try {
-                min = Integer.parseInt(invocation.args[0]);
+                min = Integer.parseInt(invocation.getArgs()[0]);
             } catch (NumberFormatException e) {
-                return message(error("Invalid value", "The minimum value `" + invocation.args[0]
+                return message(error("Invalid value", "The minimum value `" + invocation.getArgs()[0]
                         + "` is not an integer number."));
             }
             try {
-                max = Integer.parseInt(invocation.args[1]);
+                max = Integer.parseInt(invocation.getArgs()[1]);
             } catch (NumberFormatException e) {
-                return message(error("Invalid value", "The maximum value `" + invocation.args[1]
+                return message(error("Invalid value", "The maximum value `" + invocation.getArgs()[1]
                         + "` is not an integer number."));
             }
 
@@ -56,7 +56,7 @@ public class CommandDice extends CommandHandler {
 
             // result
             return message(embed(":game_die: " + "The dice rolled...",
-                    invocation.invocationMessage.getAuthor().getAsMention() + " rolled a `"
+                    invocation.getMessage().getAuthor().getAsMention() + " rolled a `"
                             + ((int) (min + Math.random() * (max - min + 1))) + "`!"));
         }
     }
