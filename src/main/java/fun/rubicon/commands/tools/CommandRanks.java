@@ -67,7 +67,6 @@ public class CommandRanks extends CommandHandler {
             if (!ranks.has(args[1]))
                 return new MessageBuilder().setEmbed(EmbedUtil.error("Name not used", "This rolename is not used").build()).build();
             ranks.unset(args[1]);
-            System.out.println(args[1]);
             return new MessageBuilder().setEmbed(EmbedUtil.success("Removed rank", "Successfully removed rank").build()).build();
         } else if (args[0].equals("list")) {
             StringBuilder ranksList = new StringBuilder();
@@ -91,7 +90,6 @@ public class CommandRanks extends CommandHandler {
                         toRemove.add(role);
                         removed.append(role.getName()).append(", ");
                     } else {
-                        System.out.println("addddddddddd");
                         toAdd.add(role);
                         added.append(role.getName()).append(", ");
                     }
