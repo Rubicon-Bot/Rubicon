@@ -7,7 +7,6 @@
 package fun.rubicon.command;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.core.BotPermissionChecker;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.listener.ServerLogHandler;
@@ -24,7 +23,7 @@ import static fun.rubicon.util.EmbedUtil.message;
  *
  * @author tr808axm
  */
-public abstract class CommandHandler extends BotPermissionChecker {
+public abstract class CommandHandler {
     private final String[] invocationAliases;
     private final CommandCategory category;
     private final PermissionRequirements permissionRequirements;

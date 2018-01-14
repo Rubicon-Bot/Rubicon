@@ -13,8 +13,7 @@ import fun.rubicon.util.GlobalBlacklist;
 import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.ChannelType;
-import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -73,12 +72,12 @@ public class CommandManager extends ListenerAdapter {
         super.onMessageReceived(event);
         ParsedCommandInvocation commandInvocation = parse(event.getMessage());
         if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake() && !event.isWebhookMessage()) {
-            if(event.getAuthor().getId().equals("343825218718007296")) {
+            if (event.getAuthor().getId().equals("343825218718007296")) {
                 event.getTextChannel().sendMessage(new EmbedBuilder()
-                .setTitle(":rotating_light: __**ERROR**__ :rotating_light:")
-                .setDescription("403 WRONG GUY")
-                .setColor(Color.RED)
-                .build()).queue();
+                        .setTitle(":rotating_light: __**ERROR**__ :rotating_light:")
+                        .setDescription("403 WRONG GUY")
+                        .setColor(Color.RED)
+                        .build()).queue();
                 return;
             }
             if (GlobalBlacklist.isOnBlacklist(event.getAuthor())) {
@@ -147,7 +146,7 @@ public class CommandManager extends ListenerAdapter {
             String[] args = new String[allArgs.length - 1];
             System.arraycopy(allArgs, 1, args, 0, args.length);
 
-            return new ParsedCommandInvocation(message, prefix, allArgs[0], args);
+            return new ParsedCommandInvocation(message, prefix, allArgs[0], args, message.getGuild(), message.getGuild().getSelfMember(), message.getAuthor(), message.getMember());
         }
         // else
         return null; // = message is not a command
@@ -173,12 +172,20 @@ public class CommandManager extends ListenerAdapter {
         public final String serverPrefix;
         public final String invocationCommand;
         public final String[] args;
+        public final Guild guild;
+        public final Member selfMember;
+        public final User author;
+        public final Member member;
 
-        private ParsedCommandInvocation(Message invocationMessage, String serverPrefix, String invocationCommand, String[] args) {
+        private ParsedCommandInvocation(Message invocationMessage, String serverPrefix, String invocationCommand, String[] args, Guild guild, Member selfMember, User author, Member member) {
             this.invocationMessage = invocationMessage;
             this.serverPrefix = serverPrefix;
             this.invocationCommand = invocationCommand;
             this.args = args;
+            this.guild = guild;
+            this.selfMember = selfMember;
+            this.author = author;
+            this.member = member;
         }
     }
 }

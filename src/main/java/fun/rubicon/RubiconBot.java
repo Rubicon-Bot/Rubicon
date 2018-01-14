@@ -69,7 +69,7 @@ public class RubiconBot {
         instance = this;
         // initialize logger
         new File("rubicon_logs").mkdirs();
-        Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, "rubicon_logs/", true);
+        Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, "rubicon_logs/");
 
         timer = new Timer();
         eventListeners = new HashSet<>();
