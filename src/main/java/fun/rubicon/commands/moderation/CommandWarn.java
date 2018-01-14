@@ -45,15 +45,15 @@ public class CommandWarn extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        if (parsedCommandInvocation.args.length < 2) {
+        if (parsedCommandInvocation.getArgs().length < 2) {
             return new MessageBuilder().setEmbed(EmbedUtil.error("", "Not enough arguments!\n" + getParameterUsage()).build()).build();
         }
-        if (parsedCommandInvocation.invocationMessage.getMentionedUsers().size() < 1) {
+        if (parsedCommandInvocation.getMessage().getMentionedUsers().size() < 1) {
             return new MessageBuilder().setEmbed(EmbedUtil.error("", "Please Mention someone!\n" + getParameterUsage()).build()).build();
         }
-        User targ = parsedCommandInvocation.invocationMessage.getMentionedUsers().get(0);
-        Guild g = parsedCommandInvocation.invocationMessage.getGuild();
-        User auth = parsedCommandInvocation.invocationMessage.getAuthor();
+        User targ = parsedCommandInvocation.getMessage().getMentionedUsers().get(0);
+        Guild g = parsedCommandInvocation.getMessage().getGuild();
+        User auth = parsedCommandInvocation.getMessage().getAuthor();
         String reas = "";
         for (int i = 1; i < parsedCommandInvocation.args.length; i++) {
             reas += parsedCommandInvocation.args[i] + " ";

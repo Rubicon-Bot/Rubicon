@@ -66,32 +66,32 @@ public class CommandHelp extends CommandHandler {
             i++;
         }
         Logger.debug("[\n" + out.toString() + "\n]");*/
-        if (parsedCommandInvocation.args.length == 0) {
+        if (parsedCommandInvocation.getArgs().length == 0) {
             // show complete command manual
             EmbedBuilder embedBuilder = new EmbedBuilder()
                     .setColor(Colors.COLOR_SECONDARY)
                     .setTitle(":information_source: Rubicon Bot command manual")
-                    .setDescription("Use `" + parsedCommandInvocation.serverPrefix
-                            + parsedCommandInvocation.invocationCommand + " <command>` to get a more detailed command help");
+                    .setDescription("Use `" + parsedCommandInvocation.getPrefix()
+                            + parsedCommandInvocation.getCommandInvocation() + " <command>` to get a more detailed command help");
             embedBuilder.addField("Documentation", "Take a look at my [Documentation](https://rubicon.fun)", false);
             embedBuilder.setFooter("Loaded a total of "
                     + new HashSet<>(RubiconBot.getCommandManager().getCommandAssociations().values()).size()
                     + " commands.", null);
-            parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(new MessageBuilder().setEmbed(embedBuilder.build()).build()).queue();
+            parsedCommandInvocation.getMessage().getTextChannel().sendMessage(new MessageBuilder().setEmbed(embedBuilder.build()).build()).queue();
             return null;
         } else {
-            CommandHandler handler = RubiconBot.getCommandManager().getCommandHandler(parsedCommandInvocation.args[0]);
+            CommandHandler handler = RubiconBot.getCommandManager().getCommandHandler(parsedCommandInvocation.getArgs()[0]);
             return handler == null
                     // invalid command
                     ? new MessageBuilder().setEmbed(new EmbedBuilder()
                     .setColor(Colors.COLOR_ERROR)
                     .setTitle(":warning: Invalid command")
-                    .setDescription("There is no command named '" + parsedCommandInvocation.args[0] + "'. Use `"
-                            + parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand
+                    .setDescription("There is no command named '" + parsedCommandInvocation.getArgs()[0] + "'. Use `"
+                            + parsedCommandInvocation.getPrefix() + parsedCommandInvocation.getCommandInvocation()
                             + "` to get a full command list.")
                     .build()).build()
                     // show command help for a single command
-                    : handler.createHelpMessage(Info.BOT_DEFAULT_PREFIX, parsedCommandInvocation.args[0]);
+                    : handler.createHelpMessage(Info.BOT_DEFAULT_PREFIX, parsedCommandInvocation.getArgs()[0]);
         }
     }
 }
