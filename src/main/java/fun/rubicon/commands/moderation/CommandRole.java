@@ -15,7 +15,7 @@ import net.dv8tion.jda.core.managers.GuildController;
 
 public class CommandRole extends CommandHandler {
     public CommandRole() {
-        super(new String[]{"role"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.role"), "Easily add or remove roles to users", "add/remove <@User> <role>", false);
+        super(new String[]{"mod-role"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.role"), "Easily add or remove roles to users", "add/remove <@User> <role>", false);
     }
 
     @Override

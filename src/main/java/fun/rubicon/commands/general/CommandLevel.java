@@ -23,7 +23,7 @@ public class CommandLevel extends CommandHandler {
 
 
     public CommandLevel() {
-        super(new String[]{"rank", "level", "lvl"}, CommandCategory.FUN, new PermissionRequirements(PermissionLevel.EVERYONE, "command.rank"), "Get your level, points and ruby's.", "");
+        super(new String[]{"level", "lvl"}, CommandCategory.FUN, new PermissionRequirements(PermissionLevel.EVERYONE, "command.rank"), "Get your level, points and ruby's.", "");
     }
 
     @Override

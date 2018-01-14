@@ -29,7 +29,7 @@ import org.json.simple.parser.JSONParser;
 public class CommandGiphy extends CommandHandler {
 
     public CommandGiphy() {
-        super(new String[]{"giphy", "gif",}, CommandCategory.FUN, new PermissionRequirements(PermissionLevel.EVERYONE, "command.giphy"), "Search a Gif on Giphy and post it to the Channel", "<keyword>", false);
+        super(new String[]{"giphy", "gif",}, CommandCategory.FUN, new PermissionRequirements(PermissionLevel.EVERYONE, "command.giphy"), "Search a gif on Giphy and sends it in the channel", "<keyword>", false);
     }
 
     @Override

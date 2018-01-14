@@ -24,13 +24,15 @@ import java.util.stream.Collectors;
 
 public class CommandRanks extends CommandHandler {
     public CommandRanks() {
-        super(new String[]{"ranks"}, CommandCategory.TOOLS, new PermissionRequirements(PermissionLevel.EVERYONE, "command.rank"), "Easily create ranks, that users can assign herself", "<role1, role2, .../add/remove> <rolename>", false);
+        super(new String[]{"role", "roles", "rank", "ranks"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.EVERYONE, "command.rank"), "Easily create ranks, that users can assign herself", "<rolename>... <rolename>\n" +
+                "add <rolename>\n" +
+                "remove <rolename>");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        Message message = parsedCommandInvocation.invocationMessage;
-        String[] args = parsedCommandInvocation.args;
+        Message message = parsedCommandInvocation.getMessage();
+        String[] args = parsedCommandInvocation.getArgs();
         new File("data/ranks").mkdirs();
         File file = new File("data/ranks/" + message.getGuild().getId() + ".dat");
         Configuration ranks = new Configuration(file);
@@ -46,8 +48,6 @@ public class CommandRanks extends CommandHandler {
         if (args.length == 0)
             return createHelpMessage();
         if (args[0].equals("add")) {
-            if (args.length < 1)
-                return createHelpMessage();
             if (args.length > 2)
                 return new MessageBuilder().setEmbed(EmbedUtil.error("Incorect rolename", "Roles cannot contain spaces c:").build()).build();
             if (ranks.has(args[1]))
@@ -74,9 +74,9 @@ public class CommandRanks extends CommandHandler {
             if (ranks.keySet().stream().filter(k -> !k.equals("bugfix")).collect(Collectors.toList()).isEmpty())
                 return new MessageBuilder().setEmbed(EmbedUtil.info("No ranks", "There are no ranks on this server").build()).build();
             ranks.keySet().forEach(k -> {
-                if(!k.equals("bugfix"))
+                if (!k.equals("bugfix"))
                     ranksList.append(k).append(", ");
-                    ranksList.replace(ranksList.lastIndexOf(","), ranksList.lastIndexOf(",") + 1, "");
+                ranksList.replace(ranksList.lastIndexOf(","), ranksList.lastIndexOf(",") + 1, "");
             });
             return new MessageBuilder().setEmbed(EmbedUtil.info("Ranks", "```" + ranksList.toString() + "```").build()).build();
         } else {
@@ -96,22 +96,22 @@ public class CommandRanks extends CommandHandler {
                     }
                 }
             }
-            if(!toAdd.isEmpty()) {
+            if (!toAdd.isEmpty()) {
                 message.getGuild().getController().addRolesToMember(message.getMember(), toAdd).queue();
                 added.replace(added.lastIndexOf(","), added.lastIndexOf(",") + 1, "");
             }
-            if(!toRemove.isEmpty()) {
+            if (!toRemove.isEmpty()) {
                 message.getGuild().getController().removeRolesFromMember(message.getMember(), toRemove).queue();
                 removed.replace(removed.lastIndexOf(","), removed.lastIndexOf(",") + 1, "");
             }
             EmbedBuilder result = new EmbedBuilder();
             result.setColor(Colors.COLOR_PRIMARY);
             result.setTitle("Modified ranks");
-            if(toAdd.isEmpty() && toRemove.isEmpty())
+            if (toAdd.isEmpty() && toRemove.isEmpty())
                 return new MessageBuilder().setEmbed(EmbedUtil.error("Unknown roles", "You entered incorrect rolenames").build()).build();
-            if(!added.toString().equals(""))
+            if (!added.toString().equals(""))
                 result.addField("Added ranks", added.toString(), false);
-            if(!removed.toString().equals(""))
+            if (!removed.toString().equals(""))
                 result.addField("Removed ranks", removed.toString(), false);
             return new MessageBuilder().setEmbed(result.build()).build();
 
