@@ -31,11 +31,6 @@ import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Game;
-<<<<<<< HEAD
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.impl.JDAImpl;
-=======
->>>>>>> master
 import net.dv8tion.jda.core.hooks.EventListener;
 
 import javax.security.auth.login.LoginException;
@@ -128,11 +123,7 @@ public class RubiconBot {
 
         JDABuilder builder = new JDABuilder(AccountType.BOT);
         builder.setToken(instance.configuration.getString("token"));
-<<<<<<< HEAD
-        //builder.setGame(Game.playing(Info.BOT_NAME + " " + Info.BOT_VERSION));
-=======
         builder.setGame(Game.playing("Starting...."));
->>>>>>> master
 
         // add all EventListeners
         for (EventListener listener : instance.eventListeners)
@@ -140,21 +131,13 @@ public class RubiconBot {
 
         new ListenerManager(builder);
 
-
-
         try {
             instance.jda = builder.buildBlocking();
         } catch (LoginException | InterruptedException e) {
             Logger.error(e.getMessage());
         }
-<<<<<<< HEAD
-        //GameAnimator.start();
-=======
->>>>>>> master
         CommandVote.loadPolls(instance.jda);
 //      CommandGiveaway.startGiveawayManager(instance.jda);
-        GameAnimator.updateRichPresence(instance.jda, "Test");
-
 
         getJDA().getPresence().setGame(Game.playing("Started."));
         GameAnimator.start();

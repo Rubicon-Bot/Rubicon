@@ -1,10 +1,15 @@
 package fun.rubicon.util;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 // import org.apache.commons.io.IOUtils;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Configuration {
@@ -136,6 +141,24 @@ public class Configuration {
         } catch (NullPointerException ex) {
             return false;
         }
+    }
+
+    public List<String> keySet(){
+        List<String> keys = new ArrayList<>();
+        Set<Map.Entry<String, JsonElement>> entries = this.json.entrySet();
+        for(Map.Entry<String, JsonElement> entry: entries){
+            keys.add(entry.getKey());
+        }
+        return keys;
+    }
+
+    public List<String> values(){
+        List<String> values = new ArrayList<>();
+        Set<Map.Entry<String, JsonElement>> entries = this.json.entrySet();
+        for(Map.Entry<String, JsonElement> entry: entries){
+            values.add(entry.getValue().getAsString());
+        }
+        return values;
     }
 
 

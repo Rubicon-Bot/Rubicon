@@ -118,7 +118,7 @@ public class CommandVote extends CommandHandler implements Serializable {
         }
 
         public boolean isPollmsg(String messageid) {
-            return pollmsgs.containsValue(messageid);
+            return pollmsgs.containsKey(messageid);
         }
 
         public HashMap<String, Integer> getVotes() {
@@ -279,7 +279,7 @@ public class CommandVote extends CommandHandler implements Serializable {
         poll.votes.put(message.getAuthor().getId(), vote);
         polls.replace(message.getGuild(), poll);
         message.getAuthor().openPrivateChannel().complete().sendMessage("You have successfully voted for option `" + args[1] + "`");
-        poll.pollmsgs.forEach((c, m) -> {
+        poll.pollmsgs.forEach((m, c) -> {
             Message pollmsg = message.getGuild().getTextChannelById(c).getMessageById(m).complete();
             pollmsg.editMessage(getParsedPoll(poll, message.getGuild()).build()).queue();
         });

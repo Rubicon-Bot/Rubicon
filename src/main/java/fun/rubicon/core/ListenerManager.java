@@ -34,6 +34,7 @@ public class ListenerManager {
         b.addEventListener(new MemberLeaveListener());
         b.addEventListener(new ServerLogHandler());
         b.addEventListener(new ChannelDeleteListener());
+        b.addEventListener(new RoleListener());
 
     }
 }

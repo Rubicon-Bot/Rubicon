@@ -67,11 +67,14 @@ public class CommandManager extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
+        if(event.getAuthor().equals(RubiconBot.getJDA().getSelfUser()))
         if (event.isFromType(ChannelType.PRIVATE)) return;
         if (RubiconBot.getMySQL().isBlacklisted(event.getTextChannel())) return;
         MusicManager.handleTrackChoose(event);
         super.onMessageReceived(event);
         ParsedCommandInvocation commandInvocation = parse(event.getMessage());
+        //Send typing because it's useless
+        event.getTextChannel().sendTyping().queue();
         if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake() && !event.isWebhookMessage()) {
             if(event.getAuthor().getId().equals("343825218718007296")) {
                 event.getTextChannel().sendMessage(new EmbedBuilder()
