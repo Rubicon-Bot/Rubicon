@@ -33,7 +33,7 @@ public class CommandRestart extends CommandHandler{
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         MySQL sql = RubiconBot.getMySQL();
         sql.disconnect();
-        Message msg = parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage("Restarting :robot:").complete();
+        Message msg = parsedCommandInvocation.getMessage().getTextChannel().sendMessage("Restarting :robot:").complete();
         Timer t = new Timer();
         t.schedule(new TimerTask() {
             @Override

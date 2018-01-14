@@ -40,12 +40,12 @@ public class CommandBroadcast extends CommandHandler {
         if (args.length < 3) {
             return new MessageBuilder().setEmbed(EmbedUtil.error("You have to use more arguments!", "Use at least 3 arguments.").build()).build();
         }
-        String ownerMessage = parsedCommandInvocation.invocationMessage.getContentDisplay().replace(parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand, "");
+        String ownerMessage = parsedCommandInvocation.getMessage().getContentDisplay().replace(parsedCommandInvocation.getPrefix() + parsedCommandInvocation.getCommandInvocation(), "");
         EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setAuthor("Broadcast - Awaiting Confirmation", null, parsedCommandInvocation.invocationMessage.getJDA().getSelfUser().getEffectiveAvatarUrl());
+        embedBuilder.setAuthor("Broadcast - Awaiting Confirmation", null, parsedCommandInvocation.getMessage().getJDA().getSelfUser().getEffectiveAvatarUrl());
         embedBuilder.setDescription(ownerMessage);
         embedBuilder.setColor(Colors.COLOR_PRIMARY);
-        Message confirmMessage = parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(embedBuilder.build()).complete();
+        Message confirmMessage = parsedCommandInvocation.getMessage().getTextChannel().sendMessage(embedBuilder.build()).complete();
         confirmMessage.addReaction("✅").queue();
         awaitingConfirm.put(confirmMessage.getIdLong(), ownerMessage);
         return null;

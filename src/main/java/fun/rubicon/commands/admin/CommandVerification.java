@@ -58,7 +58,7 @@ public class CommandVerification extends CommandHandler {
     }
 
     private Message disableVerification(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
-        Message message = parsedCommandInvocation.invocationMessage;
+        Message message = parsedCommandInvocation.getMessage();
         if (!RubiconBot.getMySQL().verificationEnabled(message.getGuild())) {
             return new MessageBuilder().setEmbed(EmbedUtil.error("Not enabled", "Verification System is not enabled on this guild").build()).build();
         }
@@ -69,7 +69,7 @@ public class CommandVerification extends CommandHandler {
     }
 
     private Message enableVerification(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
-        Message message = parsedCommandInvocation.invocationMessage;
+        Message message = parsedCommandInvocation.getMessage();
         if (RubiconBot.getMySQL().verificationEnabled(message.getGuild())) {
             return new MessageBuilder().setEmbed(EmbedUtil.error("Already enabled", "Verification System is already enabled on this guild").build()).build();
         }
@@ -91,8 +91,8 @@ public class CommandVerification extends CommandHandler {
 
         public VerificationSetup(CommandManager.ParsedCommandInvocation parsedCommandInvocation, Message message) {
             this.message = message;
-            this.author = parsedCommandInvocation.invocationMessage.getAuthor();
-            this.guild = parsedCommandInvocation.invocationMessage.getGuild();
+            this.author = parsedCommandInvocation.getMessage().getAuthor();
+            this.guild = parsedCommandInvocation.getMessage().getGuild();
             this.step = 1;
         }
     }

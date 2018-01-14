@@ -84,8 +84,8 @@ public abstract class CommandHandler {
         if(disabled) {
             return new MessageBuilder().setEmbed(EmbedUtil.info("Command disabled", "Command is currently disabled.").setFooter("RubiconBot Dev Team", null).build()).build();
         }
-        UserPermissions userPermissions = new UserPermissions(parsedCommandInvocation.invocationMessage.getAuthor(),
-                parsedCommandInvocation.invocationMessage.getGuild());
+        UserPermissions userPermissions = new UserPermissions(parsedCommandInvocation.getMessage().getAuthor(),
+                parsedCommandInvocation.getMessage().getGuild());
         // check permission
         if (permissionRequirements.coveredBy(userPermissions)) {
             // execute command
@@ -93,7 +93,7 @@ public abstract class CommandHandler {
                 ServerLogHandler.logCommand(parsedCommandInvocation);
                 return execute(parsedCommandInvocation, userPermissions);
             } catch (Exception e) { // catch exceptions in command and provide an answer
-                Logger.error("Unknown error during the execution of the '" + parsedCommandInvocation.invocationCommand + "' command. ");
+                Logger.error("Unknown error during the execution of the '" + parsedCommandInvocation.getCommandInvocation() + "' command. ");
                 Logger.error(e);
                 return new MessageBuilder().setEmbed(new EmbedBuilder()
                         .setAuthor("Error", null, RubiconBot.getJDA().getSelfUser().getEffectiveAvatarUrl())
@@ -192,7 +192,7 @@ public abstract class CommandHandler {
      * @return the generated Message.
      */
     public Message createHelpMessage(CommandManager.ParsedCommandInvocation invocation) {
-        return createHelpMessage(invocation.serverPrefix, invocation.invocationCommand);
+        return createHelpMessage(invocation.getPrefix(), invocation.getCommandInvocation());
     }
 
     /**

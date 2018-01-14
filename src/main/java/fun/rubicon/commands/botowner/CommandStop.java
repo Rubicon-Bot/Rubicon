@@ -27,7 +27,7 @@ public class CommandStop extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(new EmbedBuilder().setDescription(":battery: System Shutdown :battery:").build()).queue();
+        parsedCommandInvocation.getMessage().getTextChannel().sendMessage(new EmbedBuilder().setDescription(":battery: System Shutdown :battery:").build()).queue();
         System.exit(0);
         return null;
     }

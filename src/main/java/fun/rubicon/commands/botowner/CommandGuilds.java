@@ -35,8 +35,8 @@ public class CommandGuilds extends CommandHandler {
 
         List<Guild> guild_sublist;
         int SideNumbInput = 1;
-        if (parsedCommandInvocation.args.length > 0) {
-            SideNumbInput = Integer.parseInt(parsedCommandInvocation.args[0]);
+        if (parsedCommandInvocation.getArgs().length > 0) {
+            SideNumbInput = Integer.parseInt(parsedCommandInvocation.getArgs()[0]);
             System.out.println(SideNumbInput);
         }
 
