@@ -14,6 +14,7 @@ import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.VoiceChannel;
@@ -49,14 +50,12 @@ public class CommandMoveAll extends CommandHandler {
         if (channel.equals(message.getMember().getVoiceState().getChannel()))
             return new MessageBuilder().setEmbed(EmbedUtil.error("Same channel", "You are already connected to that channel").build()).build();
         GuildController controller = message.getGuild().getController();
+        if(!guild.getSelfMember().hasPermission(Permission.VOICE_MOVE_OTHERS)) {
+            return  new MessageBuilder().setEmbed(EmbedUtil.error("Cannot move you!","Cannot move all members in the Channel").build()).build();
+        }
         message.getMember().getVoiceState().getChannel().getMembers().forEach(m -> {
             controller.moveVoiceMember(m, channel).queue();
         });
-        message.getMember().getVoiceState().getChannel().getMembers().forEach(m -> {
-            if(!guild.getSelfMember().canInteract(m)) {
-                message.getTextChannel().sendMessage(EmbedUtil.error("Cannot move you!","Cannot move all members in the Channel").build());
-               return;
-            }});
         return new MessageBuilder().setEmbed(EmbedUtil.success("Connected", "Connected all users in your channel to `" + channel.getName() + "`").build()).build();
     }
 }
