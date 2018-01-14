@@ -28,18 +28,18 @@ public class CommandSay extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        if (parsedCommandInvocation.args.length < 2) {
+        if (parsedCommandInvocation.getArgs().length < 2) {
             return createHelpMessage();
         }
 
-        if (parsedCommandInvocation.invocationMessage.getMentionedChannels().size() != 1) {
+        if (parsedCommandInvocation.getMessage().getMentionedChannels().size() != 1) {
             return createHelpMessage();
         }
-        TextChannel textChannel = parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0);
-        if (!parsedCommandInvocation.selfMember.hasPermission(textChannel, Permission.MESSAGE_READ)) {
+        TextChannel textChannel = parsedCommandInvocation.getMessage().getMentionedChannels().get(0);
+        if (!parsedCommandInvocation.getSelfMember().hasPermission(textChannel, Permission.MESSAGE_READ)) {
             return EmbedUtil.message(EmbedUtil.error("Error!", "I have no permissions to write in this channel."));
         }
-        String text = parsedCommandInvocation.invocationMessage.getContentDisplay().replace(parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand + " #" + textChannel.getName(), "");
+        String text = parsedCommandInvocation.getMessage().getContentDisplay().replace(parsedCommandInvocation.getPrefix() + parsedCommandInvocation.getCommandInvocation() + " #" + textChannel.getName(), "");
         textChannel.sendMessage(text).queue();
         return new MessageBuilder().setEmbed(EmbedUtil.success("Successful", "Successful sent message in " + textChannel.getAsMention()).build()).build();
     }

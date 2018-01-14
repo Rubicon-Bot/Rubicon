@@ -47,7 +47,7 @@ public class CommandASCII extends CommandHandler {
         EmbedBuilder builder = new EmbedBuilder()
                 .setDescription(output.toString())
                 .setColor(Colors.COLOR_PRIMARY);
-        parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(builder.build()).queue();
+        parsedCommandInvocation.getTextChannel().sendMessage(builder.build()).queue();
         return null;
     }
 }

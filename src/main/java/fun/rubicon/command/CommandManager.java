@@ -146,7 +146,7 @@ public class CommandManager extends ListenerAdapter {
             String[] args = new String[allArgs.length - 1];
             System.arraycopy(allArgs, 1, args, 0, args.length);
 
-            return new ParsedCommandInvocation(message, prefix, allArgs[0], args, message.getGuild(), message.getGuild().getSelfMember(), message.getAuthor(), message.getMember());
+            return new ParsedCommandInvocation(message, prefix, allArgs[0], args);
         }
         // else
         return null; // = message is not a command
@@ -181,12 +181,8 @@ public class CommandManager extends ListenerAdapter {
         private final String commandInvocation;
         private final Message message;
         private final String prefix;
-        private final Guild guild;
-        private final Member selfMember;
-        private final User author;
-        private final Member member;
 
-        private ParsedCommandInvocation(Message invocationMessage, String serverPrefix, String invocationCommand, String[] args, Guild guild, Member selfMember, User author, Member member) {
+        private ParsedCommandInvocation(Message invocationMessage, String serverPrefix, String invocationCommand, String[] args) {
             this.invocationMessage = invocationMessage;
             this.message = invocationMessage;
             this.serverPrefix = serverPrefix;
@@ -195,10 +191,6 @@ public class CommandManager extends ListenerAdapter {
             this.commandInvocation = invocationCommand;
             this.args = args;
             this.argsNew = args;
-            this.guild = guild;
-            this.selfMember = selfMember;
-            this.author = author;
-            this.member = member;
         }
 
         public Message getMessage() {
@@ -206,7 +198,7 @@ public class CommandManager extends ListenerAdapter {
         }
 
         public Guild getGuild() {
-            return guild;
+            return message.getGuild();
         }
 
         public String[] getArgs() {
@@ -222,15 +214,19 @@ public class CommandManager extends ListenerAdapter {
         }
 
         public Member getSelfMember() {
-            return selfMember;
+            return message.getGuild().getSelfMember();
         }
 
         public User getAuthor() {
-            return author;
+            return message.getAuthor();
         }
 
         public Member getMember() {
-            return member;
+            return message.getMember();
+        }
+
+        public TextChannel getTextChannel() {
+            return message.getTextChannel();
         }
     }
 }

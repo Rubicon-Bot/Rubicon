@@ -55,7 +55,7 @@ public class MemberLevelListener extends ListenerAdapter {
                 String l = (sql.getUserValue(event.getAuthor(), "level"));
                 int foo = Integer.parseInt(l);
                 //Level Up
-                //TODO Stop editing my classes
+                //TODO Enable Level Up Messages?
                 /*Message msg = event.getChannel().sendMessage(new EmbedBuilder()
                         .setDescription(event.getAuthor().getAsMention() + " ,wow you got a Level up to Level **" + sql.getUserValue(event.getAuthor(), "level") + "** !")
                         .build()
