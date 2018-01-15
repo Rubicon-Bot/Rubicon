@@ -53,6 +53,8 @@ public class CommandMoveAll extends CommandHandler {
             return  new MessageBuilder().setEmbed(EmbedUtil.error("Cannot move you!","Cannot move all members in the Channel").build()).build();
         }
         message.getMember().getVoiceState().getChannel().getMembers().forEach(m -> {
+            if(!parsedCommandInvocation.getSelfMember().canInteract(m))
+                return;
             controller.moveVoiceMember(m, channel).queue();
         });
         return new MessageBuilder().setEmbed(EmbedUtil.success("Connected", "Connected all users in your channel to `" + channel.getName() + "`").build()).build();

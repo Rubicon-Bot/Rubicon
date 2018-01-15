@@ -8,6 +8,8 @@ package fun.rubicon.util;
 
 import fun.rubicon.RubiconBot;
 
+import java.util.Date;
+
 /**
  * General data object.
  * @author ForYaSee, DerSchlaubi, LeeDJD, tr808axm
@@ -23,6 +25,7 @@ public class Info {
     public final static String BITLY_TOKEN = RubiconBot.getConfiguration().getString("bitlytoken");
     public final static String DBL_TOKEN = RubiconBot.getConfiguration().getString("dbl_token");
     public final static String GIPHY_TOKEN = RubiconBot.getConfiguration().getString("gip_token");
+    public static Date lastRestart;
 
     /**
      * Bot author long ids.
