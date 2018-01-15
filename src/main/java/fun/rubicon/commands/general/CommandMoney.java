@@ -67,9 +67,9 @@ public class CommandMoney extends CommandHandler {
                 }
             case "set":
                 if (new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.money.modify").coveredBy(userPermissions)) {
-                    if (parsedCommandInvocation.args.length == 3) {
+                    if (parsedCommandInvocation.getArgs().length == 3) {
                         try {
-                            user_spend_money = Integer.parseInt(parsedCommandInvocation.args[parsedCommandInvocation.getArgs().length - 1]);
+                            user_spend_money = Integer.parseInt(parsedCommandInvocation.getArgs()[parsedCommandInvocation.getArgs().length - 1]);
                             if (user_spend_money > -1) {
                                 RubiconBot.getMySQL().updateUserValue(parsedCommandInvocation.getMessage().getMentionedUsers().get(0), "money", String.valueOf(user_spend_money));
                                 return message(success("Money has been set!", "Money of " + parsedCommandInvocation.getMessage().getMentionedUsers().get(0).getAsMention() + " has been set to " + user_spend_money + " Ruby's."));
@@ -90,9 +90,9 @@ public class CommandMoney extends CommandHandler {
                 int max_money = 2147483647;
                 user2_has_money = Integer.parseInt(RubiconBot.getMySQL().getUserValue(parsedCommandInvocation.getMessage().getMentionedUsers().get(0), "money"));
                 if (new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.money.modify").coveredBy(userPermissions)) {
-                    if (parsedCommandInvocation.args.length == 3) {
+                    if (parsedCommandInvocation.getArgs().length == 3) {
                         try {
-                            user_spend_money = Integer.parseInt(parsedCommandInvocation.args[parsedCommandInvocation.getArgs().length - 1]);
+                            user_spend_money = Integer.parseInt(parsedCommandInvocation.getArgs()[parsedCommandInvocation.getArgs().length - 1]);
                             if (user_spend_money > 0) {
                                 if ((user2_has_money + user_spend_money) <= 2147483647 && (user2_has_money + user_spend_money) > 0) {
                                     if (user2_has_money == 2147483647) {

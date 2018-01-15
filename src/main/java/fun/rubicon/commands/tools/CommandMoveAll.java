@@ -29,9 +29,9 @@ public class CommandMoveAll extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        String[] args = parsedCommandInvocation.args;
-        Message message = parsedCommandInvocation.invocationMessage;
-        Guild guild = parsedCommandInvocation.invocationMessage.getGuild();
+        String[] args = parsedCommandInvocation.getArgs();
+        Message message = parsedCommandInvocation.getMessage();
+        Guild guild = parsedCommandInvocation.getMessage().getGuild();
         if (args.length == 0) {
             return createHelpMessage(parsedCommandInvocation);
         }
@@ -39,11 +39,10 @@ public class CommandMoveAll extends CommandHandler {
             return new MessageBuilder().setEmbed(EmbedUtil.error("Not connected", "Please connect to a voice channel to use this command").build()).build();
 
         String name;
-        name = message.getContentRaw().replace(parsedCommandInvocation.invocationCommand, "");
-        name = name.replace(parsedCommandInvocation.serverPrefix,"");
+        name = message.getContentRaw().replace(parsedCommandInvocation.getCommandInvocation(), "");
+        name = name.replace(parsedCommandInvocation.getPrefix(),"");
         name = name.substring(1);
-        System.out.println(name);
-        List<VoiceChannel> channels = message.getGuild().getVoiceChannelsByName(name.toString(), true);
+        List<VoiceChannel> channels = message.getGuild().getVoiceChannelsByName(name, true);
         if (channels.isEmpty())
             return new MessageBuilder().setEmbed(EmbedUtil.error("Channel not found", "This channel doesen't exist").build()).build();
         VoiceChannel channel = channels.get(0);

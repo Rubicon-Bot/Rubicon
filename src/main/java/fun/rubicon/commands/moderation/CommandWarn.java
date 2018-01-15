@@ -55,8 +55,8 @@ public class CommandWarn extends CommandHandler {
         Guild g = parsedCommandInvocation.getMessage().getGuild();
         User auth = parsedCommandInvocation.getMessage().getAuthor();
         String reas = "";
-        for (int i = 1; i < parsedCommandInvocation.args.length; i++) {
-            reas += parsedCommandInvocation.args[i] + " ";
+        for (int i = 1; i < parsedCommandInvocation.getArgs().length; i++) {
+            reas += parsedCommandInvocation.getArgs()[i] + " ";
         }
         WarnUser(targ, g, auth, reas);
         return new MessageBuilder().setEmbed(EmbedUtil.success("", "I warned " + targ.getAsMention() + " for `" + reas + "`").build()).build();

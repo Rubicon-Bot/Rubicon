@@ -40,8 +40,8 @@ public class CommandLog extends CommandHandler {
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         this.parsedCommandInvocation = parsedCommandInvocation;
-        this.args = parsedCommandInvocation.args;
-        this.serverLogSQL = new ServerLogSQL(parsedCommandInvocation.invocationMessage.getGuild());
+        this.args = parsedCommandInvocation.getArgs();
+        this.serverLogSQL = new ServerLogSQL(parsedCommandInvocation.getMessage().getGuild());
         if (args.length == 0)
             return createHelpMessage();
         if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
@@ -49,10 +49,10 @@ public class CommandLog extends CommandHandler {
         } else if (args.length == 2) {
             switch (args[0]) {
                 case "channel":
-                    if(parsedCommandInvocation.invocationMessage.getMentionedChannels().size() != 1)
+                    if(parsedCommandInvocation.getMessage().getMentionedChannels().size() != 1)
                         return EmbedUtil.message(EmbedUtil.error("Error!", "You have to mention `one` channel."));
-                   serverLogSQL.set("channel", parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0).getId());
-                    return EmbedUtil.message(EmbedUtil.success("Success!", "Successfully set logchannel to `" + parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0).getName() + "`"));
+                   serverLogSQL.set("channel", parsedCommandInvocation.getMessage().getMentionedChannels().get(0).getId());
+                    return EmbedUtil.message(EmbedUtil.success("Success!", "Successfully set logchannel to `" + parsedCommandInvocation.getMessage().getMentionedChannels().get(0).getName() + "`"));
                 case "join":
                     return EmbedUtil.message(handleEventUpdate(LogEventKeys.JOIN, args[1]));
                 case "leave":
@@ -92,12 +92,12 @@ public class CommandLog extends CommandHandler {
 
         EmbedBuilder builder = new EmbedBuilder();
         builder.setColor(Colors.COLOR_PRIMARY);
-        builder.setAuthor("List of log events", null, parsedCommandInvocation.invocationMessage.getGuild().getIconUrl());
+        builder.setAuthor("List of log events", null, parsedCommandInvocation.getMessage().getGuild().getIconUrl());
 
         for (Map.Entry entry : eventStats.entrySet()) {
             builder.addField(((LogEventKeys) entry.getKey()).getDisplayname() + " Event", ((boolean) entry.getValue()) ? "enabled" : "disabled", false);
         }
-        builder.setDescription("Enable or disable an log event with `" + parsedCommandInvocation.serverPrefix + "log <event> <enable/disable>`");
+        builder.setDescription("Enable or disable an log event with `" + parsedCommandInvocation.getPrefix() + "log <event> <enable/disable>`");
         return builder;
     }
 }

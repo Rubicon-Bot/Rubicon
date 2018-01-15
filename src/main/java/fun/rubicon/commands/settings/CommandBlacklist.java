@@ -32,8 +32,8 @@ public class CommandBlacklist extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        Message message = parsedCommandInvocation.invocationMessage;
-        String[] args = parsedCommandInvocation.args;
+        Message message = parsedCommandInvocation.getMessage();
+        String[] args = parsedCommandInvocation.getArgs();
         if (args.length == 0) {
             return createHelpMessage(parsedCommandInvocation);
         }
@@ -60,8 +60,7 @@ public class CommandBlacklist extends CommandHandler {
     }
 
     private void listChannels(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
-        Message message = parsedCommandInvocation.invocationMessage;
-        String[] args = parsedCommandInvocation.args;
+        Message message = parsedCommandInvocation.getMessage();
         String channels = RubiconBot.getMySQL().getGuildValue(message.getGuild(), "blacklist");
         if (channels.equals(""))
             message.getTextChannel().sendMessage(EmbedUtil.error("Empty!", "Your blacklist is empty").build()).queue(msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
@@ -70,7 +69,7 @@ public class CommandBlacklist extends CommandHandler {
     }
 
     private void unblockChannel(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
-        Message message = parsedCommandInvocation.invocationMessage;
+        Message message = parsedCommandInvocation.getMessage();
         if (message.getMentionedChannels().isEmpty()) {
             message.getTextChannel().sendMessage(EmbedUtil.error("Unknown channel", "Please mention the textchannel that should be blacklisted").build()).queue(msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
             return;
@@ -86,7 +85,7 @@ public class CommandBlacklist extends CommandHandler {
     }
 
     private void blockChannel(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
-        Message message = parsedCommandInvocation.invocationMessage;
+        Message message = parsedCommandInvocation.getMessage();
         if (message.getMentionedChannels().isEmpty()) {
             message.getTextChannel().sendMessage(EmbedUtil.error("Unknown channel", "Please mention the textchannel that should be blacklisted").build()).queue(msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
             return;

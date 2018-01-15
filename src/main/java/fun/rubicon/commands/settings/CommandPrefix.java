@@ -13,7 +13,6 @@ import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 
@@ -28,24 +27,24 @@ public class CommandPrefix extends CommandHandler{
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation p, UserPermissions userPermissions) {
-        if(p.args.length <= 1) {
-            MessageChannel ch = p.invocationMessage.getTextChannel();
+        if(p.getArgs().length <= 1) {
+            MessageChannel ch = p.getMessage().getTextChannel();
 
-            if(p.args.length == 0) {
-                RubiconBot.getMySQL().updateGuildValue(p.invocationMessage.getGuild(), "prefix", "rc!");
+            if(p.getArgs().length == 0) {
+                RubiconBot.getMySQL().updateGuildValue(p.getMessage().getGuild(), "prefix", "rc!");
                 EmbedBuilder builder = new EmbedBuilder();
-                builder.setAuthor("Prefix updated", null, p.invocationMessage.getGuild().getIconUrl());
+                builder.setAuthor("Prefix updated", null, p.getMessage().getGuild().getIconUrl());
                 builder.setDescription(":white_check_mark: Successfully changed prefix to `rc!`");
                 ch.sendMessage(builder.build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
             } else {
-                RubiconBot.getMySQL().updateGuildValue(p.invocationMessage.getGuild(), "prefix", p.args[0]);
+                RubiconBot.getMySQL().updateGuildValue(p.getMessage().getGuild(), "prefix", p.getArgs()[0]);
                 EmbedBuilder builder = new EmbedBuilder();
-                builder.setAuthor("Prefix updated", null, p.invocationMessage.getGuild().getIconUrl());
-                builder.setDescription(":white_check_mark: Successfully changed prefix to `" + p.args[0] + "`");
+                builder.setAuthor("Prefix updated", null, p.getMessage().getGuild().getIconUrl());
+                builder.setDescription(":white_check_mark: Successfully changed prefix to `" + p.getArgs()[0] + "`");
                 ch.sendMessage(builder.build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
             }
         } else {
-            return new MessageBuilder().setEmbed(new EmbedBuilder().setDescription(getUsage()).build()).build();
+            return createHelpMessage();
         }
 
         return null;

@@ -30,7 +30,7 @@ public class CommandServerInfo extends CommandHandler{
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        Message message = parsedCommandInvocation.invocationMessage;
+        Message message = parsedCommandInvocation.getMessage();
         Guild guild = message.getGuild();
         TextChannel channel = message.getTextChannel();
 

@@ -162,7 +162,7 @@ public class ServerLogHandler extends ListenerAdapter {
         return null;
     }
 
-    private static boolean isEventEnabled(Guild guild, LogEventKeys key) {
+    public static boolean isEventEnabled(Guild guild, LogEventKeys key) {
         String entry = new ServerLogSQL(guild).get(key.getKey());
         return entry.equalsIgnoreCase("true");
     }

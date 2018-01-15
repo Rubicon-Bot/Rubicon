@@ -19,14 +19,14 @@ public class CommandLeaveMessage extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        if (parsedCommandInvocation.args.length == 0)
+        if (parsedCommandInvocation.getArgs().length == 0)
             return createHelpMessage();
-        String content = parsedCommandInvocation.invocationMessage.getContentDisplay().replace(parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand, "");
+        String content = parsedCommandInvocation.getMessage().getContentDisplay().replace(parsedCommandInvocation.getPrefix() + parsedCommandInvocation.getCommandInvocation(), "");
         if(content.equalsIgnoreCase("disable") || content.equalsIgnoreCase("false") || content.equalsIgnoreCase("0")){
-            RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.invocationMessage.getGuild(), "leavemsg", "0");
+            RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.getMessage().getGuild(), "leavemsg", "0");
             return new MessageBuilder().setEmbed(EmbedUtil.success("Disabled", "Succesfully disabled leavemessages").build()).build();
         }
-        RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.invocationMessage.getGuild(), "leavemsg", content);
+        RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.getMessage().getGuild(), "leavemsg", content);
         return new MessageBuilder().setEmbed(new EmbedBuilder().setDescription(":white_check_mark:  Successfully set leavemessage to `" + content + "`!").build()).build();
     }
 }
