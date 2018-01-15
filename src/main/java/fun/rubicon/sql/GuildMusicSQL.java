@@ -32,7 +32,6 @@ public class GuildMusicSQL implements SQLHandler {
         this.connection = MySQL.getConnection();
     }
 
-    @Override
     public String get(String type) {
         createDefaultEntryIfNotExist();
         try {
@@ -50,7 +49,6 @@ public class GuildMusicSQL implements SQLHandler {
         return null;
     }
 
-    @Override
     public void set(String type, String value) {
         createDefaultEntryIfNotExist();
         try {
@@ -65,7 +63,6 @@ public class GuildMusicSQL implements SQLHandler {
         }
     }
 
-    @Override
     public void createDefaultEntryIfNotExist() {
         try {
             if (connection.isClosed())

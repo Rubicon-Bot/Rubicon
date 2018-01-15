@@ -22,10 +22,7 @@ import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.ListenerManager;
 import fun.rubicon.features.GiveawayHandler;
 import fun.rubicon.permission.PermissionManager;
-import fun.rubicon.sql.GuildMusicSQL;
-import fun.rubicon.sql.MySQL;
-import fun.rubicon.sql.ServerLogSQL;
-import fun.rubicon.sql.UserMusicSQL;
+import fun.rubicon.sql.*;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -48,7 +45,7 @@ import java.util.Timer;
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token", "gip_token", "twitterConsumerKey", "twitterConsumerSecret", "twitterAccessToken", "twitterAccessTokenSecret"};
+    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token", "gip_token", "lucsoft_token", "twitterConsumerKey", "twitterConsumerSecret", "twitterAccessToken", "twitterAccessTokenSecret"};
     private static final String dataFolder = "data/";
     private static RubiconBot instance;
     private final MySQL mySQL;
@@ -154,11 +151,9 @@ public class RubiconBot {
         // admin commands package
         commandManager.registerCommandHandlers(
                 new CommandBan(),
-                new CommandGetWarn(),
                 new CommandKick(),
                 new CommandMute(),
                 new CommandUnmute(),
-                new CommandUnWarn(),
                 new CommandWarn(),
                 new CommandPortal(),
                 new CommandVerification(),
@@ -249,7 +244,8 @@ public class RubiconBot {
         new ServerLogSQL().createTableIfNotExist();
         new UserMusicSQL().createTableIfNotExist();
         new GuildMusicSQL().createTableIfNotExist();
-    }
+        new WarnSQL().createTableIfNotExist();
+}
 
     /**
      * @return the MySQL adapter.

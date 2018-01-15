@@ -127,15 +127,15 @@ public class ServerLogHandler extends ListenerAdapter {
     }
 
     public static void logCommand(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
-        if (!isEventEnabled(parsedCommandInvocation.invocationMessage.getGuild(), LogEventKeys.COMMAND))
+        if (!isEventEnabled(parsedCommandInvocation.getMessage().getGuild(), LogEventKeys.COMMAND))
             return;
-        TextChannel textChannel = getLogChannel(parsedCommandInvocation.invocationMessage.getGuild());
+        TextChannel textChannel = getLogChannel(parsedCommandInvocation.getMessage().getGuild());
         if (textChannel == null)
             return;
 
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setAuthor("A command was executed", null);
-        embedBuilder.setDescription("**" + parsedCommandInvocation.invocationMessage.getMember().getEffectiveName() + " (" + parsedCommandInvocation.invocationMessage.getMember().getUser().getId() + ")** executed `" + parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand + "`");
+        embedBuilder.setDescription("**" + parsedCommandInvocation.getMessage().getMember().getEffectiveName() + " (" + parsedCommandInvocation.getMessage().getMember().getUser().getId() + ")** executed `" + parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand + "`");
         embedBuilder.setColor(evCommandLog);
         sendLog(textChannel, embedBuilder);
     }

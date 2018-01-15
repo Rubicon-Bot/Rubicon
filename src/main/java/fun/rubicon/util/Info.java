@@ -23,6 +23,7 @@ public class Info {
     public final static String BITLY_TOKEN = RubiconBot.getConfiguration().getString("bitlytoken");
     public final static String DBL_TOKEN = RubiconBot.getConfiguration().getString("dbl_token");
     public final static String GIPHY_TOKEN = RubiconBot.getConfiguration().getString("gip_token");
+    public final static String LUCSOFT_TOKEN = RubiconBot.getConfiguration().getString("lucsoft_token");
 
     /**
      * Bot author long ids.
