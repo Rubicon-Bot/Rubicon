@@ -3,14 +3,12 @@ package fun.rubicon.commands.moderation;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.core.Warn;
 import fun.rubicon.core.WarnManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.sql.WarnSQL;
 import fun.rubicon.util.EmbedUtil;
-import fun.rubicon.util.Logger;
 import fun.rubicon.util.StringUtil;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
@@ -60,17 +58,16 @@ public class CommandWarn extends CommandHandler {
             return EmbedUtil.message(EmbedUtil.error("Error!", "You have to mention one user."));
         warnedUser = parsedCommandInvocation.getMessage().getMentionedUsers().get(0);
         int mustHaveLength = 1 + parsedCommandInvocation.getGuild().getMember(warnedUser).getEffectiveName().split(" ").length + 1;
-        if(parsedCommandInvocation.getArgs().length != mustHaveLength)
+        if (parsedCommandInvocation.getArgs().length != mustHaveLength)
             return createHelpMessage();
-        if(!StringUtil.isNumeric(parsedCommandInvocation.getArgs()[mustHaveLength - 1]))
+        if (!StringUtil.isNumeric(parsedCommandInvocation.getArgs()[mustHaveLength - 1]))
             return createHelpMessage();
         int index = Integer.parseInt(parsedCommandInvocation.getArgs()[mustHaveLength - 1]);
         int userWarns = new WarnSQL().getWarns(warnedUser, parsedCommandInvocation.getGuild()).size();
-        if(index > userWarns) {
+        if (index > userWarns) {
             return EmbedUtil.message(EmbedUtil.error("Error!", "User has only `" + userWarns + "` warns."));
         }
         WarnManager.removeWarn(warnedUser, parsedCommandInvocation.getGuild(), index - 1);
-        //TODO Rückmeldung
         return EmbedUtil.message(EmbedUtil.success("Removed Warn", "Successfully removed warn from `" + warnedUser.getName() + "`"));
     }
 

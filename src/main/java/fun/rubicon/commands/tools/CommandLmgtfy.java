@@ -33,11 +33,11 @@ public class CommandLmgtfy extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions permissions) {
-        if (invocation.args.length == 0)
-            return createHelpMessage(invocation);
+        if (invocation.getArgs().length == 0)
+            return createHelpMessage();
         else
             return message(success("Created lmgtfy link",
                     "Send this link to the person who seems to need it:\n"
-                            + "https://lmgtfy.com/?iie=1&q=" + String.join("%20", invocation.args).replace("+", "%2B")));
+                            + "https://lmgtfy.com/?iie=1&q=" + String.join("%20", invocation.getArgs()).replace("+", "%2B")));
     }
 }

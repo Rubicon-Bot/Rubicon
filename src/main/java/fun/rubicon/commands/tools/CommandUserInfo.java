@@ -31,9 +31,9 @@ public class CommandUserInfo extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        Message message = parsedCommandInvocation.invocationMessage;
+        Message message = parsedCommandInvocation.getMessage();
         User info;
-        String[] args = parsedCommandInvocation.args;
+        String[] args = parsedCommandInvocation.getArgs();
         if (args.length > 0) {
             if (message.getMentionedUsers().size() > 0)
                 info = message.getMentionedUsers().get(0);

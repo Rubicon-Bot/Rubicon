@@ -26,7 +26,7 @@ public class CommandRanks extends CommandHandler {
     public CommandRanks() {
         super(new String[]{"role", "roles", "rank", "ranks"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.EVERYONE, "command.rank"), "Easily create ranks, that users can assign herself", "<rolename>... <rolename>\n" +
                 "add <rolename>\n" +
-                "remove <rolename>");
+                "remove <rolename>", false);
     }
 
     @Override

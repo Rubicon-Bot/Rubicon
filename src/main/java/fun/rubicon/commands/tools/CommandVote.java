@@ -46,8 +46,8 @@ public class CommandVote extends CommandHandler implements Serializable {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        Message message = parsedCommandInvocation.invocationMessage;
-        String[] args = parsedCommandInvocation.args;
+        Message message = parsedCommandInvocation.getMessage();
+        String[] args = parsedCommandInvocation.getArgs();
         channel = message.getTextChannel();
         if (args.length < 1) {
             return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "USAGE: \n`vote create <Title>|<Option1>|<Option2>|...  `  -  create a vote\n`vote vote <index of Option>  `  -  vote for a possibility\n`vote stats  `  -  get stats of a current vote\n`vote close  `  -  close a current vote").build()).build();
@@ -160,7 +160,7 @@ public class CommandVote extends CommandHandler implements Serializable {
     }
 
     private void voteStats(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
-        Message message = parsedCommandInvocation.invocationMessage;
+        Message message = parsedCommandInvocation.getMessage();
         if (!polls.containsKey(message.getGuild())) {
             message.getTextChannel().sendMessage(EmbedUtil.error("No poll", "There is currently no poll running on this guild").build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
             return;
@@ -175,7 +175,7 @@ public class CommandVote extends CommandHandler implements Serializable {
     }
 
     private void closeVote(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
-        Message message = parsedCommandInvocation.invocationMessage;
+        Message message = parsedCommandInvocation.getMessage();
         User author = message.getAuthor();
         if (!polls.containsKey(message.getGuild())) {
             message.getTextChannel().sendMessage(EmbedUtil.error("No poll", "There is currently no poll running on this guild").build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
@@ -201,7 +201,7 @@ public class CommandVote extends CommandHandler implements Serializable {
             //This is an empty Catch Block
         }
         try {
-            poll.getPollMessages(parsedCommandInvocation.invocationMessage.getGuild()).forEach(m -> {
+            poll.getPollMessages(parsedCommandInvocation.getMessage().getGuild()).forEach(m -> {
                 m.delete().queue();
             });
         } catch (Exception ignored) {
@@ -213,8 +213,8 @@ public class CommandVote extends CommandHandler implements Serializable {
     }
 
     private void createPoll(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
-        Message message = parsedCommandInvocation.invocationMessage;
-        String[] args = parsedCommandInvocation.args;
+        Message message = parsedCommandInvocation.getMessage();
+        String[] args = parsedCommandInvocation.getArgs();
         if (polls.containsKey(message.getGuild())) {
             message.getTextChannel().sendMessage(EmbedUtil.error("Already running", "There is already a poll running on this guild").build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
             return;
@@ -252,8 +252,8 @@ public class CommandVote extends CommandHandler implements Serializable {
     }
 
     private void votePoll(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
-        Message message = parsedCommandInvocation.invocationMessage;
-        String[] args = parsedCommandInvocation.args;
+        Message message = parsedCommandInvocation.getMessage();
+        String[] args = parsedCommandInvocation.getArgs();
         if (!polls.containsKey(message.getGuild())) {
             message.getTextChannel().sendMessage(EmbedUtil.error("No poll", "There is currently no poll running on this guild").build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
             return;

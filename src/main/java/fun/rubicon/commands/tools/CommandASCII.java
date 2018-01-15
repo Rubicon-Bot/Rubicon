@@ -29,7 +29,7 @@ public class CommandASCII extends CommandHandler {
         StringBuilder output = new StringBuilder();
         StringBuilder text = new StringBuilder("Text: `");
         StringBuilder asciiBuilder = new StringBuilder("ASCII-Code: `");
-        for (String arg : parsedCommandInvocation.args) {
+        for (String arg : parsedCommandInvocation.getArgs()) {
             text.append(arg).append(" ");
             char[] chars = arg.toCharArray();
             for (char c : chars) {

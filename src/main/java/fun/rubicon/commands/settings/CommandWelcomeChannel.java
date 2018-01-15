@@ -27,12 +27,12 @@ public class CommandWelcomeChannel extends CommandHandler{
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         //Check if Channel got Mentioned
-        if (parsedCommandInvocation.invocationMessage.getMentionedChannels().size() <= 0)
+        if (parsedCommandInvocation.getMessage().getMentionedChannels().size() <= 0)
             return new MessageBuilder().setEmbed(new EmbedBuilder().setDescription(getParameterUsage()).build()).build();
         //Get the Mentioned Channel
-        String ch = parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0).getId();
+        String ch = parsedCommandInvocation.getMessage().getMentionedChannels().get(0).getId();
         //Update MySql
-        RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.invocationMessage.getGuild(), "channel", ch);
+        RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.getMessage().getGuild(), "channel", ch);
         return new MessageBuilder().setEmbed(new EmbedBuilder().setDescription(":white_check_mark: Successfully set the Event-Channel!").build()).build();
     }
 }

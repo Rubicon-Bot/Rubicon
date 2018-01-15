@@ -27,14 +27,14 @@ public class CommandAutorole extends CommandHandler{
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        if (parsedCommandInvocation.args.length < 1) {
-            return new MessageBuilder().setEmbed(EmbedUtil.error("Error", getUsage()).build()).build();
+        if (parsedCommandInvocation.getArgs().length < 1) {
+            return createHelpMessage();
         }
-        if (parsedCommandInvocation.invocationMessage.getMentionedRoles().size() <1){
-            String toset = parsedCommandInvocation.invocationMessage.getGuild().getRolesByName(parsedCommandInvocation.args[0],true).get(0).getId();
-            RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.invocationMessage.getGuild(), "autorole", toset);
+        if (parsedCommandInvocation.getMessage().getMentionedRoles().size() <1){
+            String toset = parsedCommandInvocation.getMessage().getGuild().getRolesByName(parsedCommandInvocation.getArgs()[0],true).get(0).getId();
+            RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.getMessage().getGuild(), "autorole", toset);
         }else {
-            RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.invocationMessage.getGuild(), "autorole", parsedCommandInvocation.invocationMessage.getMentionedRoles().get(0).getId());
+            RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.getMessage().getGuild(), "autorole", parsedCommandInvocation.getMessage().getMentionedRoles().get(0).getId());
         }
         return new MessageBuilder().setEmbed(EmbedUtil.success("Succes","Succesfully set the Autorole!").build()).build();
     }

@@ -134,6 +134,7 @@ public class RubiconBot {
             Logger.error(e.getMessage());
         }
         CommandVote.loadPolls(instance.jda);
+        Info.lastRestart = new Date();
 //      CommandGiveaway.startGiveawayManager(instance.jda);
 
         getJDA().getPresence().setGame(Game.playing("Started."));
@@ -204,7 +205,8 @@ public class RubiconBot {
                 new CommandSpeedTest(),
                 new CommandStatistics(),
                 new CommandMoney(),
-                new fun.rubicon.commands.general.CommandLevel()
+                new fun.rubicon.commands.general.CommandLevel(),
+                new CommandUptime()
         );
         // settings commands package
         commandManager.registerCommandHandlers(

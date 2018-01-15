@@ -28,8 +28,8 @@ public class CommandSearch extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        Message message = parsedCommandInvocation.invocationMessage;
-        String[] args = parsedCommandInvocation.args;
+        Message message = parsedCommandInvocation.getMessage();
+        String[] args = parsedCommandInvocation.getArgs();
         TextChannel channel = message.getTextChannel();
         Guild guild = message.getGuild();
 

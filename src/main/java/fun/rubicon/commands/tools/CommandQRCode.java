@@ -26,8 +26,8 @@ public class CommandQRCode extends CommandHandler{
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        String[] args = parsedCommandInvocation.args;
-        Message message = parsedCommandInvocation.invocationMessage;
+        String[] args = parsedCommandInvocation.getArgs();
+        Message message = parsedCommandInvocation.getMessage();
         Message mymsg = message.getTextChannel().sendMessage(EmbedUtil.info("Generating", "Generating QR cde").build()).complete();
         if(args.length > 0){
             StringBuilder text = new StringBuilder();

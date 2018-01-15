@@ -35,13 +35,13 @@ public class CommandChoose extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions permissions) {
-        if (invocation.args.length == 0)
+        if (invocation.getArgs().length == 0)
             return createHelpMessage();
         else {
             EmbedBuilder embedBuilder = success("Chose an option", "The option of choice is `"
-                    + invocation.args[(int) (Math.random() * invocation.args.length)] + "`.");
+                    + invocation.getArgs()[(int) (Math.random() * invocation.getArgs().length)] + "`.");
 
-            if (invocation.args.length == 1)
+            if (invocation.getArgs().length == 1)
                 embedBuilder.setFooter("This was kind of obvious, wasn't it?", null);
 
             return message(embedBuilder);
