@@ -34,7 +34,7 @@ public class CommandBug extends CommandHandler {
             return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "bug [message] (min. 3 args)").build()).build();
         }
         //Make String out of args
-        String text = parsedCommandInvocation.getMessage().getContentDisplay().replace(parsedCommandInvocation.getPrefix() + parsedCommandInvocation.invocationCommand + " ", "");
+        String text = parsedCommandInvocation.getMessage().getContentDisplay().replace(parsedCommandInvocation.getPrefix() + parsedCommandInvocation.getCommandInvocation() + " ", "");
 
         //Post Report to Dev Server
         RubiconBot.getJDA().getTextChannelById("382231366064144384").sendMessage(

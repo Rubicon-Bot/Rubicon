@@ -39,7 +39,7 @@ public class MySQL {
      * @param password Password of MySQL user
      * @param dbname   Name of MySQL database
      */
-    public MySQL(String host, String port, String user, String password, String dbname) {
+    public MySQL(String host, String port, String user, String password, String dbname) throws NullPointerException{
         this.host = host;
         this.port = port;
         this.user = user;
