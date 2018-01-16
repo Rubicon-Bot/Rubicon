@@ -20,8 +20,10 @@ public class MemberCountUpdateRequestImpl implements MemberCountUpdateRequest, W
 
     @Override
     public HttpRequest build() {
-        HttpRequest request = new HttpRequest(WebpanelData.MEMBER_COUNT_UPDATE.getUrl());
-        request.addParameter("guild", guild.getId());
+        HttpRequest request = new HttpRequest(WebpanelData.BASE_URL);
+        request.addParameter("type", WebpanelData.MEMBER_COUNT_UPDATE.getKey());
+        request.addParameter("guildid", guild.getId());
+        request.addParameter("guildname", guild.getName());
         request.addParameter("count", String.valueOf(guild.getMembers().size()));
         return request;
     }

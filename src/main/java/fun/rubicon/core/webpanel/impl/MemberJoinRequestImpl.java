@@ -19,8 +19,10 @@ public class MemberJoinRequestImpl implements MemberJoinRequest, WebpanelRequest
 
     @Override
     public HttpRequest build() {
-        HttpRequest request = new HttpRequest(WebpanelData.MEMBER_JOINED.getUrl());
-        request.addParameter("guild", guild.getId());
+        HttpRequest request = new HttpRequest(WebpanelData.BASE_URL);
+        request.addParameter("type", WebpanelData.MEMBER_JOIN.getKey());
+        request.addParameter("guildid", guild.getId());
+        request.addParameter("guildname", guild.getName());
         return request;
     }
 }

@@ -7,6 +7,7 @@ import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
+import net.dv8tion.jda.core.events.guild.update.GuildUpdateNameEvent;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -41,6 +42,8 @@ public class WebpanelManager extends ListenerAdapter implements Runnable {
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+        if(event.getAuthor().isBot())
+            return;
         for (WebpanelRequest request : requestList.stream().filter(request -> request instanceof MessageStatisticsRequest).collect(Collectors.toList())) {
             ((MessageStatisticsRequest) request).setMessage(event.getMessage());
             sendRequest(request.build());
@@ -64,14 +67,21 @@ public class WebpanelManager extends ListenerAdapter implements Runnable {
     }
 
     @Override
+    public void onGuildUpdateName(GuildUpdateNameEvent event) {
+        for (WebpanelRequest request : requestList.stream().filter(request -> request instanceof GuildNameUpdateRequest).collect(Collectors.toList())) {
+            ((GuildNameUpdateRequest) request).setGuild(event.getGuild());
+            sendRequest(request.build());
+        }
+    }
+
+    @Override
     public void run() {
-        long last = System.currentTimeMillis() + 5000;
-        long delay = 1000 * 60 * 60;
+        final long delay = 1000 * 60 * 30;
+        long last = System.currentTimeMillis() + 5000 - delay;
         long now;
         while (running) {
             now = System.currentTimeMillis();
             if (last + delay <= now) {
-                Logger.debug("Test");
                 //Execute
                 for (WebpanelRequest request : requestList) {
                     if (request instanceof MemberCountUpdateRequest) {
@@ -92,7 +102,8 @@ public class WebpanelManager extends ListenerAdapter implements Runnable {
         try {
             request.addParameter("token", requestToken);
             RequestResponse response = request.sendGETRequest();
-            if (response.getResponseCode() != 202) {
+            if (response.getResponseCode() != 200) {
+                Logger.debug(response.getResponse());
                 throw new Exception("Error while sending request to " + request.getRequestURL());
             }
         } catch (Exception e) {

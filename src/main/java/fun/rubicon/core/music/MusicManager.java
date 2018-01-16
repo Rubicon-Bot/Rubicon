@@ -49,7 +49,7 @@ public class MusicManager {
     private final int SKIP_MAXIMUM = 10;
 
     private final AudioPlayerManager playerManager;
-    private final Map<Long, GuildMusicManager> musicManagers;
+    private static  final Map<Long, GuildMusicManager> musicManagers = new HashMap<>();
 
     public MusicManager(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         this.parsedCommandInvocation = parsedCommandInvocation;
@@ -63,8 +63,6 @@ public class MusicManager {
         playerManager.registerSourceManager(new YoutubeAudioSourceManager());
         playerManager.registerSourceManager(new HttpAudioSourceManager());
         //playerManager.registerSourceManager(new SoundCloudAudioSourceManager()); //TODO Soundcloud support?
-
-        musicManagers = new HashMap<>();
     }
 
     public Message joinInVoiceChannel() {
@@ -403,7 +401,6 @@ public class MusicManager {
 
     private GuildMusicManager getMusicManager(Guild guild) {
         long guildId = guild.getIdLong();
-        Logger.debug("Music managers: " + musicManagers.size());
         GuildMusicManager musicManager = musicManagers.get(guildId);
         if (musicManager == null) {
             synchronized (musicManagers) {

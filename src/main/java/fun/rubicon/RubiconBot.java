@@ -20,10 +20,7 @@ import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.ListenerManager;
-import fun.rubicon.core.webpanel.impl.MemberCountUpdateRequestImpl;
-import fun.rubicon.core.webpanel.impl.MemberJoinRequestImpl;
-import fun.rubicon.core.webpanel.impl.MemberLeaveRequestImpl;
-import fun.rubicon.core.webpanel.impl.MessageStatisticsRequestImpl;
+import fun.rubicon.core.webpanel.impl.*;
 import fun.rubicon.core.webpanel.WebpanelManager;
 import fun.rubicon.features.GiveawayHandler;
 import fun.rubicon.permission.PermissionManager;
@@ -262,6 +259,7 @@ public class RubiconBot {
         webpanelManager.addRequest(new MemberJoinRequestImpl());
         webpanelManager.addRequest(new MemberLeaveRequestImpl());
         webpanelManager.addRequest(new MemberCountUpdateRequestImpl());
+        webpanelManager.addRequest(new GuildNameUpdateRequestImpl());
     }
 
     /**

@@ -19,8 +19,10 @@ public class MessageStatisticsRequestImpl implements MessageStatisticsRequest, W
 
     @Override
     public HttpRequest build() {
-        HttpRequest request = new HttpRequest(WebpanelData.MESSAGE_COUNT.getUrl());
-        request.addParameter("guild", message.getGuild().getId());
+        HttpRequest request = new HttpRequest(WebpanelData.BASE_URL);
+        request.addParameter("type", WebpanelData.MESSAGE_COUNT.getKey());
+        request.addParameter("guildid", message.getGuild().getId());
+        request.addParameter("guildname", message.getGuild().getName());
         return request;
     }
 }

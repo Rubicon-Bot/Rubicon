@@ -5,23 +5,23 @@ package fun.rubicon.core.webpanel;
  */
 public enum WebpanelData {
 
-    BASE_URL("/"),
-    MESSAGE_COUNT(BASE_URL.getUrl() + ""),
+    MESSAGE_COUNT("message_count"),
 
     //Guild
-    MEMBER_JOINED(BASE_URL.getUrl() + ""),
-    MEMBER_LEFT(BASE_URL.getUrl() + ""),
+    MEMBER_JOIN("member_join"),
+    MEMBER_LEAVE("member_leave"),
 
     //Updates;
-    MEMBER_COUNT_UPDATE(BASE_URL.getUrl() + "");
+    MEMBER_COUNT_UPDATE("guild_member_update");
 
-    private String url;
+    private String key;
+    public static final String BASE_URL = "http://api.lucsoft.de/update/rubiconserverdata.php";
 
-    WebpanelData(String url) {
-        this.url = url;
+    WebpanelData(String key) {
+        this.key = key;
     }
 
-    public String getUrl() {
-        return url;
+    public String getKey() {
+        return key;
     }
 }
