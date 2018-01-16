@@ -43,21 +43,33 @@ public class CommandClear extends CommandHandler {
 
         int messageAmount = Integer.parseInt(parsedCommandInvocation.getArgs()[0]);
         User user = (parsedCommandInvocation.getMessage().getMentionedUsers().size() == 1) ? parsedCommandInvocation.getMessage().getMentionedUsers().get(0) : null;
-        if (messageAmount > 100) {
-            return EmbedUtil.message(EmbedUtil.error("Error!", "I can't delete more than 100 messages."));
-        }
 
         if (messageAmount < 2) {
             return EmbedUtil.message(EmbedUtil.error("Error!", "I can't delete less than 2 messages."));
         }
 
+        if (messageAmount > 3000) {
+            return EmbedUtil.message(EmbedUtil.error("Error!", "Why dou you want to clear more than 3000 messages??"));
+        }
+
+        int deletedMessagesSize = 0;
         List<Message> messagesToDelete;
-        messagesToDelete = parsedCommandInvocation.getMessage().getTextChannel().getHistory().retrievePast(messageAmount).complete();
-        messagesToDelete = messagesToDelete.stream().filter(message -> !message.getCreationTime().isBefore(OffsetDateTime.now().minusWeeks(2))).collect(Collectors.toList());
-        if(user != null)
-            messagesToDelete = messagesToDelete.stream().filter(message -> message.getAuthor() == user).collect(Collectors.toList());
-        int deletedMessagesSize = messagesToDelete.size();
-        parsedCommandInvocation.getMessage().getTextChannel().deleteMessages(messagesToDelete).complete();
+        while (messageAmount != 0) {
+            if (messageAmount > 100) {
+                messagesToDelete = parsedCommandInvocation.getMessage().getTextChannel().getHistory().retrievePast(100).complete();
+                messageAmount -= 100;
+            } else {
+                messagesToDelete = parsedCommandInvocation.getMessage().getTextChannel().getHistory().retrievePast(messageAmount).complete();
+                messageAmount = 0;
+            }
+            messagesToDelete = messagesToDelete.stream().filter(message -> !message.getCreationTime().isBefore(OffsetDateTime.now().minusWeeks(2))).collect(Collectors.toList());
+            if (user != null)
+                messagesToDelete = messagesToDelete.stream().filter(message -> message.getAuthor() == user).collect(Collectors.toList());
+            deletedMessagesSize += messagesToDelete.size();
+            if (messagesToDelete.size() > 1)
+                parsedCommandInvocation.getMessage().getTextChannel().deleteMessages(messagesToDelete).complete();
+            else break;
+        }
         return EmbedUtil.message(EmbedUtil.success("Cleared channel!", "Successfully cleared `" + deletedMessagesSize + "` messages"));
     }
 }

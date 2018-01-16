@@ -8,7 +8,7 @@ import java.util.*;
 
 public class HttpRequest {
 
-    private String requestURL;
+    private String requestURL = "http://localhost";
     private List<RequestParameter> params;
     private String fullURL;
     private RequestHeader requestHeader;
@@ -18,6 +18,10 @@ public class HttpRequest {
      */
     public HttpRequest(String url) {
         this.requestURL = url;
+        this.params = new ArrayList<>();
+    }
+
+    public HttpRequest() {
         this.params = new ArrayList<>();
     }
 
@@ -123,6 +127,14 @@ public class HttpRequest {
      */
     public String getRequestURL() {
         return requestURL;
+    }
+
+    /**
+     *
+     * @param requestURL the urls where the request should be executed
+     */
+    public void setURL(String requestURL) {
+        this.requestURL = requestURL;
     }
 
     /**
