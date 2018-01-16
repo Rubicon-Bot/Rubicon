@@ -20,6 +20,11 @@ import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.ListenerManager;
+import fun.rubicon.core.webpanel.impl.MemberCountUpdateRequestImpl;
+import fun.rubicon.core.webpanel.impl.MemberJoinRequestImpl;
+import fun.rubicon.core.webpanel.impl.MemberLeaveRequestImpl;
+import fun.rubicon.core.webpanel.impl.MessageStatisticsRequestImpl;
+import fun.rubicon.core.webpanel.WebpanelManager;
 import fun.rubicon.features.GiveawayHandler;
 import fun.rubicon.permission.PermissionManager;
 import fun.rubicon.sql.*;
@@ -47,6 +52,7 @@ public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
     private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token", "gip_token", "lucsoft_token", "twitterConsumerKey", "twitterConsumerSecret", "twitterAccessToken", "twitterAccessTokenSecret"};
     private static final String dataFolder = "data/";
+    private static WebpanelManager webpanelManager;
     private static RubiconBot instance;
     private final MySQL mySQL;
     private final Configuration configuration;
@@ -89,7 +95,9 @@ public class RubiconBot {
         commandManager = new CommandManager();
         registerCommandHandlers();
         permissionManager = new PermissionManager();
+        webpanelManager = new WebpanelManager(getConfiguration().getString("lucsoft_token"));
 
+        registerWebpanelRequests();
         // init JDA
         initJDA();
 
@@ -247,7 +255,14 @@ public class RubiconBot {
         new UserMusicSQL().createTableIfNotExist();
         new GuildMusicSQL().createTableIfNotExist();
         new WarnSQL().createTableIfNotExist();
-}
+    }
+
+    private void registerWebpanelRequests() {
+        webpanelManager.addRequest(new MessageStatisticsRequestImpl());
+        webpanelManager.addRequest(new MemberJoinRequestImpl());
+        webpanelManager.addRequest(new MemberLeaveRequestImpl());
+        webpanelManager.addRequest(new MemberCountUpdateRequestImpl());
+    }
 
     /**
      * @return the MySQL adapter.
@@ -326,5 +341,9 @@ public class RubiconBot {
      */
     public static String getDataFolder() {
         return dataFolder;
+    }
+
+    public static WebpanelManager getWebpanelManager() {
+        return webpanelManager;
     }
 }
