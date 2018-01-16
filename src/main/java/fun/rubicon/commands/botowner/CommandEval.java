@@ -73,7 +73,7 @@ public class CommandEval extends CommandHandler {
 
             parsedCommandInvocation.getMessage().getChannel().sendMessage(new StringBuilder().append("```Java\n").append(modified_msg)
                     .append("```Evaluated successfully:").toString()).queue();
-            new MessageBuilder().appendCodeBlock(out.toString(), "Java").buildAll(MessageBuilder.SplitPolicy.NEWLINE, MessageBuilder.SplitPolicy.SPACE, MessageBuilder.SplitPolicy.ANYWHERE).forEach(message -> parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(message).queue());
+            new MessageBuilder().appendCodeBlock(out.toString(), "Java").buildAll(MessageBuilder.SplitPolicy.NEWLINE, MessageBuilder.SplitPolicy.SPACE, MessageBuilder.SplitPolicy.ANYWHERE).forEach(message -> parsedCommandInvocation.getTextChannel().sendMessage(message).queue());
         } catch (ScriptException er) {
             parsedCommandInvocation.getMessage().getTextChannel().sendMessage(new StringBuilder().append("```Java\n").append(modified_msg)
                     .append("``` ```Java\nAn exception was thrown:" + er.toString() + "```").toString()).queue();

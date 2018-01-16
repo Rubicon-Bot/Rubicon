@@ -446,10 +446,10 @@ public class GiveawayHandler extends CommandHandler {
                         prize.append(" ").append(invocation.args[i]);
 
                     // create giveaway
-                    Giveaway giveaway = createGiveaway(invocation.invocationMessage.getTextChannel().getIdLong(),
+                    Giveaway giveaway = createGiveaway(invocation.getTextChannel().getIdLong(),
                             prize.toString(),
                             System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(runtime),
-                            invocation.invocationMessage.getAuthor().getIdLong());
+                            invocation.getAuthor().getIdLong());
 
                     return giveaway == null ? message(error()) : null; // message should not be deleted and is sent
                 default:

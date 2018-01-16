@@ -43,24 +43,24 @@ public class PermissionCommandHandler extends CommandHandler {
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
         try {
-            if(invocation.args.length == 0)
+            if(invocation.getArgs().length == 0)
                 return createHelpMessage(invocation);
 
-            else if (invocation.args[0].equalsIgnoreCase("show-discord-permissions")) {
+            else if (invocation.getArgs()[0].equalsIgnoreCase("show-discord-permissions")) {
                 StringBuilder discordPermissions = new StringBuilder("— `ID`  `Name`\n");
                 for(net.dv8tion.jda.core.Permission permission : net.dv8tion.jda.core.Permission.values())
                     discordPermissions.append("  \u2022 `").append(String.format("%02d", permission.getOffset())).append("`  ").append(permission.getName()).append("\n");
                 return message(info("List of discord permissions", discordPermissions.toString()));
 
-            } else if (invocation.args[0].equalsIgnoreCase("list")) {
+            } else if (invocation.getArgs()[0].equalsIgnoreCase("list")) {
                 // check permissions
                 if (!LIST_PERMISSIONS.coveredBy(userPermissions))
                     return message(no_permissions());
                 // check and parse arguments
-                if (invocation.args.length < 3)
+                if (invocation.getArgs().length < 3)
                     return message(error("Missing arguments", "Some parameters seem to be missing. Use `" +
-                            invocation.serverPrefix + invocation.invocationCommand + "` for usage information."));
-                PermissionTarget target = parseTarget(invocation.invocationMessage.getGuild(), invocation.args[1], invocation.args[2]);
+                            invocation.getPrefix() + invocation.getCommandInvocation() + "` for usage information."));
+                PermissionTarget target = parseTarget(invocation.getGuild(), invocation.getArgs()[1], invocation.getArgs()[2]);
                 if (!target.exists())
                     return message(error("Target does not exit", "`" + target.toString() + "` is not on this server!"));
 
@@ -76,25 +76,25 @@ public class PermissionCommandHandler extends CommandHandler {
                 }
                 return message(info("Permission list", target.toString() + "'s permissions:" + permissionsListString));
 
-            } else if(invocation.args[0].equalsIgnoreCase("add")) {
+            } else if(invocation.getArgs()[0].equalsIgnoreCase("add")) {
                 // check permission
                 if (!MODIFY_PERMISSIONS.coveredBy(userPermissions))
                     return message(no_permissions());
                 // check and parse arguments
-                if (invocation.args.length < 4)
+                if (invocation.getArgs().length < 4)
                     return message(error("Missing arguments", "Some parameters seem to be missing. Use `" +
-                            invocation.serverPrefix + invocation.invocationCommand + "` for usage information."));
-                PermissionTarget target = parseTarget(invocation.invocationMessage.getGuild(), invocation.args[1], invocation.args[2]);
+                            invocation.getPrefix() + invocation.getCommandInvocation() + "` for usage information."));
+                PermissionTarget target = parseTarget(invocation.getMessage().getGuild(), invocation.getArgs()[1], invocation.getArgs()[2]);
                 if (!target.exists())
                     return message(error("Target does not exit", "`" + target.toString() + "` is not on this server!"));
 
                 return RubiconBot.sGetPermissionManager().addPermission(target, Permission.parse(invocation.args[3]))
                         ? message(success("Updated permissions", "Successfully added `" +
-                                invocation.args[3] + "` to `" + target.toString() + "`."))
+                                invocation.getArgs()[3] + "` to `" + target.toString() + "`."))
                         : message(error("Entry already exists", "There already is a `" +
-                                Permission.parse(invocation.args[3]).getPermissionString() + "` entry for `" +
-                                target.toString() + "` on this guild. Use `" + invocation.serverPrefix +
-                                invocation.invocationCommand + " list " + invocation.args[1] + ' ' + invocation.args[2] +
+                                Permission.parse(invocation.getArgs()[3]).getPermissionString() + "` entry for `" +
+                                target.toString() + "` on this guild. Use `" + invocation.getPrefix() +
+                                invocation.getCommandInvocation() + " list " + invocation.getArgs()[1] + ' ' + invocation.getArgs()[2] +
                                 "` to get a list of permission entries for this target."));
 
             } else if(invocation.args[0].equalsIgnoreCase("remove")) {
@@ -102,28 +102,28 @@ public class PermissionCommandHandler extends CommandHandler {
                 if (!MODIFY_PERMISSIONS.coveredBy(userPermissions))
                     return message(no_permissions());
                 // check and parse arguments
-                if (invocation.args.length < 4)
+                if (invocation.getArgs().length < 4)
                     return message(error("Missing arguments", "Some parameters seem to be missing. Use `" +
-                            invocation.serverPrefix + invocation.invocationCommand + "` for usage information."));
-                PermissionTarget target = parseTarget(invocation.invocationMessage.getGuild(), invocation.args[1], invocation.args[2]);
+                            invocation.getPrefix() + invocation.getCommandInvocation() + "` for usage information."));
+                PermissionTarget target = parseTarget(invocation.getGuild(), invocation.getArgs()[1], invocation.getArgs()[2]);
                 if (!target.exists())
                     return message(error("Target does not exit", "`" + target.toString() + "` is not on this server!"));
 
-                return RubiconBot.sGetPermissionManager().removePermission(target, Permission.parse(invocation.args[3]))
+                return RubiconBot.sGetPermissionManager().removePermission(target, Permission.parse(invocation.getArgs()[3]))
                         ? message(success("Updated permissions", "Successfully removed `" +
-                        invocation.args[3] + "` from `" + target.toString() + "`."))
-                        : message(error("Entry does not exist", "There is no `" + invocation.args[3] +
-                        "` entry for `" + target.toString() + "` on this guild. Use `" + invocation.serverPrefix +
-                        invocation.invocationCommand + " list " + invocation.args[1] + ' ' + invocation.args[2] +
+                        invocation.getArgs()[3] + "` from `" + target.toString() + "`."))
+                        : message(error("Entry does not exist", "There is no `" + invocation.getArgs()[3] +
+                        "` entry for `" + target.toString() + "` on this guild. Use `" + invocation.getPrefix() +
+                        invocation.getCommandInvocation() + " list " + invocation.getArgs()[1] + ' ' + invocation.getArgs()[2] +
                         "` to get a list of permission entries for this target."));
 
             } else {
-                throw new IllegalArgumentException("`" + invocation.args[0] + "` is not a " +
+                throw new IllegalArgumentException("`" + invocation.getArgs()[0] + "` is not a " +
                         "valid argument.");
             }
         } catch (IllegalArgumentException e) {
             return message(error("Invalid arguments", e.getMessage() + " Use `" +
-                    invocation.serverPrefix + invocation.invocationCommand + "` for a " + "command manual."));
+                    invocation.getPrefix() + invocation.getCommandInvocation() + "` for a " + "command manual."));
         }
     }
 

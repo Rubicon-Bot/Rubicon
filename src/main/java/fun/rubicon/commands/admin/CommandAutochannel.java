@@ -125,7 +125,7 @@ public class CommandAutochannel extends CommandHandler {
                 autochannels.add(c);
         });
         if (autochannels.isEmpty()) {
-            Message mymsg = parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(EmbedUtil.error("Unknown Channel", "There is now channel with this name").build()).complete();
+            Message mymsg = parsedCommandInvocation.getTextChannel().sendMessage(EmbedUtil.error("Unknown Channel", "There is now channel with this name").build()).complete();
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {

@@ -96,7 +96,7 @@ public class CommandManager extends ListenerAdapter {
      * @param parsedCommandInvocation the parsed message.
      */
     private void call(ParsedCommandInvocation parsedCommandInvocation) {
-        CommandHandler commandHandler = getCommandHandler(parsedCommandInvocation.invocationCommand);
+        CommandHandler commandHandler = getCommandHandler(parsedCommandInvocation.getCommandInvocation());
         Message response;
         if (commandHandler == null) {
             /*response = EmbedUtil.message(EmbedUtil.withTimestamp(EmbedUtil.error("Unknown command", "'" + parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand
@@ -108,11 +108,11 @@ public class CommandManager extends ListenerAdapter {
 
         // respond
         if (response != null)
-            EmbedUtil.sendAndDeleteOnGuilds(parsedCommandInvocation.invocationMessage.getChannel(), response);
+            EmbedUtil.sendAndDeleteOnGuilds(parsedCommandInvocation.getMessage().getChannel(), response);
 
         // delete invocation message
-        if (parsedCommandInvocation.invocationMessage.getGuild() != null) {
-            parsedCommandInvocation.invocationMessage.delete().queue(null, msg -> {
+        if (parsedCommandInvocation.getGuild() != null) {
+            parsedCommandInvocation.getMessage().delete().queue(null, msg -> {
             }); // suppress failure
         }
     }

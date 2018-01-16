@@ -39,7 +39,7 @@ public class CommandMoney extends CommandHandler {
                 if (parsedCommandInvocation.getArgs().length == 3) {
                     try {
                         if (parsedCommandInvocation.getMessage().getMentionedMembers().size() == 1) {
-                            if (parsedCommandInvocation.getMessage().getMentionedMembers().get(0).getUser().getId().equalsIgnoreCase(parsedCommandInvocation.invocationMessage.getAuthor().getId())) {
+                            if (parsedCommandInvocation.getMessage().getMentionedMembers().get(0).getUser().getId().equalsIgnoreCase(parsedCommandInvocation.getAuthor().getId())) {
                                 return new MessageBuilder().setEmbed(EmbedUtil.error("Error!", "You cant donate money yourself!").build()).build();
                             }
                         } else {
