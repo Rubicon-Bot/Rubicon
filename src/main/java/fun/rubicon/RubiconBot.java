@@ -177,7 +177,8 @@ public class RubiconBot {
                 new CommandCreateInvite(),
                 new CommandEval(),
                 new CommandTwitter(),
-                new CommandGlobalBlacklist()
+                new CommandGlobalBlacklist(),
+                new CommandGenerateDocsJSON()
         );
         // music commands package
         commandManager.registerCommandHandlers(

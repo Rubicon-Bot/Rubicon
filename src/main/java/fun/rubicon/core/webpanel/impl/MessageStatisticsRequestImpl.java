@@ -4,6 +4,7 @@ import de.foryasee.httprequest.HttpRequest;
 import fun.rubicon.core.webpanel.MessageStatisticsRequest;
 import fun.rubicon.core.webpanel.WebpanelData;
 import fun.rubicon.core.webpanel.WebpanelRequest;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 
 /**
@@ -11,18 +12,22 @@ import net.dv8tion.jda.core.entities.Message;
  */
 public class MessageStatisticsRequestImpl implements MessageStatisticsRequest, WebpanelRequest {
 
-    private Message message;
+    private Guild guild;
+    private int size;
 
-    public void setMessage(Message message) {
-        this.message = message;
+    @Override
+    public void setGuildCount(Guild guild, int size) {
+        this.guild = guild;
+        this.size = size;
     }
 
     @Override
     public HttpRequest build() {
         HttpRequest request = new HttpRequest(WebpanelData.BASE_URL);
         request.addParameter("type", WebpanelData.MESSAGE_COUNT.getKey());
-        request.addParameter("guildid", message.getGuild().getId());
-        request.addParameter("guildname", message.getGuild().getName());
+        request.addParameter("guildid", guild.getId());
+        request.addParameter("guildname", guild.getName());
+        request.addParameter("count", String.valueOf(size));
         return request;
     }
 }

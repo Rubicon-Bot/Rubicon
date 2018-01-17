@@ -12,7 +12,9 @@ import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -25,6 +27,8 @@ public class WebpanelManager extends ListenerAdapter implements Runnable {
 
     private final Thread eventThread;
     private boolean running;
+
+    private static Map<Guild, Integer> guildMessageCount = new HashMap<>();
 
     public WebpanelManager(String requestToken) {
         this.requestToken = requestToken;
@@ -42,11 +46,13 @@ public class WebpanelManager extends ListenerAdapter implements Runnable {
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-        if(event.getAuthor().isBot())
+        if (event.getAuthor().isBot())
             return;
-        for (WebpanelRequest request : requestList.stream().filter(request -> request instanceof MessageStatisticsRequest).collect(Collectors.toList())) {
-            ((MessageStatisticsRequest) request).setMessage(event.getMessage());
-            sendRequest(request.build());
+        if (guildMessageCount.containsKey(event.getGuild())) {
+            int old = guildMessageCount.get(event.getGuild());
+            guildMessageCount.replace(event.getGuild(), old + 1);
+        } else {
+            guildMessageCount.put(event.getGuild(), 1);
         }
     }
 
@@ -77,8 +83,16 @@ public class WebpanelManager extends ListenerAdapter implements Runnable {
     @Override
     public void run() {
         final long delay = 1000 * 60 * 30;
-        long last = System.currentTimeMillis() + 5000 - delay;
+        long last = 0;
         long now;
+
+        //Wait for JDA initialisation
+        try {
+            eventThread.join(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         while (running) {
             now = System.currentTimeMillis();
             if (last + delay <= now) {
@@ -87,6 +101,11 @@ public class WebpanelManager extends ListenerAdapter implements Runnable {
                     if (request instanceof MemberCountUpdateRequest) {
                         for (Guild guild : RubiconBot.getJDA().getGuilds()) {
                             ((MemberCountUpdateRequest) request).setGuild(guild);
+                            sendRequest(request.build());
+                        }
+                    } else if (request instanceof MessageStatisticsRequest) {
+                        for (Map.Entry entry : guildMessageCount.entrySet()) {
+                            ((MessageStatisticsRequest) request).setGuildCount((Guild) entry.getKey(), (int) entry.getValue());
                             sendRequest(request.build());
                         }
                     }
