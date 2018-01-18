@@ -63,9 +63,6 @@ public class CommandUserInfo extends CommandHandler {
         userinfo.addField("Roles", "`" + roles.toString() + "`", false);
         userinfo.addField("Discord join date", formatDate(info.getCreationTime()), false);
         userinfo.addField("Avatar url", info.getAvatarUrl(), true);
-        userinfo.addField("--- RubiconBot Stats ---", "" +
-                "Level: " + RubiconBot.getMySQL().getUserValue(user.getUser(), "level") + "\n" +
-                "Ruby's: " + RubiconBot.getMySQL().getUserValue(user.getUser(), "money"), true);
         return new MessageBuilder().setEmbed(userinfo.build()).build();
     }
 

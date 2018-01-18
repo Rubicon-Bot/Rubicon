@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * @author Yannick Seeger / ForYaSee
  */
-public class WarnSQL implements SQLHandler {
+public class WarnSQL implements DatabaseGenerator {
 
     private Connection connection;
     private MySQL mySQL;

@@ -63,7 +63,7 @@ public class VerificationListener extends ListenerAdapter {
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         if (!RubiconBot.getMySQL().verificationEnabled(event.getGuild())) return;
         TextChannel channel = event.getGuild().getTextChannelById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "channelid"));
-        Message message = channel.sendMessage(new EmbedBuilder().setDescription(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "text").replace("%user%", event.getUser().getAsMention())).build()).complete();
+        Message message = channel.sendMessage(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "text").replace("%user%", event.getUser().getAsMention())).complete();
         CommandVerification.users.put(message, event.getUser());
 
         String emoteRaw = RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "emote");
@@ -89,7 +89,6 @@ public class VerificationListener extends ListenerAdapter {
         try {
             double d = Double.parseDouble(str);
         } catch (NumberFormatException nfe) {
-
             return false;
         }
         return true;

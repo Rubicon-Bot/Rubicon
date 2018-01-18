@@ -14,9 +14,6 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 public class UserJoinListener extends ListenerAdapter {
 
     public void onGuildMemberJoin(GuildMemberJoinEvent e) {
-        if (!RubiconBot.getMySQL().ifUserExist(e.getUser())) {
-            RubiconBot.getMySQL().createUser(e.getUser());
-        }
         try {
             String joinMessage = RubiconBot.getMySQL().getGuildValue(e.getGuild(), "joinmsg");
             if (joinMessage.equals("0")) {

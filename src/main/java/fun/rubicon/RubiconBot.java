@@ -58,6 +58,7 @@ public class RubiconBot {
     private final Timer timer;
     private final Set<EventListener> eventListeners;
     private final PermissionManager permissionManager;
+    private final DatabaseManager databaseManager;
 
     /**
      * Constructs the RubiconBot.
@@ -87,7 +88,10 @@ public class RubiconBot {
         mySQL.connect();
 
         //Create databases if neccesary
-        generateDatabases();
+
+        databaseManager = new DatabaseManager();
+        addDatabaseGenerators();
+        databaseManager.generate();
 
         commandManager = new CommandManager();
         registerCommandHandlers();
@@ -248,11 +252,15 @@ public class RubiconBot {
         new CommandManager();
     }
 
-    private void generateDatabases() {
-        new ServerLogSQL().createTableIfNotExist();
-        new UserMusicSQL().createTableIfNotExist();
-        new GuildMusicSQL().createTableIfNotExist();
-        new WarnSQL().createTableIfNotExist();
+    private void addDatabaseGenerators() {
+        databaseManager.addGenerators(
+                new ServerLogSQL(),
+                new UserMusicSQL(),
+                new GuildMusicSQL(),
+                new WarnSQL(),
+                new UserSQL(),
+                new MemberSQL()
+        );
     }
 
     private void registerWebpanelRequests() {

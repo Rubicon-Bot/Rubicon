@@ -4,7 +4,7 @@
  * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
  */
 
-package fun.rubicon.commands.tools;
+package fun.rubicon.commands.moderation;
 
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
@@ -24,7 +24,7 @@ import java.util.List;
 
 public class CommandMoveAll extends CommandHandler {
     public CommandMoveAll() {
-        super(new String[] {"moveall", "mvall", "mva"}, CommandCategory.ADMIN, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.moveall"), "Move all members in your channel into another channel", "<Channel>", false);
+        super(new String[] {"moveall", "mvall", "mva"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.moveall"), "Move all members in your channel into another channel.", "<#channel>", false);
     }
 
     @Override

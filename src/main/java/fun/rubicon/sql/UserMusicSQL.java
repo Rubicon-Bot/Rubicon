@@ -12,7 +12,7 @@ import java.sql.SQLException;
 /**
  * @author Yannick Seeger / ForYaSee
  */
-public class UserMusicSQL implements SQLHandler {
+public class UserMusicSQL implements DatabaseGenerator {
 
     private User user;
     private Connection connection;
@@ -30,10 +30,11 @@ public class UserMusicSQL implements SQLHandler {
         this.user = user;
         this.mySQL = RubiconBot.getMySQL();
         this.connection = MySQL.getConnection();
+
+        create();
     }
 
     public String get(String type) {
-        createDefaultEntryIfNotExist();
         try {
             if (connection.isClosed())
                 mySQL.connect();
@@ -51,7 +52,6 @@ public class UserMusicSQL implements SQLHandler {
 
 
     public void set(String type, String value) {
-        createDefaultEntryIfNotExist();
         try {
             if (connection.isClosed())
                 mySQL.connect();
@@ -64,7 +64,7 @@ public class UserMusicSQL implements SQLHandler {
         }
     }
 
-    public void createDefaultEntryIfNotExist() {
+    public void create() {
         try {
             if (connection.isClosed())
                 mySQL.connect();
