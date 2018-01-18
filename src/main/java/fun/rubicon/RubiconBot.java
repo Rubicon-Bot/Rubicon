@@ -23,6 +23,7 @@ import fun.rubicon.core.ListenerManager;
 import fun.rubicon.core.webpanel.impl.*;
 import fun.rubicon.core.webpanel.WebpanelManager;
 import fun.rubicon.features.GiveawayHandler;
+import fun.rubicon.features.RemindHandler;
 import fun.rubicon.permission.PermissionManager;
 import fun.rubicon.sql.*;
 import fun.rubicon.util.*;
@@ -100,6 +101,7 @@ public class RubiconBot {
 
         // init features
         new GiveawayHandler();
+        new RemindHandler();
 
         // post bot stats to discordbots.org and print warning
         DBLUtil.postStats(false);

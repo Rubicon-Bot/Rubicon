@@ -421,7 +421,7 @@ public class GiveawayHandler extends CommandHandler {
      */
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
-        if (invocation.args.length == 0)
+        if (invocation.getArgs().length == 0)
             return createHelpMessage(invocation);
         else {
             switch (invocation.args[0]) {
