@@ -18,7 +18,7 @@ public class Info {
 
     public final static String BOT_DEFAULT_PREFIX = "rc!";
     public final static String BOT_NAME = "Rubicon";
-    public final static String BOT_VERSION = "0.1.8.3";
+    public final static String BOT_VERSION = "0.1.8.5";
     public final static String BOT_WEBSITE = "https://rubicon.fun";
     public final static String BOT_GITHUB = "https://github.com/Rubicon-Bot/Rubicon";
     public final static String CONFIG_FILE = "config.json";
@@ -36,7 +36,6 @@ public class Info {
             153507094933274624L, // Lee
             138014719582797824L, // Eiskeks
             264048760580079616L, // Schlaubi
-            221905671296253953L, // Zekro
             137253345336229889L, // lucsoft
             137263174675070976L  // tr808axm
     };

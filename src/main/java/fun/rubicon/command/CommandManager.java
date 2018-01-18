@@ -66,8 +66,8 @@ public class CommandManager extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if(event.getAuthor().equals(RubiconBot.getJDA().getSelfUser()))
-        if (event.isFromType(ChannelType.PRIVATE)) return;
+        if (event.getAuthor().equals(RubiconBot.getJDA().getSelfUser()))
+            if (event.isFromType(ChannelType.PRIVATE)) return;
         if (RubiconBot.getMySQL().isBlacklisted(event.getTextChannel())) return;
         MusicManager.handleTrackChoose(event);
         super.onMessageReceived(event);
