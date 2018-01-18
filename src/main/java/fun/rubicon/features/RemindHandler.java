@@ -253,6 +253,7 @@ public class RemindHandler extends CommandHandler{
                 remindEmbed("I will Remind " + RubiconBot.getJDA().getUserById(authorId).getName(),
                         "Ok i will remind you to do `" + prize + "`")))
                 .complete();
+        message.delete().queueAfter(10,TimeUnit.SECONDS);
         // create and giveaway
         Remind remind = new Remind(textChannelId, message.getIdLong(), prize, expirationDate, authorId);
         remind.save();
