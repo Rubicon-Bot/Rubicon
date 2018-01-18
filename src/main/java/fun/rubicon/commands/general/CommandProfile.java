@@ -57,7 +57,7 @@ public class CommandProfile extends CommandHandler {
         embedBuilder.setAuthor(member.getEffectiveName() + "'s profile", null, member.getUser().getAvatarUrl());
         embedBuilder.setDescription(userSQL.get("bio"));
         embedBuilder.addField("Money", "Balance: " + userSQL.get("money") + " Rubys", true);
-        embedBuilder.addField("Prime", (isPrime(userSQL)) ? "Enabled" : "Disabled", true);
+        embedBuilder.addField("Premium", (isPrime(userSQL)) ? "Enabled" : "Disabled", true);
         embedBuilder.addField("Level", buildProgressBar(memberSQL), false);
         textChannel.sendMessage(EmbedUtil.message(embedBuilder)).queue();
     }
