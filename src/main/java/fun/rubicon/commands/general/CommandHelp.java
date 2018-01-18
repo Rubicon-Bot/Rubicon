@@ -39,34 +39,6 @@ public class CommandHelp extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        //Generate JSON File for website
-        /*int i = 0;
-        StringBuilder out = new StringBuilder();
-        List<CommandHandler> allCommands = new ArrayList<>();
-        for (CommandHandler commandHandler : RubiconBot.getCommandManager().getCommandAssociations().values()) {
-            if (!allCommands.contains(commandHandler))
-                allCommands.add(commandHandler);
-        }
-        for (CommandHandler commandHandler : allCommands) {
-            if (commandHandler.getCategory().equals(CommandCategory.BOT_OWNER))
-                continue;
-            StringBuilder usage = new StringBuilder();
-            for (String part : commandHandler.getParameterUsage().split("\n")) {
-                if (commandHandler.getParameterUsage().split("\n").length > 1) {
-                    usage.append(Info.BOT_DEFAULT_PREFIX + commandHandler.getInvocationAliases()[0] + " " + part + "<br>");
-                }
-                else
-                    usage.append(Info.BOT_DEFAULT_PREFIX + commandHandler.getInvocationAliases()[0] + " " + part + "");
-            }
-            out.append("{\n\"id\":\"" + i + "\",\"name\":\"" + commandHandler.getInvocationAliases()[0] + "\",\n" +
-                    "\t\"command\":\"" + Info.BOT_DEFAULT_PREFIX + commandHandler.getInvocationAliases()[0] + "\",\n" +
-                    "\t\"description\":\"" + commandHandler.getDescription() + "\",\n" +
-                    "\t\"category\":\"" + commandHandler.getCategory().getId() + "\",\n" +
-                    "\t\"aliases\":\"" + String.join(",", commandHandler.getInvocationAliases()) + "\",\n" +
-                    "\t\"usage\":\"" + usage + "\"\n},\n");
-            i++;
-        }
-        Logger.debug("[\n" + out.toString() + "\n]");*/
         if (parsedCommandInvocation.getArgs().length == 0) {
             // show complete command manual
             EmbedBuilder embedBuilder = new EmbedBuilder()
