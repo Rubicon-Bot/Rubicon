@@ -69,5 +69,4 @@ public class CommandUserInfo extends CommandHandler {
     public String formatDate(OffsetDateTime date) {
         return date.getMonthValue() + "/" + date.getDayOfMonth() + "/" + date.getYear();
     }
-
 }

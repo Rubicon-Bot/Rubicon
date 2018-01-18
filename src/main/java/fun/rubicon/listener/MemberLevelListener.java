@@ -44,10 +44,10 @@ public class MemberLevelListener extends ListenerAdapter {
             public void run() {
                 Cooldown.remove(event.getAuthor().getId());
             }
-        }, 0);
+        }, 20000);
 
         int currentLevel = Integer.parseInt(memberSQL.get("level"));
-        float requiredPoints = (5 * ((currentLevel * currentLevel / 48) * 49) + 50 * currentLevel + 100);
+        int requiredPoints = getRequiredPointsByLevel(currentLevel);
 
         if (nowPoints > requiredPoints) {
             currentLevel++;
@@ -64,6 +64,10 @@ public class MemberLevelListener extends ListenerAdapter {
                     .build()
             ).queue(message -> message.delete().queueAfter(10, TimeUnit.SECONDS));
         }
+    }
+
+    public static int getRequiredPointsByLevel(int level) {
+        return (5 * ((level * level / 48) * 49) + 50 * level + 100);
     }
 
     private static class Cooldown {

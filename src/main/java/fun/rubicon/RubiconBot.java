@@ -216,7 +216,9 @@ public class RubiconBot {
                 new CommandStatistics(),
                 new CommandMoney(),
                 new fun.rubicon.commands.general.CommandLevel(),
-                new CommandUptime()
+                new CommandUptime(),
+                new CommandProfile(),
+                new CommandBio()
         );
         // settings commands package
         commandManager.registerCommandHandlers(

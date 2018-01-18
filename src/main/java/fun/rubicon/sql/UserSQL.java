@@ -81,7 +81,7 @@ public class UserSQL implements DatabaseGenerator {
         try {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO users(`id`, `userid`, `bio`, `money`, `prime`) VALUES (0, ?, ?, ?, ?)");
             ps.setString(1, user.getId());
-            ps.setString(2, "None");
+            ps.setString(2, "No bio set.");
             ps.setString(3, "1000");
             ps.setString(4, "false");
             ps.execute();
