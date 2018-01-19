@@ -79,7 +79,7 @@ public class UserSQL implements DatabaseGenerator {
         if (exist())
             return;
         try {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO users(`id`, `userid`, `bio`, `money`, `prime`) VALUES (0, ?, ?, ?, ?)");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO users(`id`, `userid`, `bio`, `money`, `premium`) VALUES (0, ?, ?, ?, ?)");
             ps.setString(1, user.getId());
             ps.setString(2, "No bio set.");
             ps.setString(3, "1000");
@@ -101,7 +101,7 @@ public class UserSQL implements DatabaseGenerator {
                     "  `userid` VARCHAR(50) NOT NULL," +
                     "  `bio` TEXT NOT NULL," +
                     "  `money` VARCHAR(250)," +
-                    "  `prime` VARCHAR(50) NOT NULL," +
+                    "  `premium` VARCHAR(50) NOT NULL," +
                     "  PRIMARY KEY (`id`)" +
                     ") ENGINE=InnoDB AUTO_INCREMENT=3918 DEFAULT CHARSET=utf8;");
             ps.execute();
