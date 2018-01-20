@@ -78,7 +78,6 @@ public class CoinhiveManager {
             balanceRequest.addParameter("name", coinhiveUser.getName());
             balanceRequest.addParameter("amount", amount);
             RequestResponse balanceResponse = balanceRequest.sendPOSTRequest();
-            Logger.debug(balanceResponse.getResponse());
             JSONObject balanceObj = (JSONObject) new JSONParser().parse(balanceResponse.getResponse());
             if (balanceObj.get("success").equals("false")) {
                 Logger.error((String) balanceObj.get("error"));

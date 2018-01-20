@@ -30,7 +30,7 @@ public class CommandMiner extends CommandHandler {
         CoinhiveUser coinhiveUser = CoinhiveManager.getCoinhiveUser(parsedCommandInvocation.getAuthor());
         UserSQL userSQL = new UserSQL(parsedCommandInvocation.getAuthor());
         if (parsedCommandInvocation.getArgs().length == 0) {
-            return EmbedUtil.message(new EmbedBuilder().setDescription("You currently have `" + coinhiveUser.getBalance() + "` hashes.").setAuthor(parsedCommandInvocation.getAuthor().getName(), null, parsedCommandInvocation.getAuthor().getAvatarUrl()).setColor(Colors.COLOR_PRIMARY));
+            return EmbedUtil.message(new EmbedBuilder().setDescription("You currently have `" + coinhiveUser.getBalance() + "` hashes.").setAuthor(parsedCommandInvocation.getAuthor().getName(), null, parsedCommandInvocation.getAuthor().getAvatarUrl()).setColor(Colors.COLOR_PRIMARY).setFooter("Miner more on https://miner.rubicon.fun", null));
         }
         if (parsedCommandInvocation.getArgs()[0].equalsIgnoreCase("payout")) {
             int withdrawAmount = (int) coinhiveUser.getBalance();

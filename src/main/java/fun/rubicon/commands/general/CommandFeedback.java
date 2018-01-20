@@ -29,15 +29,16 @@ public class CommandFeedback extends CommandHandler {
                 new PermissionRequirements(PermissionLevel.EVERYONE, "command.feedback"),
                 "Sends a feedback message to the developers.", "<message (min. 3 words)>");
     }
+
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions permissions) {
         if (invocation.getArgs().length < 3)
             return message(error("Text too short", "Please use at least three words in your feedback message."));
         else {
             RubiconBot.getJDA().getTextChannelById(383324255380701194L).sendMessage(
-                    message(embed("New feedback", "```" + invocation.getMessage().getContentDisplay().replace(invocation.getPrefix() + invocation.getCommandInvocation() + " ", "")+"```")
+                    message(embed("New feedback", "```" + invocation.getMessage().getContentDisplay().replace(invocation.getPrefix() + invocation.getCommandInvocation() + " ", "") + "```")
                             .setAuthor(invocation.getMessage().getAuthor().getName() + '#'
-                                    + invocation.getMessage().getAuthor().getDiscriminator(), null,
+                                            + invocation.getMessage().getAuthor().getDiscriminator(), null,
                                     invocation.getMessage().getAuthor().getEffectiveAvatarUrl()))).queue();
             return message(success("Feedback sent", "Your feedback was submitted to the developers. Thank you!"));
         }
