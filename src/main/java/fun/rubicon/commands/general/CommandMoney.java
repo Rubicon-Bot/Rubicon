@@ -14,7 +14,9 @@ import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.sql.UserSQL;
+import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
@@ -38,7 +40,8 @@ public class CommandMoney extends CommandHandler {
         int user2_has_money = 0;
         int user_spend_money = 0;
         if (parsedCommandInvocation.getArgs().length == 0) {
-            return createHelpMessage();
+            parsedCommandInvocation.getTextChannel().sendMessage(new EmbedBuilder().setColor(Colors.COLOR_PRIMARY).setDescription("Balance: `" + new UserSQL(parsedCommandInvocation.getAuthor()).get("money") + "`").setAuthor(parsedCommandInvocation.getAuthor().getName() + "'s money", null, parsedCommandInvocation.getAuthor().getAvatarUrl()).build()).queue();
+            return null;
         }
         switch (parsedCommandInvocation.getArgs()[0]) {
             case "give":

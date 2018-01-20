@@ -20,7 +20,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class CommandMiner extends CommandHandler {
 
     public CommandMiner() {
-        super(new String[]{"miner"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.miner"), "Get your collected hashes, top miners or let payout your hashes in rubys.",
+        super(new String[]{"miner", "mine"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.miner"), "Get your collected hashes, top miners or let payout your hashes in rubys.",
                 "| Get your hashes\n" +
                         "payout | Payout your mined hashes in rubys");
     }
