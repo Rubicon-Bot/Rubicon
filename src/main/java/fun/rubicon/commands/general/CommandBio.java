@@ -16,14 +16,20 @@ import net.dv8tion.jda.core.entities.Message;
 public class CommandBio extends CommandHandler {
 
     public CommandBio() {
-        super(new String[]{"bio"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.bio"), "Set your bio that is displayed in the rc!profile command. ", "");
+        super(new String[]{"bio"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.bio"), "Set your bio that is displayed in the rc!profile command. ", "set <text>");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
-        UserSQL sql = new UserSQL(invocation.getAuthor());
-        String bioText = invocation.getMessage().getContentDisplay().replace(invocation.getPrefix() + invocation.getCommandInvocation() + " ", "");
-        sql.set("bio", bioText);
-        return EmbedUtil.message(EmbedUtil.success("Updated Bio!", "Successfully updated your bio."));
+        if (invocation.getArgs().length == 0) {
+            return createHelpMessage();
+        }
+        if (invocation.getArgs()[0].equalsIgnoreCase("set")) {
+            UserSQL sql = new UserSQL(invocation.getAuthor());
+            String bioText = invocation.getMessage().getContentDisplay().replace(invocation.getPrefix() + invocation.getCommandInvocation() + " set", "");
+            sql.set("bio", bioText);
+            return EmbedUtil.message(EmbedUtil.success("Updated Bio!", "Successfully updated your bio."));
+        }
+        return createHelpMessage();
     }
 }
