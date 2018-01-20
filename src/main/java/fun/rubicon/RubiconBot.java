@@ -48,7 +48,7 @@ import java.util.Timer;
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token", "gip_token", "lucsoft_token", "twitterConsumerKey", "twitterConsumerSecret", "twitterAccessToken", "twitterAccessTokenSecret"};
+    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token", "gip_token", "lucsoft_token", "twitterConsumerKey", "twitterConsumerSecret", "twitterAccessToken", "twitterAccessTokenSecret", "coinhive_secret"};
     private static final String dataFolder = "data/";
     private static WebpanelManager webpanelManager;
     private static RubiconBot instance;
@@ -220,7 +220,9 @@ public class RubiconBot {
                 new fun.rubicon.commands.general.CommandLevel(),
                 new CommandUptime(),
                 new CommandProfile(),
-                new CommandBio()
+                new CommandBio(),
+                new CommandMiner(),
+                new CommandPremium()
         );
         // settings commands package
         commandManager.registerCommandHandlers(

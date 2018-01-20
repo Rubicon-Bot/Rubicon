@@ -44,6 +44,6 @@ public class CommandBug extends CommandHandler {
                         .build()
         ).queue();
         //User Feedback
-        return new MessageBuilder().setEmbed(EmbedUtil.success("Bug reported", "Successfully send the Bug to Head Developers").build()).build();
+        return new MessageBuilder().setEmbed(EmbedUtil.success("Bug reported", "Successfully send the bug to the developers.").build()).build();
     }
 }

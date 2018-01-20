@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 public class MemberLevelListener extends ListenerAdapter {
 
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-        MemberSQL memberSQL = new MemberSQL(event.getMember());
 
         if (event.getAuthor().isBot()) {
             return;
@@ -29,7 +28,7 @@ public class MemberLevelListener extends ListenerAdapter {
         if (Cooldown.has(event.getAuthor().getId())) {
             return;
         }
-
+        MemberSQL memberSQL = new MemberSQL(event.getMember());
         //Point System
         int currentPoints = Integer.parseInt(memberSQL.get("points"));
         int pRandom = (int) ((Math.random() * 12 + 3));

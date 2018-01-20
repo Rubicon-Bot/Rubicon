@@ -3,11 +3,17 @@ package de.foryasee.httprequest;
 public class RequestParameter {
 
     private String key;
-    private String value;
+    private String value = null;
+    private int intValue = 0;
 
     public RequestParameter(String key, String value) {
         this.key = key;
         this.value = value;
+    }
+
+    public RequestParameter(String key, int value) {
+        this.key = key;
+        this.intValue = value;
     }
 
     public void setKey(String key) {
@@ -23,6 +29,8 @@ public class RequestParameter {
     }
 
     public String getValue() {
+        if (value == null)
+            return "int;" + intValue;
         return value;
     }
 }
