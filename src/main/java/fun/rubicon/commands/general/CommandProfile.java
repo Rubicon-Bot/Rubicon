@@ -23,7 +23,7 @@ import net.dv8tion.jda.core.entities.User;
 public class CommandProfile extends CommandHandler {
 
     public CommandProfile() {
-        super(new String[]{"profile", "user"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.profile"), "Displays the bio, money and level of a user.", "" +
+        super(new String[]{"profile", "user", "level"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.profile"), "Displays the bio, money and level of a user.", "" +
                 "\n" +
                 "[@User]");
     }
