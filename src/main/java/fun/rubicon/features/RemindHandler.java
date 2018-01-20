@@ -164,7 +164,10 @@ public class RemindHandler extends CommandHandler {
     private Set<Remind> reminders = new HashSet<>();
 
     public RemindHandler() {
-        super(new String[]{"remindme", "remind"}, CommandCategory.GENERAL, new PermissionRequirements(0, "command.remindme"), "Get reminded of whatever you want", "create <minutes> <What to be reminded>");
+        super(new String[]{"remindme", "remind"}, CommandCategory.GENERAL, new PermissionRequirements(0, "command.remindme"), "Get reminded of whatever you want", "create 9d Buy Cheese - you will get Reminded in 9 Days\n" +
+                "create 5w Buy another Cheese! - you will get Reminded in 5 Weeks\n" +
+                "create 1m Get this Message! - you will get Reminded in 5 Minutes\n" +
+                "create 12mon Lol new Year! - you will get Reminded in 12 Months");
         try {
             MySQL.getConnection().prepareStatement(
                     "CREATE TABLE IF NOT EXISTS `reminders-v1` (" +
@@ -221,10 +224,25 @@ public class RemindHandler extends CommandHandler {
                 case "create":
                     if (invocation.getArgs().length < 3)
                         return createHelpMessage(invocation);
-
-                    int runtime;
+                    TimeUnit timeunit = TimeUnit.MINUTES;
+                    int runtime = 0;
+                    double extra = 0;
                     try {
-                        runtime = Integer.parseInt(invocation.args[1]);
+                        int time;
+                        if (invocation.getArgs()[1].endsWith("m")){
+                            timeunit = TimeUnit.MINUTES;
+                            runtime = Integer.parseInt(invocation.getArgs()[1].replace("m",""));
+                        }else if (invocation.getArgs()[1].endsWith("d")){
+                            timeunit = TimeUnit.DAYS;
+                            runtime = Integer.parseInt(invocation.getArgs()[1].replace("d",""));
+                        }else if(invocation.getArgs()[1].endsWith("w")){
+                            extra = 604800000.002;
+                            runtime = Integer.parseInt(invocation.getArgs()[1].replace("w",""));
+                        }else if(invocation.getArgs()[1].endsWith("mon")) {
+                            extra =2629745999.989;
+                            runtime = Integer.parseInt(invocation.getArgs()[1].replace("mon",""));
+                        }
+
                         if (runtime < 0)
                             throw new IllegalArgumentException();
                     } catch (IllegalArgumentException e) {
@@ -235,12 +253,20 @@ public class RemindHandler extends CommandHandler {
                     StringBuilder prize = new StringBuilder(invocation.getArgs()[2]);
                     for (int i = 3; i < invocation.getArgs().length; i++)
                         prize.append(" ").append(invocation.getArgs()[i]);
-
+                    if (extra == 0){
                     Remind remind = createRemind(invocation.getTextChannel().getIdLong(),
                             prize.toString(),
-                            System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(runtime),
+                            (System.currentTimeMillis() + timeunit.toMillis(runtime)),
                             invocation.getAuthor().getIdLong());
-                    return remind == null ? message(error()) : null;
+
+                    return remind == null ? message(error()) : null;}
+                    else {
+                        Remind remind = createRemind(invocation.getTextChannel().getIdLong(),
+                                prize.toString(),
+                                (long) (System.currentTimeMillis() + runtime*extra),
+                                invocation.getAuthor().getIdLong());
+                        return remind == null ? message(error()) : null;
+                    }
                 default:
                     return createHelpMessage(invocation);
             }
