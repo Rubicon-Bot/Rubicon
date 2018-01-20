@@ -21,8 +21,7 @@ public class CoinhiveManager {
             balanceRequest.addParameter("name", user.getId());
             RequestResponse balanceResponse = balanceRequest.sendGETRequest();
             JSONObject balanceObj = (JSONObject) new JSONParser().parse(balanceResponse.getResponse());
-            if (balanceObj.get("success").equals("false")) {
-                Logger.error((String) balanceObj.get("error"));
+            if (balanceObj.get("success").equals("false") || balanceObj.get("balance") == null) {
                 return new CoinhiveUser() {
                     @Override
                     public String getName() {
@@ -63,7 +62,7 @@ public class CoinhiveManager {
 
                 @Override
                 public long getBalance() {
-                    return (long) balanceObj.get("balance");
+                    return ((long) balanceObj.get("balance"));
                 }
             };
         } catch (Exception e) {

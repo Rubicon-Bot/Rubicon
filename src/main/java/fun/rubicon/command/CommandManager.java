@@ -147,8 +147,6 @@ public class CommandManager extends ListenerAdapter {
             // create an array of the actual command arguments (exclude invocation arg)
             String[] args = new String[allArgs.length - 1];
             System.arraycopy(allArgs, 1, args, 0, args.length);
-            //Send typing whohooo
-            message.getTextChannel().sendTyping().queue();
             return new ParsedCommandInvocation(message, prefix, allArgs[0], args);
         }
         // else

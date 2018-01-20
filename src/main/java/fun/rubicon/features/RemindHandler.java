@@ -37,7 +37,7 @@ import static fun.rubicon.util.EmbedUtil.message;
  * @license MIT License <http://rubicon.fun/license>
  * @package fun.rubicon.features
  */
-public class RemindHandler extends CommandHandler{
+public class RemindHandler extends CommandHandler {
 
     private class Remind {
         private final long textChannelId;
@@ -54,16 +54,14 @@ public class RemindHandler extends CommandHandler{
         private boolean open = true;
 
 
-
-
         /**
          * Constructs a Remind object from the given parameters, ensures its singularity and schedules the resolving.
          *
-         * @param textChannelId  the id of the text channel the remindme message was posted in.
-         * @param messageId      the message's id.
-         * @param remindmsg      the remind text that will be reminded to.
-         * @param remindtime     the millis-date for the giveaway expiration.
-         * @param authorId       the user id of the person who wants to be reminded away something.
+         * @param textChannelId the id of the text channel the remindme message was posted in.
+         * @param messageId     the message's id.
+         * @param remindmsg     the remind text that will be reminded to.
+         * @param remindtime    the millis-date for the giveaway expiration.
+         * @param authorId      the user id of the person who wants to be reminded away something.
          */
 
         private Remind(long textChannelId, long messageId, String remindmsg, long remindtime, long authorId) {
@@ -83,17 +81,19 @@ public class RemindHandler extends CommandHandler{
         }
 
 
-        private void remind(){
+        private void remind() {
             if (!open)
                 throw new IllegalStateException("Remind is not open any more");
 
             PrivateChannel pc = getAuthor().openPrivateChannel().complete();
             pc.sendMessage(new EmbedBuilder()
                     .setColor(Colors.COLOR_SECONDARY)
-                    .setAuthor(getAuthor().getName(),"http://rubicon.fun",getAuthor().getAvatarUrl())
-                    .setTitle("Hey, "+ getAuthor().getName() + " you wanted to be Reminded to do:")
-                    .setDescription("```fix\n"+remindmsg+"```")
-            .build()
+                    .setAuthor(getAuthor().getName(), "http://rubicon.fun", getAuthor().getAvatarUrl())
+                    .setTitle("Hey, " + getAuthor().getName() + "!")
+                    .setDescription("You wanted to do following: " +
+                            "\n```fix" +
+                            "\n" + remindmsg + "```")
+                    .build()
             ).queue();
 
 
@@ -164,7 +164,7 @@ public class RemindHandler extends CommandHandler{
     private Set<Remind> reminders = new HashSet<>();
 
     public RemindHandler() {
-        super(new String[]{"remindme","remind"},CommandCategory.GENERAL,new PermissionRequirements(0,"command.remindme"),"Get reminded of whatever you want","create <minutes> <What to be reminded>");
+        super(new String[]{"remindme", "remind"}, CommandCategory.GENERAL, new PermissionRequirements(0, "command.remindme"), "Get reminded of whatever you want", "create <minutes> <What to be reminded>");
         try {
             MySQL.getConnection().prepareStatement(
                     "CREATE TABLE IF NOT EXISTS `reminders-v1` (" +
@@ -214,10 +214,10 @@ public class RemindHandler extends CommandHandler{
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
-        if (invocation.getArgs().length < 1){
+        if (invocation.getArgs().length < 1) {
             return createHelpMessage();
-        }else {
-            switch (invocation.getArgs()[0]){
+        } else {
+            switch (invocation.getArgs()[0]) {
                 case "create":
                     if (invocation.getArgs().length < 3)
                         return createHelpMessage(invocation);
@@ -250,10 +250,10 @@ public class RemindHandler extends CommandHandler{
     public Remind createRemind(long textChannelId, String prize, long expirationDate, long authorId) {
         // create and send giveaway message
         Message message = RubiconBot.getJDA().getTextChannelById(textChannelId).sendMessage(message(
-                remindEmbed("I will Remind " + RubiconBot.getJDA().getUserById(authorId).getName(),
-                        "Ok i will remind you to do `" + prize + "`")))
+                remindEmbed("Successfully set reminder!",
+                        "I will remind you to do following: `" + prize + "`")))
                 .complete();
-        message.delete().queueAfter(10,TimeUnit.SECONDS);
+        message.delete().queueAfter(10, TimeUnit.SECONDS);
         // create and giveaway
         Remind remind = new Remind(textChannelId, message.getIdLong(), prize, expirationDate, authorId);
         remind.save();

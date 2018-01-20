@@ -31,6 +31,9 @@ import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.hooks.EventListener;
 
 import javax.security.auth.login.LoginException;
@@ -140,11 +143,20 @@ public class RubiconBot {
         } catch (LoginException | InterruptedException e) {
             Logger.error(e.getMessage());
         }
+
+        getJDA().getPresence().setGame(Game.playing("Success."));
+
         CommandVote.loadPolls(instance.jda);
-        Info.lastRestart = new Date();
+        Info.lastRestart = new
+
+                Date();
 //      CommandGiveaway.startGiveawayManager(instance.jda);
 
-        getJDA().getPresence().setGame(Game.playing("Started."));
+        getJDA().
+
+                getPresence().
+
+                setGame(Game.playing("Started."));
         GameAnimator.start();
     }
 
