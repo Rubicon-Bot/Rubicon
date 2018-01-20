@@ -27,6 +27,7 @@ public class HttpRequest {
 
     /**
      * Executes a GET request query and returns the response
+     *
      * @return RequestResponse
      * @throws Exception Exception
      */
@@ -51,6 +52,7 @@ public class HttpRequest {
 
     /**
      * Executes a POST request query and returns the response
+     *
      * @return RequestResponse
      * @throws Exception Exception
      */
@@ -90,7 +92,7 @@ public class HttpRequest {
         for (RequestParameter p : params) {
             if (!paramsLine.equals(""))
                 paramsLine += "&";
-            paramsLine += URLEncoder.encode(p.getKey(), java.nio.charset.StandardCharsets.UTF_8.toString()) + "=" + URLEncoder.encode(p.getValue(), java.nio.charset.StandardCharsets.UTF_8.toString());
+            paramsLine += URLEncoder.encode(p.getKey(), java.nio.charset.StandardCharsets.UTF_8.toString()) + "=" + URLEncoder.encode((p.getValue().startsWith("int;") ? p.getValue().replaceFirst("int;", "") : p.getValue()), java.nio.charset.StandardCharsets.UTF_8.toString());
         }
         return paramsLine;
     }
@@ -105,6 +107,7 @@ public class HttpRequest {
 
     /**
      * Add an request parameter to the http request
+     *
      * @param requestParameter Request Parameter
      */
     public void addParameter(RequestParameter requestParameter) {
@@ -113,10 +116,21 @@ public class HttpRequest {
 
     /**
      * Same as {@link #addParameter(RequestParameter)}
-     * @param key Parameter Key
+     *
+     * @param key   Parameter Key
      * @param value Parameter Value
      */
     public void addParameter(String key, String value) {
+        params.add(new RequestParameter(key, value));
+    }
+
+    /**
+     * Same as {@link #addParameter(RequestParameter)}
+     *
+     * @param key   Parameter Key
+     * @param value Parameter Value
+     */
+    public void addParameter(String key, int value) {
         params.add(new RequestParameter(key, value));
     }
 
@@ -130,7 +144,14 @@ public class HttpRequest {
     }
 
     /**
-     *
+     * @return String
+     */
+    public String getFullURL() {
+        return fullURL;
+    }
+
+
+    /**
      * @param requestURL the urls where the request should be executed
      */
     public void setURL(String requestURL) {
@@ -152,7 +173,8 @@ public class HttpRequest {
     }
 
     /**
-     *  Sets the request header
+     * Sets the request header
+     *
      * @param requestHeader The request header
      */
     public void setRequestHeader(RequestHeader requestHeader) {

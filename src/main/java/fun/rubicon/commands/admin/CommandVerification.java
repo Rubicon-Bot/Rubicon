@@ -24,13 +24,14 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Handles the 'verification' command.
+ *
  * @author Michael Rittmeister / Schlaubi
  * @copyright Rubicon Dev Team 2017
  * @license MIT License <http://rubicon.fun/license>
  * @package fun.rubicon.commands.admin
- *  Some Parts of this command are inspired by CodingGuy<http://entwickler.cc>
- *
-=======
+ * Some Parts of this command are inspired by CodingGuy<http://entwickler.cc>
+ * <p>
+ * =======
  */
 public class CommandVerification extends CommandHandler {
 
@@ -120,8 +121,8 @@ public class CommandVerification extends CommandHandler {
 
     public static void handleReaction(MessageReactionAddEvent event) {
         Message message = event.getTextChannel().getMessageById(event.getMessageId()).complete();
-        if(message == null) return;
-        if(message.equals("0")) return;
+        if (message == null) return;
+        if (message.equals("0")) return;
         if (!message.getAuthor().equals(event.getJDA().getSelfUser())) return;
         if (!event.getUser().equals(users.get(message))) return;
         if (RubiconBot.getMySQL().verificationEnabled(event.getGuild())) {
@@ -133,7 +134,7 @@ public class CommandVerification extends CommandHandler {
                     return;
                 Role verfied = event.getGuild().getRoleById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "roleid"));
                 event.getGuild().getController().addRolesToMember(event.getMember(), verfied).queue();
-                message.editMessage(new EmbedBuilder().setDescription(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "verifiedtext").replace("%user%", event.getUser().getAsMention())).build()).queue();
+                message.editMessage(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "verifiedtext").replace("%user%", event.getUser().getAsMention())).queue(msg -> msg.delete().queueAfter(30, TimeUnit.SECONDS));
             }
         } else {
             if (!setups.containsKey(event.getGuild())) return;
@@ -187,7 +188,7 @@ public class CommandVerification extends CommandHandler {
         VerificationSettings settings = settingslist.get(message.getGuild());
         settings.verifiedtext = response.getContentDisplay();
         settingslist.replace(message.getGuild(), settings);
-        message.editMessage(EmbedUtil.info("Step 4 - Verified emote", "Please react with the verify emote").build()).queue();
+        message.editMessage(EmbedUtil.info("Step 4 - Verified emote", "Please react with the verify emote. Emote must be a **custom** emote from **your** server.").build()).queue();
         VerificationSetup setup = setups.get(message.getGuild());
         setup.step++;
         setups.replace(message.getGuild(), setup);
@@ -198,15 +199,15 @@ public class CommandVerification extends CommandHandler {
         VerificationSettings settings = settingslist.get(event.getGuild());
         MessageReaction.ReactionEmote emote = event.getReactionEmote();
         //System.out.println(event.getReactionEmote().getEmote().isManaged());
-        if(!event.getReactionEmote().getEmote().isManaged()){
-                if(!event.getGuild().getEmotes().contains(emote.getEmote())) {
-                    message.getTextChannel().sendMessage(EmbedUtil.error("Unsupported emote", "You can only use global or custom emotes of your server").build()).queue(msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
-                    return;
-                }
+        if (!event.getReactionEmote().getEmote().isManaged()) {
+            if (!event.getGuild().getEmotes().contains(emote.getEmote())) {
+                message.getTextChannel().sendMessage(EmbedUtil.error("Unsupported emote", "You can only use global or custom emotes of your server").build()).queue(msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
+                return;
+            }
         }
         settings.emote = emote;
         settingslist.replace(event.getGuild(), settings);
-        message.editMessage(EmbedUtil.info("Step 5 - Verified role", "Please type in the emote that should be reacted by users when acceptings rules").build()).queue();
+        message.editMessage(EmbedUtil.info("Step 5 - Verified role", "Please mention the role that should be added to user-").build()).queue();
         VerificationSetup setup = setups.get(message.getGuild());
         setup.step++;
         setups.replace(message.getGuild(), setup);

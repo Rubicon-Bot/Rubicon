@@ -17,15 +17,15 @@ public class Colors {
     /**
      * Standard messages containing information like successful command responses.
      */
-    public static Color COLOR_PRIMARY = new Color(46, 204, 113);
+    public static Color COLOR_PRIMARY = new Color(88, 198, 33);
     /**
      * For messages containing additional information.
      */
-    public static Color COLOR_SECONDARY = new Color(41, 128, 185);
+    public static Color COLOR_SECONDARY = new Color(18, 109, 229);
     /**
      * For error messages that are not defined in further purpose.
      */
-    public static Color COLOR_ERROR = new Color(231, 76, 60);
+    public static Color COLOR_ERROR = new Color(229, 60, 18);
     /**
      * For permission-related error messages.
      */

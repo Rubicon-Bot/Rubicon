@@ -14,6 +14,7 @@ import fun.rubicon.core.minigames.RouletteNumber;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
+import fun.rubicon.sql.UserSQL;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.awt.*;
@@ -22,6 +23,7 @@ import static fun.rubicon.util.EmbedUtil.*;
 
 /**
  * Handles the 'roulette' command with that users can play roulette.
+ *
  * @author xEiisKeksx, tr808axm
  */
 public class CommandRoulette extends CommandHandler {
@@ -36,6 +38,7 @@ public class CommandRoulette extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions permissions) {
+        UserSQL userSQL = new UserSQL(invocation.getAuthor());
         if (invocation.getArgs().length < 2)
             return createHelpMessage(invocation);
         else {
@@ -53,7 +56,7 @@ public class CommandRoulette extends CommandHandler {
                 return message(error("Bet too little", "You need to bet at least 1 ruby to play Roulette."));
 
             // check if the user has enough money to cover his bet
-            if (betAmount > Integer.parseInt(RubiconBot.getMySQL().getUserValue(invocation.getMessage().getAuthor(), "money")))
+            if (betAmount > Integer.parseInt(userSQL.get("money")))
                 return message(error("Not enough money", "You don't have `" + betAmount + "` rubys. " +
                         "Check your money with `" + invocation.getPrefix() + "money`."));
 
@@ -130,16 +133,14 @@ public class CommandRoulette extends CommandHandler {
             if (wins) {
                 int wonMoney = betAmount * (multiplier - 1);
                 // update money
-                RubiconBot.getMySQL().updateUserValue(invocation.getMessage().getAuthor(), "money",
-                        String.valueOf(Integer.parseInt(RubiconBot.getMySQL().getUserValue(invocation.getMessage().getAuthor(), "money")) + wonMoney));
+                userSQL.set("money", String.valueOf(Integer.parseInt(userSQL.get("money")) + wonMoney));
                 // respond
                 return message(embed(":star: You win", "Congratulations "
                         + invocation.getMessage().getAuthor().getAsMention() + "! You won " + wonMoney + " rubys.")
                         .setColor(Color.YELLOW));
             } else {
                 // update money
-                RubiconBot.getMySQL().updateUserValue(invocation.getMessage().getAuthor(), "money",
-                        String.valueOf(Integer.parseInt(RubiconBot.getMySQL().getUserValue(invocation.getMessage().getAuthor(), "money")) - betAmount));
+                userSQL.set("money", String.valueOf(Integer.parseInt(userSQL.get("money")) - betAmount));
                 // respond
                 return message(embed(":cry: You lose", "Sorry, no luck this time!"));
             }

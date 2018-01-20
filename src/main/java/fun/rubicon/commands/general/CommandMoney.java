@@ -13,6 +13,7 @@ import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
+import fun.rubicon.sql.UserSQL;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
@@ -23,11 +24,16 @@ public class CommandMoney extends CommandHandler {
     public CommandMoney() {
         super(new String[]{"money", "ruby"}, CommandCategory.GENERAL,
                 new PermissionRequirements(PermissionLevel.EVERYONE, "command.money"),
-                "You can donate Ruby's to someone!", "<give | set | add | remove> <UserAsMention> <amount>");
+                "You can donate Ruby's to someone!", "<give | set | add | remove> <@User> <amount>");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        UserSQL userSQL = new UserSQL(parsedCommandInvocation.getAuthor());
+        UserSQL userSQL2 = null;
+        if (parsedCommandInvocation.getMessage().getMentionedUsers().size() == 1) {
+            userSQL2 = new UserSQL(parsedCommandInvocation.getMessage().getMentionedUsers().get(0));
+        }
         int user1_has_money = 0;
         int user2_has_money = 0;
         int user_spend_money = 0;
@@ -46,14 +52,14 @@ public class CommandMoney extends CommandHandler {
                             return createHelpMessage();
                         }
                         user_spend_money = Integer.parseInt(parsedCommandInvocation.getArgs()[parsedCommandInvocation.getArgs().length - 1]);
-                        user1_has_money = Integer.parseInt(RubiconBot.getMySQL().getUserValue(parsedCommandInvocation.getMessage().getAuthor(), "money"));
-                        user2_has_money = Integer.parseInt(RubiconBot.getMySQL().getUserValue(parsedCommandInvocation.getMessage().getMentionedUsers().get(0), "money"));
+                        user1_has_money = Integer.parseInt(userSQL.get("money"));
+                        user2_has_money = Integer.parseInt(userSQL2.get("money"));
                         if (user1_has_money < user_spend_money) {
                             return message(error("Not enough Money", "Sorry " + parsedCommandInvocation.getMessage().getAuthor().getAsMention() + ". You only have " + user1_has_money + " Ruby's!"));
                         } else {
                             if ((user2_has_money + user_spend_money) <= 2147483647) {
-                                RubiconBot.getMySQL().updateUserValue(parsedCommandInvocation.getMessage().getAuthor(), "money", String.valueOf(user1_has_money - user_spend_money));
-                                RubiconBot.getMySQL().updateUserValue(parsedCommandInvocation.getMessage().getMentionedUsers().get(0), "money", String.valueOf(user2_has_money + user_spend_money));
+                                userSQL.set("money", String.valueOf(user1_has_money - user_spend_money));
+                                userSQL2.set("money", String.valueOf(user2_has_money + user_spend_money));
                                 return message(success("Donation completed", parsedCommandInvocation.getMessage().getAuthor().getAsMention() + " give " + user_spend_money + " Ruby's to " + parsedCommandInvocation.getMessage().getMentionedUsers().get(0).getAsMention() + "."));
                             } else {
                                 return message(error("Money value to big!", "Money value must be smaller than " + ((2147483647 - user2_has_money) + 1) + "!"));
@@ -71,7 +77,7 @@ public class CommandMoney extends CommandHandler {
                         try {
                             user_spend_money = Integer.parseInt(parsedCommandInvocation.getArgs()[parsedCommandInvocation.getArgs().length - 1]);
                             if (user_spend_money > -1) {
-                                RubiconBot.getMySQL().updateUserValue(parsedCommandInvocation.getMessage().getMentionedUsers().get(0), "money", String.valueOf(user_spend_money));
+                                userSQL2.set("money", String.valueOf(user_spend_money));
                                 return message(success("Money has been set!", "Money of " + parsedCommandInvocation.getMessage().getMentionedUsers().get(0).getAsMention() + " has been set to " + user_spend_money + " Ruby's."));
                             } else {
                                 return message(error("Money value to small!", "Money value must be 0 or bigger!"));
@@ -88,7 +94,7 @@ public class CommandMoney extends CommandHandler {
                 }
             case "add":
                 int max_money = 2147483647;
-                user2_has_money = Integer.parseInt(RubiconBot.getMySQL().getUserValue(parsedCommandInvocation.getMessage().getMentionedUsers().get(0), "money"));
+                user2_has_money = Integer.parseInt(userSQL.get("money"));
                 if (new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.money.modify").coveredBy(userPermissions)) {
                     if (parsedCommandInvocation.getArgs().length == 3) {
                         try {
@@ -98,7 +104,7 @@ public class CommandMoney extends CommandHandler {
                                     if (user2_has_money == 2147483647) {
                                         return message(error("Too much money!", parsedCommandInvocation.getMessage().getMentionedUsers().get(0).getAsMention() + " has already the money maximum!"));
                                     } else {
-                                        RubiconBot.getMySQL().updateUserValue(parsedCommandInvocation.getMessage().getMentionedUsers().get(0), "money", String.valueOf(user2_has_money + user_spend_money));
+                                        userSQL2.set("money", String.valueOf(user2_has_money + user_spend_money));
                                         return message(success("Money has been added!", "Money of " + parsedCommandInvocation.getMessage().getMentionedUsers().get(0).getAsMention() + " has been set to " + (user2_has_money + user_spend_money) + " Ruby's."));
                                     }
                                 } else {
@@ -119,14 +125,14 @@ public class CommandMoney extends CommandHandler {
                 }
 
             case "remove":
-                user2_has_money = Integer.parseInt(RubiconBot.getMySQL().getUserValue(parsedCommandInvocation.getMessage().getMentionedUsers().get(0), "money"));
+                user2_has_money = Integer.parseInt(userSQL2.get("money"));
                 if (new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.money.modify").coveredBy(userPermissions)) {
                     if (parsedCommandInvocation.getArgs().length == 3) {
                         try {
                             user_spend_money = Integer.parseInt(parsedCommandInvocation.getArgs()[parsedCommandInvocation.getArgs().length - 1]);
                             if (user_spend_money > 0) {
-                                if ((Integer.parseInt(RubiconBot.getMySQL().getUserValue(parsedCommandInvocation.getMessage().getMentionedUsers().get(0), "money")) - user_spend_money) >= 0) {
-                                    RubiconBot.getMySQL().updateUserValue(parsedCommandInvocation.getMessage().getMentionedUsers().get(0), "money", String.valueOf(user2_has_money - user_spend_money));
+                                if ((Integer.parseInt(userSQL2.get("money")) - user_spend_money) >= 0) {
+                                    userSQL2.set("money", String.valueOf(user2_has_money - user_spend_money));
                                     return message(success("Money has been removed!", "Money of " + parsedCommandInvocation.getMessage().getMentionedUsers().get(0).getAsMention() + " has been set to " + (user2_has_money - user_spend_money) + " Ruby's."));
                                 } else {
                                     return message(error("Money value to big!", "Money value must be smaller than " + ((2147483647 - user2_has_money) + 1) + "!"));

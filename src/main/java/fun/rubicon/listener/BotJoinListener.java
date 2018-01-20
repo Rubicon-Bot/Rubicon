@@ -24,6 +24,7 @@ public class BotJoinListener extends ListenerAdapter {
 
     /**
      * Creates the new guild in the database
+     *
      * @param event
      */
     @Override
@@ -34,8 +35,7 @@ public class BotJoinListener extends ListenerAdapter {
             Guild g = event.getGuild();
             if (!RubiconBot.getMySQL().ifGuildExits(event.getGuild())) {
                 RubiconBot.getMySQL().createGuildServer(g);
-                RubiconBot.getMySQL().createMember(event.getGuild().getOwner());
-                new ServerLogSQL(event.getGuild()).createDefaultEntryIfNotExist();
+                new ServerLogSQL(event.getGuild());
             }
         } catch (Exception ex) {
             Logger.error(ex);

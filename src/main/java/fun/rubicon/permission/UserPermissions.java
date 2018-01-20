@@ -135,9 +135,9 @@ public class UserPermissions {
         PermissionManager manager = RubiconBot.sGetPermissionManager();
         List<Permission> effectivePermissions = new ArrayList<>();
         for (PermissionTarget target : getPermissionTargets(null))
-            for(Permission targetPermission : manager.getPermissions(target))
+            for (Permission targetPermission : manager.getPermissions(target))
                 // only add to effective if there is no equal permission string yet.
-                if(effectivePermissions.stream()
+                if (effectivePermissions.stream()
                         .noneMatch(effectivePermission -> effectivePermission.equalsIgnoreNegation(targetPermission)))
                     effectivePermissions.add(targetPermission);
         return effectivePermissions;
@@ -152,7 +152,7 @@ public class UserPermissions {
     }
 
     /**
-     * @param context used to check discord permissions in a channel.
+     * @param context                used to check discord permissions in a channel.
      * @param requiredPermissionNode the required permission node.
      * @return whether memberPermissionNodes contains requiredPermissionNode.
      */
@@ -164,7 +164,8 @@ public class UserPermissions {
 
     /**
      * Iterates through all {@link PermissionTarget PermissionTargets} and returns the effective {@link Permission} entry.
-     * @param context used to check discord permissions in a channel.
+     *
+     * @param context                used to check discord permissions in a channel.
      * @param requiredPermissionNode the permission to query.
      * @return the effect
      */
@@ -173,7 +174,7 @@ public class UserPermissions {
         Permission effectivePermissionEntry = null;
         // check permissions
         List<PermissionTarget> permissionTargets = getPermissionTargets(context);
-        for(int i = 0; effectivePermissionEntry == null && i < permissionTargets.size(); i++) {
+        for (int i = 0; effectivePermissionEntry == null && i < permissionTargets.size(); i++) {
             Permission permission = permissionManager.getPermission(permissionTargets.get(i), requiredPermissionNode);
             if (permission != null)
                 effectivePermissionEntry = permission;
@@ -195,7 +196,7 @@ public class UserPermissions {
             targets.add(new PermissionTarget(member));
 
             // add discord permission targets
-            for(net.dv8tion.jda.core.Permission permission : context == null ? member.getPermissions() : member.getPermissions(context))
+            for (net.dv8tion.jda.core.Permission permission : context == null ? member.getPermissions() : member.getPermissions(context))
                 targets.add(new PermissionTarget(member.getGuild(), permission));
 
             // add role targets

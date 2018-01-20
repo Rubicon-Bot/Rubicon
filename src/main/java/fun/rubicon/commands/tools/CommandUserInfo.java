@@ -7,14 +7,12 @@
 package fun.rubicon.commands.tools;
 
 
-import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
-import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Member;
@@ -58,19 +56,15 @@ public class CommandUserInfo extends CommandHandler {
         userinfo.addField("User id", info.getId(), false);
         userinfo.addField("Status", user.getOnlineStatus().toString().replace("_", ""), false);
         if (user.getGame() != null)
-            userinfo.addField("Game", user.getGame().toString(), false);
+            userinfo.addField("Game", user.getGame().getName(), false);
         userinfo.addField("Guild join date", formatDate(user.getJoinDate()), false);
         userinfo.addField("Roles", "`" + roles.toString() + "`", false);
         userinfo.addField("Discord join date", formatDate(info.getCreationTime()), false);
         userinfo.addField("Avatar url", info.getAvatarUrl(), true);
-        userinfo.addField("--- RubiconBot Stats ---", "" +
-                "Level: " + RubiconBot.getMySQL().getUserValue(user.getUser(), "level") + "\n" +
-                "Ruby's: " + RubiconBot.getMySQL().getUserValue(user.getUser(), "money"), true);
         return new MessageBuilder().setEmbed(userinfo.build()).build();
     }
 
     public String formatDate(OffsetDateTime date) {
         return date.getMonthValue() + "/" + date.getDayOfMonth() + "/" + date.getYear();
     }
-
 }
