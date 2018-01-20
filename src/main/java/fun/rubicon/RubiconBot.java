@@ -226,8 +226,11 @@ public class RubiconBot {
                 new CommandSpeedTest(),
                 new CommandStatistics(),
                 new CommandMoney(),
-                new fun.rubicon.commands.general.CommandLevel(),
-                new CommandUptime()
+                new CommandUptime(),
+                new CommandProfile(),
+                new CommandBio(),
+                new CommandMiner(),
+                new CommandPremium()
         );
         // settings commands package
         commandManager.registerCommandHandlers(
