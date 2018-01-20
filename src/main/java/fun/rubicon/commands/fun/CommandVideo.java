@@ -58,8 +58,9 @@ public class CommandVideo extends CommandHandler{
                     .setTitle((String) snippet.get("title"),"https://youtu.be/"+id.get("videoId"))
                     .setAuthor(invocation.getAuthor().getName(),null,invocation.getAuthor().getAvatarUrl())
                     .setTimestamp(new Date().toInstant())
-                    .setImage((String) ((JSONObject)thumbnails.get("default")).get("url"))
-                    .setDescription((String) snippet.get("description"))
+                    .setThumbnail((String) ((JSONObject)thumbnails.get("default")).get("url"))
+                    .addField("Video Description",(String) snippet.get("description"),false)
+                    .addField("Channel Name",(String) snippet.get("channelTitle"),true)
                     ;
 
             invocation.getTextChannel().sendMessage(message.build()).queue();
