@@ -1,5 +1,6 @@
 package fun.rubicon.commands.tools;
 
+import com.sun.org.apache.regexp.internal.RE;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
@@ -15,6 +16,7 @@ import net.dv8tion.jda.core.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.core.exceptions.ErrorResponseException;
 
+import javax.xml.soap.Text;
 import java.awt.*;
 import java.io.*;
 import java.util.*;
@@ -69,6 +71,9 @@ public class CommandVote extends CommandHandler implements Serializable {
             case "close":
                 closeVote(parsedCommandInvocation);
                 break;
+            case "add":
+                //addOption(parsedCommandInvocation);
+                break;
         }
 
         polls.forEach((guild, poll) -> {
@@ -92,8 +97,11 @@ public class CommandVote extends CommandHandler implements Serializable {
         private HashMap<String, Integer> votes;
         private String channel;
         private HashMap<String, Integer> reacts;
+        private HashMap<String, Integer> votecount;
+        private List<String> notUsedEmojis;
+        private HashMap<Integer, String> emojis;
 
-        private Poll(Member creator, String heading, List<String> answers, Message pollmsg, TextChannel channel) {
+        private Poll(Member creator, String heading, List<String> answers, Message pollmsg, TextChannel channel, List<String> notUsedEmojis, HashMap<Integer, String> emojis) {
             this.creator = creator.getUser().getId();
             this.heading = heading;
             this.answers = answers;
@@ -101,6 +109,9 @@ public class CommandVote extends CommandHandler implements Serializable {
             this.votes = new HashMap<>();
             this.channel = channel.getId();
             this.reacts = new HashMap<>();
+            this.votecount = new HashMap<>();
+            this.notUsedEmojis = notUsedEmojis;
+            this.emojis = emojis;
 
             this.pollmsgs.put(pollmsg.getId(), pollmsg.getTextChannel().getId());
         }
@@ -147,7 +158,7 @@ public class CommandVote extends CommandHandler implements Serializable {
 
         poll.answers.forEach(s -> {
             long votescount = poll.votes.keySet().stream().filter(k -> poll.votes.get(k).equals(count.get() + 1)).count();
-            ansSTR.append(EMOTI[count.get()] + " - " + (count.get() + 1) + "  -  " + s + "  -  Votes: `" + votescount + "` \n");
+            ansSTR.append(poll.emojis.get(count.get() + 1) + " - " + (count.get() + 1) + "  -  " + s + "  -  Votes: `" + votescount + "` \n");
             count.addAndGet(1);
         });
 
@@ -158,6 +169,9 @@ public class CommandVote extends CommandHandler implements Serializable {
                 .setColor(Color.CYAN);
 
     }
+
+
+
 
     private void voteStats(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         Message message = parsedCommandInvocation.getMessage();
@@ -231,12 +245,16 @@ public class CommandVote extends CommandHandler implements Serializable {
         HashMap<String, Integer> reactions = new HashMap<>();
         final AtomicInteger count = new AtomicInteger();
         toAddEmojis = new ArrayList<String>(Arrays.asList(EMOTI));
+        HashMap<Integer, String> emojis = new HashMap<>();
         answers.forEach(a -> {
-            reactions.put(toAddEmojis.get(0), count.get() + 1);
-            toAddEmojis.remove(0);
+            Random random = new Random();
+            int index = random.nextInt(toAddEmojis.size());
+            reactions.put(toAddEmojis.get(index), count.get() + 1);
+            emojis.put(count.get() + 1, toAddEmojis.get(index));
+            toAddEmojis.remove(index);
             count.addAndGet(1);
         });
-        Poll poll = new Poll(message.getMember(), heading, answers, pollmessage, message.getTextChannel());
+        Poll poll = new Poll(message.getMember(), heading, answers, pollmessage, message.getTextChannel(), toAddEmojis, emojis);
         polls.put(message.getGuild(), poll);
         poll.getReacts().putAll(reactions);
 
@@ -253,6 +271,7 @@ public class CommandVote extends CommandHandler implements Serializable {
 
     private void votePoll(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         Message message = parsedCommandInvocation.getMessage();
+        User author = message.getAuthor();
         String[] args = parsedCommandInvocation.getArgs();
         if (!polls.containsKey(message.getGuild())) {
             message.getTextChannel().sendMessage(EmbedUtil.error("No poll", "There is currently no poll running on this guild").build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
@@ -272,13 +291,27 @@ public class CommandVote extends CommandHandler implements Serializable {
             return;
         }
 
-        if (poll.votes.containsKey(message.getAuthor().getId())) {
+        poll.votecount.putIfAbsent(author.getId(), 0);
+        if (poll.votecount.get(author.getId()) > 3) {
+            author.openPrivateChannel().complete().sendMessage("You can only change your answer 3 times").queue();
             return;
         }
 
-        poll.votes.put(message.getAuthor().getId(), vote);
+        if(!poll.votes.containsKey(author.getId())){
+            poll.votes.put(author.getId(), vote);
+            author.openPrivateChannel().complete().sendMessage("You have successfully voted for option `" + args[1] + "`").queue();
+        }
+        else {
+            if(poll.votes.get(author.getId()) == vote){
+                author.openPrivateChannel().complete().sendMessage("You have already voted for that option").queue();
+                return;
+            }
+            author.openPrivateChannel().complete().sendMessage("You have successfully changed your vote to option `" + args[1] + "`").queue();
+            poll.votes.replace(author.getId(), vote);
+        }
+
+        poll.votecount.replace(author.getId(), poll.votecount.get(author.getId())+1);
         polls.replace(message.getGuild(), poll);
-        message.getAuthor().openPrivateChannel().complete().sendMessage("You have successfully voted for option `" + args[1] + "`");
         poll.pollmsgs.forEach((m, c) -> {
             Message pollmsg = message.getGuild().getTextChannelById(c).getMessageById(m).complete();
             pollmsg.editMessage(getParsedPoll(poll, message.getGuild()).build()).queue();
@@ -286,36 +319,31 @@ public class CommandVote extends CommandHandler implements Serializable {
     }
 
     public static void reactVote(MessageReactionAddEvent event) {
-        if (event.getUser().isBot() || !polls.containsKey(event.getGuild()))
+        User author = event.getUser();
+        if (author.isBot() || !polls.containsKey(event.getGuild()))
             return;
         Poll poll = polls.get(event.getGuild());
         if (!poll.isPollmsg(event.getMessageId())) return;
-        if (poll.votes.containsKey(event.getUser().getId())) {
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    event.getReaction().removeReaction(event.getUser()).queue();
-                }
-            }, 1000);
+        event.getReaction().removeReaction(author).queue();
+        String emoji = event.getReaction().getReactionEmote().getName();
+        poll.votecount.putIfAbsent(author.getId(), 0);
+        if (poll.votecount.get(author.getId()) > 3) {
+            author.openPrivateChannel().complete().sendMessage("You can only change your answer 3 times").queue();
             return;
         }
-        String emoji = event.getReaction().getReactionEmote().getName();
-
-        poll.votes.put(event.getUser().getId(), poll.reacts.get(emoji));
+        if(poll.reacts.get(emoji) == (poll.votes.get(author.getId()))) return;
+        if(poll.votes.containsKey(author.getId()))
+            poll.votes.put(author.getId(), poll.reacts.get(emoji));
+         else {
+            poll.votes.replace(author.getId(), poll.reacts.get(emoji));
+            author.openPrivateChannel().complete().sendMessage("You changed your vote to option `" + poll.reacts.get(emoji) + "` !").queue();
+        }
+        poll.votecount.replace(author.getId(), poll.votecount.get(author.getId())+1);
         polls.replace(event.getGuild(), poll);
-
         poll.pollmsgs.forEach((m, c) -> {
             Message pollmsg = event.getGuild().getTextChannelById(c).getMessageById(m).complete();
             pollmsg.editMessage(getParsedPoll(poll, event.getGuild()).build()).queue();
         });
-
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                event.getReaction().removeReaction(event.getUser()).queue();
-            }
-        }, 1000);
-
         CommandVote.polls.keySet().forEach((guild) -> {
             File path = new File("data/votes");
             if (!path.exists())
@@ -326,6 +354,56 @@ public class CommandVote extends CommandHandler implements Serializable {
                 ex.printStackTrace();
             }
         });
+    }
+
+    private void addOption(CommandManager.ParsedCommandInvocation parsedCommandInvocation){
+        User user = parsedCommandInvocation.getAuthor();
+        TextChannel channel = parsedCommandInvocation.getTextChannel();
+        String[] args = parsedCommandInvocation.getArgs();
+
+        if(!polls.containsKey(parsedCommandInvocation.getGuild())){
+            channel.sendMessage(EmbedUtil.error("No poll", "There is no poll running on this guild").build()).queue(msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
+            return;
+        }
+
+        Poll poll = polls.get(parsedCommandInvocation.getGuild());
+
+        if(!poll.creator.equals(user.getId())){
+            channel.sendMessage(EmbedUtil.error("No permission", "Only the author of the poll can add options").build()).queue(msg -> msg.delete().queueAfter(7, TimeUnit.SECONDS));
+            return;
+        }
+
+        if(args.length < 1){
+            channel.sendMessage(createHelpMessage()).queue(msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
+            return;
+        }
+
+        StringBuilder nameSTR = new StringBuilder();
+        for (int i =1; i< args.length; i++){
+            nameSTR.append(args[i]).append(" ");
+        }
+        nameSTR.replace(nameSTR.lastIndexOf(" "), nameSTR.lastIndexOf(" ") + 1, "");
+        String name = nameSTR.toString();
+
+        if(poll.answers.contains(name)){
+            channel.sendMessage(EmbedUtil.error("Option already used", "This option is already used").build()).queue(msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
+            return;
+        }
+        System.out.println(poll.answers.size());
+        poll.answers.add(name);
+        List<String> toAddEmoji = poll.notUsedEmojis;
+        Random random = new Random();
+        int index = random.nextInt(poll.notUsedEmojis.size());
+        poll.reacts.put(toAddEmoji.get(index), poll.answers.size());
+        poll.getPollMessages(parsedCommandInvocation.getGuild()).forEach(m -> {
+            m.addReaction(toAddEmoji.get(index)).queue();
+            m.editMessage(getParsedPoll(poll, parsedCommandInvocation.getGuild()).build()).queue();
+        });
+        poll.emojis.put(poll.answers.size() - 1, toAddEmoji.get(index));
+        System.out.println(poll.emojis.get(poll.emojis.size()));
+        System.out.println(poll.emojis.size());
+        poll.notUsedEmojis.remove(index);
+        polls.replace(parsedCommandInvocation.getGuild(), poll);
     }
 
     private static void savePoll(Guild guild) throws IOException {
@@ -382,5 +460,7 @@ public class CommandVote extends CommandHandler implements Serializable {
 
         }
     }
+
+
 
 }
