@@ -229,7 +229,6 @@ public class RubiconBot {
                 new CommandSpeedTest(),
                 new CommandStatistics(),
                 new CommandMoney(),
-                new fun.rubicon.commands.general.CommandLevel(),
                 new CommandUptime(),
                 new CommandProfile(),
                 new CommandBio(),
