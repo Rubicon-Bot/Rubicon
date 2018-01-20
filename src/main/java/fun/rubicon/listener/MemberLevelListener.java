@@ -10,6 +10,7 @@ import fun.rubicon.sql.MemberSQL;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -55,13 +56,15 @@ public class MemberLevelListener extends ListenerAdapter {
             memberSQL.set("points", "0");
 
             //Level Up
-            event.getChannel().sendMessage(new EmbedBuilder()
-                    .setAuthor(event.getAuthor().getName() + " leveled up!", null, event.getAuthor().getAvatarUrl())
-                    .setDescription("You are now level **" + fina + "**")
-                    .setFooter("rc!profile to see money, level, points and more", null)
-                    .setColor(Colors.COLOR_SECONDARY)
-                    .build()
-            ).queue(message -> message.delete().queueAfter(10, TimeUnit.SECONDS));
+            if (event.getMessage().getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_READ) && event.getMessage().getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_WRITE)) {
+                event.getChannel().sendMessage(new EmbedBuilder()
+                        .setAuthor(event.getAuthor().getName() + " leveled up!", null, event.getAuthor().getAvatarUrl())
+                        .setDescription("You are now level **" + fina + "**")
+                        .setFooter("rc!profile to see money, level, points and more", null)
+                        .setColor(Colors.COLOR_SECONDARY)
+                        .build()
+                ).queue(message -> message.delete().queueAfter(10, TimeUnit.SECONDS));
+            }
         }
     }
 
