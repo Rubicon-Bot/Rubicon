@@ -73,8 +73,8 @@ public class CommandProfile extends CommandHandler {
 
     private boolean isPremium(UserSQL sql) {
         String entry = sql.get("premium");
-        if (entry.contains("true"))
-            return true;
-        return false;
+        if (entry.equalsIgnoreCase("false"))
+            return false;
+        return true;
     }
 }
