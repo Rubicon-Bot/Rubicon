@@ -16,7 +16,7 @@ import java.util.Arrays;
 
 public class CommandNick extends CommandHandler {
     public CommandNick() {
-        super(new String[]{"nick", "nickname", "name"}, CommandCategory.TOOLS, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.nick"), "Easily nick yourself or others", "nick [@User] <nickname/reset>", false);
+        super(new String[]{"nick", "nickname", "name"}, CommandCategory.TOOLS, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.nick"), "Easily nick yourself or others", "[@User] <nickname/reset>", false);
     }
 
     @Override
