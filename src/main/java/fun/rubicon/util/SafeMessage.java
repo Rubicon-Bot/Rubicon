@@ -46,7 +46,7 @@ public class SafeMessage {
     private static boolean hasPermissions(TextChannel channel) {
         if (channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_READ) && channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE))
             return true;
-        channel.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(EmbedUtil.error("Permission Error!", "The bot need the `MESSAGE_READ` and `MESSAGE_WRITE` permissions to run without errors.").build()));
+        channel.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(EmbedUtil.error("Permission Error!", "The bot need the `MESSAGE_READ` and `MESSAGE_WRITE` permissions in the ``" + channel.getName() + "` channel to run without errors.").build()));
         return false;
     }
 }
