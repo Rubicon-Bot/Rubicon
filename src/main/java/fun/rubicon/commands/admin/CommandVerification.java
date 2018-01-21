@@ -16,6 +16,7 @@ import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 
@@ -128,11 +129,17 @@ public class CommandVerification extends CommandHandler {
         if (RubiconBot.getMySQL().verificationEnabled(event.getGuild())) {
             TextChannel channel = event.getGuild().getTextChannelById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "channelid"));
             if (event.getTextChannel().equals(channel)) {
+                if(!event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_READ)) {
+
+                }
                 event.getReaction().removeReaction().queue();
                 String emote = RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "emote");
                 if (!emote.equals(event.getReactionEmote().getName()) && !emote.equals(event.getReactionEmote().getId()))
                     return;
                 Role verfied = event.getGuild().getRoleById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "roleid"));
+                if(!event.getGuild().getSelfMember().canInteract(verfied)) {
+                    event.getTextChannel().sendMessage(EmbedUtil.error("Error!", "I can not assign roles that are higher than my role.").build()).queue();
+                }
                 event.getGuild().getController().addRolesToMember(event.getMember(), verfied).queue();
                 message.editMessage(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "verifiedtext").replace("%user%", event.getUser().getAsMention())).queue(msg -> msg.delete().queueAfter(30, TimeUnit.SECONDS));
             }
