@@ -27,6 +27,22 @@ public class SafeMessage {
         return null;
     }
 
+    public static void sendMessage(TextChannel textChannel, String message) {
+        if (hasPermissions(textChannel))
+            textChannel.sendMessage(message).queue();
+    }
+
+    public static void sendMessage(TextChannel textChannel, String message, int deleteTime) {
+        if (hasPermissions(textChannel))
+            textChannel.sendMessage(message).queue(msg -> msg.delete().queueAfter(deleteTime, TimeUnit.SECONDS));
+    }
+
+    public static Message sendMessageBlocking(TextChannel textChannel, String message) {
+        if (hasPermissions(textChannel))
+            return textChannel.sendMessage(message).complete();
+        return null;
+    }
+
     private static boolean hasPermissions(TextChannel channel) {
         if (channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_READ) && channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE))
             return true;

@@ -3,6 +3,7 @@ package fun.rubicon.listener;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.util.Logger;
+import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -17,6 +18,6 @@ public class MemberLeaveListener extends ListenerAdapter {
         TextChannel channel = event.getGuild().getTextChannelById(RubiconBot.getMySQL().getGuildValue(event.getGuild(), "channel"));
         if (channel == null) return;
 
-        channel.sendMessage(message).queue();
+        SafeMessage.sendMessage(channel, message);
     }
 }
