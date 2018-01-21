@@ -23,3 +23,5 @@ xEiisKeksx#7483<br>
 Schlaubi#9378<br>
 lucsoft#5138<br>
 tr808axm#7012
+
+The verification command is inspired by <a href="http://flashbot.de">Flash</a>.
