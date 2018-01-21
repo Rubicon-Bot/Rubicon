@@ -74,14 +74,6 @@ public class CommandManager extends ListenerAdapter {
         ParsedCommandInvocation commandInvocation = parse(event.getMessage());
         //Send typing because it's useless
         if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake() && !event.isWebhookMessage()) {
-            if (event.getAuthor().getId().equals("343825218718007296")) {
-                event.getTextChannel().sendMessage(new EmbedBuilder()
-                        .setTitle(":rotating_light: __**ERROR**__ :rotating_light:")
-                        .setDescription("403 WRONG GUY")
-                        .setColor(Color.RED)
-                        .build()).queue();
-                return;
-            }
             if (GlobalBlacklist.isOnBlacklist(event.getAuthor())) {
                 event.getTextChannel().sendMessage(EmbedUtil.message(EmbedUtil.error("Blacklisted", "You are on the RubiconBot blacklist! ;)"))).queue(msg -> msg.delete().queueAfter(20, TimeUnit.SECONDS));
                 return;
