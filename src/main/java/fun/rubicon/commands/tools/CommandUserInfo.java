@@ -60,7 +60,7 @@ public class CommandUserInfo extends CommandHandler {
         userinfo.addField("Guild join date", formatDate(user.getJoinDate()), false);
         userinfo.addField("Roles", "`" + roles.toString() + "`", false);
         userinfo.addField("Discord join date", formatDate(info.getCreationTime()), false);
-        userinfo.addField("Avatar url", info.getAvatarUrl(), true);
+        userinfo.addField("Avatar url", (info.getAvatarUrl() != null) ? info.getAvatarUrl() : "https://rubicon.fun", true);
         return new MessageBuilder().setEmbed(userinfo.build()).build();
     }
 

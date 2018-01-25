@@ -8,7 +8,9 @@ package fun.rubicon.listener;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.admin.CommandVerification;
+import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -63,6 +65,9 @@ public class VerificationListener extends ListenerAdapter {
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         if (!RubiconBot.getMySQL().verificationEnabled(event.getGuild())) return;
         TextChannel channel = event.getGuild().getTextChannelById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "channelid"));
+        if (!event.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_READ) || !event.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE)) {
+            event.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(EmbedUtil.error("Verification Error!", "I can't write in the `" + channel.getName() + "` channel because I haven't enough permissions.").build()).queue());
+        }
         Message message = channel.sendMessage(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "text").replace("%user%", event.getUser().getAsMention())).complete();
         CommandVerification.users.put(message, event.getUser());
 

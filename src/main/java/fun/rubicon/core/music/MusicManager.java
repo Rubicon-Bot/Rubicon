@@ -45,7 +45,7 @@ public class MusicManager {
     private final int PLAYLIST_MAXIMUM_DEFAULT = 1;
     private final int PLAYLIST_MAXIMUM_VIP = 5;
     private final int QUEUE_MAXIMUM = 50;
-    private final int DEFAULT_VOLUME = 40;
+    private final int DEFAULT_VOLUME = 30;
     private final int SKIP_MAXIMUM = 10;
 
     private final AudioPlayerManager playerManager;
