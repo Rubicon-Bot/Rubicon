@@ -31,6 +31,7 @@ import fun.rubicon.util.*;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -134,6 +135,7 @@ public class RubiconBot {
         JDABuilder builder = new JDABuilder(AccountType.BOT);
         builder.setToken(instance.configuration.getString("token"));
         builder.setGame(Game.playing("Starting...."));
+        builder.setStatus(OnlineStatus.DO_NOT_DISTURB);
 
         // add all EventListeners
         for (EventListener listener : instance.eventListeners)
@@ -148,6 +150,7 @@ public class RubiconBot {
         }
 
         getJDA().getPresence().setGame(Game.playing("Success."));
+        getJDA().getPresence().setStatus(OnlineStatus.ONLINE);
 
         CommandVote.loadPolls(instance.jda);
         Info.lastRestart = new Date();
@@ -175,7 +178,8 @@ public class RubiconBot {
                 new CommandPortal(),
                 new CommandVerification(),
                 new CommandAutochannel(),
-                new CommandRole()
+                new CommandRole(),
+                new CommandUnban()
         );
         // botowner commands package
         commandManager.registerCommandHandlers(
