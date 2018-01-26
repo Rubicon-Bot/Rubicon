@@ -34,7 +34,7 @@ public class CommandAscciText extends CommandHandler{
                 request.addParameter("text",text);
         try {
             RequestResponse response = request.sendGETRequest();
-            parsedCommandInvocation.getTextChannel().sendMessage("```\n"++"```").queue();
+            parsedCommandInvocation.getTextChannel().sendMessage("```\n"+"```").queue();
         } catch (Exception e) {
             return EmbedUtil.message(EmbedUtil.error("Error!", "Couldn't build text!"));
         }
