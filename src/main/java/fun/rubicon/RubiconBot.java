@@ -22,7 +22,7 @@ import fun.rubicon.core.CommandManager;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.ListenerManager;
 import fun.rubicon.features.GiveawayHandler;
-import fun.rubicon.listener.ServerLogHandler;
+import fun.rubicon.features.translation.TranslationManager;
 import fun.rubicon.permission.PermissionManager;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.core.AccountType;
@@ -59,6 +59,7 @@ public class RubiconBot {
     private final Timer timer;
     private final Set<EventListener> eventListeners;
     private final PermissionManager permissionManager;
+    private final TranslationManager translationManager;
 
     /**
      * Constructs the RubiconBot.
@@ -86,7 +87,7 @@ public class RubiconBot {
         mySQL = new MySQL(Info.MYSQL_HOST, Info.MYSQL_PORT, Info.MYSQL_USER, Info.MYSQL_PASSWORD, Info.MYSQL_DATABASE);
         mySQL.connect();
         //Create databases if neccesary
-        Connection connection = mySQL.getConnection();
+        Connection connection = MySQL.getConnection();
         /*try{
         /*Connection connection = mySQL.getConnection();
         /*
@@ -108,6 +109,7 @@ public class RubiconBot {
         commandManager = new fun.rubicon.command2.CommandManager();
         registerCommandHandlers();
         permissionManager = new PermissionManager();
+        translationManager = new TranslationManager();
 
         // init JDA
         initJDA();
@@ -149,7 +151,7 @@ public class RubiconBot {
 
         try {
             instance.jda = builder.buildBlocking();
-        } catch (LoginException | InterruptedException | RateLimitedException e) {
+        } catch (LoginException | InterruptedException e) {
             Logger.error(e.getMessage());
         }
         GameAnimator.start();
@@ -338,5 +340,19 @@ public class RubiconBot {
      */
     public static String getDataFolder() {
         return dataFolder;
+    }
+
+    /**
+     * @return the translation manager.
+     */
+    public TranslationManager getTranslationManager() {
+        return translationManager;
+    }
+
+    /**
+     * @return the translation manager via a static reference.
+     */
+    public static TranslationManager sGetTranslations() {
+        return instance == null ? null : instance.translationManager;
     }
 }

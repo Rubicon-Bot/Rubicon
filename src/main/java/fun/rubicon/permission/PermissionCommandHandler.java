@@ -16,6 +16,7 @@ import fun.rubicon.data.UserPermissions;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 
+import java.util.Formatter;
 import java.util.List;
 
 import static fun.rubicon.util.EmbedUtil.*;
@@ -51,7 +52,6 @@ public class PermissionCommandHandler extends CommandHandler {
                 for(net.dv8tion.jda.core.Permission permission : net.dv8tion.jda.core.Permission.values())
                     discordPermissions.append("  \u2022 `").append(String.format("%02d", permission.getOffset())).append("`  ").append(permission.getName()).append("\n");
                 return message(info("List of discord permissions", discordPermissions.toString()));
-
             } else if (invocation.args[0].equalsIgnoreCase("list")) {
                 // check permissions
                 if (!LIST_PERMISSIONS.coveredBy(userPermissions))
