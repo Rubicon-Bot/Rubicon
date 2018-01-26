@@ -1,5 +1,6 @@
 package fun.rubicon.commands.general;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
@@ -11,11 +12,11 @@ import fun.rubicon.sql.MemberSQL;
 import fun.rubicon.sql.UserSQL;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
+import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
+
+import java.util.Arrays;
 
 /**
  * @author Yannick Seeger / ForYaSee
@@ -51,10 +52,14 @@ public class CommandProfile extends CommandHandler {
         User user = member.getUser();
         MemberSQL memberSQL = new MemberSQL(member);
         UserSQL userSQL = new UserSQL(user);
+        Emote staff = RubiconBot.getJDA().getGuildById("380415148545802250").getEmoteById("406484992240386048");
 
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setColor(Colors.COLOR_PRIMARY);
-        embedBuilder.setAuthor(member.getEffectiveName() + "'s profile", null, member.getUser().getAvatarUrl());
+        if(Arrays.asList(Info.BOT_AUTHOR_IDS).contains(user.getIdLong())) {
+            embedBuilder.setAuthor(member.getEffectiveName() + "'s profile (Rubicon developer)", null, member.getUser().getAvatarUrl());
+        } else
+            embedBuilder.setAuthor(member.getEffectiveName() + "'s profile", null, member.getUser().getAvatarUrl());
         embedBuilder.setDescription(userSQL.get("bio"));
         embedBuilder.addField("Money", "Balance: " + userSQL.get("money") + " Rubys", true);
         embedBuilder.addField("Premium", (isPremium(userSQL)) ? "Until " + CommandPremium.parsePremiumEntry(userSQL.get("premium")) : "No premium", true);
@@ -76,5 +81,8 @@ public class CommandProfile extends CommandHandler {
         if (entry.equalsIgnoreCase("false"))
             return false;
         return true;
+    }
+    private String getEomjiInMessage(Emote emote) {
+        return String.format("<:%s:%s>", emote.getName(), emote.getId());
     }
 }

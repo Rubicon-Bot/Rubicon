@@ -155,11 +155,7 @@ public class RubiconBot {
                 Date();
 //      CommandGiveaway.startGiveawayManager(instance.jda);
 
-        getJDA().
-
-                getPresence().
-
-                setGame(Game.playing("Started."));
+        getJDA().getPresence().setGame(Game.playing("Started."));
         GameAnimator.start();
     }
 
