@@ -11,8 +11,8 @@ import fr.bmartel.speedtest.SpeedTestSocket;
 import fr.bmartel.speedtest.inter.ISpeedTestListener;
 import fr.bmartel.speedtest.model.SpeedTestError;
 import fun.rubicon.command.CommandCategory;
-import fun.rubicon.command2.CommandHandler;
-import fun.rubicon.command2.CommandManager;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -29,7 +29,7 @@ public class CommandSpeedTest extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        Message message = parsedCommandInvocation.invocationMessage;
+        Message message = parsedCommandInvocation.getMessage();
         //Set some Var´s and delete Message
         SpeedTestSocket DSpeed = new SpeedTestSocket();
         SpeedTestSocket USpeed = new SpeedTestSocket();

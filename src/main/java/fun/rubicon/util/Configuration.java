@@ -1,10 +1,15 @@
 package fun.rubicon.util;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 // import org.apache.commons.io.IOUtils;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Configuration {
@@ -13,20 +18,19 @@ public class Configuration {
      * @version
      */
 
-    private static File file;
-    private static JsonObject json;
-    public static JsonParser jsonParser;
+    private File file;
+    private JsonObject json;
+    public JsonParser jsonParser;
 
     public Configuration(final File file) {
 
         this.file = file;
         String cont = null;
-        this.jsonParser = new JsonParser();
+        jsonParser = new JsonParser();
 
         try {
             if (file.exists()) {
-                cont = new BufferedReader(new FileReader(this.file)).lines().collect(Collectors.joining("\n"));
-                //cont = IOUtils.toString(new BufferedInputStream(new FileInputStream(this.file)), "UTF-8");
+                cont = new BufferedReader(new FileReader(file)).lines().collect(Collectors.joining("\n"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -35,7 +39,6 @@ public class Configuration {
             cont = "{}";
         }
         json = jsonParser.parse(cont).getAsJsonObject();
-
     }
 
     /**
@@ -44,11 +47,11 @@ public class Configuration {
      * @description Sets tha value of a key in config
      */
     public Configuration set(final String key, final String val) {
-        if (this.json.has(key)) {
-            this.json.remove(key);
+        if (json.has(key)) {
+            json.remove(key);
         }
         if (val != null) {
-            this.json.addProperty(key, val);
+            json.addProperty(key, val);
         }
         return this.save();
     }
@@ -59,8 +62,8 @@ public class Configuration {
      * @description Sets tha value of a key in config
      */
     public Configuration set(final String key, final int val) {
-        if (this.json.has(key)) {
-            this.json.remove(key);
+        if (json.has(key)) {
+            json.remove(key);
         }
         this.json.addProperty(key, val);
         return this.save();
@@ -70,10 +73,10 @@ public class Configuration {
      * @param key
      * @description Removes key from config
      */
-    private Configuration unset(final String key) {
-        if (this.json.has(key)) {
-            this.json.remove(key);
-        }
+    public Configuration unset(final String key) {
+        if (json.has(key))
+            json.remove(key);
+
         return this.save();
     }
 
@@ -83,18 +86,17 @@ public class Configuration {
     private Configuration save() {
         try {
             if (json.entrySet().size() == 0) {
-                if (this.file.exists()) {
-                    this.file.delete();
+                if (file.exists()) {
+                    file.delete();
                 }
             } else {
-                if (!this.file.exists()) {
-                    this.file.createNewFile();
+                if (!file.exists()) {
+                    file.createNewFile();
                 }
 
-                BufferedWriter br = new BufferedWriter(new FileWriter(this.file));
+                BufferedWriter br = new BufferedWriter(new FileWriter(file));
                 br.write(json.toString());
                 br.close();
-                //IOUtils.write(json.toString(), new FileOutputStream(this.file), "UTF-8");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -108,7 +110,7 @@ public class Configuration {
      */
     public String getString(final String key) {
         try {
-            return this.json.get(key).getAsString();
+            return json.get(key).getAsString();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -120,8 +122,8 @@ public class Configuration {
      * @return Value of key in config as integer
      */
     public int getInt(final String key) {
-        if (this.json.has(key)) {
-            return this.json.get(key).getAsInt();
+        if (json.has(key)) {
+            return json.get(key).getAsInt();
         }
         return 0;
     }
@@ -132,10 +134,28 @@ public class Configuration {
      */
     public boolean has(final String key) {
         try {
-            return this.json.has(key);
+            return json.has(key);
         } catch (NullPointerException ex) {
             return false;
         }
+    }
+
+    public List<String> keySet() {
+        List<String> keys = new ArrayList<>();
+        Set<Map.Entry<String, JsonElement>> entries = json.entrySet();
+        for (Map.Entry<String, JsonElement> entry : entries) {
+            keys.add(entry.getKey());
+        }
+        return keys;
+    }
+
+    public List<String> values() {
+        List<String> values = new ArrayList<>();
+        Set<Map.Entry<String, JsonElement>> entries = json.entrySet();
+        for (Map.Entry<String, JsonElement> entry : entries) {
+            values.add(entry.getValue().getAsString());
+        }
+        return values;
     }
 
 

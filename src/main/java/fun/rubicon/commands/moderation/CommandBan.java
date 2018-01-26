@@ -7,8 +7,8 @@
 package fun.rubicon.commands.moderation;
 
 import fun.rubicon.command.CommandCategory;
-import fun.rubicon.command2.CommandHandler;
-import fun.rubicon.command2.CommandManager;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
@@ -29,7 +29,7 @@ public class CommandBan extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        Message msg = parsedCommandInvocation.invocationMessage;
+        Message msg = parsedCommandInvocation.getMessage();
         if (msg.getMentionedUsers().isEmpty()) {
             return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "ban <@User>").build()).build();
         }

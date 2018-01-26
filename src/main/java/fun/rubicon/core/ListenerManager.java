@@ -6,6 +6,8 @@
 
 package fun.rubicon.core;
 
+import fun.rubicon.RubiconBot;
+import fun.rubicon.core.webpanel.WebpanelManager;
 import fun.rubicon.listener.*;
 import net.dv8tion.jda.core.JDABuilder;
 
@@ -33,6 +35,10 @@ public class ListenerManager {
         b.addEventListener(new MessageDeleteListener());
         b.addEventListener(new MemberLeaveListener());
         b.addEventListener(new ServerLogHandler());
+        b.addEventListener(new ChannelDeleteListener());
+        b.addEventListener(new RoleListener());
+        b.addEventListener(RubiconBot.getWebpanelManager());
+        b.addEventListener(new TextChannelListener());
 
     }
 }

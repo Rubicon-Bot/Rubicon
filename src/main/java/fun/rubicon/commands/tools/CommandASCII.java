@@ -8,8 +8,8 @@ package fun.rubicon.commands.tools;
 
 
 import fun.rubicon.command.CommandCategory;
-import fun.rubicon.command2.CommandHandler;
-import fun.rubicon.command2.CommandManager;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
@@ -29,7 +29,7 @@ public class CommandASCII extends CommandHandler {
         StringBuilder output = new StringBuilder();
         StringBuilder text = new StringBuilder("Text: `");
         StringBuilder asciiBuilder = new StringBuilder("ASCII-Code: `");
-        for (String arg : parsedCommandInvocation.args) {
+        for (String arg : parsedCommandInvocation.getArgs()) {
             text.append(arg).append(" ");
             char[] chars = arg.toCharArray();
             for (char c : chars) {
@@ -47,7 +47,7 @@ public class CommandASCII extends CommandHandler {
         EmbedBuilder builder = new EmbedBuilder()
                 .setDescription(output.toString())
                 .setColor(Colors.COLOR_PRIMARY);
-        parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(builder.build()).queue();
+        parsedCommandInvocation.getTextChannel().sendMessage(builder.build()).queue();
         return null;
     }
 }

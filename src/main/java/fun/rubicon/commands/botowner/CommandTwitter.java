@@ -8,14 +8,13 @@ package fun.rubicon.commands.botowner;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
-import fun.rubicon.command2.CommandHandler;
-import fun.rubicon.command2.CommandManager;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -47,8 +46,8 @@ public class CommandTwitter extends CommandHandler {
         TwitterFactory tf = new TwitterFactory(cb.build());
         Twitter twitter = tf.getInstance();
         try {
-            Status status = twitter.updateStatus(String.join(" ", parsedCommandInvocation.args));
-            parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage(new EmbedBuilder()
+            Status status = twitter.updateStatus(String.join(" ", parsedCommandInvocation.getArgs()));
+            parsedCommandInvocation.getMessage().getTextChannel().sendMessage(new EmbedBuilder()
                     .setDescription(status.getText())
                     .setColor(new Color(0, 153, 229))
                     .setAuthor("Take a look at the tweet on Twitter", "https://twitter.com/" + status.getUser().getScreenName() + "/status/" + status.getId(), "http://icons.iconarchive.com/icons/sicons/basic-round-social/512/twitter-icon.png")

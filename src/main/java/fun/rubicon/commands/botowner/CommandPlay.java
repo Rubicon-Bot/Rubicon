@@ -8,8 +8,8 @@ package fun.rubicon.commands.botowner;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
-import fun.rubicon.command2.CommandHandler;
-import fun.rubicon.command2.CommandManager;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
@@ -24,7 +24,7 @@ public class CommandPlay extends CommandHandler {
     private String configKey = "playingStatus";
 
     public CommandPlay() {
-        super(new String[]{"play"}, CommandCategory.BOT_OWNER, new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.play"), "Change bot's playing status.", "<text>");
+        super(new String[]{"botplay"}, CommandCategory.BOT_OWNER, new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.botplay"), "Change bot's playing status.", "<text>");
     }
 
     @Override
@@ -42,7 +42,7 @@ public class CommandPlay extends CommandHandler {
             message += s + " ";
 
         RubiconBot.getConfiguration().set(configKey, message);
-        parsedCommandInvocation.invocationMessage.getJDA().getPresence().setGame(Game.playing(message));
+        parsedCommandInvocation.getMessage().getJDA().getPresence().setGame(Game.playing(message));
 
         return new MessageBuilder().setEmbed(EmbedUtil.success("Status set!", "Successfully set the playing status!").build()).build();
     }

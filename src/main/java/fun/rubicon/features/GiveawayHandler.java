@@ -8,14 +8,14 @@ package fun.rubicon.features;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
-import fun.rubicon.command2.CommandHandler;
-import fun.rubicon.command2.CommandManager;
-import fun.rubicon.command2.UnavailableCommandHandler;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
+import fun.rubicon.command.UnavailableCommandHandler;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Logger;
-import fun.rubicon.util.MySQL;
+import fun.rubicon.sql.MySQL;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
@@ -421,7 +421,7 @@ public class GiveawayHandler extends CommandHandler {
      */
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
-        if (invocation.args.length == 0)
+        if (invocation.getArgs().length == 0)
             return createHelpMessage(invocation);
         else {
             switch (invocation.args[0]) {
@@ -446,10 +446,10 @@ public class GiveawayHandler extends CommandHandler {
                         prize.append(" ").append(invocation.args[i]);
 
                     // create giveaway
-                    Giveaway giveaway = createGiveaway(invocation.invocationMessage.getTextChannel().getIdLong(),
+                    Giveaway giveaway = createGiveaway(invocation.getTextChannel().getIdLong(),
                             prize.toString(),
                             System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(runtime),
-                            invocation.invocationMessage.getAuthor().getIdLong());
+                            invocation.getAuthor().getIdLong());
 
                     return giveaway == null ? message(error()) : null; // message should not be deleted and is sent
                 default:

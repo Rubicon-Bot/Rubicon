@@ -8,6 +8,7 @@ package fun.rubicon.data;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.permission.Permission;
+import fun.rubicon.sql.MemberSQL;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.*;
 
@@ -51,8 +52,7 @@ public class UserPermissions extends fun.rubicon.permission.UserPermissions {
         memberPermissionLevel = PermissionLevel.EVERYONE;
         if (discordMember != null) { // memberPermissionLevel stays 0 in private message
             try {
-                memberPermissionLevel = PermissionLevel.getByValue(Integer.parseInt(RubiconBot.getMySQL()
-                        .getMemberValue(getDiscordMember(), "permissionlevel")));
+                memberPermissionLevel = PermissionLevel.getByValue(Integer.parseInt(new MemberSQL(discordMember).get("permissionlevel")));
             } catch (NumberFormatException e) {
                 Logger.error("Permission value for user " + getUserId() + " in guild " + getGuildId()
                         + " is not an integer number.");
@@ -70,7 +70,7 @@ public class UserPermissions extends fun.rubicon.permission.UserPermissions {
 
     /**
      * @return the member permission level. Also 0 if no guild was specified.
-     * @see fun.rubicon.core.permission.PermissionManager for usage definitions.
+     * @see fun.rubicon.permission.PermissionManager for usage definitions.
      * @deprecated use {@link #getNewMemberPermissionLevel().value} instead.
      */
     @Deprecated

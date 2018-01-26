@@ -8,14 +8,15 @@ package fun.rubicon.commands.admin;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
-import fun.rubicon.command2.CommandHandler;
-import fun.rubicon.command2.CommandManager;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 
@@ -24,13 +25,14 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Handles the 'verification' command.
+ *
  * @author Michael Rittmeister / Schlaubi
  * @copyright Rubicon Dev Team 2017
  * @license MIT License <http://rubicon.fun/license>
  * @package fun.rubicon.commands.admin
- *  Some Parts of this command are inspired by CodingGuy<http://entwickler.cc>
- *
-=======
+ * Some Parts of this command are inspired by CodingGuy<http://entwickler.cc>
+ * <p>
+ * =======
  */
 public class CommandVerification extends CommandHandler {
 
@@ -58,7 +60,7 @@ public class CommandVerification extends CommandHandler {
     }
 
     private Message disableVerification(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
-        Message message = parsedCommandInvocation.invocationMessage;
+        Message message = parsedCommandInvocation.getMessage();
         if (!RubiconBot.getMySQL().verificationEnabled(message.getGuild())) {
             return new MessageBuilder().setEmbed(EmbedUtil.error("Not enabled", "Verification System is not enabled on this guild").build()).build();
         }
@@ -69,7 +71,7 @@ public class CommandVerification extends CommandHandler {
     }
 
     private Message enableVerification(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
-        Message message = parsedCommandInvocation.invocationMessage;
+        Message message = parsedCommandInvocation.getMessage();
         if (RubiconBot.getMySQL().verificationEnabled(message.getGuild())) {
             return new MessageBuilder().setEmbed(EmbedUtil.error("Already enabled", "Verification System is already enabled on this guild").build()).build();
         }
@@ -91,8 +93,8 @@ public class CommandVerification extends CommandHandler {
 
         public VerificationSetup(CommandManager.ParsedCommandInvocation parsedCommandInvocation, Message message) {
             this.message = message;
-            this.author = parsedCommandInvocation.invocationMessage.getAuthor();
-            this.guild = parsedCommandInvocation.invocationMessage.getGuild();
+            this.author = parsedCommandInvocation.getMessage().getAuthor();
+            this.guild = parsedCommandInvocation.getMessage().getGuild();
             this.step = 1;
         }
     }
@@ -120,18 +122,26 @@ public class CommandVerification extends CommandHandler {
 
     public static void handleReaction(MessageReactionAddEvent event) {
         Message message = event.getTextChannel().getMessageById(event.getMessageId()).complete();
+        if (message == null) return;
+        if (message.equals("0")) return;
         if (!message.getAuthor().equals(event.getJDA().getSelfUser())) return;
         if (!event.getUser().equals(users.get(message))) return;
         if (RubiconBot.getMySQL().verificationEnabled(event.getGuild())) {
             TextChannel channel = event.getGuild().getTextChannelById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "channelid"));
             if (event.getTextChannel().equals(channel)) {
+                if(!event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_READ)) {
+
+                }
                 event.getReaction().removeReaction().queue();
                 String emote = RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "emote");
                 if (!emote.equals(event.getReactionEmote().getName()) && !emote.equals(event.getReactionEmote().getId()))
                     return;
                 Role verfied = event.getGuild().getRoleById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "roleid"));
+                if(!event.getGuild().getSelfMember().canInteract(verfied)) {
+                    event.getTextChannel().sendMessage(EmbedUtil.error("Error!", "I can not assign roles that are higher than my role.").build()).queue();
+                }
                 event.getGuild().getController().addRolesToMember(event.getMember(), verfied).queue();
-                message.editMessage(new EmbedBuilder().setDescription(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "verifiedtext").replace("%user%", event.getUser().getAsMention())).build()).queue();
+                message.editMessage(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "verifiedtext").replace("%user%", event.getUser().getAsMention())).queue(msg -> msg.delete().queueAfter(30, TimeUnit.SECONDS));
             }
         } else {
             if (!setups.containsKey(event.getGuild())) return;
@@ -185,7 +195,7 @@ public class CommandVerification extends CommandHandler {
         VerificationSettings settings = settingslist.get(message.getGuild());
         settings.verifiedtext = response.getContentDisplay();
         settingslist.replace(message.getGuild(), settings);
-        message.editMessage(EmbedUtil.info("Step 4 - Verified emote", "Please react with the verify emote").build()).queue();
+        message.editMessage(EmbedUtil.info("Step 4 - Verified emote", "Please react with the verify emote. Emote must be a **custom** emote from **your** server.").build()).queue();
         VerificationSetup setup = setups.get(message.getGuild());
         setup.step++;
         setups.replace(message.getGuild(), setup);
@@ -195,16 +205,16 @@ public class CommandVerification extends CommandHandler {
         Message message = event.getTextChannel().getMessageById(event.getMessageId()).complete();
         VerificationSettings settings = settingslist.get(event.getGuild());
         MessageReaction.ReactionEmote emote = event.getReactionEmote();
-        System.out.println(event.getReactionEmote().getEmote().isManaged());
-        if(!event.getReactionEmote().getEmote().isManaged()){
-                if(!event.getGuild().getEmotes().contains(emote.getEmote())) {
-                    message.getTextChannel().sendMessage(EmbedUtil.error("Unsupported emote", "You can only use global or custom emotes of your server").build()).queue(msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
-                    return;
-                }
+        //System.out.println(event.getReactionEmote().getEmote().isManaged());
+        if (!event.getReactionEmote().getEmote().isManaged()) {
+            if (!event.getGuild().getEmotes().contains(emote.getEmote())) {
+                message.getTextChannel().sendMessage(EmbedUtil.error("Unsupported emote", "You can only use global or custom emotes of your server").build()).queue(msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
+                return;
+            }
         }
         settings.emote = emote;
         settingslist.replace(event.getGuild(), settings);
-        message.editMessage(EmbedUtil.info("Step 5 - Verified role", "Please type in the emote that should be reacted by users when acceptings rules").build()).queue();
+        message.editMessage(EmbedUtil.info("Step 5 - Verified role", "Please mention the role that should be added to user-").build()).queue();
         VerificationSetup setup = setups.get(message.getGuild());
         setup.step++;
         setups.replace(message.getGuild(), setup);

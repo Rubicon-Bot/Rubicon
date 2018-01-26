@@ -8,8 +8,8 @@ package fun.rubicon.commands.general;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
-import fun.rubicon.command2.CommandHandler;
-import fun.rubicon.command2.CommandManager;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
@@ -29,13 +29,13 @@ public class CommandInfo extends CommandHandler {
     private String[] arrSupporter = {"Greg"};
 
     public CommandInfo(){
-        super(new String[]{"Info", "inf"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.info"), "Shows some information about the bot!", "");
+        super(new String[]{"Info", "inf", "version"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.info"), "Shows some information about the bot!", "");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         //Set some Var´s
-        Message message = parsedCommandInvocation.invocationMessage;
+        Message message = parsedCommandInvocation.getMessage();
         EmbedBuilder builder = new EmbedBuilder();
         builder.setColor(Colors.COLOR_PRIMARY);
         builder.setAuthor(Info.BOT_NAME + " - Info", "https://rubicon.fun", message.getJDA().getSelfUser().getEffectiveAvatarUrl());
@@ -53,11 +53,12 @@ public class CommandInfo extends CommandHandler {
         builder.addField("Bot Name", Info.BOT_NAME, true);
         builder.addField("Bot Version", Info.BOT_VERSION, true);
         builder.addField("Website", "[Link](" + Info.BOT_WEBSITE + ")", true);
-        builder.addField("Bot Invite", "[Invite Rubicon](https://discordapp.com/oauth2/authorize?client_id=380713705073147915&scope=bot&permissions=1898982486)", true);
+        builder.addField("Bot Invite", "[Invite RubiconBot](https://discordapp.com/oauth2/authorize?client_id=380713705073147915&scope=bot&permissions=1898982486)", true);
         builder.addField("Github Link", "[Github Link](" + Info.BOT_GITHUB + ")", true);
-        builder.addField("Patreon Link", "[Rubicon Dev Team](https://www.patreon.com/rubiconbot)", true);
-        builder.addField("Authors", authors.toString(), true);
-        builder.addField("Donator & Supporter", String.join("\n", arrSupporter), false);
+        builder.addField("Patreon Link", "[RubiconBot Dev Team](https://www.patreon.com/rubiconbot)", true);
+        builder.addField("discordbots.org", "[discordbots.org](https://discordbots.org/bot/380713705073147915)\n", true);
+        builder.addField("Donators", String.join("\n", arrSupporter), true);
+        builder.addField("Devs", authors.toString(), false);
         //Send Message and delete it after 2 Minutes
         return new MessageBuilder().setEmbed(builder.build()).build();
     }

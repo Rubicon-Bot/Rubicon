@@ -8,8 +8,8 @@ package fun.rubicon.commands.botowner;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
-import fun.rubicon.command2.CommandHandler;
-import fun.rubicon.command2.CommandManager;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
@@ -35,8 +35,8 @@ public class CommandGuilds extends CommandHandler {
 
         List<Guild> guild_sublist;
         int SideNumbInput = 1;
-        if (parsedCommandInvocation.args.length > 0) {
-            SideNumbInput = Integer.parseInt(parsedCommandInvocation.args[0]);
+        if (parsedCommandInvocation.getArgs().length > 0) {
+            SideNumbInput = Integer.parseInt(parsedCommandInvocation.getArgs()[0]);
             System.out.println(SideNumbInput);
         }
 
@@ -45,14 +45,20 @@ public class CommandGuilds extends CommandHandler {
         } else {
             guild_sublist = RubiconBot.getJDA().getGuilds();
         }
-        for (Guild guild : guild_sublist) {
-            runningOnServers.append("`\t " + (SideNumbInput * count_server) + ". ").append(guild.getName()).append("(").append(guild.getId()).append(")`\n");
-            count_server++;
-        }
+
+
         int sideNumbAll;
         if (RubiconBot.getJDA().getGuilds().size() >= 20) {
+            for (Guild guild : guild_sublist) {
+                runningOnServers.append("`\t " + (((SideNumbInput-1) *20) + count_server) + ". ").append(guild.getName()).append("(").append(guild.getId()).append(")`\n");
+                count_server++;
+            }
             sideNumbAll = RubiconBot.getJDA().getGuilds().size() / 20;
         } else {
+            for (Guild guild : guild_sublist) {
+                runningOnServers.append("`\t " + count_server + ". ").append(guild.getName()).append("(").append(guild.getId()).append(")`\n");
+                count_server++;
+            }
             sideNumbAll = 1;
         }
         int sideNumb = SideNumbInput;

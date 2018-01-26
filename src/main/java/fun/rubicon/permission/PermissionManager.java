@@ -7,7 +7,7 @@
 package fun.rubicon.permission;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.util.MySQL;
+import fun.rubicon.sql.MySQL;
 import net.dv8tion.jda.core.entities.Guild;
 
 import java.sql.PreparedStatement;

@@ -8,8 +8,8 @@ package fun.rubicon.commands.general;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
-import fun.rubicon.command2.CommandHandler;
-import fun.rubicon.command2.CommandManager;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
@@ -41,7 +41,7 @@ public class CommandStatistics extends CommandHandler {
                 .addField("Total servers", String.valueOf(RubiconBot.getJDA().getGuilds().size()), true)
                 .addField("Total users", String.valueOf(RubiconBot.getJDA().getUsers().stream()
                         .filter(u -> !u.isBot()).collect(Collectors.toList()).size()), true));
-        textChannel.sendMessage(message).queue();
+        parsedCommandInvocation.getMessage().getTextChannel().sendMessage(message).queue();
         return null;
     }
 }

@@ -10,23 +10,16 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.entities.Game;
 
-import java.util.stream.Collectors;
-
 public class GameAnimator {
 
     private static Thread t;
     private static boolean running = false;
-
     private static int currentGame = 0;
 
-    private static String authors() {
-        String text = "";
-        for (int i = 1; i < Info.BOT_AUTHOR_IDS.length; i++) {
-            text += Info.BOT_AUTHOR_IDS[i];
-        }
+    private static final String[] gameAnimations = {
+            Info.BOT_VERSION,
 
-        return text;
-    }
+    };
 
     public static synchronized void start() {
         if (!RubiconBot.getConfiguration().has("playingStatus")) {
@@ -43,13 +36,7 @@ public class GameAnimator {
                                 RubiconBot.getJDA().getPresence().setGame(Game.playing(playStat));
                                 last = System.currentTimeMillis();
                             } else {
-                                String[] gameAnimations = {
-                                        "Running on " + RubiconBot.getJDA().getGuilds().size() + " servers!",
-                                        "Helping " + RubiconBot.getJDA().getUsers().stream().filter(u -> !u.isBot()).collect(Collectors.toList()).size() + " users!",
-                                        Info.BOT_NAME + " " + Info.BOT_VERSION,
-                                        "rc!help"
-                                };
-                                RubiconBot.getJDA().getPresence().setGame(Game.playing(gameAnimations[currentGame]));
+                                RubiconBot.getJDA().getPresence().setGame(Game.playing("rc!help | " + gameAnimations[currentGame]));
 
                                 if (currentGame == gameAnimations.length - 1)
                                     currentGame = 0;

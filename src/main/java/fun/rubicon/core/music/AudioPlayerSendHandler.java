@@ -4,14 +4,6 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
 import net.dv8tion.jda.core.audio.AudioSendHandler;
 
-/**
- * Created by zekro on 22.11.2017 / 17:30
- * rubiconBot.fun.rubicon.core.music
- * dev.zekro.de - github.zekro.de
- * © zekro 2017
- */
-
-
 public class AudioPlayerSendHandler implements AudioSendHandler {
 
     private final AudioPlayer audioPlayer;

@@ -8,6 +8,8 @@ package fun.rubicon.util;
 
 import fun.rubicon.RubiconBot;
 
+import java.util.Date;
+
 /**
  * General data object.
  * @author ForYaSee, DerSchlaubi, LeeDJD, tr808axm
@@ -15,13 +17,17 @@ import fun.rubicon.RubiconBot;
 public class Info {
 
     public final static String BOT_DEFAULT_PREFIX = "rc!";
-    public final static String BOT_NAME = "Rubicon";
-    public final static String BOT_VERSION = "0.1.6.8";
+    public final static String BOT_NAME = "RubiconBot";
+    public final static String BOT_VERSION = "0.2.0";
     public final static String BOT_WEBSITE = "https://rubicon.fun";
     public final static String BOT_GITHUB = "https://github.com/Rubicon-Bot/Rubicon";
     public final static String CONFIG_FILE = "config.json";
     public final static String BITLY_TOKEN = RubiconBot.getConfiguration().getString("bitlytoken");
     public final static String DBL_TOKEN = RubiconBot.getConfiguration().getString("dbl_token");
+    public final static String GIPHY_TOKEN = RubiconBot.getConfiguration().getString("gip_token");
+    public final static String LUCSOFT_TOKEN = RubiconBot.getConfiguration().getString("lucsoft_token");
+    public final static String GOOGLE_TOKEN = RubiconBot.getConfiguration().getString("google_token");
+    public static Date lastRestart;
 
     /**
      * Bot author long ids.
@@ -31,7 +37,6 @@ public class Info {
             153507094933274624L, // Lee
             138014719582797824L, // Eiskeks
             264048760580079616L, // Schlaubi
-            221905671296253953L, // Zekro
             137253345336229889L, // lucsoft
             137263174675070976L  // tr808axm
     };

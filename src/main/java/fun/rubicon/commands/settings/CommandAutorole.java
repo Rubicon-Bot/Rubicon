@@ -8,8 +8,8 @@ package fun.rubicon.commands.settings;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
-import fun.rubicon.command2.CommandHandler;
-import fun.rubicon.command2.CommandManager;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
@@ -22,19 +22,19 @@ import net.dv8tion.jda.core.entities.Message;
  */
 public class CommandAutorole extends CommandHandler{
     public CommandAutorole(){
-        super(new String[]{"autorole", "role"}, CommandCategory.ADMIN, new PermissionRequirements(2, "command.autorole"), "Set the Autorole.Triggers when a User Join your Guild", "<RoleMention or RoleName>");
+        super(new String[]{"autorole"}, CommandCategory.ADMIN, new PermissionRequirements(2, "command.autorole"), "Set the Autorole. Triggers when a User Join your Guild", "<@Role/Rolename>");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        if (parsedCommandInvocation.args.length < 1) {
-            return new MessageBuilder().setEmbed(EmbedUtil.error("Error", getUsage()).build()).build();
+        if (parsedCommandInvocation.getArgs().length < 1) {
+            return createHelpMessage();
         }
-        if (parsedCommandInvocation.invocationMessage.getMentionedRoles().size() <1){
-            String toset = parsedCommandInvocation.invocationMessage.getGuild().getRolesByName(parsedCommandInvocation.args[0],true).get(0).getId();
-            RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.invocationMessage.getGuild(), "autorole", toset);
+        if (parsedCommandInvocation.getMessage().getMentionedRoles().size() <1){
+            String toset = parsedCommandInvocation.getMessage().getGuild().getRolesByName(parsedCommandInvocation.getArgs()[0],true).get(0).getId();
+            RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.getMessage().getGuild(), "autorole", toset);
         }else {
-            RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.invocationMessage.getGuild(), "autorole", parsedCommandInvocation.invocationMessage.getMentionedRoles().get(0).getId());
+            RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.getMessage().getGuild(), "autorole", parsedCommandInvocation.getMessage().getMentionedRoles().get(0).getId());
         }
         return new MessageBuilder().setEmbed(EmbedUtil.success("Succes","Succesfully set the Autorole!").build()).build();
     }

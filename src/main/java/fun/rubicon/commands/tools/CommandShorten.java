@@ -7,8 +7,8 @@
 package fun.rubicon.commands.tools;
 
 import fun.rubicon.command.CommandCategory;
-import fun.rubicon.command2.CommandHandler;
-import fun.rubicon.command2.CommandManager;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
@@ -38,15 +38,15 @@ public class CommandShorten extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
-        if (invocation.args.length == 0) {
+        if (invocation.getArgs().length == 0) {
             // no URL specified
             return createHelpMessage(invocation);
-        } else if (invocation.args.length == 1) {
+        } else if (invocation.getArgs().length == 1) {
             String shortURL;
             try {
-                shortURL = Bitly.shorten(invocation.args[0]);
+                shortURL = Bitly.shorten(invocation.getArgs()[0]);
             } catch (IllegalArgumentException e) {
-                return message(error("Invalid URL", "`" + invocation.args[0] + "` is not a valid URL."));
+                return message(error("Invalid URL", "`" + invocation.getArgs()[0] + "` is not a valid URL."));
             } catch (HTTPException e) {
                 Logger.error("Invalid bit.ly response");
                 Logger.error(e);

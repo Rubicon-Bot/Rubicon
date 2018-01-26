@@ -7,8 +7,8 @@
 package fun.rubicon.commands.tools;
 
 import fun.rubicon.command.CommandCategory;
-import fun.rubicon.command2.CommandHandler;
-import fun.rubicon.command2.CommandManager;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
@@ -28,8 +28,8 @@ public class CommandSearch extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        Message message = parsedCommandInvocation.invocationMessage;
-        String[] args = parsedCommandInvocation.args;
+        Message message = parsedCommandInvocation.getMessage();
+        String[] args = parsedCommandInvocation.getArgs();
         TextChannel channel = message.getTextChannel();
         Guild guild = message.getGuild();
 

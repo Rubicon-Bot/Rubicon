@@ -7,8 +7,8 @@
 package fun.rubicon.commands.moderation;
 
 import fun.rubicon.command.CommandCategory;
-import fun.rubicon.command2.CommandHandler;
-import fun.rubicon.command2.CommandManager;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
@@ -29,7 +29,7 @@ public class CommandKick extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        Message msg = parsedCommandInvocation.invocationMessage;
+        Message msg = parsedCommandInvocation.getMessage();
         if (msg.getMentionedUsers().isEmpty()) {
             return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "kick <@User>").build()).build();
         }
@@ -40,7 +40,9 @@ public class CommandKick extends CommandHandler {
             PrivateChannel channel = target.getUser().openPrivateChannel().complete();
             channel.sendMessage(EmbedUtil.success("Kicked", "You got kicked").build()).queue();
             msg.getGuild().getController().kick(target).queue();
-            return new MessageBuilder().setEmbed(EmbedUtil.success("Kicked", "Succesfully kicked" + target.getAsMention()).build()).build();
+
+
+            return new MessageBuilder().setEmbed(EmbedUtil.success("Kicked", "Succesfully kicked " + target.getAsMention()).build()).build();
         }
     }
 }

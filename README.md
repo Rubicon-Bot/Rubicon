@@ -14,13 +14,12 @@
 Invite Rubicon here: <a href="http://inv.rucb.co">inv.rucb.co</a>
 
 ## Support and Infos
-If you have questions, join our <a href="http://dc.rucb.co">Community Server</a>
+If you have questions or want to see newest informations, join our <a href="http://dc.rucb.co">Community Server</a>
 
 ## RubiconBot Team
 ForYaSee#9353<br>
 Lee#6874<br>
 xEiisKeksx#7483<br>
 Schlaubi#9378<br>
-zekro#9131<br>
 lucsoft#5138<br>
 tr808axm#7012

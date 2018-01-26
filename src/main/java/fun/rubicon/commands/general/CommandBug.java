@@ -8,8 +8,8 @@ package fun.rubicon.commands.general;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
-import fun.rubicon.command2.CommandHandler;
-import fun.rubicon.command2.CommandManager;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
@@ -27,17 +27,14 @@ public class CommandBug extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        String[] args = parsedCommandInvocation.args;
-        Message message = parsedCommandInvocation.invocationMessage;
+        String[] args = parsedCommandInvocation.getArgs();
+        Message message = parsedCommandInvocation.getMessage();
         //Check if enough args
         if (args.length < 3) {
             return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "bug [message] (min. 3 args)").build()).build();
         }
         //Make String out of args
-        String text = "";
-        for (String arg : args) {
-            text += arg + " ";
-        }
+        String text = parsedCommandInvocation.getMessage().getContentDisplay().replace(parsedCommandInvocation.getPrefix() + parsedCommandInvocation.getCommandInvocation() + " ", "");
 
         //Post Report to Dev Server
         RubiconBot.getJDA().getTextChannelById("382231366064144384").sendMessage(
@@ -47,6 +44,6 @@ public class CommandBug extends CommandHandler {
                         .build()
         ).queue();
         //User Feedback
-        return new MessageBuilder().setEmbed(EmbedUtil.success("Bug reported", "Successfully send the Bug to Head Developers").build()).build();
+        return new MessageBuilder().setEmbed(EmbedUtil.success("Bug reported", "Successfully send the bug to the developers.").build()).build();
     }
 }

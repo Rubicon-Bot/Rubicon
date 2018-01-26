@@ -6,79 +6,96 @@
 
 package fun.rubicon.listener;
 
-import fun.rubicon.RubiconBot;
-import fun.rubicon.util.Cooldown;
-import fun.rubicon.util.MySQL;
+import fun.rubicon.sql.MemberSQL;
+import fun.rubicon.sql.UserSQL;
+import fun.rubicon.util.Colors;
+import fun.rubicon.util.Logger;
+import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-import java.util.Random;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 public class MemberLevelListener extends ListenerAdapter {
 
-
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+
         if (event.getAuthor().isBot()) {
             return;
         }
         if (Cooldown.has(event.getAuthor().getId())) {
             return;
         }
-        MySQL sql = RubiconBot.getMySQL();
-        if (sql.ifUserExist(event.getAuthor())) {
-            //Point System
-            int current = Integer.parseInt(sql.getUserValue(event.getAuthor(), "points"));
-            int randomNumber = (int) ((Math.random() * 10) + 10);
-            String point = String.valueOf(current + randomNumber);
-            int points = current + randomNumber;
-            sql.updateUserValue(event.getAuthor(), "points", point);
-            //Cooldown
-            Cooldown.add(event.getAuthor().getId());
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    Cooldown.remove(event.getAuthor().getId());
-                }
-            }, 30000);
+        MemberSQL memberSQL = new MemberSQL(event.getMember());
+        //Point System
+        int currentPoints = Integer.parseInt(memberSQL.get("points"));
+        int pRandom = (int) ((Math.random() * 12 + 3));
+        int nowPoints = currentPoints + pRandom;
+        String sPoints = String.valueOf(nowPoints);
+        memberSQL.set("points", sPoints);
 
-            String lvlnow = sql.getUserValue(event.getAuthor(), "level");
-            int dann = Integer.parseInt(lvlnow);
-            int req = dann * 30;
-
-            if (points > req) {
-                dann++;
-                String fina = String.valueOf(dann);
-                sql.updateUserValue(event.getAuthor(), "level", fina);
-                sql.updateUserValue(event.getAuthor(), "points", "0");
-                String l = (sql.getUserValue(event.getAuthor(), "level"));
-                int foo = Integer.parseInt(l);
-                //Level Up
-                //TODO Stop editing my classes
-                /*Message msg = event.getChannel().sendMessage(new EmbedBuilder()
-                        .setDescription(event.getAuthor().getAsMention() + " ,wow you got a Level up to Level **" + sql.getUserValue(event.getAuthor(), "level") + "** !")
-                        .build()
-                ).complete();*/
-                Random r = new Random();
-                int Low = 10;
-                int High = 100;
-                int Result = r.nextInt(High - Low) + Low;
-                int ran = Math.round(Result);
-                int foa = foo * 200 / 3 + ran;
-                int Current = Integer.parseInt(sql.getUserValue(event.getAuthor(), "money"));
-                int m = Math.round(foa);
-                String fin = String.valueOf(foa + fina);
-                sql.updateUserValue(event.getAuthor(), "money", fin);
-
-                /*new Timer().schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        msg.delete().queue();
-                    }
-                }, 3000);*/
-
+        //Cooldown
+        Cooldown.add(event.getAuthor().getId());
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Cooldown.remove(event.getAuthor().getId());
             }
-        } else sql.createUser(event.getAuthor());
+        }, 20000);
+
+        int currentLevel = Integer.parseInt(memberSQL.get("level"));
+        int requiredPoints = getRequiredPointsByLevel(currentLevel);
+
+        if (nowPoints > requiredPoints) {
+            currentLevel++;
+            String fina = String.valueOf(currentLevel);
+            memberSQL.set("level", fina);
+            memberSQL.set("points", "0");
+            UserSQL userSQL = new UserSQL(event.getAuthor());
+            int oldMoney = Integer.parseInt(userSQL.get("money"));
+            userSQL.set("money", (oldMoney + (currentLevel * 100)) + "");
+
+            //Level Up
+            if (event.getMessage().getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_READ) && event.getMessage().getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_WRITE)) {
+                event.getChannel().sendMessage(new EmbedBuilder()
+                        .setAuthor(event.getAuthor().getName() + " leveled up!", null, event.getAuthor().getAvatarUrl())
+                        .setDescription("You are now level **" + fina + "**")
+                        .setFooter("rc!profile to see money, level, points and more", null)
+                        .setColor(Colors.COLOR_SECONDARY)
+                        .build()
+                ).queue(message -> message.delete().queueAfter(10, TimeUnit.SECONDS));
+            }
+        }
+    }
+
+    public static int getRequiredPointsByLevel(int level) {
+        return (5 * ((level * level / 48) * 49) + 50 * level + 100);
+    }
+
+    private static class Cooldown {
+        /**
+         * Cooldown for MemberLevelListener
+         */
+        public static ArrayList<String> ids = new ArrayList<>();
+
+        public static boolean has(String id) {
+            if (ids.contains(id)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        public static void add(String id) {
+            ids.add(id);
+        }
+
+        public static void remove(String id) {
+            ids.remove(id);
+        }
     }
 }

@@ -1,6 +1,8 @@
 package fun.rubicon.listener;
 
 import fun.rubicon.RubiconBot;
+import fun.rubicon.commands.moderation.CommandMute;
+import fun.rubicon.sql.ServerLogSQL;
 import fun.rubicon.util.DBLUtil;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.Guild;
@@ -23,18 +25,19 @@ public class BotJoinListener extends ListenerAdapter {
 
     /**
      * Creates the new guild in the database
+     *
      * @param event
      */
     @Override
     public void onGuildJoin(GuildJoinEvent event) {
+        CommandMute.createMutedRoleIfNotExists(event.getGuild());
         //post statistics to discordbots.org
-        DBLUtil.postStats(event.getJDA());
+        DBLUtil.postStats(false);
         try {
             Guild g = event.getGuild();
             if (!RubiconBot.getMySQL().ifGuildExits(event.getGuild())) {
                 RubiconBot.getMySQL().createGuildServer(g);
-                RubiconBot.getMySQL().createMember(event.getGuild().getOwner());
-                new ServerLogHandler.ServerLogSQL(event.getGuild()).createDefaultEntryIfNotExist();
+                new ServerLogSQL(event.getGuild());
             }
         } catch (Exception ex) {
             Logger.error(ex);

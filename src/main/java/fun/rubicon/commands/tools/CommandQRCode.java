@@ -7,8 +7,8 @@
 package fun.rubicon.commands.tools;
 
 import fun.rubicon.command.CommandCategory;
-import fun.rubicon.command2.CommandHandler;
-import fun.rubicon.command2.CommandManager;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
@@ -26,8 +26,8 @@ public class CommandQRCode extends CommandHandler{
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        String[] args = parsedCommandInvocation.args;
-        Message message = parsedCommandInvocation.invocationMessage;
+        String[] args = parsedCommandInvocation.getArgs();
+        Message message = parsedCommandInvocation.getMessage();
         Message mymsg = message.getTextChannel().sendMessage(EmbedUtil.info("Generating", "Generating QR cde").build()).complete();
         if(args.length > 0){
             StringBuilder text = new StringBuilder();

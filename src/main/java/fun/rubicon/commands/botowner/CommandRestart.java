@@ -8,11 +8,11 @@ package fun.rubicon.commands.botowner;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
-import fun.rubicon.command2.CommandHandler;
-import fun.rubicon.command2.CommandManager;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
-import fun.rubicon.util.MySQL;
+import fun.rubicon.sql.MySQL;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
@@ -33,7 +33,7 @@ public class CommandRestart extends CommandHandler{
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         MySQL sql = RubiconBot.getMySQL();
         sql.disconnect();
-        Message msg = parsedCommandInvocation.invocationMessage.getTextChannel().sendMessage("Restarting :robot:").complete();
+        Message msg = parsedCommandInvocation.getMessage().getTextChannel().sendMessage("Restarting :robot:").complete();
         Timer t = new Timer();
         t.schedule(new TimerTask() {
             @Override

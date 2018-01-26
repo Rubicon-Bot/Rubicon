@@ -8,8 +8,8 @@ package fun.rubicon.commands.settings;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
-import fun.rubicon.command2.CommandHandler;
-import fun.rubicon.command2.CommandManager;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -27,12 +27,12 @@ public class CommandWelcomeChannel extends CommandHandler{
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         //Check if Channel got Mentioned
-        if (parsedCommandInvocation.invocationMessage.getMentionedChannels().size() <= 0)
-            return new MessageBuilder().setEmbed(new EmbedBuilder().setDescription(getUsage()).build()).build();
+        if (parsedCommandInvocation.getMessage().getMentionedChannels().size() <= 0)
+            return new MessageBuilder().setEmbed(new EmbedBuilder().setDescription(getParameterUsage()).build()).build();
         //Get the Mentioned Channel
-        String ch = parsedCommandInvocation.invocationMessage.getMentionedChannels().get(0).getId();
+        String ch = parsedCommandInvocation.getMessage().getMentionedChannels().get(0).getId();
         //Update MySql
-        RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.invocationMessage.getGuild(), "channel", ch);
-        return new MessageBuilder().setEmbed(new EmbedBuilder().setDescription(":white_check_mark: Successfully set the Joinmessagechannel!").build()).build();
+        RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.getMessage().getGuild(), "channel", ch);
+        return new MessageBuilder().setEmbed(new EmbedBuilder().setDescription(":white_check_mark: Successfully set the Event-Channel!").build()).build();
     }
 }
