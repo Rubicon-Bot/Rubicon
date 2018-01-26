@@ -1,6 +1,7 @@
 package fun.rubicon.sql;
 
 import fun.rubicon.RubiconBot;
+import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
@@ -9,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 /**
  * @author Yannick Seeger / ForYaSee
@@ -88,6 +90,15 @@ public class UserSQL implements DatabaseGenerator {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isPremium() {
+        String entry = get("premium");
+        if (entry.equalsIgnoreCase("false")) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

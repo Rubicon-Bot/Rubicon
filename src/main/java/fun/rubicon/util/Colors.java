@@ -34,4 +34,9 @@ public class Colors {
      * For (yet) unimplemented features.
      */
     public static Color COLOR_NOT_IMPLEMENTED = new Color(243, 156, 18);
+
+    /**
+     * For Premium messages
+     */
+    public static Color COLOR_PREMIUM = new Color(255,215,0);
 }

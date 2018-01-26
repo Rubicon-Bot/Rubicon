@@ -208,7 +208,8 @@ public class RubiconBot {
                 new CommandNow(),
                 new CommandPause(),
                 new CommandResume(),
-                new CommandQueue()
+                new CommandQueue(),
+                new CommandVolume()
         );
         // fun commands package
         commandManager.registerCommandHandlers(

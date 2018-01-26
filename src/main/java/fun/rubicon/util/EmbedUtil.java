@@ -40,6 +40,14 @@ public class EmbedUtil {
         return embed(":white_check_mark: " + title, description).setColor(Colors.COLOR_PRIMARY);
     }
 
+    public static EmbedBuilder premium(String title, String description) {
+        return embed(":star: " + title, description).setColor(Colors.COLOR_PREMIUM);
+    }
+
+    public static EmbedBuilder noPremium() {
+        return premium("No Premium!", "Buy premium with rubys!\n`rc!premium`");
+    }
+
     /**
      * Creates an embedded message with additional information.
      *

@@ -49,7 +49,7 @@ public class MusicManager {
     private final int SKIP_MAXIMUM = 10;
 
     private final AudioPlayerManager playerManager;
-    private static  final Map<Long, GuildMusicManager> musicManagers = new HashMap<>();
+    private static final Map<Long, GuildMusicManager> musicManagers = new HashMap<>();
 
     public MusicManager(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         this.parsedCommandInvocation = parsedCommandInvocation;
@@ -137,6 +137,29 @@ public class MusicManager {
         }
         loadSong();
         return null;
+    }
+
+    public Message executeVolume() {
+        if (!isBotInVoiceChannel())
+            return message(error("Error!", "Bot is not in a voice channel."));
+        VoiceChannel channel = getBotsVoiceChannel();
+        if (parsedCommandInvocation.getMember().getVoiceState().getChannel() != channel)
+            return message(error("Error!", "You have to be in the same voice channel as the bot."));
+        String userVolume = "";
+        if (parsedCommandInvocation.getArgs().length == 1) {
+            userVolume = parsedCommandInvocation.getArgs()[0];
+        } else {
+            return null;
+        }
+        int userVolI = Integer.parseInt(userVolume);
+        if (userVolI < 1) {
+            return message(EmbedUtil.error("Error!", "Volume must be a minimum of 1."));
+        }
+        if (userVolI > 200) {
+            return message(EmbedUtil.error("Error!", "Volume must be 200 or less."));
+        }
+        getCurrentMusicManager().getPlayer().setVolume(userVolI);
+        return message(success("Set volume!", "Successfully resumed playing music."));
     }
 
     public void loadSong() {
