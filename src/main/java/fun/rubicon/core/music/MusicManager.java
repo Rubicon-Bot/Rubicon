@@ -126,7 +126,7 @@ public class MusicManager {
         return message(success("Resumed!", "Successfully resumed playing music."));
     }
 
-    public Message playMusic() {
+    public Message playMusic(boolean force) {
         if (!isMemberInVoiceChannel())
             return message(error("Error!", "To use this command you have to be in a voice channel."));
         if (!isBotInVoiceChannel())
@@ -135,7 +135,7 @@ public class MusicManager {
         if (player.isPaused()) {
             player.setPaused(false);
         }
-        loadSong();
+        loadSong(force);
         return null;
     }
 
@@ -162,7 +162,7 @@ public class MusicManager {
         return message(success("Set volume!", "Successfully resumed playing music."));
     }
 
-    public void loadSong() {
+    public void loadSong(boolean force) {
         TextChannel textChannel = parsedCommandInvocation.getMessage().getTextChannel();
         boolean isURL = false;
         StringBuilder searchParam = new StringBuilder();
@@ -185,14 +185,15 @@ public class MusicManager {
                 boolean isStream = audioTrack.getInfo().isStream;
                 long trackDuration = audioTrack.getDuration();
 
-                getCurrentMusicManager().getScheduler().queue(audioTrack);
-
-                embedBuilder.setAuthor("Added a new song to queue", trackURL, null);
-                embedBuilder.addField("Title", trackName, true);
-                embedBuilder.addField("Author", trackAuthor, true);
-                embedBuilder.addField("Duration", (isStream) ? "Stream" : getTimestamp(trackDuration), false);
-                embedBuilder.setColor(Colors.COLOR_PRIMARY);
-                textChannel.sendMessage(embedBuilder.build()).queue();
+                if (!force) {
+                    getCurrentMusicManager().getScheduler().queue(audioTrack);
+                    embedBuilder.setAuthor("Added a new song to queue", trackURL, null);
+                    embedBuilder.addField("Title", trackName, true);
+                    embedBuilder.addField("Author", trackAuthor, true);
+                    embedBuilder.addField("Duration", (isStream) ? "Stream" : getTimestamp(trackDuration), false);
+                    embedBuilder.setColor(Colors.COLOR_PRIMARY);
+                    textChannel.sendMessage(embedBuilder.build()).queue();
+                }
             }
 
             @Override
@@ -203,6 +204,10 @@ public class MusicManager {
 
                 if (firstTrack == null)
                     firstTrack = playlistTracks.get(0);
+                if (force) {
+                    getCurrentMusicManager().getPlayer().playTrack(firstTrack);
+                    return;
+                }
                 if (isURLFinal) {
                     playlistTracks.forEach(getCurrentMusicManager().getScheduler()::queue);
 

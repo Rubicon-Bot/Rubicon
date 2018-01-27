@@ -45,7 +45,7 @@ public class EmbedUtil {
     }
 
     public static EmbedBuilder noPremium() {
-        return premium("No Premium!", "Buy premium with rubys!\n`rc!premium`");
+        return premium("No Premium!", "Buy premium with rubys! - `rc!premium buy`");
     }
 
     /**
