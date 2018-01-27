@@ -117,7 +117,7 @@ public class CommandHelp extends CommandHandler {
         }
 
         builder.setTitle(":information_source: Rubicon Bot command manual");
-        builder.setDescription("Use `" + invocation.getPrefix() + "help <command>` to get a more detailed command help.\n" +
+        builder.setDescription("Use `" + invocation.getPrefix() + "help <command>` to get a more information about a command.\n" +
                 "A detailed command list is available at [rubicon.fun](https://rubicon.fun)");
         builder.setColor(Colors.COLOR_SECONDARY);
         builder.setFooter("Loaded a total of "
