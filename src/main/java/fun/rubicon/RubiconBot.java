@@ -20,8 +20,8 @@ import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.ListenerManager;
-import fun.rubicon.core.webpanel.impl.*;
 import fun.rubicon.core.webpanel.WebpanelManager;
+import fun.rubicon.core.webpanel.impl.*;
 import fun.rubicon.features.GiveawayHandler;
 import fun.rubicon.features.RemindHandler;
 import fun.rubicon.permission.PermissionManager;
@@ -32,18 +32,15 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.hooks.EventListener;
 
 import javax.security.auth.login.LoginException;
-import java.io.*;
+import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Timer;
+import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Rubicon-bot's main class. Initializes all components.
@@ -157,7 +154,18 @@ public class RubiconBot {
 
         getJDA().getPresence().setGame(Game.playing("Started."));
         GameAnimator.start();
+        /**
+         *
+         * Check if every user, that has the prmium role hase premium
+         *
+         * @see CommandPremium
+         */
+        CommandPremium.PremiumChecker.check();
+        CommandPremium.PremiumChecker.startTask();
     }
+
+
+
 
     /**
      * Registers all command handlers used in this project.

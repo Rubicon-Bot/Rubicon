@@ -4,13 +4,16 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 /**
  * @author Yannick Seeger / ForYaSee
@@ -97,8 +100,34 @@ public class UserSQL implements DatabaseGenerator {
         if (entry.equalsIgnoreCase("false")) {
             return false;
         }
-
+        Date expiry = new Date(Long.parseLong(this.get("premium")));
+        Date now = new Date();
+        if(expiry.before(now)){
+            this.set("premium", "false");
+            return false;
+        }
         return true;
+    }
+
+    public Date getPremiumExpiryDate(){
+        if(!this.isPremium())
+            return null;
+        return new Date(Long.parseLong(this.get("premium")));
+    }
+
+    public String formatExpiryDate(){
+        if(!this.isPremium())
+            return null;
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        return sdf.format(this.getPremiumExpiryDate());
+    }
+
+    public User getUser() {
+        return RubiconBot.getJDA().getUserById(this.get("userid"));
+    }
+
+    public Member getMember(Guild guild){
+        return guild.getMember(this.getUser());
     }
 
     @Override

@@ -21,6 +21,8 @@ public class Info {
     public final static String BOT_VERSION = "0.2.2";
     public final static String BOT_WEBSITE = "https://rubicon.fun";
     public final static String BOT_GITHUB = "https://github.com/Rubicon-Bot/Rubicon";
+    public final static String COMMUNITY_SERVER = "381419503164325900";
+    public final static String PREMIUM_ROLE = "382160159339970560";
     public final static String CONFIG_FILE = "config.json";
     public final static String BITLY_TOKEN = RubiconBot.getConfiguration().getString("bitlytoken");
     public final static String DBL_TOKEN = RubiconBot.getConfiguration().getString("dbl_token");
