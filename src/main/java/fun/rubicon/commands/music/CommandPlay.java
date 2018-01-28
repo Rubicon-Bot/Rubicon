@@ -23,6 +23,6 @@ public class CommandPlay extends CommandHandler {
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         MusicManager musicManager = new MusicManager(parsedCommandInvocation);
-        return musicManager.playMusic();
+        return musicManager.playMusic(false);
     }
 }

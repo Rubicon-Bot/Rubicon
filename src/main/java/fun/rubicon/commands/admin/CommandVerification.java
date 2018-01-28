@@ -14,6 +14,7 @@ import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
+import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
@@ -129,15 +130,12 @@ public class CommandVerification extends CommandHandler {
         if (RubiconBot.getMySQL().verificationEnabled(event.getGuild())) {
             TextChannel channel = event.getGuild().getTextChannelById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "channelid"));
             if (event.getTextChannel().equals(channel)) {
-                if(!event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_READ)) {
-
-                }
                 event.getReaction().removeReaction().queue();
                 String emote = RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "emote");
                 if (!emote.equals(event.getReactionEmote().getName()) && !emote.equals(event.getReactionEmote().getId()))
                     return;
                 Role verfied = event.getGuild().getRoleById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "roleid"));
-                if(!event.getGuild().getSelfMember().canInteract(verfied)) {
+                if (!event.getGuild().getSelfMember().canInteract(verfied)) {
                     event.getTextChannel().sendMessage(EmbedUtil.error("Error!", "I can not assign roles that are higher than my role.").build()).queue();
                 }
                 event.getGuild().getController().addRolesToMember(event.getMember(), verfied).queue();
@@ -175,7 +173,7 @@ public class CommandVerification extends CommandHandler {
 
     public static void setupStepTwo(Message message, Message response) {
         if (response.getContentDisplay().length() > 1048) {
-            message.getTextChannel().sendMessage(EmbedUtil.error("To long", "Your message can't be longer than 1048 chars").build()).queue(msg -> msg.delete().queueAfter(4, TimeUnit.SECONDS));
+            SafeMessage.sendMessage(message.getTextChannel(), EmbedUtil.message(EmbedUtil.error("To long", "Your message can't be longer than 1048 chars")), 4);
             return;
         }
         VerificationSettings settings = settingslist.get(message.getGuild());
@@ -189,7 +187,7 @@ public class CommandVerification extends CommandHandler {
 
     public static void setupStepThree(Message message, Message response) {
         if (response.getContentDisplay().length() > 1048) {
-            message.getTextChannel().sendMessage(EmbedUtil.error("To long", "Your message can't be longer than 1048 chars").build()).queue(msg -> msg.delete().queueAfter(4, TimeUnit.SECONDS));
+            SafeMessage.sendMessage(message.getTextChannel(), EmbedUtil.message(EmbedUtil.error("To long", "Your message can't be longer than 1048 chars")), 4);
             return;
         }
         VerificationSettings settings = settingslist.get(message.getGuild());
@@ -208,7 +206,7 @@ public class CommandVerification extends CommandHandler {
         //System.out.println(event.getReactionEmote().getEmote().isManaged());
         if (!event.getReactionEmote().getEmote().isManaged()) {
             if (!event.getGuild().getEmotes().contains(emote.getEmote())) {
-                message.getTextChannel().sendMessage(EmbedUtil.error("Unsupported emote", "You can only use global or custom emotes of your server").build()).queue(msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
+                SafeMessage.sendMessage(message.getTextChannel(), EmbedUtil.message(EmbedUtil.error("Unsupported emote", "You can only use global or custom emotes of your server")), 4);
                 return;
             }
         }
@@ -243,7 +241,7 @@ public class CommandVerification extends CommandHandler {
         try {
             kicktime = Integer.parseInt(response.getContentDisplay());
         } catch (NumberFormatException e) {
-            message.getTextChannel().sendMessage(EmbedUtil.error("Invalid number", "Please enter a valid number").build()).complete();
+            SafeMessage.sendMessageBlocking(message.getTextChannel(), EmbedUtil.message(EmbedUtil.error("Invalid number", "Please enter a valid number")));
             return;
         }
         VerificationSettings settings = settingslist.get(message.getGuild());
@@ -264,7 +262,7 @@ public class CommandVerification extends CommandHandler {
 
     public static void setupStepSeven(Message message, Message response) {
         if (response.getContentDisplay().length() > 1048) {
-            message.getTextChannel().sendMessage(EmbedUtil.error("To long", "Your message can't be longer than 1048 chars").build()).queue(msg -> msg.delete().queueAfter(4, TimeUnit.SECONDS));
+            SafeMessage.sendMessage(message.getTextChannel(), EmbedUtil.message(EmbedUtil.error("To long", "Your message can't be longer than 1048 chars")), 4);
             return;
         }
         VerificationSettings settings = settingslist.get(message.getGuild());

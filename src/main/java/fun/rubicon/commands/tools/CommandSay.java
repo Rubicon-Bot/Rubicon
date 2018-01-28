@@ -41,6 +41,6 @@ public class CommandSay extends CommandHandler {
         }
         String text = parsedCommandInvocation.getMessage().getContentDisplay().replace(parsedCommandInvocation.getPrefix() + parsedCommandInvocation.getCommandInvocation() + " #" + textChannel.getName(), "");
         textChannel.sendMessage(text).queue();
-        return new MessageBuilder().setEmbed(EmbedUtil.success("Successful", "Successful sent message in " + textChannel.getAsMention()).build()).build();
+        return new MessageBuilder().setEmbed(EmbedUtil.success("Successful", "Successfully sent message in " + textChannel.getAsMention()).build()).build();
     }
 }
