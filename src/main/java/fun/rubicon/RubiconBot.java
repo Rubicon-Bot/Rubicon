@@ -20,6 +20,7 @@ import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.ListenerManager;
+import fun.rubicon.core.RubackReceiver;
 import fun.rubicon.core.webpanel.WebpanelManager;
 import fun.rubicon.core.webpanel.impl.*;
 import fun.rubicon.features.GiveawayHandler;
@@ -57,6 +58,7 @@ public class RubiconBot {
     private final Timer timer;
     private final Set<EventListener> eventListeners;
     private final PermissionManager permissionManager;
+    private final RubackReceiver rubackReceiver;
 
     /**
      * Constructs the RubiconBot.
@@ -92,6 +94,8 @@ public class RubiconBot {
         registerCommandHandlers();
         permissionManager = new PermissionManager();
         webpanelManager = new WebpanelManager(getConfiguration().getString("lucsoft_token"));
+        rubackReceiver = new RubackReceiver();
+        rubackReceiver.start();
 
         registerWebpanelRequests();
         // init JDA
