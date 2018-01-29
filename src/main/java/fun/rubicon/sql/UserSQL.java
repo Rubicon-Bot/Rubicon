@@ -1,7 +1,6 @@
 package fun.rubicon.sql;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -12,7 +11,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -32,6 +30,11 @@ public class UserSQL implements DatabaseGenerator {
         this.connection = MySQL.getConnection();
     }
 
+    /**
+     * User fromUser(User user) or fromMember(Member member) method
+     * @see UserSQL
+     */
+    @Deprecated
     public UserSQL(User user) {
         this.user = user;
         this.mySQL = RubiconBot.getMySQL();
@@ -39,6 +42,22 @@ public class UserSQL implements DatabaseGenerator {
 
         create();
     }
+
+    private UserSQL(User user, MySQL mySQL, Connection connection){
+        this.user = user;
+        this.mySQL = mySQL;
+        this.connection = connection;
+    }
+
+    public static UserSQL fromUser(User user){
+        return new UserSQL(user, RubiconBot.getMySQL(), MySQL.getConnection());
+    }
+
+    public static UserSQL fromMember(Member member){
+        return fromUser(member.getUser());
+    }
+
+
 
     //User Stuff
     public boolean exist() {
@@ -130,6 +149,10 @@ public class UserSQL implements DatabaseGenerator {
         return guild.getMember(this.getUser());
     }
 
+    public MemberSQL getMemberSQL(Guild guild){
+        return MemberSQL.fromUser(this.user, guild);
+    }
+
     @Override
     public void createTableIfNotExist() {
         try {
@@ -149,4 +172,6 @@ public class UserSQL implements DatabaseGenerator {
             Logger.error(e);
         }
     }
+
+
 }

@@ -20,7 +20,9 @@ import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 
+import javax.naming.InsufficientResourcesException;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -122,8 +124,14 @@ public class CommandVerification extends CommandHandler {
     }
 
     public static void handleReaction(MessageReactionAddEvent event) {
-        Message message = event.getTextChannel().getMessageById(event.getMessageId()).complete();
-        if (message == null) return;
+        boolean working = false;
+        Message message = null;
+        try{
+            message = event.getTextChannel().getMessageById(event.getMessageId()).complete();
+        } catch (InsufficientPermissionException ex){
+        }
+        if(message == null) return;
+
         if (message.equals("0")) return;
         if (!message.getAuthor().equals(event.getJDA().getSelfUser())) return;
         if (!event.getUser().equals(users.get(message))) return;

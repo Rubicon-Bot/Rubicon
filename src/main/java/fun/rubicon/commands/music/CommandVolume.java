@@ -22,7 +22,7 @@ public class CommandVolume extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        UserSQL userSQL = new UserSQL(parsedCommandInvocation.getAuthor());
+        UserSQL userSQL = UserSQL.fromUser(parsedCommandInvocation.getAuthor());
 
         if (!userSQL.isPremium()) {
             return EmbedUtil.message(EmbedUtil.noPremium());

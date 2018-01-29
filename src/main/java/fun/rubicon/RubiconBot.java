@@ -38,9 +38,6 @@ import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Rubicon-bot's main class. Initializes all components.
@@ -49,7 +46,7 @@ import java.util.concurrent.ScheduledExecutorService;
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token", "gip_token", "lucsoft_token", "twitterConsumerKey", "twitterConsumerSecret", "twitterAccessToken", "twitterAccessTokenSecret", "google_token"};
+    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token", "gip_token", "lucsoft_token", "twitterConsumerKey", "twitterConsumerSecret", "twitterAccessToken", "twitterAccessTokenSecret", "google_token", "musixmatch_key"};
     private static final String dataFolder = "data/";
     private static WebpanelManager webpanelManager;
     private static RubiconBot instance;
@@ -214,7 +211,8 @@ public class RubiconBot {
                 new CommandResume(),
                 new CommandQueue(),
                 new CommandVolume(),
-                new CommandForceplay()
+                new CommandForceplay(),
+                new CommandLyrics()
         );
         // fun commands package
         commandManager.registerCommandHandlers(
