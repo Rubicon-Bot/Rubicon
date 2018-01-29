@@ -49,7 +49,8 @@ public class CommandPremium extends CommandHandler {
         public void run() {
             check();
         }
-        public static void check(){
+
+        public static void check() {
             Guild guild = RubiconBot.getJDA().getGuildById(Info.COMMUNITY_SERVER);
             Role role = guild.getRoleById(Info.PREMIUM_ROLE);
             guild.getMembers().stream().filter(member -> member.getRoles().contains(role)).collect(Collectors.toList()).forEach(m -> {
@@ -58,7 +59,8 @@ public class CommandPremium extends CommandHandler {
                     guild.getController().removeSingleRoleFromMember(m, role).queue();
             });
         }
-        private static Date getTomorrowMorning11PM(){
+
+        private static Date getTomorrowMorning11PM() {
 
             Date date = new Date();
             Calendar calendar = Calendar.getInstance();
@@ -68,10 +70,11 @@ public class CommandPremium extends CommandHandler {
 
             return calendar.getTime();
         }
+
         //call this method from your servlet init method
-        public static void startTask(){
+        public static void startTask() {
             Timer timer = new Timer();
-            timer.schedule(new PremiumChecker(), getTomorrowMorning11PM(),1000*10);// for your case u need to give 1000*60*60*24
+            timer.schedule(new PremiumChecker(), getTomorrowMorning11PM(), 1000 * 10);// for your case u need to give 1000*60*60*24
         }
     }
 
