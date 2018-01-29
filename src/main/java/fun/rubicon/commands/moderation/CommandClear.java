@@ -13,7 +13,9 @@ import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.StringUtil;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.User;
 
 import java.time.OffsetDateTime;
@@ -49,7 +51,7 @@ public class CommandClear extends CommandHandler {
         }
 
         if (messageAmount > 3000) {
-            return EmbedUtil.message(EmbedUtil.error("Error!", "Why dou you want to clear more than 3000 messages??"));
+            return EmbedUtil.message(EmbedUtil.error("Error!", "Why do you want to clear more than 3000 messages??"));
         }
 
         int deletedMessagesSize = 0;

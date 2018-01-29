@@ -1,6 +1,5 @@
 package fun.rubicon.core;
 
-import fun.rubicon.RubiconBot;
 import fun.rubicon.util.Logger;
 
 import java.io.IOException;
