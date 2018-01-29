@@ -33,7 +33,7 @@ public class CommandUnmute extends CommandHandler {
         Guild guild = parsedCommandInvocation.getGuild();
 
         if(message.getMentionedUsers().isEmpty())
-            return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "mute <@User>").build()).build();
+            return createHelpMessage();
         Member victim = guild.getMember(message.getMentionedUsers().get(0));
         if(!user.canInteract(victim))
             return new MessageBuilder().setEmbed(EmbedUtil.error("No permission", "You have no permission to interact with " + victim.getAsMention()).build()).build();
