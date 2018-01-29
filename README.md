@@ -24,3 +24,6 @@ xEiisKeksx#7483<br>
 Schlaubi#1337<br>
 lucsoft#5138<br>
 tr808axm#7012
+
+## Graphics
+Logo(s) - [Zekro](https://github.com/zekroTJA)
