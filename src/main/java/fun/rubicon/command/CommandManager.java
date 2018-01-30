@@ -86,7 +86,6 @@ public class CommandManager extends ListenerAdapter {
      * @param parsedCommandInvocation the parsed message.
      */
     private void call(ParsedCommandInvocation parsedCommandInvocation) {
-        long last = System.currentTimeMillis();
         CommandHandler commandHandler = getCommandHandler(parsedCommandInvocation.getCommandInvocation());
         Message response;
         if (commandHandler == null) {
@@ -94,8 +93,10 @@ public class CommandManager extends ListenerAdapter {
                     + "' could not be resolved to a command.\nType '" + parsedCommandInvocation.serverPrefix
                     + "help' to get a list of all commands.")));*/
             return;
-        } else
+        } else {
+            DevCommandLog.log(parsedCommandInvocation);
             response = commandHandler.call(parsedCommandInvocation);
+        }
 
         // respond
         if (response != null)
@@ -106,8 +107,6 @@ public class CommandManager extends ListenerAdapter {
             parsedCommandInvocation.getMessage().delete().queue(null, msg -> {
             }); // suppress failure
         }
-        long delta = System.currentTimeMillis() - last;
-        DevCommandLog.log(parsedCommandInvocation, delta);
     }
 
     /**
