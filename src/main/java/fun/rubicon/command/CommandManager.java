@@ -8,10 +8,7 @@ package fun.rubicon.command;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.music.MusicManager;
-import fun.rubicon.util.EmbedUtil;
-import fun.rubicon.util.GlobalBlacklist;
-import fun.rubicon.util.Info;
-import fun.rubicon.util.Logger;
+import fun.rubicon.util.*;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -66,8 +63,9 @@ public class CommandManager extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if (event.getAuthor().equals(RubiconBot.getJDA().getSelfUser()))
-            if (event.isFromType(ChannelType.PRIVATE)) return;
+        if (event.getAuthor().isBot())
+            return;
+        if (event.isFromType(ChannelType.PRIVATE)) return;
         if (RubiconBot.getMySQL().isBlacklisted(event.getTextChannel())) return;
         MusicManager.handleTrackChoose(event);
         super.onMessageReceived(event);
@@ -95,8 +93,10 @@ public class CommandManager extends ListenerAdapter {
                     + "' could not be resolved to a command.\nType '" + parsedCommandInvocation.serverPrefix
                     + "help' to get a list of all commands.")));*/
             return;
-        } else
+        } else {
+            DevCommandLog.log(parsedCommandInvocation);
             response = commandHandler.call(parsedCommandInvocation);
+        }
 
         // respond
         if (response != null)
@@ -122,9 +122,10 @@ public class CommandManager extends ListenerAdapter {
         if (message.getContentRaw().startsWith(RubiconBot.getJDA().getSelfUser().getAsMention())) {
             prefix = RubiconBot.getJDA().getSelfUser().getAsMention();
             // react to default prefix: 'rc!<majorcommand> [arguments]'
-        } else if (message.getContentRaw().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()))
-            prefix = Info.BOT_DEFAULT_PREFIX;
-            // react to custom server prefix: '<custom-server-prefix><majorcommand> [arguments...]'
+        } else if (message.getContentRaw().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase())) {
+            prefix = message.getContentRaw().substring(0, Info.BOT_DEFAULT_PREFIX.length());
+        }
+        // react to custom server prefix: '<custom-server-prefix><majorcommand> [arguments...]'
         else if (message.getChannelType() == ChannelType.TEXT) { // ensure bot is on a server
             String serverPrefix = RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix");
             if (message.getContentRaw().toLowerCase().startsWith(serverPrefix.toLowerCase()))
