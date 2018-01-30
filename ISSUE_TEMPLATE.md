@@ -10,7 +10,7 @@
 
 #### Description
 
-Replace this sentence with a short description of what did happend or what this new Feature is about!
+Replace this sentence with a short description of what did happened or what this new Feature is about!
 
 ### Steps to reproduce
 
