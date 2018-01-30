@@ -18,7 +18,7 @@ Replace this sentence with a short description of what did happend or what this 
 
 - Step 1
   - Sample Step
--Step 2
+- Step 2
   - another sample Step
 - Step 4
   - Feel free to add Steps
