@@ -1,6 +1,5 @@
 package fun.rubicon.commands.general;
 
-import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
@@ -13,13 +12,11 @@ import fun.rubicon.sql.UserSQL;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.Info;
-import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.*;
 
 import java.util.Arrays;
 
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -28,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 public class CommandProfile extends CommandHandler {
 
     public CommandProfile() {
-        super(new String[]{"profile", "user", "level"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.profile"), "Displays the bio, money and level of a user.", "" +
+        super(new String[]{"profile", "user", "level", "profil"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.profile"), "Displays the bio, money and level of a user.", "" +
                 "\n" +
                 "[@User]");
     }
@@ -65,6 +62,7 @@ public class CommandProfile extends CommandHandler {
         } else if (Arrays.asList(Info.COMMUNITY_STAFF_TEAM).contains(member.getUser().getIdLong())) {
             embedBuilder.addField("VIP", "RubiconBot Community Staff", false);
         }
+        embedBuilder.setDescription(userSQL.get("bio"));
         embedBuilder.addField("Money", "Balance: " + userSQL.get("money") + " Rubys", true);
         embedBuilder.addField("Premium", (userSQL.isPremium()) ? "Until " + userSQL.formatExpiryDate() : "No premium", true);
         embedBuilder.addField("Level", buildProgressBar(memberSQL), false);
