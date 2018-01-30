@@ -8,10 +8,7 @@ package fun.rubicon.command;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.music.MusicManager;
-import fun.rubicon.util.EmbedUtil;
-import fun.rubicon.util.GlobalBlacklist;
-import fun.rubicon.util.Info;
-import fun.rubicon.util.Logger;
+import fun.rubicon.util.*;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -67,7 +64,8 @@ public class CommandManager extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         if (event.getAuthor().equals(RubiconBot.getJDA().getSelfUser()))
-            if (event.isFromType(ChannelType.PRIVATE)) return;
+            return;
+        if (event.isFromType(ChannelType.PRIVATE)) return;
         if (RubiconBot.getMySQL().isBlacklisted(event.getTextChannel())) return;
         MusicManager.handleTrackChoose(event);
         super.onMessageReceived(event);
@@ -95,8 +93,10 @@ public class CommandManager extends ListenerAdapter {
                     + "' could not be resolved to a command.\nType '" + parsedCommandInvocation.serverPrefix
                     + "help' to get a list of all commands.")));*/
             return;
-        } else
+        } else {
+            DevCommandLog.log(parsedCommandInvocation);
             response = commandHandler.call(parsedCommandInvocation);
+        }
 
         // respond
         if (response != null)
