@@ -1,5 +1,6 @@
 package fun.rubicon.commands.general;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
@@ -11,11 +12,15 @@ import fun.rubicon.sql.MemberSQL;
 import fun.rubicon.sql.UserSQL;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
+import fun.rubicon.util.Info;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
+
+import java.util.Arrays;
+
+import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Yannick Seeger / ForYaSee
@@ -55,11 +60,15 @@ public class CommandProfile extends CommandHandler {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setColor(Colors.COLOR_PRIMARY);
         embedBuilder.setAuthor(member.getEffectiveName() + "'s profile", null, member.getUser().getAvatarUrl());
-        embedBuilder.setDescription(userSQL.get("bio"));
+        if (Arrays.asList(Info.BOT_AUTHOR_IDS).contains(member.getUser().getIdLong())) {
+            embedBuilder.addField("VIP", "Official RubiconBot Developer", false);
+        } else if (Arrays.asList(Info.COMMUNITY_STAFF_TEAM).contains(member.getUser().getIdLong())) {
+            embedBuilder.addField("VIP", "RubiconBot Community Staff", false);
+        }
         embedBuilder.addField("Money", "Balance: " + userSQL.get("money") + " Rubys", true);
-        embedBuilder.addField("Premium", (isPremium(userSQL)) ? "Until " + CommandPremium.parsePremiumEntry(userSQL.get("premium")) : "No premium", true);
+        embedBuilder.addField("Premium", (userSQL.isPremium()) ? "Until " + userSQL.formatExpiryDate() : "No premium", true);
         embedBuilder.addField("Level", buildProgressBar(memberSQL), false);
-        textChannel.sendMessage(EmbedUtil.message(embedBuilder)).queue();
+        textChannel.sendMessage(EmbedUtil.message(embedBuilder)).queue(message -> message.delete().queueAfter(5, TimeUnit.MINUTES));
     }
 
     private String buildProgressBar(MemberSQL sql) {
@@ -71,10 +80,4 @@ public class CommandProfile extends CommandHandler {
                 "Points: " + currentPoints + "/" + requiredPoints + " (" + percent + "%)";
     }
 
-    private boolean isPremium(UserSQL sql) {
-        String entry = sql.get("premium");
-        if (entry.equalsIgnoreCase("false"))
-            return false;
-        return true;
-    }
 }

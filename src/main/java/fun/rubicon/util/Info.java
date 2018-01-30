@@ -18,9 +18,11 @@ public class Info {
 
     public final static String BOT_DEFAULT_PREFIX = "rc!";
     public final static String BOT_NAME = "RubiconBot";
-    public final static String BOT_VERSION = "0.2.0";
+    public final static String BOT_VERSION = "0.2.2";
     public final static String BOT_WEBSITE = "https://rubicon.fun";
     public final static String BOT_GITHUB = "https://github.com/Rubicon-Bot/Rubicon";
+    public final static String COMMUNITY_SERVER = "381419503164325900";
+    public final static String PREMIUM_ROLE = "382160159339970560";
     public final static String CONFIG_FILE = "config.json";
     public final static String BITLY_TOKEN = RubiconBot.getConfiguration().getString("bitlytoken");
     public final static String DBL_TOKEN = RubiconBot.getConfiguration().getString("dbl_token");
@@ -39,6 +41,13 @@ public class Info {
             264048760580079616L, // Schlaubi
             137253345336229889L, // lucsoft
             137263174675070976L  // tr808axm
+    };
+
+    public final static Long[] COMMUNITY_STAFF_TEAM = {
+            362270177712275491L, //Skidder
+            336415827773358081L, //SLIN
+            240797338430341120L, //Pilz
+            235395943619493888L //ls13game
     };
 
     /* MySQL login */

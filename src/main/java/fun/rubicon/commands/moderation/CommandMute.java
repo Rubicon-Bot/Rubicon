@@ -17,7 +17,7 @@ import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.channel.text.TextChannelCreateEvent;
-import net.dv8tion.jda.core.exceptions.PermissionException;
+import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 
 import java.sql.SQLException;
 
@@ -52,7 +52,8 @@ public class CommandMute extends CommandHandler {
         Role muted = null;
         try{
             muted = guild.getController().createRole().setName("rubicon-muted").complete();
-        } catch (PermissionException e){
+            guild.getRoles().get(0).delete().queue();
+        } catch (InsufficientPermissionException e){
             guild.getDefaultChannel().sendMessage("ERROR: Please give me MANAGE_ROLE permission to use mute command");
         }
         Role finalMuted = muted;

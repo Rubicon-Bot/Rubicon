@@ -13,6 +13,8 @@ import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 
 import javax.script.ScriptEngine;
@@ -51,7 +53,6 @@ public class CommandEval extends CommandHandler {
         se.put("channel", parsedCommandInvocation.getMessage().getChannel());
         se.put("message", parsedCommandInvocation.getMessage());
         se.put("author", parsedCommandInvocation.getMessage().getAuthor());
-
 
         String modified_msg = String.join(" ", parsedCommandInvocation.getArgs())
                 .replace("getToken", "getTextChannelById(channel.getId()).sendMessage(\"UnsupportedOperationException(\\\"Nice try m8!\\\")\").queue").replace("System.exit", "getTextChannelById(channel.getId()).sendMessage(\"UnsupportedOperationException(\\\"Nice try m8!\\\")\").queue").replace("shutdown", "getTextChannelById(channel.getId()).sendMessage(\"UnsupportedOperationException(\\\"Nice try m8!\\\")\").queue").replace("Runtime", "getTextChannelById(channel.getId()).sendMessage(\"UnsupportedOperationException(\\\"Nice try m8!\\\")\").queue").replace("leave", "getTextChannelById(channel.getId()).sendMessage(\\\"UnsupportedOperationException(\\\\\\\"Nice try m8!\\\\\\\")\\\").queue").replace("kick", "SHUT UP SCHLAUBI").replace("while", "FUCK YOU!").replace("getAsMention()", "getAsShutUp()").replace("Thread", "EINSCHEIß");

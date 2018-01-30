@@ -49,7 +49,7 @@ public class MusicManager {
     private final int SKIP_MAXIMUM = 10;
 
     private final AudioPlayerManager playerManager;
-    private static  final Map<Long, GuildMusicManager> musicManagers = new HashMap<>();
+    private static final Map<Long, GuildMusicManager> musicManagers = new HashMap<>();
 
     public MusicManager(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         this.parsedCommandInvocation = parsedCommandInvocation;
@@ -126,7 +126,7 @@ public class MusicManager {
         return message(success("Resumed!", "Successfully resumed playing music."));
     }
 
-    public Message playMusic() {
+    public Message playMusic(boolean force) {
         if (!isMemberInVoiceChannel())
             return message(error("Error!", "To use this command you have to be in a voice channel."));
         if (!isBotInVoiceChannel())
@@ -135,11 +135,34 @@ public class MusicManager {
         if (player.isPaused()) {
             player.setPaused(false);
         }
-        loadSong();
+        loadSong(force);
         return null;
     }
 
-    public void loadSong() {
+    public Message executeVolume() {
+        if (!isBotInVoiceChannel())
+            return message(error("Error!", "Bot is not in a voice channel."));
+        VoiceChannel channel = getBotsVoiceChannel();
+        if (parsedCommandInvocation.getMember().getVoiceState().getChannel() != channel)
+            return message(error("Error!", "You have to be in the same voice channel as the bot."));
+        String userVolume = "";
+        if (parsedCommandInvocation.getArgs().length == 1) {
+            userVolume = parsedCommandInvocation.getArgs()[0];
+        } else {
+            return null;
+        }
+        int userVolI = Integer.parseInt(userVolume);
+        if (userVolI < 1) {
+            return message(EmbedUtil.error("Error!", "Volume must be a minimum of 1."));
+        }
+        if (userVolI > 200) {
+            return message(EmbedUtil.error("Error!", "Volume must be 200 or less."));
+        }
+        getCurrentMusicManager().getPlayer().setVolume(userVolI);
+        return message(success("Set volume!", "Successfully resumed playing music."));
+    }
+
+    public void loadSong(boolean force) {
         TextChannel textChannel = parsedCommandInvocation.getMessage().getTextChannel();
         boolean isURL = false;
         StringBuilder searchParam = new StringBuilder();
@@ -162,14 +185,15 @@ public class MusicManager {
                 boolean isStream = audioTrack.getInfo().isStream;
                 long trackDuration = audioTrack.getDuration();
 
-                getCurrentMusicManager().getScheduler().queue(audioTrack);
-
-                embedBuilder.setAuthor("Added a new song to queue", trackURL, null);
-                embedBuilder.addField("Title", trackName, true);
-                embedBuilder.addField("Author", trackAuthor, true);
-                embedBuilder.addField("Duration", (isStream) ? "Stream" : getTimestamp(trackDuration), false);
-                embedBuilder.setColor(Colors.COLOR_PRIMARY);
-                textChannel.sendMessage(embedBuilder.build()).queue();
+                if (!force) {
+                    getCurrentMusicManager().getScheduler().queue(audioTrack);
+                    embedBuilder.setAuthor("Added a new song to queue", trackURL, null);
+                    embedBuilder.addField("Title", trackName, true);
+                    embedBuilder.addField("Author", trackAuthor, true);
+                    embedBuilder.addField("Duration", (isStream) ? "Stream" : getTimestamp(trackDuration), false);
+                    embedBuilder.setColor(Colors.COLOR_PRIMARY);
+                    textChannel.sendMessage(embedBuilder.build()).queue();
+                }
             }
 
             @Override
@@ -180,6 +204,10 @@ public class MusicManager {
 
                 if (firstTrack == null)
                     firstTrack = playlistTracks.get(0);
+                if (force) {
+                    getCurrentMusicManager().getPlayer().playTrack(firstTrack);
+                    return;
+                }
                 if (isURLFinal) {
                     playlistTracks.forEach(getCurrentMusicManager().getScheduler()::queue);
 
