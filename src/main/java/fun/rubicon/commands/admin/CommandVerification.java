@@ -212,7 +212,7 @@ public class CommandVerification extends CommandHandler {
         }
         settings.emote = emote;
         settingslist.replace(event.getGuild(), settings);
-        message.editMessage(EmbedUtil.info("Step 5 - Verified role", "Please mention the role that should be added to user-").build()).queue();
+        message.editMessage(EmbedUtil.info("Step 5 - Verified role", "Please mention the role that should be added to user").build()).queue();
         VerificationSetup setup = setups.get(message.getGuild());
         setup.step++;
         setups.replace(message.getGuild(), setup);
@@ -262,7 +262,7 @@ public class CommandVerification extends CommandHandler {
 
     public static void setupStepSeven(Message message, Message response) {
         if (response.getContentDisplay().length() > 1048) {
-            SafeMessage.sendMessage(message.getTextChannel(), EmbedUtil.message(EmbedUtil.error("To long", "Your message can't be longer than 1048 chars")), 4);
+            SafeMessage.sendMessage(message.getTextChannel(), EmbedUtil.message(EmbedUtil.error("Too long", "Your message can't be longer than 1048 chars")), 4);
             return;
         }
         VerificationSettings settings = settingslist.get(message.getGuild());
