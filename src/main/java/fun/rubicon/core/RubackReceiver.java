@@ -33,7 +33,7 @@ public class RubackReceiver implements Runnable {
     public void run() {
         try {
             serverSocket = new ServerSocket(13902);
-            serverSocket.setSoTimeout(600000);
+            serverSocket.setSoTimeout(86400);
             while (running) {
                 Socket ruback = serverSocket.accept();
                 PrintWriter rubackOut = new PrintWriter(ruback.getOutputStream(), true);
