@@ -52,7 +52,6 @@ public class CommandMute extends CommandHandler {
         Role muted = null;
         try{
             muted = guild.getController().createRole().setName("rubicon-muted").complete();
-            guild.getRoles().get(0).delete().queue();
         } catch (InsufficientPermissionException e){
             guild.getDefaultChannel().sendMessage("ERROR: Please give me MANAGE_ROLE permission to use mute command");
         }
@@ -67,6 +66,8 @@ public class CommandMute extends CommandHandler {
 
     public static void handleTextChannelCreation(TextChannelCreateEvent event){
         Role muted = createMutedRoleIfNotExists(event.getGuild());
+        if(!event.getGuild().getSelfMember().canInteract(muted))
+            event.getGuild().getOwner().getUser().openPrivateChannel().complete().sendMessage("I am unable to interact with `rubicon-muted` please give me access").queue();
         TextChannel channel = event.getChannel();
         PermissionOverride override = channel.createPermissionOverride(muted).complete();
         if(override.getDenied().contains(Permission.MESSAGE_WRITE)) return;

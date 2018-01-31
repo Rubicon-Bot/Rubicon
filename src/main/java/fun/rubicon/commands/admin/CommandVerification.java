@@ -13,13 +13,13 @@ import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
+import fun.rubicon.features.VerficationKickHandler;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
-import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
@@ -76,7 +76,7 @@ public class CommandVerification extends CommandHandler {
         if (RubiconBot.getMySQL().verificationEnabled(message.getGuild())) {
             return new MessageBuilder().setEmbed(EmbedUtil.error("Already enabled", "Verification System is already enabled on this guild").build()).build();
         }
-        MessageEmbed embed = EmbedUtil.info("Step 1 - Confirm setup", "Please react with :white_check_mark: \n **Requirements:** \n - Verification channel \n - Verified role").build();
+        MessageEmbed embed = EmbedUtil.info("Step 1 - Confirm setup", "Please react with :white_check_mark: \n **Requirements:** \n - Channel for the verification messages \n - Role to be added to the users \n - Custom accept emoji").build();
         Message setupmsg = message.getTextChannel().sendMessage(embed).complete();
         setupmsg.addReaction("✅").queue();
         setupmsg.addReaction("❌").queue();
@@ -92,7 +92,7 @@ public class CommandVerification extends CommandHandler {
         Guild guild;
         public int step;
 
-        public VerificationSetup(CommandManager.ParsedCommandInvocation parsedCommandInvocation, Message message) {
+        VerificationSetup(CommandManager.ParsedCommandInvocation parsedCommandInvocation, Message message) {
             this.message = message;
             this.author = parsedCommandInvocation.getMessage().getAuthor();
             this.guild = parsedCommandInvocation.getMessage().getGuild();
@@ -110,7 +110,7 @@ public class CommandVerification extends CommandHandler {
         public int kicktime;
         public String kicktext;
 
-        public VerificationSettings(TextChannel verificationChannel, String verifytext, String verifiedtext, Role verifiedrole, int kicktime, String kicktext, MessageReaction.ReactionEmote emote) {
+        VerificationSettings(TextChannel verificationChannel, String verifytext, String verifiedtext, Role verifiedrole, int kicktime, String kicktext, MessageReaction.ReactionEmote emote) {
             this.channel = verificationChannel;
             this.verifytext = verifytext;
             this.verifiedtext = verifiedtext;
@@ -122,9 +122,13 @@ public class CommandVerification extends CommandHandler {
     }
 
     public static void handleReaction(MessageReactionAddEvent event) {
-        Message message = event.getTextChannel().getMessageById(event.getMessageId()).complete();
+        Message message = null;
+        try {
+            message = event.getTextChannel().getMessageById(event.getMessageId()).complete();
+        } catch (InsufficientPermissionException ignored) {
+        }
         if (message == null) return;
-        if (message.equals("0")) return;
+
         if (!message.getAuthor().equals(event.getJDA().getSelfUser())) return;
         if (!event.getUser().equals(users.get(message))) return;
         if (RubiconBot.getMySQL().verificationEnabled(event.getGuild())) {
@@ -139,7 +143,17 @@ public class CommandVerification extends CommandHandler {
                     event.getTextChannel().sendMessage(EmbedUtil.error("Error!", "I can not assign roles that are higher than my role.").build()).queue();
                 }
                 event.getGuild().getController().addRolesToMember(event.getMember(), verfied).queue();
-                message.editMessage(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "verifiedtext").replace("%user%", event.getUser().getAsMention())).queue(msg -> msg.delete().queueAfter(30, TimeUnit.SECONDS));
+                message.getReactions().forEach(r -> {
+                    r.removeReaction().queue();
+                });
+                message.editMessage(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "verifiedtext").replace("%user%", event.getUser().getAsMention()).replace("%guild%", event.getGuild().getName())).queue();
+                message.getReactions().forEach(r -> {
+                    r.getUsers().forEach(u -> {
+                        r.removeReaction(u).queue();
+                    });
+                });
+                message.delete().queueAfter(5, TimeUnit.SECONDS);
+                VerficationKickHandler.VerifyKick.fromMember(event.getMember(), true).remove();
             }
         } else {
             if (!setups.containsKey(event.getGuild())) return;
@@ -165,7 +179,7 @@ public class CommandVerification extends CommandHandler {
         VerificationSettings settings = new VerificationSettings(response.getMentionedChannels().get(0), null, null, null, 0, null, null);
         settingslist.put(message.getGuild(), settings);
 
-        message.editMessage(EmbedUtil.info("Step 3 - Verify message", "Please enter the text of the message that'll be sent to new users. (Use `%user%` to mention the user)").build()).queue();
+        message.editMessage(EmbedUtil.info("Step 3 - Verify message", "Please enter the text of the message that'll be sent to new users. (Use `%user%` to mention the user and `%guild%` for the servername)").build()).queue();
         VerificationSetup setup = setups.get(message.getGuild());
         setup.step++;
         setups.replace(message.getGuild(), setup);
@@ -173,13 +187,13 @@ public class CommandVerification extends CommandHandler {
 
     public static void setupStepTwo(Message message, Message response) {
         if (response.getContentDisplay().length() > 1048) {
-            SafeMessage.sendMessage(message.getTextChannel(), EmbedUtil.message(EmbedUtil.error("To long", "Your message can't be longer than 1048 chars")), 4);
+            SafeMessage.sendMessage(message.getTextChannel(), EmbedUtil.message(EmbedUtil.error("Too long", "Your message can't be longer than 1048 chars")), 4);
             return;
         }
         VerificationSettings settings = settingslist.get(message.getGuild());
         settings.verifytext = response.getContentDisplay();
         settingslist.replace(message.getGuild(), settings);
-        message.editMessage(EmbedUtil.info("Step 4 - Verified message", "Please enter the message that should be sent when a user accepted rules (Use `%user%` to mention the user)").build()).queue();
+        message.editMessage(EmbedUtil.info("Step 4 - Verified message", "Please enter the message that should be sent when a user accepted rules (Use `%user%` to mention the user and `%guild%` for the servername)").build()).queue();
         VerificationSetup setup = setups.get(message.getGuild());
         setup.step++;
         setups.replace(message.getGuild(), setup);
@@ -187,7 +201,7 @@ public class CommandVerification extends CommandHandler {
 
     public static void setupStepThree(Message message, Message response) {
         if (response.getContentDisplay().length() > 1048) {
-            SafeMessage.sendMessage(message.getTextChannel(), EmbedUtil.message(EmbedUtil.error("To long", "Your message can't be longer than 1048 chars")), 4);
+            SafeMessage.sendMessage(message.getTextChannel(), EmbedUtil.message(EmbedUtil.error("Too long", "Your message can't be longer than 1048 chars")), 4);
             return;
         }
         VerificationSettings settings = settingslist.get(message.getGuild());
@@ -254,7 +268,7 @@ public class CommandVerification extends CommandHandler {
             return;
         }
         settings.kicktime = kicktime;
-        message.editMessage(EmbedUtil.info("Step 7 - Kick message", "Please enter the message that'll be sent to the user after he got kicked").build()).queue();
+        message.editMessage(EmbedUtil.info("Step 7 - Kick message", "Please enter the message that'll be sent to the user after he got kicked use `%invite%` to embed a custom invite link to verification channel (1 user limited) or `%guild%` for the servername").build()).queue();
         VerificationSetup setup = setups.get(message.getGuild());
         setup.step++;
         setups.replace(message.getGuild(), setup);
@@ -269,9 +283,11 @@ public class CommandVerification extends CommandHandler {
         settings.kicktext = response.getContentDisplay();
         settingslist.replace(message.getGuild(), settings);
         RubiconBot.getMySQL().createVerification(settings);
-        message.editMessage(EmbedUtil.success("Saved!", "Successfully enabled verification").build()).queue();
+        message.delete().queue();
+        message.getTextChannel().sendMessage((EmbedUtil.success("Saved!", "Successfully enabled verification").build())).queue();
         setups.remove(message.getGuild());
         settingslist.remove(message.getGuild());
-        message.delete().queue();
     }
+
+
 }

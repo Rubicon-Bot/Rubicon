@@ -9,19 +9,22 @@ import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.sql.GuildMusicSQL;
 import fun.rubicon.sql.UserMusicSQL;
-import fun.rubicon.util.Colors;
-import fun.rubicon.util.EmbedUtil;
-import fun.rubicon.util.Logger;
-import fun.rubicon.util.StringUtil;
+import fun.rubicon.util.*;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.PermissionException;
+import org.jmusixmatch.MusixMatch;
+import org.jmusixmatch.MusixMatchException;
+import org.jmusixmatch.entity.lyrics.Lyrics;
+import org.jmusixmatch.entity.track.Track;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -456,5 +459,37 @@ public class MusicManager {
             return String.format("%02d:%02d:%02d", hours, minutes, seconds);
         else
             return String.format("%02d:%02d", minutes, seconds);
+    }
+
+    private AudioTrack getCurrentTrack(){
+        MusicManager manager = this;
+        return manager.getCurrentMusicManager().getScheduler().getPlayer().getPlayingTrack();
+    }
+
+    public Message executeLyrics(){
+        if (!isBotInVoiceChannel())
+            return message(error("Error!", "Bot is not in a voice channel."));
+        VoiceChannel channel = getBotsVoiceChannel();
+        if (parsedCommandInvocation.getMember().getVoiceState().getChannel() != channel)
+            return message(error("Error!", "You have to be in the same voice channel as the bot."));
+        if (getCurrentMusicManager().getPlayer().getPlayingTrack() == null) {
+            return message(error("Error!", "Bot is playing nothing."));
+        }
+        MusixMatch musixMatch = new MusixMatch(Info.MUSIXMATCH_KEY);
+        AudioTrackInfo info = this.getCurrentTrack().getInfo();
+        Track track;
+        Lyrics lyrics;
+        try {
+            track = musixMatch.getMatchingTrack(info.title, info.author);
+            lyrics = musixMatch.getLyrics(track.getTrack().getTrackId());
+        } catch (MusixMatchException e) {
+            return new MessageBuilder().setEmbed(EmbedUtil.error("No lyrics found", "There are no lyrics of the current song on Musixmathc").build()).build();
+        }
+        EmbedBuilder lyricsEmbed = new EmbedBuilder();
+        lyricsEmbed.setColor(Colors.COLOR_PREMIUM);
+        lyricsEmbed.setTitle("Lyrics of `" + track.getTrack().getTrackName() + "`", track.getTrack().getTrackShareUrl());
+        lyricsEmbed.setFooter(lyrics.getLyricsCopyright(), null);
+        lyricsEmbed.setDescription(lyrics.getLyricsBody());
+        return new MessageBuilder().setEmbed(lyricsEmbed.build()).build();
     }
 }
