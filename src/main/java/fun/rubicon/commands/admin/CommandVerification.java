@@ -13,16 +13,14 @@ import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
+import fun.rubicon.features.VerficationKickHandler;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
-import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 
-import javax.naming.InsufficientResourcesException;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -94,7 +92,7 @@ public class CommandVerification extends CommandHandler {
         Guild guild;
         public int step;
 
-        public VerificationSetup(CommandManager.ParsedCommandInvocation parsedCommandInvocation, Message message) {
+        VerificationSetup(CommandManager.ParsedCommandInvocation parsedCommandInvocation, Message message) {
             this.message = message;
             this.author = parsedCommandInvocation.getMessage().getAuthor();
             this.guild = parsedCommandInvocation.getMessage().getGuild();
@@ -112,7 +110,7 @@ public class CommandVerification extends CommandHandler {
         public int kicktime;
         public String kicktext;
 
-        public VerificationSettings(TextChannel verificationChannel, String verifytext, String verifiedtext, Role verifiedrole, int kicktime, String kicktext, MessageReaction.ReactionEmote emote) {
+        VerificationSettings(TextChannel verificationChannel, String verifytext, String verifiedtext, Role verifiedrole, int kicktime, String kicktext, MessageReaction.ReactionEmote emote) {
             this.channel = verificationChannel;
             this.verifytext = verifytext;
             this.verifiedtext = verifiedtext;
@@ -124,15 +122,13 @@ public class CommandVerification extends CommandHandler {
     }
 
     public static void handleReaction(MessageReactionAddEvent event) {
-        boolean working = false;
         Message message = null;
         try{
             message = event.getTextChannel().getMessageById(event.getMessageId()).complete();
-        } catch (InsufficientPermissionException ex){
+        } catch (InsufficientPermissionException ignored){
         }
         if(message == null) return;
 
-        if (message.equals("0")) return;
         if (!message.getAuthor().equals(event.getJDA().getSelfUser())) return;
         if (!event.getUser().equals(users.get(message))) return;
         if (RubiconBot.getMySQL().verificationEnabled(event.getGuild())) {
@@ -148,6 +144,7 @@ public class CommandVerification extends CommandHandler {
                 }
                 event.getGuild().getController().addRolesToMember(event.getMember(), verfied).queue();
                 message.editMessage(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "verifiedtext").replace("%user%", event.getUser().getAsMention())).queue(msg -> msg.delete().queueAfter(30, TimeUnit.SECONDS));
+                VerficationKickHandler.VerifyKick.fromMember(event.getMember()).remove();
             }
         } else {
             if (!setups.containsKey(event.getGuild())) return;
@@ -220,7 +217,7 @@ public class CommandVerification extends CommandHandler {
         }
         settings.emote = emote;
         settingslist.replace(event.getGuild(), settings);
-        message.editMessage(EmbedUtil.info("Step 5 - Verified role", "Please mention the role that should be added to user-").build()).queue();
+        message.editMessage(EmbedUtil.info("Step 5 - Verified role", "Please mention the role that should be added to user").build()).queue();
         VerificationSetup setup = setups.get(message.getGuild());
         setup.step++;
         setups.replace(message.getGuild(), setup);
@@ -262,7 +259,7 @@ public class CommandVerification extends CommandHandler {
             return;
         }
         settings.kicktime = kicktime;
-        message.editMessage(EmbedUtil.info("Step 7 - Kick message", "Please enter the message that'll be sent to the user after he got kicked").build()).queue();
+        message.editMessage(EmbedUtil.info("Step 7 - Kick message", "Please enter the message that'll be sent to the user after he got kicked use %invite% to embed a custom invite link to verification channel (1 user limited)").build()).queue();
         VerificationSetup setup = setups.get(message.getGuild());
         setup.step++;
         setups.replace(message.getGuild(), setup);
@@ -282,4 +279,6 @@ public class CommandVerification extends CommandHandler {
         settingslist.remove(message.getGuild());
         message.delete().queue();
     }
+
+
 }

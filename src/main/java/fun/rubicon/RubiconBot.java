@@ -284,6 +284,7 @@ public class RubiconBot {
         new GuildMusicSQL().createTableIfNotExist();
         new WarnSQL().createTableIfNotExist();
         new MemberSQL().createTableIfNotExist();
+        new VerificationKickSQL().createTableIfNotExist();
     }
 
     private void registerWebpanelRequests() {
