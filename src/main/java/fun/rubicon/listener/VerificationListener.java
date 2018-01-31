@@ -70,7 +70,7 @@ public class VerificationListener extends ListenerAdapter {
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         if (!RubiconBot.getMySQL().verificationEnabled(event.getGuild())) return;
         TextChannel channel = event.getGuild().getTextChannelById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "channelid"));
-        Message message = SafeMessage.sendMessageBlocking(channel, RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "text").replace("%user%", event.getUser().getAsMention()));
+        Message message = SafeMessage.sendMessageBlocking(channel, RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "text").replace("%user%", event.getUser().getAsMention()).replace("%guild%", event.getGuild().getName()));
         CommandVerification.users.put(message, event.getUser());
 
         String emoteRaw = RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "emote");
@@ -82,7 +82,7 @@ public class VerificationListener extends ListenerAdapter {
         int delay = Integer.parseInt(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "kicktime"));
         if (delay == 0) return;
         message.getGuild().getController().addSingleRoleToMember(event.getMember(), verified).queue();
-        VerficationKickHandler.VerifyKick kick = new VerficationKickHandler.VerifyKick(event.getGuild(), event.getMember(), getKickTime(delay), RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "kicktext").replace("%user%", event.getUser().getAsMention()), message.getIdLong(), false, true);
+        VerficationKickHandler.VerifyKick kick = new VerficationKickHandler.VerifyKick(event.getGuild(), event.getMember(), getKickTime(delay), RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "kicktext").replace("%guild%", event.getGuild().getName()), message.getIdLong(), false, true);
         /*new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
