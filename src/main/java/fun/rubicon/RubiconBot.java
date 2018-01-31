@@ -25,6 +25,7 @@ import fun.rubicon.core.webpanel.WebpanelManager;
 import fun.rubicon.core.webpanel.impl.*;
 import fun.rubicon.features.GiveawayHandler;
 import fun.rubicon.features.RemindHandler;
+import fun.rubicon.features.VerficationKickHandler;
 import fun.rubicon.permission.PermissionManager;
 import fun.rubicon.sql.*;
 import fun.rubicon.util.*;
@@ -104,6 +105,7 @@ public class RubiconBot {
         // init features
         new GiveawayHandler();
         new RemindHandler();
+        VerficationKickHandler.loadVerifyKicks();
 
         // post bot stats to discordbots.org and print warning
         DBLUtil.postStats(false);
@@ -145,7 +147,7 @@ public class RubiconBot {
         }
 
         getJDA().getPresence().setGame(Game.playing("Success."));
-        getJDA().getPresence().setStatus(OnlineStatus.ONLINE);
+        getJDA().getPresence().setStatus(OnlineStatus.INVISIBLE);
 
         CommandVote.loadPolls(instance.jda);
         Info.lastRestart = new

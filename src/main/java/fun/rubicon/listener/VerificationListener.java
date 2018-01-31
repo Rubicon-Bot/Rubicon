@@ -21,6 +21,7 @@ import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Timer;
@@ -80,7 +81,8 @@ public class VerificationListener extends ListenerAdapter {
         Role verified = event.getGuild().getRoleById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "roleid"));
         int delay = Integer.parseInt(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "kicktime"));
         if (delay == 0) return;
-        VerficationKickHandler.VerifyKick kick = new VerficationKickHandler.VerifyKick(event.getGuild(), event.getUser(), getKickTime(delay), RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "kicktext").replace("%user%", event.getUser().getAsMention()), message.getIdLong());
+        message.getGuild().getController().addSingleRoleToMember(event.getMember(), verified).queue();
+        VerficationKickHandler.VerifyKick kick = new VerficationKickHandler.VerifyKick(event.getGuild(), event.getMember(), getKickTime(delay), RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "kicktext").replace("%user%", event.getUser().getAsMention()), message.getIdLong(), false, true);
         /*new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
@@ -102,11 +104,12 @@ public class VerificationListener extends ListenerAdapter {
         return true;
     }
 
-    private Date getKickTime(int mins){
+    private Date getKickTime(int mins) {
         Date date = new Date();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        calendar.set(Calendar.MINUTE, Calendar.MINUTE + mins);
+        int minutes = calendar.get(Calendar.MINUTE) + mins;
+        calendar.set(Calendar.MINUTE, minutes);
         return calendar.getTime();
     }
 }

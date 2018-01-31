@@ -1,7 +1,6 @@
 package fun.rubicon.features;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.command.UnavailableCommandHandler;
 import fun.rubicon.listener.VerificationListener;
 import fun.rubicon.sql.MySQL;
 import fun.rubicon.sql.VerificationKickSQL;
@@ -11,12 +10,7 @@ import net.dv8tion.jda.core.entities.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TimerTask;
+import java.util.*;
 
 /**
  * Rubicon Discord bot
@@ -28,7 +22,7 @@ import java.util.TimerTask;
  */
 public class VerficationKickHandler {
 
-    public static Set<VerifyKick> verifyKicks = new HashSet<>();
+    static Map<Member, VerifyKick> verifyKicks = new HashMap<>();
 
 
     public static class VerifyKick{
@@ -37,6 +31,8 @@ public class VerficationKickHandler {
         private final String kickText;
         private final long kickDate;
         private final long messageId;
+        private final boolean silent;
+        private final boolean save;
         private final TimerTask resolveTask = new TimerTask() {
             @Override
             public void run() {
@@ -45,50 +41,53 @@ public class VerficationKickHandler {
         };
 
 
-        public VerifyKick(Guild guild, User user, Date kickDate, String kicktext, long messageid){
+        public VerifyKick(Guild guild, Member user, Date kickDate, String kicktext, long messageid, boolean silent, boolean save){
             this.guildid = guild.getIdLong();
-            this.userid = user.getIdLong();
+            this.userid = user.getUser().getIdLong();
             this.messageId = messageid;
             this.kickDate = kickDate.getTime();
             this.kickText = kicktext;
+            this.silent = silent;
+            this.save = save;
 
-            this.save();
+            if(save)
+                this.save();
 
-            if(kickDate.before(new Date()))
+            if(silent) return;
+            Date now = new Date();
+            verifyKicks.put(user, this);
+            if(now.after(kickDate))
                 this.schedule();
             else
                 RubiconBot.getTimer().schedule(resolveTask, new Date(this.kickDate));
-            verifyKicks.add(this);
+            //System.out.println(new SimpleDateFormat("HH:mm").format(this.kickDate));
         }
 
-        public static VerifyKick fromMember(Member member){
-            if(!exits(member)) return null;
-            VerificationKickSQL sql = new VerificationKickSQL(member.getUser(), member.getGuild());
-            return new VerifyKick(RubiconBot.getJDA().getGuildById(sql.get("guildid")), RubiconBot.getJDA().getUserById(sql.get("userid")),new Date(Long.parseLong(sql.get("kickdate"))), sql.get("kicktext"), Long.parseLong(sql.get("message")));
+        public static VerifyKick fromMember(Member member, boolean silent){
+            return verifyKicks.get(member);
         }
 
         private void schedule(){
-            if(!verifyKicks.contains(this)) return;
+            if(!verifyKicks.containsValue(this)) return;
             Guild guild = RubiconBot.getJDA().getGuildById(this.guildid);
             Member member = guild.getMemberById(this.userid);
             member.getUser().openPrivateChannel().queue(c -> c.sendMessage(this.kickText.replace("%invite%", guild.getTextChannelById(RubiconBot.getMySQL().getVerificationValue(guild, "channelid")).createInvite().setMaxUses(1).complete().getURL())).queue());
             guild.getController().kick(member).reason(this.kickText).queue();
             VerificationKickSQL sql = new VerificationKickSQL(member.getUser(), member.getGuild());
-            guild.getTextChannelById(RubiconBot.getMySQL().getVerificationValue(guild, "channelid")).getMessageById(Long.parseLong(sql.get("message"))).complete().delete().queue();
+            //guild.getTextChannelById(RubiconBot.getMySQL().getVerificationValue(guild, "channelid")).getMessageById(Long.parseLong(sql.get("message"))).complete().delete().queue();
             this.remove();
             verifyKicks.remove(this);
         }
 
-        public boolean save(){
+        boolean save(){
             try {
-                PreparedStatement saveStatement = MySQL.getConnection().prepareStatement("INSERT INTO `verifykicks` (" +
-                        "'guildid','userid', 'kickText', 'kicktime', 'message')" +
-                        "VALUES (?,?,?,?,?)");
+                PreparedStatement saveStatement = MySQL.getConnection().prepareStatement("INSERT INTO `verifykicks` (`guildid`,`userid`, `kickText`, `kicktime`, `message`) VALUES (?,?,?,?,?)");
                 saveStatement.setLong(1, this.guildid);
                 saveStatement.setLong(2, this.userid);
                 saveStatement.setString(3, this.kickText);
                 saveStatement.setLong(4, this.kickDate);
                 saveStatement.setLong(5, this.messageId);
+                saveStatement.execute();
             } catch (SQLException e){
                 Logger.error(e);
                 return false;
@@ -97,6 +96,8 @@ public class VerficationKickHandler {
         }
 
         public boolean remove(){
+            verifyKicks.remove(RubiconBot.getJDA().getGuildById(this.guildid).getMemberById(this.userid));
+            System.out.println(verifyKicks.toString());
             try{
                 PreparedStatement deleteStatement = MySQL.getConnection().prepareStatement("DELETE FROM `verifykicks` WHERE `userid` =? AND `guildid` = ?");
                 deleteStatement.setLong(1, this.userid);
@@ -109,9 +110,9 @@ public class VerficationKickHandler {
             return true;
         }
 
-        public boolean exits(){
+        public boolean exists(){
             try{
-                PreparedStatement ps = MySQL.getConnection().prepareStatement("SELECT * FROM `verifykicks`WHERE `userid` = ? AND `guildi` = ?");
+                PreparedStatement ps = MySQL.getConnection().prepareStatement("SELECT * FROM `verifykicks`WHERE `userid` = ? AND `guildidd` = ?");
                 ps.setLong(1, this.userid);
                 ps.setLong(2, this.guildid);
                 ResultSet rs = ps.executeQuery();
@@ -124,7 +125,7 @@ public class VerficationKickHandler {
 
         public static boolean exits(Member member){
             try{
-                PreparedStatement ps = MySQL.getConnection().prepareStatement("SELECT * FROM `verifykicks`WHERE `userid` = ? AND `guildi` = ?");
+                PreparedStatement ps = MySQL.getConnection().prepareStatement("SELECT * FROM `verifykicks`WHERE `userid` = ? AND `guildid` = ?");
                 ps.setLong(1, member.getUser().getIdLong());
                 ps.setLong(2, member.getGuild().getIdLong());
                 ResultSet rs = ps.executeQuery();
@@ -135,26 +136,26 @@ public class VerficationKickHandler {
             }
         }
 
-        public static void loadVerifyKicks(){
-            try {
-                for (Guild guild : RubiconBot.getJDA().getGuilds()) {
-                    for (Member member : guild.getMembers()) {
-                        PreparedStatement selectStatement = MySQL.getConnection()
-                                .prepareStatement("SELECT * FROM `verifykicks` WHERE `guildid` =?;");
-                        selectStatement.setLong(1, guild.getIdLong());
-                        ResultSet channelResult = selectStatement.executeQuery();
-                        while (channelResult.next())
-                            new VerifyKick(guild,
-                                    RubiconBot.getJDA().getUserById(channelResult.getString("userid")),
-                                    new Date(Long.parseLong(channelResult.getString("kickDate"))),
-                                    channelResult.getString("kicktetxt"), channelResult.getLong("message"));
+
+        }
+    public static void loadVerifyKicks(){
+        try {
+                    PreparedStatement selectStatement = MySQL.getConnection()
+                            .prepareStatement("SELECT * FROM `verifykicks` ");
+                    ResultSet channelResult = selectStatement.executeQuery();
+                    while (channelResult.next()) {
+                        System.out.println(channelResult.getString("userid"));
+                        new VerifyKick(RubiconBot.getJDA().getGuildById(channelResult.getLong("guildid")),
+                                RubiconBot.getJDA().getGuildById(channelResult.getLong("guildid")).getMemberById(channelResult.getLong("userid")),
+                                new Date(Long.parseLong(channelResult.getString("kicktime"))),
+                                channelResult.getString("kickText"), channelResult.getLong("message"), false, false);
                     }
-                }
-            } catch (SQLException e) {
-                Logger.error("Could not load verifykicks, disabling verification feature");
-                RubiconBot.getJDA().removeEventListener(new VerificationListener());
-                Logger.error(e);
-            }
+            System.out.println(verifyKicks.toString());
+
+        } catch (SQLException e) {
+            Logger.error("Could not load verifykicks, disabling verification feature");
+            RubiconBot.getJDA().removeEventListener(new VerificationListener());
+            Logger.error(e);
         }
 
     }

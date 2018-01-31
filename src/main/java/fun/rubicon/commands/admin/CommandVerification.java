@@ -143,8 +143,16 @@ public class CommandVerification extends CommandHandler {
                     event.getTextChannel().sendMessage(EmbedUtil.error("Error!", "I can not assign roles that are higher than my role.").build()).queue();
                 }
                 event.getGuild().getController().addRolesToMember(event.getMember(), verfied).queue();
-                message.editMessage(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "verifiedtext").replace("%user%", event.getUser().getAsMention())).queue(msg -> msg.delete().queueAfter(30, TimeUnit.SECONDS));
-                VerficationKickHandler.VerifyKick.fromMember(event.getMember()).remove();
+                message.getReactions().forEach(r -> {
+                    r.removeReaction().queue();
+                });
+                message.editMessage(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "verifiedtext").replace("%user%", event.getUser().getAsMention())).queue();
+                message.getReactions().forEach(r -> {
+                    r.getUsers().forEach(u -> {
+                        r.removeReaction(u).queue();
+                    });
+                });
+                VerficationKickHandler.VerifyKick.fromMember(event.getMember(), true).remove();
             }
         } else {
             if (!setups.containsKey(event.getGuild())) return;

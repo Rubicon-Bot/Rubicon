@@ -85,8 +85,8 @@ public class VerificationKickSQL implements DatabaseGenerator{
                     " `guildid` TEXT NOT NULL ," +
                     " `userid` TEXT NOT NULL ," +
                     " `kickText` TEXT NOT NULL ," +
-                    " `kickTime` TEX NOT NULL," +
-                    " `message` TEXT NOT NULL " +
+                    " `kickTime` TEXT NOT NULL," +
+                    " `message` TEXT NOT NULL, " +
                     " PRIMARY KEY (`id`)) ENGINE = InnoDB;");
             ps.execute();
         } catch (SQLException e){
