@@ -95,6 +95,7 @@ public class VerificationListener extends ListenerAdapter {
         if (VerificationKickHandler.VerifyKick.exists(event.getMember())) {
             VerificationKickHandler.VerifyKick kick = VerificationKickHandler.VerifyKick.fromMember(event.getMember(), true);
             event.getJDA().getTextChannelById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "channelid")).getMessageById(kick.getMessageId()).complete().delete().queue();
+            kick.remove();
         }
     }
 
