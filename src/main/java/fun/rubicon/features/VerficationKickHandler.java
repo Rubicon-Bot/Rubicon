@@ -97,7 +97,6 @@ public class VerficationKickHandler {
 
         public boolean remove(){
             verifyKicks.remove(RubiconBot.getJDA().getGuildById(this.guildid).getMemberById(this.userid));
-            System.out.println(verifyKicks.toString());
             try{
                 PreparedStatement deleteStatement = MySQL.getConnection().prepareStatement("DELETE FROM `verifykicks` WHERE `userid` =? AND `guildid` = ?");
                 deleteStatement.setLong(1, this.userid);
@@ -144,13 +143,12 @@ public class VerficationKickHandler {
                             .prepareStatement("SELECT * FROM `verifykicks` ");
                     ResultSet channelResult = selectStatement.executeQuery();
                     while (channelResult.next()) {
-                        System.out.println(channelResult.getString("userid"));
                         new VerifyKick(RubiconBot.getJDA().getGuildById(channelResult.getLong("guildid")),
                                 RubiconBot.getJDA().getGuildById(channelResult.getLong("guildid")).getMemberById(channelResult.getLong("userid")),
                                 new Date(Long.parseLong(channelResult.getString("kicktime"))),
                                 channelResult.getString("kickText"), channelResult.getLong("message"), false, false);
                     }
-            System.out.println(verifyKicks.toString());
+
 
         } catch (SQLException e) {
             Logger.error("Could not load verifykicks, disabling verification feature");
