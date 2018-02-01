@@ -8,25 +8,25 @@ package fun.rubicon.listener;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.admin.CommandVerification;
+<<<<<<< HEAD
 import fun.rubicon.features.VerficationKickHandler;
 import fun.rubicon.features.VerificationUserHandler;
 import fun.rubicon.util.EmbedUtil;
+=======
+import fun.rubicon.features.VerificationKickHandler;
+>>>>>>> master
 import fun.rubicon.util.SafeMessage;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.channel.text.TextChannelDeleteEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * @author Michael Rittmeister / Schlaubi
@@ -82,9 +82,14 @@ public class VerificationListener extends ListenerAdapter {
         Role verified = event.getGuild().getRoleById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "roleid"));
         int delay = Integer.parseInt(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "kicktime"));
         if (delay == 0) return;
+<<<<<<< HEAD
         VerficationKickHandler.VerifyKick kick = new VerficationKickHandler.VerifyKick(event.getGuild(), event.getMember(), getKickTime(delay), RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "kicktext").replace("%user%", event.getUser().getAsMention()), message.getIdLong(), false, true);
         new VerificationUserHandler.VerifyUser(event.getMember(), message);
 
+=======
+        message.getGuild().getController().addSingleRoleToMember(event.getMember(), verified).queue();
+        VerificationKickHandler.VerifyKick kick = new VerificationKickHandler.VerifyKick(event.getGuild(), event.getMember(), getKickTime(delay), RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "kicktext").replace("%guild%", event.getGuild().getName()), message.getIdLong(), false, true);
+>>>>>>> master
         /*new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
@@ -95,6 +100,15 @@ public class VerificationListener extends ListenerAdapter {
             }
         }, delay * 1000 * 60);*/
 
+    }
+
+    @Override
+    public void onGuildMemberLeave(GuildMemberLeaveEvent event) {
+        if (VerificationKickHandler.VerifyKick.exists(event.getMember())) {
+            VerificationKickHandler.VerifyKick kick = VerificationKickHandler.VerifyKick.fromMember(event.getMember(), true);
+            event.getJDA().getTextChannelById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "channelid")).getMessageById(kick.getMessageId()).complete().delete().queue();
+            kick.remove();
+        }
     }
 
     private boolean isNumeric(String str) {

@@ -20,7 +20,7 @@ import java.util.*;
  * @license MIT License <http://rubicon.fun/license>
  * @package fun.rubicon.features
  */
-public class VerficationKickHandler {
+public class VerificationKickHandler {
 
     static Map<Member, VerifyKick> verifyKicks = new HashMap<>();
 
@@ -136,7 +136,9 @@ public class VerficationKickHandler {
             }
         }
 
-
+        public long getMessageId() {
+            return messageId;
+        }
     }
 
     public static void loadVerifyKicks() {
