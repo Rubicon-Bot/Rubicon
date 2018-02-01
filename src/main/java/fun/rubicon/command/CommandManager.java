@@ -162,14 +162,6 @@ public class CommandManager extends ListenerAdapter {
     }
 
     public static final class ParsedCommandInvocation {
-        @Deprecated
-        public final Message invocationMessage;
-        @Deprecated
-        public final String serverPrefix;
-        @Deprecated
-        public final String invocationCommand;
-        @Deprecated
-        public final String[] args;
 
         private final String[] argsNew;
         private final String commandInvocation;
@@ -177,13 +169,9 @@ public class CommandManager extends ListenerAdapter {
         private final String prefix;
 
         private ParsedCommandInvocation(Message invocationMessage, String serverPrefix, String invocationCommand, String[] args) {
-            this.invocationMessage = invocationMessage;
             this.message = invocationMessage;
-            this.serverPrefix = serverPrefix;
             this.prefix = serverPrefix;
-            this.invocationCommand = invocationCommand;
             this.commandInvocation = invocationCommand;
-            this.args = args;
             this.argsNew = args;
         }
 

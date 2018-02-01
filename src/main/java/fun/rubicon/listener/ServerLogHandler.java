@@ -135,7 +135,7 @@ public class ServerLogHandler extends ListenerAdapter {
 
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setAuthor("A command was executed", null);
-        embedBuilder.setDescription("**" + parsedCommandInvocation.getMessage().getMember().getEffectiveName() + " (" + parsedCommandInvocation.getMessage().getMember().getUser().getId() + ")** executed `" + parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand + "`");
+        embedBuilder.setDescription("**" + parsedCommandInvocation.getMessage().getMember().getEffectiveName() + " (" + parsedCommandInvocation.getMessage().getMember().getUser().getId() + ")** executed `" + parsedCommandInvocation.getPrefix() + parsedCommandInvocation.getCommandInvocation() + "`");
         embedBuilder.setColor(evCommandLog);
         sendLog(textChannel, embedBuilder);
     }

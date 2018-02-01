@@ -33,12 +33,12 @@ public class CommandPlay extends CommandHandler {
         if(!configuration.has(configKey)) {
             configuration.set(configKey, "0");
         }
-        if(parsedCommandInvocation.args.length == 0) {
+        if(parsedCommandInvocation.getArgs().length == 0) {
             configuration.set(configKey, "0");
             return null;
         }
         String message = "";
-        for (String s : parsedCommandInvocation.args)
+        for (String s : parsedCommandInvocation.getArgs())
             message += s + " ";
 
         RubiconBot.getConfiguration().set(configKey, message);

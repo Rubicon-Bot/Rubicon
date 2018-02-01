@@ -90,7 +90,7 @@ public class PermissionCommandHandler extends CommandHandler {
                 if (!target.exists())
                     return message(error("Target does not exit", "`" + target.toString() + "` is not on this server!"));
 
-                return RubiconBot.sGetPermissionManager().addPermission(target, Permission.parse(invocation.args[3]))
+                return RubiconBot.sGetPermissionManager().addPermission(target, Permission.parse(invocation.getArgs()[3]))
                         ? message(success("Updated permissions", "Successfully added `" +
                         invocation.getArgs()[3] + "` to `" + target.toString() + "`."))
                         : message(error("Entry already exists", "There already is a `" +
