@@ -224,8 +224,7 @@ public class RubiconBot {
                 new CommandOK(),
                 new CommandGiphy(),
                 new CommandVideo(),
-                new CommandUrban(),
-                new CommandAscciText()
+                new CommandUrban()
         );
         // general commands package
         commandManager.registerCommandHandlers(

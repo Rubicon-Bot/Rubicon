@@ -122,11 +122,8 @@ public class VerficationKickHandler {
             }
         }
 
-<<<<<<< HEAD
-        public static boolean exits(Member member) {
-=======
+
         public static boolean exists(Member member) {
->>>>>>> 090322e014b92753966e869c1344dcf458614237
             try {
                 PreparedStatement ps = MySQL.getConnection().prepareStatement("SELECT * FROM `verifykicks`WHERE `userid` = ? AND `guildid` = ?");
                 ps.setLong(1, member.getUser().getIdLong());
@@ -143,10 +140,7 @@ public class VerficationKickHandler {
     }
 
     public static void loadVerifyKicks() {
-<<<<<<< HEAD
         Logger.info("Loading verifykicks");
-=======
->>>>>>> 090322e014b92753966e869c1344dcf458614237
         try {
             PreparedStatement selectStatement = MySQL.getConnection()
                     .prepareStatement("SELECT * FROM `verifykicks` ");
@@ -159,20 +153,12 @@ public class VerficationKickHandler {
             }
 
 
-<<<<<<< HEAD
         } catch (SQLException | NullPointerException e) {
-=======
-        } catch (SQLException e) {
->>>>>>> 090322e014b92753966e869c1344dcf458614237
             Logger.error("Could not load verifykicks, disabling verification feature");
             Logger.error(e);
         }
         Logger.info("Loaded verifykicks");
 
     }
-<<<<<<< HEAD
 
-
-=======
->>>>>>> 090322e014b92753966e869c1344dcf458614237
 }
