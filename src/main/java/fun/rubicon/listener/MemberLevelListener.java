@@ -63,7 +63,7 @@ public class MemberLevelListener extends ListenerAdapter {
             //Level Up
             if (RubiconBot.getMySQL().getGuildValue(event.getGuild(),"lvlmsg").equals("0"))
                 return;
-            
+
             if (event.getMessage().getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_READ) && event.getMessage().getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_WRITE)) {
                 event.getChannel().sendMessage(new EmbedBuilder()
                         .setAuthor(event.getAuthor().getName() + " leveled up!", null, event.getAuthor().getAvatarUrl())

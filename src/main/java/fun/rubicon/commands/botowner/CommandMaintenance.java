@@ -14,7 +14,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class CommandMaintenance extends CommandHandler {
 
     public CommandMaintenance() {
-        super(new String[]{"maintenance"}, CommandCategory.BOT_OWNER, new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.maintenance"), "Starts bot maintenance.", "<time in seconds>");
+        super(new String[]{"maintenance"}, CommandCategory.BOT_OWNER, new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.maintenance"), "Starts bot maintenance.", "<time in seconds> <message for playing status>");
     }
 
     @Override
