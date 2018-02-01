@@ -32,8 +32,6 @@ import java.util.concurrent.TimeUnit;
  * @copyright Rubicon Dev Team 2017
  * @license MIT License <http://rubicon.fun/license>
  * @package fun.rubicon.commands.admin
- * Some Parts of this command are inspired by CodingGuy <http://entwickler.cc>
- * <p>
  * =======
  */
 public class CommandVerification extends CommandHandler {
