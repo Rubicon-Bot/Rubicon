@@ -9,7 +9,6 @@ package fun.rubicon.sql;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.admin.CommandVerification;
 import fun.rubicon.util.Logger;
-import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 
 import java.sql.*;
@@ -467,13 +466,13 @@ public class MySQL {
         return false;
     }
 
-    public boolean isBlacklisted(TextChannel channel) {
+    public boolean isWhitelisted(TextChannel channel) {
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM guilds WHERE `serverid` = ?");
             ps.setString(1, channel.getGuild().getId());
             ResultSet rs = ps.executeQuery();
             while (rs.next())
-                return rs.getString("blacklist").contains(channel.getId());
+                return rs.getString("blacklist").equals("") || rs.getString("blacklist").contains(channel.getId());
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (NullPointerException ignored) {
