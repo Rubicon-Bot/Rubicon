@@ -13,12 +13,8 @@ import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
-<<<<<<< HEAD
-import fun.rubicon.features.VerficationKickHandler;
 import fun.rubicon.features.VerificationUserHandler;
-=======
 import fun.rubicon.features.VerificationKickHandler;
->>>>>>> master
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.MessageBuilder;
