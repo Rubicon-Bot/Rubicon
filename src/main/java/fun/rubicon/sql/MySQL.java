@@ -480,4 +480,19 @@ public class MySQL {
         }
         return false;
     }
+
+    public boolean isBlacklisted(TextChannel channel) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM guilds WHERE `serverid` = ?");
+            ps.setString(1, channel.getGuild().getId());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next())
+                return rs.getString("blacklist").contains(channel.getId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (NullPointerException ignored) {
+
+        }
+        return false;
+    }
 }
