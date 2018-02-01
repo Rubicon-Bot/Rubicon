@@ -14,6 +14,7 @@ import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.features.VerficationKickHandler;
+import fun.rubicon.features.VerificationUserHandler;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -142,7 +143,9 @@ public class CommandVerification extends CommandHandler {
                 if (!event.getGuild().getSelfMember().canInteract(verfied)) {
                     event.getTextChannel().sendMessage(EmbedUtil.error("Error!", "I can not assign roles that are higher than my role.").build()).queue();
                 }
+
                 event.getGuild().getController().addRolesToMember(event.getMember(), verfied).queue();
+                VerificationUserHandler.VerifyUser.fromMember(event.getMember()).remove();
                 message.getReactions().forEach(r -> {
                     r.removeReaction().queue();
                 });

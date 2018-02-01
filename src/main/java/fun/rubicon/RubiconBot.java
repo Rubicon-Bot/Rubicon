@@ -26,6 +26,7 @@ import fun.rubicon.core.webpanel.impl.*;
 import fun.rubicon.features.GiveawayHandler;
 import fun.rubicon.features.RemindHandler;
 import fun.rubicon.features.VerficationKickHandler;
+import fun.rubicon.features.VerificationUserHandler;
 import fun.rubicon.permission.PermissionManager;
 import fun.rubicon.sql.*;
 import fun.rubicon.util.*;
@@ -106,6 +107,7 @@ public class RubiconBot {
         new GiveawayHandler();
         new RemindHandler();
         VerficationKickHandler.loadVerifyKicks();
+        VerificationUserHandler.loadVerifyKicks();
 
         // post bot stats to discordbots.org and print warning
         DBLUtil.postStats(false);
@@ -287,6 +289,7 @@ public class RubiconBot {
         new WarnSQL().createTableIfNotExist();
         new MemberSQL().createTableIfNotExist();
         new VerificationKickSQL().createTableIfNotExist();
+        new VerificationUserSQL().createTableIfNotExist();
     }
 
     private void registerWebpanelRequests() {

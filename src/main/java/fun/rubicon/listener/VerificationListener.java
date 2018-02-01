@@ -9,6 +9,7 @@ package fun.rubicon.listener;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.admin.CommandVerification;
 import fun.rubicon.features.VerficationKickHandler;
+import fun.rubicon.features.VerificationUserHandler;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -81,8 +82,8 @@ public class VerificationListener extends ListenerAdapter {
         Role verified = event.getGuild().getRoleById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "roleid"));
         int delay = Integer.parseInt(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "kicktime"));
         if (delay == 0) return;
-        message.getGuild().getController().addSingleRoleToMember(event.getMember(), verified).queue();
         VerficationKickHandler.VerifyKick kick = new VerficationKickHandler.VerifyKick(event.getGuild(), event.getMember(), getKickTime(delay), RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "kicktext").replace("%user%", event.getUser().getAsMention()), message.getIdLong(), false, true);
+        new VerificationUserHandler.VerifyUser(event.getMember(), message);
         /*new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
