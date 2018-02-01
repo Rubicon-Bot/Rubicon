@@ -8,6 +8,7 @@ package fun.rubicon.listener;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.admin.CommandVerification;
+import fun.rubicon.features.VerificationUserHandler;
 import fun.rubicon.features.VerificationKickHandler;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.entities.Message;
@@ -73,21 +74,10 @@ public class VerificationListener extends ListenerAdapter {
             message.addReaction(emoteRaw).queue();
         else
             message.addReaction(event.getJDA().getEmoteById(emoteRaw)).queue();
-        Role verified = event.getGuild().getRoleById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "roleid"));
         int delay = Integer.parseInt(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "kicktime"));
         if (delay == 0) return;
-        message.getGuild().getController().addSingleRoleToMember(event.getMember(), verified).queue();
-        VerificationKickHandler.VerifyKick kick = new VerificationKickHandler.VerifyKick(event.getGuild(), event.getMember(), getKickTime(delay), RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "kicktext").replace("%guild%", event.getGuild().getName()), message.getIdLong(), false, true);
-        /*new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (!event.getMember().getRoles().contains(verified)) {
-                    event.getUser().openPrivateChannel().complete().sendMessage(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "kicktext").replace("%user%", event.getUser().getAsMention())).queue();
-                    event.getGuild().getController().kick(event.getMember()).queue();
-                }
-            }
-        }, delay * 1000 * 60);*/
-
+        new VerificationUserHandler.VerifyUser(event.getMember(), message);
+        new VerificationKickHandler.VerifyKick(event.getGuild(), event.getMember(), getKickTime(delay), RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "kicktext").replace("%guild%", event.getGuild().getName()), message.getIdLong(), false, true);
     }
 
     @Override

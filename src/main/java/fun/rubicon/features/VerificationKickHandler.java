@@ -122,6 +122,7 @@ public class VerificationKickHandler {
             }
         }
 
+
         public static boolean exists(Member member) {
             try {
                 PreparedStatement ps = MySQL.getConnection().prepareStatement("SELECT * FROM `verifykicks`WHERE `userid` = ? AND `guildid` = ?");
@@ -141,6 +142,7 @@ public class VerificationKickHandler {
     }
 
     public static void loadVerifyKicks() {
+        Logger.info("Loading verifykicks");
         try {
             PreparedStatement selectStatement = MySQL.getConnection()
                     .prepareStatement("SELECT * FROM `verifykicks` ");
@@ -153,11 +155,12 @@ public class VerificationKickHandler {
             }
 
 
-        } catch (SQLException e) {
+        } catch (SQLException | NullPointerException e) {
             Logger.error("Could not load verifykicks, disabling verification feature");
-            RubiconBot.getJDA().removeEventListener(new VerificationListener());
             Logger.error(e);
         }
+        Logger.info("Loaded verifykicks");
 
     }
+
 }

@@ -13,6 +13,7 @@ import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
+import fun.rubicon.features.VerificationUserHandler;
 import fun.rubicon.features.VerificationKickHandler;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
@@ -31,8 +32,6 @@ import java.util.concurrent.TimeUnit;
  * @copyright Rubicon Dev Team 2017
  * @license MIT License <http://rubicon.fun/license>
  * @package fun.rubicon.commands.admin
- * Some Parts of this command are inspired by CodingGuy<http://entwickler.cc>
- * <p>
  * =======
  */
 public class CommandVerification extends CommandHandler {
@@ -142,7 +141,9 @@ public class CommandVerification extends CommandHandler {
                 if (!event.getGuild().getSelfMember().canInteract(verfied)) {
                     event.getTextChannel().sendMessage(EmbedUtil.error("Error!", "I can not assign roles that are higher than my role.").build()).queue();
                 }
+
                 event.getGuild().getController().addRolesToMember(event.getMember(), verfied).queue();
+                VerificationUserHandler.VerifyUser.fromMember(event.getMember()).remove();
                 message.getReactions().forEach(r -> {
                     r.removeReaction().queue();
                 });

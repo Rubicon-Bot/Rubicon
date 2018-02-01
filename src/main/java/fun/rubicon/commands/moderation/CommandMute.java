@@ -53,7 +53,6 @@ public class CommandMute extends CommandHandler {
         Role muted = null;
         try{
             muted = guild.getController().createRole().setName("rubicon-muted").complete();
-            guild.getRoles().get(0).delete().queue();
         } catch (InsufficientPermissionException | HierarchyException e){
             guild.getDefaultChannel().sendMessage("ERROR: Please give me MANAGE_ROLE permission to use mute command and move the Rubicon Role to the top");
         }
