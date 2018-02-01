@@ -25,6 +25,8 @@ import fun.rubicon.core.webpanel.WebpanelManager;
 import fun.rubicon.core.webpanel.impl.*;
 import fun.rubicon.features.GiveawayHandler;
 import fun.rubicon.features.RemindHandler;
+import fun.rubicon.features.VerificationUserHandler;
+import fun.rubicon.features.VerificationKickHandler;
 import fun.rubicon.permission.PermissionManager;
 import fun.rubicon.sql.*;
 import fun.rubicon.util.*;
@@ -39,9 +41,6 @@ import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Rubicon-bot's main class. Initializes all components.
@@ -50,7 +49,7 @@ import java.util.concurrent.ScheduledExecutorService;
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token", "gip_token", "lucsoft_token", "twitterConsumerKey", "twitterConsumerSecret", "twitterAccessToken", "twitterAccessTokenSecret", "google_token"};
+    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token", "gip_token", "lucsoft_token", "twitterConsumerKey", "twitterConsumerSecret", "twitterAccessToken", "twitterAccessTokenSecret", "google_token", "musixmatch_key"};
     private static final String dataFolder = "data/";
     private static WebpanelManager webpanelManager;
     private static RubiconBot instance;
@@ -107,6 +106,8 @@ public class RubiconBot {
         // init features
         new GiveawayHandler();
         new RemindHandler();
+        VerificationUserHandler.loadVerifyKicks();
+        VerificationKickHandler.loadVerifyKicks();
 
         // post bot stats to discordbots.org and print warning
         DBLUtil.postStats(false);
@@ -154,11 +155,7 @@ public class RubiconBot {
         getJDA().getPresence().setStatus(OnlineStatus.ONLINE);
 
         CommandVote.loadPolls(instance.jda);
-        Info.lastRestart = new
-
-                Date();
-//      CommandGiveaway.startGiveawayManager(instance.jda);
-
+        Info.lastRestart = new Date();
         getJDA().getPresence().setGame(Game.playing("Started."));
         GameAnimator.start();
         /**
@@ -170,8 +167,6 @@ public class RubiconBot {
         CommandPremium.PremiumChecker.check();
         CommandPremium.PremiumChecker.startTask();
     }
-
-
 
 
     /**
@@ -221,7 +216,8 @@ public class RubiconBot {
                 new CommandResume(),
                 new CommandQueue(),
                 new CommandVolume(),
-                new CommandForceplay()
+                new CommandForceplay(),
+                new CommandLyrics()
         );
         // fun commands package
         commandManager.registerCommandHandlers(
@@ -290,6 +286,8 @@ public class RubiconBot {
         new GuildMusicSQL().createTableIfNotExist();
         new WarnSQL().createTableIfNotExist();
         new MemberSQL().createTableIfNotExist();
+        new VerificationKickSQL().createTableIfNotExist();
+        new VerificationUserSQL().createTableIfNotExist();
     }
 
     private void registerWebpanelRequests() {

@@ -66,7 +66,7 @@ public class CommandManager extends ListenerAdapter {
         if (event.getAuthor().isBot())
             return;
         if (event.isFromType(ChannelType.PRIVATE)) return;
-        if (RubiconBot.getMySQL().isBlacklisted(event.getTextChannel())) return;
+        if (!RubiconBot.getMySQL().isWhitelisted(event.getTextChannel())) return;
         MusicManager.handleTrackChoose(event);
         super.onMessageReceived(event);
         ParsedCommandInvocation commandInvocation = parse(event.getMessage());

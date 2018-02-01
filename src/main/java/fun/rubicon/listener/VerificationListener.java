@@ -8,20 +8,20 @@ package fun.rubicon.listener;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.admin.CommandVerification;
-import fun.rubicon.util.EmbedUtil;
+import fun.rubicon.features.VerificationUserHandler;
+import fun.rubicon.features.VerificationKickHandler;
 import fun.rubicon.util.SafeMessage;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.channel.text.TextChannelDeleteEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * @author Michael Rittmeister / Schlaubi
@@ -66,7 +66,7 @@ public class VerificationListener extends ListenerAdapter {
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         if (!RubiconBot.getMySQL().verificationEnabled(event.getGuild())) return;
         TextChannel channel = event.getGuild().getTextChannelById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "channelid"));
-        Message message = SafeMessage.sendMessageBlocking(channel, RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "text").replace("%user%", event.getUser().getAsMention()));
+        Message message = SafeMessage.sendMessageBlocking(channel, RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "text").replace("%user%", event.getUser().getAsMention()).replace("%guild%", event.getGuild().getName()));
         CommandVerification.users.put(message, event.getUser());
 
         String emoteRaw = RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "emote");
@@ -74,18 +74,19 @@ public class VerificationListener extends ListenerAdapter {
             message.addReaction(emoteRaw).queue();
         else
             message.addReaction(event.getJDA().getEmoteById(emoteRaw)).queue();
-        Role verified = event.getGuild().getRoleById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "roleid"));
         int delay = Integer.parseInt(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "kicktime"));
         if (delay == 0) return;
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (!event.getMember().getRoles().contains(verified)) {
-                    event.getUser().openPrivateChannel().complete().sendMessage(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "kicktext").replace("%user%", event.getUser().getAsMention())).queue();
-                    event.getGuild().getController().kick(event.getMember()).queue();
-                }
-            }
-        }, delay * 1000 * 60);
+        new VerificationUserHandler.VerifyUser(event.getMember(), message);
+        new VerificationKickHandler.VerifyKick(event.getGuild(), event.getMember(), getKickTime(delay), RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "kicktext").replace("%guild%", event.getGuild().getName()), message.getIdLong(), false, true);
+    }
+
+    @Override
+    public void onGuildMemberLeave(GuildMemberLeaveEvent event) {
+        if (VerificationKickHandler.VerifyKick.exists(event.getMember())) {
+            VerificationKickHandler.VerifyKick kick = VerificationKickHandler.VerifyKick.fromMember(event.getMember(), true);
+            event.getJDA().getTextChannelById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "channelid")).getMessageById(kick.getMessageId()).complete().delete().queue();
+            kick.remove();
+        }
     }
 
     private boolean isNumeric(String str) {
@@ -95,5 +96,14 @@ public class VerificationListener extends ListenerAdapter {
             return false;
         }
         return true;
+    }
+
+    private Date getKickTime(int mins) {
+        Date date = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int minutes = calendar.get(Calendar.MINUTE) + mins;
+        calendar.set(Calendar.MINUTE, minutes);
+        return calendar.getTime();
     }
 }

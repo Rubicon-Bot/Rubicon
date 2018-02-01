@@ -60,7 +60,7 @@ public class MemberLevelListener extends ListenerAdapter {
             userSQL.set("money", (oldMoney + (currentLevel * 100)) + "");
 
             //Level Up
-            if (event.getMessage().getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_READ) && event.getMessage().getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_WRITE)) {
+            /*if (event.getMessage().getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_READ) && event.getMessage().getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_WRITE)) {
                 event.getChannel().sendMessage(new EmbedBuilder()
                         .setAuthor(event.getAuthor().getName() + " leveled up!", null, event.getAuthor().getAvatarUrl())
                         .setDescription("You are now level **" + fina + "**")
@@ -68,7 +68,7 @@ public class MemberLevelListener extends ListenerAdapter {
                         .setColor(Colors.COLOR_SECONDARY)
                         .build()
                 ).queue(message -> message.delete().queueAfter(10, TimeUnit.SECONDS));
-            }
+            }*/
         }
     }
 
