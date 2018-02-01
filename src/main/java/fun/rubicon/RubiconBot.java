@@ -149,14 +149,10 @@ public class RubiconBot {
         }
 
         getJDA().getPresence().setGame(Game.playing("Success."));
-        getJDA().getPresence().setStatus(OnlineStatus.INVISIBLE);
+        getJDA().getPresence().setStatus(OnlineStatus.ONLINE);
 
         CommandVote.loadPolls(instance.jda);
-        Info.lastRestart = new
-
-                Date();
-//      CommandGiveaway.startGiveawayManager(instance.jda);
-
+        Info.lastRestart = new Date();
         getJDA().getPresence().setGame(Game.playing("Started."));
         GameAnimator.start();
         /**
@@ -168,8 +164,6 @@ public class RubiconBot {
         CommandPremium.PremiumChecker.check();
         CommandPremium.PremiumChecker.startTask();
     }
-
-
 
 
     /**
@@ -229,7 +223,9 @@ public class RubiconBot {
                 new CommandRoulette(),
                 new CommandOK(),
                 new CommandGiphy(),
-                new CommandVideo()
+                new CommandVideo(),
+                new CommandUrban(),
+                new CommandAscciText()
         );
         // general commands package
         commandManager.registerCommandHandlers(
