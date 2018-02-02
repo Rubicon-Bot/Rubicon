@@ -61,14 +61,14 @@ public class MemberLevelListener extends ListenerAdapter {
             userSQL.set("money", (oldMoney + (currentLevel * 100)) + "");
 
             //Level Up
-<<<<<<< HEAD
-            /*if (event.getMessage().getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_READ) && event.getMessage().getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_WRITE)) {
-=======
+
+
+
             if (RubiconBot.getMySQL().getGuildValue(event.getGuild(),"lvlmsg").equals("0"))
                 return;
             
             if (event.getMessage().getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_READ) && event.getMessage().getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_WRITE)) {
->>>>>>> dev
+
                 event.getChannel().sendMessage(new EmbedBuilder()
                         .setAuthor(event.getAuthor().getName() + " leveled up!", null, event.getAuthor().getAvatarUrl())
                         .setDescription("You are now level **" + fina + "**")
@@ -76,7 +76,7 @@ public class MemberLevelListener extends ListenerAdapter {
                         .setColor(Colors.COLOR_SECONDARY)
                         .build()
                 ).queue(message -> message.delete().queueAfter(10, TimeUnit.SECONDS));
-            }*/
+            }
         }
     }
 

@@ -8,7 +8,10 @@ import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.SafeMessage;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
+
+import java.awt.*;
 
 /**
  * Rubicon Discord bot
@@ -28,10 +31,10 @@ public class CommandLevelMessage extends CommandHandler{
         int temp = Integer.parseInt(RubiconBot.getMySQL().getGuildValue(parsedCommandInvocation.getGuild(),"lvlmsg"));
         if (temp == 0){
             RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.getGuild(),"lvlmsg","1");
-            return SafeMessage.sendMessageBlocking(parsedCommandInvocation.getTextChannel(),"Successfully activated the LevelUp Notifications!");
+            SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(),new EmbedBuilder().setDescription("Successfully activated the LevelUp Notifications!").setColor(Color.CYAN).build());
         }else if(temp == 1){
             RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.getGuild(),"lvlmsg","0");
-            return SafeMessage.sendMessageBlocking(parsedCommandInvocation.getTextChannel(),"Successfully deactivated the LevelUp Notifications!");
+            SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(),new EmbedBuilder().setDescription("Successfully deactivated the LevelUp Notifications!").setColor(Color.CYAN).build());
         }
         return null;
     }
