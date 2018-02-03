@@ -119,9 +119,12 @@ public class RubiconBot {
      * @param args command line parameters.
      */
     public static void main(String[] args) {
+
         if (instance != null)
             throw new RuntimeException("RubiconBot has already been initialized in this VM.");
         new RubiconBot();
+
+
     }
 
     /**
@@ -251,7 +254,8 @@ public class RubiconBot {
                 new CommandWelcomeChannel(),
                 new CommandBlacklist(),
                 new CommandLeaveMessage(),
-                new CommandLog()
+                new CommandLog(),
+                new CommandLevelMessage()
         );
         // tools commands package
         commandManager.registerCommandHandlers(
