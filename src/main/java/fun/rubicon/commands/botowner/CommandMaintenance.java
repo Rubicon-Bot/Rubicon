@@ -9,12 +9,11 @@ import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
+import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.*;
-import java.util.Date;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Leon Kappes / Lee
@@ -25,32 +24,49 @@ public class CommandMaintenance extends CommandHandler {
 
 
     public CommandMaintenance() {
-        super(new String[]{"maintenance", "wartung"}, CommandCategory.BOT_OWNER, new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.maintenance"), "Starts bot maintenance.", "<time in minutes> <message for playing status>");
+        super(new String[]{"maintenance", "wartung"}, CommandCategory.BOT_OWNER, new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.maintenance"), "Starts bot maintenance.", "<message for playing status>");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        if (parsedCommandInvocation.getArgs().length < 2)
-            return createHelpMessage();
-            maintenance = true;
-        StringBuilder msg = new StringBuilder();
-        for (int i = 1; i < parsedCommandInvocation.getArgs().length; i++) {
-            msg.append(parsedCommandInvocation.getArgs()[i] + " ");
+        if (parsedCommandInvocation.getArgs().length == 1) {
+            if (parsedCommandInvocation.getArgs()[0].equalsIgnoreCase("false")) {
+                disable();
+                return EmbedUtil.message(EmbedUtil.success("Disabled maintenance", "Successfully disabled maintenance"));
+            }
         }
+        if (parsedCommandInvocation.getArgs().length < 1)
+            return createHelpMessage();
+
+        //Enabling with MaintenanceCommand
+        RubiconBot.getConfiguration().set("maintenance", "1");
+        //Build Status message
+        StringBuilder msg = new StringBuilder();
+        for (int i = 0; i < parsedCommandInvocation.getArgs().length; i++) {
+            msg.append(parsedCommandInvocation.getArgs()[i]).append(" ");
+        }
+        //Set playing status
         RubiconBot.getConfiguration().set("playingStatus", msg.toString());
+        enable();
+        //Play maintenance sound
         MusicManager manager = new MusicManager(parsedCommandInvocation);
         manager.maintenanceSound();
-        TimerTask resolveTask = new TimerTask() {
-            @Override
-            public void run() {
-                RubiconBot.getConfiguration().set("playingStatus", "0");
-                maintenance = false;
-            }
-        };
-        int runtime =  Integer.parseInt(parsedCommandInvocation.getArgs()[0]);
-        RubiconBot.getTimer().schedule(resolveTask, new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(runtime)));
-        SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), new EmbedBuilder().setColor(Colors.COLOR_PRIMARY).setTitle("Activated Maintenance").setAuthor(parsedCommandInvocation.getAuthor().getName(),null,parsedCommandInvocation.getAuthor().getEffectiveAvatarUrl()).setDescription("Bot will only Respond to Owners").build());
+        SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), new EmbedBuilder().setColor(Colors.COLOR_PRIMARY).setTitle("Activated Maintenance").setAuthor(parsedCommandInvocation.getAuthor().getName(), null, parsedCommandInvocation.getAuthor().getEffectiveAvatarUrl()).setDescription("Bot will only respond to owners.").build());
         return null;
+    }
+
+    public static void disable() {
+        maintenance = false;
+        RubiconBot.getConfiguration().set("playingStatus", "0");
+        RubiconBot.getConfiguration().set("maintenance", "0");
+        RubiconBot.getJDA().getPresence().setGame(Game.playing("Maintenance is over"));
+        RubiconBot.getJDA().getPresence().setStatus(OnlineStatus.ONLINE);
+    }
+
+    public static void enable() {
+        maintenance = true;
+        RubiconBot.getJDA().getPresence().setGame(Game.playing(RubiconBot.getConfiguration().getString("playingStatus")));
+        RubiconBot.getJDA().getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
     }
 }
 

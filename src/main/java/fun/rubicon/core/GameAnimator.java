@@ -30,7 +30,7 @@ public class GameAnimator {
             t = new Thread(() -> {
                 long last = 0;
                 while (running) {
-                    if (System.currentTimeMillis() >= last + 60000) {
+                    if (System.currentTimeMillis() >= last + 30000) {
                         if (RubiconBot.getConfiguration().has("playingStatus")) {
                             String playStat = RubiconBot.getConfiguration().getString("playingStatus");
                             if (!playStat.equals("0") && !playStat.equals("")) {

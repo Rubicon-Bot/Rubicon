@@ -91,7 +91,7 @@ public abstract class CommandHandler {
         if(CommandMaintenance.maintenance){
             ArrayList<Long> authors =  new ArrayList<>(Arrays.asList(Info.BOT_AUTHOR_IDS));
             if(!authors.contains(parsedCommandInvocation.getAuthor().getIdLong())){
-                return null;
+                return EmbedUtil.message(EmbedUtil.info("Maintenance!", "Bots maintenance is enabled. Please be patient."));
             }
         }
         UserPermissions userPermissions = new UserPermissions(parsedCommandInvocation.getMessage().getAuthor(),
