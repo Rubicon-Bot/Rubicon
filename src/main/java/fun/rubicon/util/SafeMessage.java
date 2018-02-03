@@ -49,6 +49,7 @@ public class SafeMessage {
         return null;
     }
 
+
     private static boolean hasPermissions(TextChannel channel) {
         if (channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_READ) && channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE))
             return true;

@@ -7,6 +7,7 @@
 package fun.rubicon.command;
 
 import fun.rubicon.RubiconBot;
+import fun.rubicon.commands.botowner.CommandMaintenance;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.listener.ServerLogHandler;
@@ -14,6 +15,9 @@ import fun.rubicon.util.*;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static fun.rubicon.util.EmbedUtil.info;
 import static fun.rubicon.util.EmbedUtil.message;
@@ -83,6 +87,12 @@ public abstract class CommandHandler {
     public Message call(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         if(disabled) {
             return new MessageBuilder().setEmbed(EmbedUtil.info("Command disabled", "Command is currently disabled.").setFooter("RubiconBot Dev Team", null).build()).build();
+        }
+        if(CommandMaintenance.maintenance){
+            ArrayList<Long> authors =  new ArrayList<>(Arrays.asList(Info.BOT_AUTHOR_IDS));
+            if(!authors.contains(parsedCommandInvocation.getAuthor().getIdLong())){
+                return EmbedUtil.message(EmbedUtil.info("Maintenance!", "Bots maintenance is enabled. Please be patient."));
+            }
         }
         UserPermissions userPermissions = new UserPermissions(parsedCommandInvocation.getMessage().getAuthor(),
                 parsedCommandInvocation.getMessage().getGuild());
