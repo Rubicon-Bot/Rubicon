@@ -518,4 +518,7 @@ public class MusicManager {
         lyricsEmbed.setDescription(lyrics.getLyricsBody());
         return new MessageBuilder().setEmbed(lyricsEmbed.build()).build();
     }
+    public Map<Long, GuildMusicManager> getMusicManagers(){
+        return musicManagers;
+    }
 }
