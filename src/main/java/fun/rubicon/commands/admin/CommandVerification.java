@@ -46,7 +46,7 @@ public class CommandVerification extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        String[] args = parsedCommandInvocation.args;
+        String[] args = parsedCommandInvocation.getArgs();
         if (args.length == 0) {
             return createHelpMessage();
         }

@@ -21,8 +21,6 @@ import net.dv8tion.jda.core.entities.Message;
 
 public class CommandPlay extends CommandHandler {
 
-    private String configKey = "playingStatus";
-
     public CommandPlay() {
         super(new String[]{"botplay"}, CommandCategory.BOT_OWNER, new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.botplay"), "Change bot's playing status.", "<text>");
     }
@@ -30,19 +28,20 @@ public class CommandPlay extends CommandHandler {
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         Configuration configuration = RubiconBot.getConfiguration();
+        String configKey = "playingStatus";
         if(!configuration.has(configKey)) {
             configuration.set(configKey, "0");
         }
-        if(parsedCommandInvocation.args.length == 0) {
+        if(parsedCommandInvocation.getArgs().length == 0) {
             configuration.set(configKey, "0");
             return null;
         }
-        String message = "";
-        for (String s : parsedCommandInvocation.args)
-            message += s + " ";
+        StringBuilder message = new StringBuilder();
+        for (String s : parsedCommandInvocation.getArgs())
+            message.append(s).append(" ");
 
-        RubiconBot.getConfiguration().set(configKey, message);
-        parsedCommandInvocation.getMessage().getJDA().getPresence().setGame(Game.playing(message));
+        RubiconBot.getConfiguration().set(configKey, message.toString());
+        parsedCommandInvocation.getMessage().getJDA().getPresence().setGame(Game.playing(message.toString()));
 
         return new MessageBuilder().setEmbed(EmbedUtil.success("Status set!", "Successfully set the playing status!").build()).build();
     }
