@@ -39,7 +39,7 @@ public class CommandGuildData extends CommandHandler {
                 writer.write(builder.toString());
                 writer.flush();
                 writer.close();
-                parsedCommandInvocation.getTextChannel().sendFile(tempFile).queue(message -> message.delete().queueAfter(20, TimeUnit.SECONDS));
+                parsedCommandInvocation.getTextChannel().sendFile(tempFile).complete().delete().queueAfter(20, TimeUnit.SECONDS);
                 tempFile.delete();
             } catch (IOException e) {
                 e.printStackTrace();
