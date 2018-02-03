@@ -4,12 +4,11 @@ import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
-import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
+import com.sedmelluq.discord.lavaplayer.track.*;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.sql.GuildMusicSQL;
@@ -45,6 +44,7 @@ public class MusicManager {
     private final fun.rubicon.permission.UserPermissions userPermissions;
     private final CommandManager.ParsedCommandInvocation parsedCommandInvocation;
 
+    private final String MAINTENANCE_SOUND = "https://lordlee.de/m/bing.mp3";
     private final int PLAYLIST_MAXIMUM_DEFAULT = 1;
     private final int PLAYLIST_MAXIMUM_VIP = 5;
     private final int QUEUE_MAXIMUM = 50;
@@ -264,6 +264,32 @@ public class MusicManager {
         });
     }
 
+    public void maintenanceSound() {
+        playerManager.loadItemOrdered(getCurrentMusicManager(), MAINTENANCE_SOUND, new AudioLoadResultHandler() {
+            @Override
+            public void trackLoaded(AudioTrack track) {
+                for (Map.Entry entry : musicManagers.entrySet()) {
+                    ((MusicManager) entry).getCurrentMusicManager().getPlayer().playTrack(track);
+                }
+            }
+
+            @Override
+            public void playlistLoaded(AudioPlaylist playlist) {
+                //DO NOTHING
+            }
+
+            @Override
+            public void noMatches() {
+                Logger.error("Can't find maintenance sound.");
+            }
+
+            @Override
+            public void loadFailed(FriendlyException exception) {
+                Logger.error("Can't load maintenance sound.");
+            }
+        });
+    }
+
     public Message executeShuffle() {
         if (!isBotInVoiceChannel())
             return message(error("Error!", "Bot is not in a voice channel."));
@@ -461,12 +487,12 @@ public class MusicManager {
             return String.format("%02d:%02d", minutes, seconds);
     }
 
-    private AudioTrack getCurrentTrack(){
+    private AudioTrack getCurrentTrack() {
         MusicManager manager = this;
         return manager.getCurrentMusicManager().getScheduler().getPlayer().getPlayingTrack();
     }
 
-    public Message executeLyrics(){
+    public Message executeLyrics() {
         if (!isBotInVoiceChannel())
             return message(error("Error!", "Bot is not in a voice channel."));
         VoiceChannel channel = getBotsVoiceChannel();
