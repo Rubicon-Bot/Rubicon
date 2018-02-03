@@ -162,7 +162,7 @@ public class MusicManager {
             return message(EmbedUtil.error("Error!", "Volume must be 200 or less."));
         }
         getCurrentMusicManager().getPlayer().setVolume(userVolI);
-        return message(success("Set volume!", "Successfully resumed playing music."));
+        return message(success("Set volume!", "Successfully changed the volume."));
     }
 
     public void loadSong(boolean force) {
@@ -483,7 +483,7 @@ public class MusicManager {
             track = musixMatch.getMatchingTrack(info.title, info.author);
             lyrics = musixMatch.getLyrics(track.getTrack().getTrackId());
         } catch (MusixMatchException e) {
-            return new MessageBuilder().setEmbed(EmbedUtil.error("No lyrics found", "There are no lyrics of the current song on Musixmathc").build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error("No lyrics found", "There are no lyrics of the current song on Musixmatch").build()).build();
         }
         EmbedBuilder lyricsEmbed = new EmbedBuilder();
         lyricsEmbed.setColor(Colors.COLOR_PREMIUM);
