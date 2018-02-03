@@ -160,7 +160,7 @@ public class RubiconBot {
         GameAnimator.start();
         /**
          *
-         * Check if every user, that has the prmium role hase premium
+         * Check if every user, that has the premium role has premium
          *
          * @see CommandPremium
          */
@@ -202,7 +202,8 @@ public class RubiconBot {
                 new CommandEval(),
                 new CommandTwitter(),
                 new CommandGlobalBlacklist(),
-                new CommandGenerateDocsJSON()
+                new CommandGenerateDocsJSON(),
+                new CommandMaintenance()
         );
         // music commands package
         commandManager.registerCommandHandlers(
