@@ -78,9 +78,6 @@ public abstract class CommandHandler {
         this.disabled = disabled;
     }
 
-    protected CommandHandler() {
-    }
-
     /**
      * Checks permission, safely calls the execute method and ensures response.
      *

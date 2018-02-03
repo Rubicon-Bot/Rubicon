@@ -1,46 +1,18 @@
 package fun.rubicon.commands.botowner;
 
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
-import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrackState;
-import com.sedmelluq.discord.lavaplayer.track.TrackMarker;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.core.music.AudioPlayerSendHandler;
 import fun.rubicon.core.music.MusicManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
-import fun.rubicon.util.FileUtil;
 import fun.rubicon.util.SafeMessage;
-import javafx.scene.media.AudioTrack;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.audio.AudioConnection;
-import net.dv8tion.jda.core.audio.AudioSendHandler;
 import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.managers.AudioManager;
-import net.dv8tion.jda.core.managers.ChannelManager;
-import net.dv8tion.jda.core.managers.ChannelManagerUpdatable;
-import net.dv8tion.jda.core.requests.RestAction;
-import net.dv8tion.jda.core.requests.restaction.AuditableRestAction;
-import net.dv8tion.jda.core.requests.restaction.ChannelAction;
-import net.dv8tion.jda.core.requests.restaction.InviteAction;
-import net.dv8tion.jda.core.requests.restaction.PermissionOverrideAction;
-import sun.misc.IOUtils;
-
-import java.awt.*;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
@@ -67,12 +39,12 @@ public class CommandMaintenance extends CommandHandler {
         }
         RubiconBot.getConfiguration().set("playingStatus", msg.toString());
         MusicManager manager = new MusicManager(parsedCommandInvocation);
+        manager.maintenanceSound();
         TimerTask resolveTask = new TimerTask() {
             @Override
             public void run() {
                 RubiconBot.getConfiguration().set("playingStatus", "0");
                 maintenance = false;
-                System.out.println("Zurückgesetzt");
             }
         };
         int runtime =  Integer.parseInt(parsedCommandInvocation.getArgs()[0]);

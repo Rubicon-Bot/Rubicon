@@ -269,7 +269,7 @@ public class MusicManager {
             @Override
             public void trackLoaded(AudioTrack track) {
                 for (Map.Entry entry : musicManagers.entrySet()) {
-                    ((MusicManager) entry).getCurrentMusicManager().getPlayer().playTrack(track);
+                    ((GuildMusicManager) entry.getValue()).getPlayer().playTrack(track);
                 }
             }
 
