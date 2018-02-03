@@ -44,7 +44,7 @@ public class MusicManager {
     private final fun.rubicon.permission.UserPermissions userPermissions;
     private final CommandManager.ParsedCommandInvocation parsedCommandInvocation;
 
-    private final String MAINTENANCE_SOUND = "https://lordlee.de/m/bing.mp3";
+    private final String MAINTENANCE_SOUND = "https://lordlee.de/m/maintenance.mp3";
     private final int PLAYLIST_MAXIMUM_DEFAULT = 1;
     private final int PLAYLIST_MAXIMUM_VIP = 5;
     private final int QUEUE_MAXIMUM = 50;
