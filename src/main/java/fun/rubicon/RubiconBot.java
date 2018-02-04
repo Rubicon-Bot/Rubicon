@@ -243,7 +243,6 @@ public class RubiconBot {
                 new CommandHelp(),
                 new CommandFeedback(),
                 new CommandPing(),
-                new CommandBug(),
                 new CommandInfo(),
                 new CommandInvite(),
                 new CommandSpeedTest(),
