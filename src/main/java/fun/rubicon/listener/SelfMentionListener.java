@@ -13,6 +13,8 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author Leon Kappes / Lee
  */
@@ -36,6 +38,7 @@ public class SelfMentionListener extends ListenerAdapter{
             for(String emoji : RUBICON_EMOJIS){
                 message.addReaction(emoji).queue();
             }
+            message.delete().queueAfter(5, TimeUnit.MINUTES);
         }
 
     }

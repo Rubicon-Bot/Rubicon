@@ -8,6 +8,8 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.guild.GuildBanEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberRoleAddEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberRoleRemoveEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceMoveEvent;
@@ -28,6 +30,8 @@ public class ServerLogHandler extends ListenerAdapter {
     private Color evLeaveColor = new Color(198, 224, 49);
     private Color evBanColor = new Color(224, 67, 0);
     private Color evVoiceLog = new Color(120, 68, 234);
+    private Color evRoleAdded = new Color(24, 188, 30);
+    private Color evRoleRemoved = new Color(188, 57, 24);
     private static Color evCommandLog = new Color(165, 100, 24);
 
     public static ArrayList<Long> bannedUsers = new ArrayList<>();
@@ -126,6 +130,36 @@ public class ServerLogHandler extends ListenerAdapter {
         sendLog(textChannel, embedBuilder);
     }
 
+    @Override
+    public void onGuildMemberRoleAdd(GuildMemberRoleAddEvent event) {
+        if (!isEventEnabled(event.getGuild(), LogEventKeys.ROLE))
+            return;
+        TextChannel textChannel = getLogChannel(event.getGuild());
+        if (textChannel == null)
+            return;
+
+        EmbedBuilder embedBuilder = new EmbedBuilder();
+        embedBuilder.setAuthor("A member role was updated", null, event.getUser().getAvatarUrl());
+        embedBuilder.setDescription("Added **" + event.getRoles().get(0).getName() + "** to **" + event.getMember().getEffectiveName() + " (" + event.getMember().getUser().getId() + ")**");
+        embedBuilder.setColor(evRoleAdded);
+        sendLog(textChannel, embedBuilder);
+    }
+
+    @Override
+    public void onGuildMemberRoleRemove(GuildMemberRoleRemoveEvent event) {
+        if (!isEventEnabled(event.getGuild(), LogEventKeys.ROLE))
+            return;
+        TextChannel textChannel = getLogChannel(event.getGuild());
+        if (textChannel == null)
+            return;
+
+        EmbedBuilder embedBuilder = new EmbedBuilder();
+        embedBuilder.setAuthor("A member role was updated", null, event.getUser().getAvatarUrl());
+        embedBuilder.setDescription("Removed **" + event.getRoles().get(0).getName() + "** from **" + event.getMember().getEffectiveName() + " (" + event.getMember().getUser().getId() + ")**");
+        embedBuilder.setColor(evRoleRemoved);
+        sendLog(textChannel, embedBuilder);
+    }
+
     public static void logCommand(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         if (!isEventEnabled(parsedCommandInvocation.getMessage().getGuild(), LogEventKeys.COMMAND))
             return;
@@ -135,7 +169,7 @@ public class ServerLogHandler extends ListenerAdapter {
 
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setAuthor("A command was executed", null);
-        embedBuilder.setDescription("**" + parsedCommandInvocation.getMessage().getMember().getEffectiveName() + " (" + parsedCommandInvocation.getMessage().getMember().getUser().getId() + ")** executed `" + parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand + "`");
+        embedBuilder.setDescription("**" + parsedCommandInvocation.getMessage().getMember().getEffectiveName() + " (" + parsedCommandInvocation.getMessage().getMember().getUser().getId() + ")** executed `" + parsedCommandInvocation.getPrefix() + parsedCommandInvocation.getCommandInvocation() + "`");
         embedBuilder.setColor(evCommandLog);
         sendLog(textChannel, embedBuilder);
     }
@@ -176,6 +210,7 @@ public class ServerLogHandler extends ListenerAdapter {
         LEAVE("ev_leave", "Leave"),
         COMMAND("ev_command", "Command"),
         BAN("ev_ban", "Ban"),
+        ROLE("ev_role", "Role"),
         VOICE("ev_voice", "Voice");
 
 
@@ -201,6 +236,7 @@ public class ServerLogHandler extends ListenerAdapter {
             list.add(LEAVE);
             list.add(COMMAND);
             list.add(BAN);
+            list.add(ROLE);
             list.add(VOICE);
             return list;
         }

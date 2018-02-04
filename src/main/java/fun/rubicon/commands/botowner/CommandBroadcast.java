@@ -34,7 +34,7 @@ public class CommandBroadcast extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        String[] args = parsedCommandInvocation.args;
+        String[] args = parsedCommandInvocation.getArgs();
         if (args.length < 3) {
             return new MessageBuilder().setEmbed(EmbedUtil.error("You have to use more arguments!", "Use at least 3 arguments.").build()).build();
         }

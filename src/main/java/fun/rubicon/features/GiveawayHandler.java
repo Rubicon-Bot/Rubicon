@@ -424,15 +424,15 @@ public class GiveawayHandler extends CommandHandler {
         if (invocation.getArgs().length == 0)
             return createHelpMessage(invocation);
         else {
-            switch (invocation.args[0]) {
+            switch (invocation.getArgs()[0]) {
                 case "create":
-                    if (invocation.args.length < 3)
+                    if (invocation.getArgs().length < 3)
                         return createHelpMessage(invocation);
 
                     // parse runtime
                     int runtime;
                     try {
-                        runtime = Integer.parseInt(invocation.args[1]);
+                        runtime = Integer.parseInt(invocation.getArgs()[1]);
                         if (runtime < 0)
                             throw new IllegalArgumentException();
                     } catch (IllegalArgumentException e) {
@@ -441,9 +441,9 @@ public class GiveawayHandler extends CommandHandler {
                     }
 
                     // parse prize
-                    StringBuilder prize = new StringBuilder(invocation.args[2]);
-                    for (int i = 3; i < invocation.args.length; i++)
-                        prize.append(" ").append(invocation.args[i]);
+                    StringBuilder prize = new StringBuilder(invocation.getArgs()[2]);
+                    for (int i = 3; i < invocation.getArgs().length; i++)
+                        prize.append(" ").append(invocation.getArgs()[i]);
 
                     // create giveaway
                     Giveaway giveaway = createGiveaway(invocation.getTextChannel().getIdLong(),
@@ -453,7 +453,7 @@ public class GiveawayHandler extends CommandHandler {
 
                     return giveaway == null ? message(error()) : null; // message should not be deleted and is sent
                 default:
-                    return message(error("Invalid arguments", '`' + invocation.args[0] + "` is not a " +
+                    return message(error("Invalid arguments", '`' + invocation.getArgs()[0] + "` is not a " +
                             "valid subcommand."));
             }
         }

@@ -111,6 +111,21 @@ public class RubiconBot {
 
         // post bot stats to discordbots.org and print warning
         DBLUtil.postStats(false);
+
+        String maintenanceStatus = getConfiguration().getString("maintenance");
+        if(maintenanceStatus.equalsIgnoreCase("1")) {
+            CommandMaintenance.enable();
+        }
+
+        //ITERATING THROUGH MORE THAN 40K USERS
+        /**
+         *
+         * Check if every user, that has the premium role has premium
+         *
+         * @see CommandPremium
+         */
+        CommandPremium.PremiumChecker.check();
+        CommandPremium.PremiumChecker.startTask();
     }
 
     /**
@@ -119,9 +134,12 @@ public class RubiconBot {
      * @param args command line parameters.
      */
     public static void main(String[] args) {
+
         if (instance != null)
             throw new RuntimeException("RubiconBot has already been initialized in this VM.");
         new RubiconBot();
+
+
     }
 
     /**
@@ -155,14 +173,6 @@ public class RubiconBot {
         Info.lastRestart = new Date();
         getJDA().getPresence().setGame(Game.playing("Started."));
         GameAnimator.start();
-        /**
-         *
-         * Check if every user, that has the prmium role hase premium
-         *
-         * @see CommandPremium
-         */
-        CommandPremium.PremiumChecker.check();
-        CommandPremium.PremiumChecker.startTask();
     }
 
 
@@ -199,7 +209,9 @@ public class RubiconBot {
                 new CommandEval(),
                 new CommandTwitter(),
                 new CommandGlobalBlacklist(),
-                new CommandGenerateDocsJSON()
+                new CommandGenerateDocsJSON(),
+                new CommandMaintenance(),
+                new CommandGuildData()
         );
         // music commands package
         commandManager.registerCommandHandlers(
@@ -251,7 +263,8 @@ public class RubiconBot {
                 new CommandWelcomeChannel(),
                 new CommandBlacklist(),
                 new CommandLeaveMessage(),
-                new CommandLog()
+                new CommandLog(),
+                new CommandLevelMessage()
         );
         // tools commands package
         commandManager.registerCommandHandlers(

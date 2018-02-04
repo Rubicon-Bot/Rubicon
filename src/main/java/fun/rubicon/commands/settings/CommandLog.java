@@ -28,12 +28,13 @@ public class CommandLog extends CommandHandler {
     private String[] args;
 
     public CommandLog() {
-        super(new String[]{"log", "logsettings"}, CommandCategory.SETTINGS, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command."), "Enable/Disable log settings", "list\n" +
+        super(new String[]{"log", "logsettings"}, CommandCategory.SETTINGS, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command."), "Enable/Disable log settings", "list\n" +
                 "channel <#channel>\n" +
                 "join <enable/disable>\n" +
                 "leave <enable/disable>\n" +
                 "command <enable/disable>\n" +
                 "ban <enable/disable>\n" +
+                "role <enable/disable>\n" +
                 "voice <enable/disable>");
     }
 
@@ -61,6 +62,8 @@ public class CommandLog extends CommandHandler {
                     return EmbedUtil.message(handleEventUpdate(LogEventKeys.COMMAND, args[1]));
                 case "ban":
                     return EmbedUtil.message(handleEventUpdate(LogEventKeys.BAN, args[1]));
+                case "role":
+                    return EmbedUtil.message(handleEventUpdate(LogEventKeys.ROLE, args[1]));
                 case "voice":
                     return EmbedUtil.message(handleEventUpdate(LogEventKeys.VOICE, args[1]));
             }
