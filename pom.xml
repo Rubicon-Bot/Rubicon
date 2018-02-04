@@ -87,6 +87,13 @@
             <artifactId>jMusixMatch</artifactId>
             <version>1.1.4</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.kohsuke/github-api -->
+        <dependency>
+            <groupId>org.kohsuke</groupId>
+            <artifactId>github-api</artifactId>
+            <version>1.92</version>
+        </dependency>
+
     </dependencies>
     <repositories>
         <repository>
