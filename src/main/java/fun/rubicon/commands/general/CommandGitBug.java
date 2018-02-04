@@ -38,7 +38,7 @@ public class CommandGitBug extends CommandHandler {
     public static HashMap<TextChannel, Titel> channelMsg = new HashMap<>();
 
     public CommandGitBug() {
-        super(new String[]{"gitbug"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.gitbug"), "Report an Bug", "<Bug title>");
+        super(new String[]{"bug","bugreport"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.gitbug"), "Report an Bug", "<Bug title>");
     }
 
     private static String Header = "## Issue<br><br>### Issue Type<br>- [x] Bug.<br>- [ ] Feature.<br><br><br><br>### Report<br><br>#### Description<br><br>";
