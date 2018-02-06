@@ -39,8 +39,8 @@ public class SelfMentionListener extends ListenerAdapter{
                 message.addReaction(emoji).queue();
             }
             message.delete().queueAfter(5, TimeUnit.MINUTES);
+            e.getMessage().delete().queue();
         }
-
     }
 
 }

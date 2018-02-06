@@ -30,6 +30,7 @@ public class Info {
     public final static String LUCSOFT_TOKEN = RubiconBot.getConfiguration().getString("lucsoft_token");
     public final static String GOOGLE_TOKEN = RubiconBot.getConfiguration().getString("google_token");
     public static final String MUSIXMATCH_KEY = RubiconBot.getConfiguration().getString("musixmatch_key");
+    public static final String GITHUB_TOKEN = RubiconBot.getConfiguration().getString("git_token");
     public static Date lastRestart;
 
     /**
