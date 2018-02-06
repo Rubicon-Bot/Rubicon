@@ -40,16 +40,17 @@ public class CommandGitBug extends CommandHandler {
     public CommandGitBug() {
         super(new String[]{"bug","bugreport"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.gitbug"), "Report an Bug", "<Bug title>");
     }
-    
-    private static String Header = "<p><strong>Issue</strong><br><br><strong>Issue Type</strong><br> - [x] Bug <br> - [ ] Feature <br><br><br><br><strong>Report</strong><br><br><strong>Description</strong><br><br></p>";
+
+    private static String Header = "<p><strong>Bugreport</strong><br><br><strong>Bug report by ";
+    private static String Sufix = " </strong><br><br><strong>Description</strong><br><br></p>";
 
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         String title = parsedCommandInvocation.getMessage().getContentDisplay().replace(parsedCommandInvocation.getPrefix() + parsedCommandInvocation.getCommandInvocation(), "");
-        Titel tite1 = new Titel(title, parsedCommandInvocation.getAuthor(), parsedCommandInvocation.getTextChannel());
+        Titel tite1 = new Titel(title, parsedCommandInvocation.getAuthor(), parsedCommandInvocation.getTextChannel(),parsedCommandInvocation.getMessage().getContentDisplay());
         channelMsg.put(parsedCommandInvocation.getTextChannel(), tite1);
-        SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), new EmbedBuilder().setTitle("Set Bug Description").setDescription("Please write a short Description about the Bog in this Channel").setFooter("Will abort in 30sec.", null).build(), 30);
+        SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), new EmbedBuilder().setTitle("Set Bug Description").setDescription("Please write a short Description about the Bug in this Channel").setFooter("Will abort in 30sec.", null).build(), 30);
 
         return null;
     }
@@ -57,11 +58,12 @@ public class CommandGitBug extends CommandHandler {
     public static void handle(MessageReceivedEvent event) {
         if (!channelMsg.containsKey(event.getTextChannel()))
             return;
-        if (event.getMessage().getContentDisplay().startsWith("rc!gitbug"))
+        Titel titel = channelMsg.get(event.getTextChannel());
+        if (event.getMessage().getContentDisplay().equals(titel.getMessage()))
             return;
         if (event.getAuthor().equals(RubiconBot.getJDA().getSelfUser()))
             return;
-        Titel titel = channelMsg.get(event.getTextChannel());
+
         if (!event.getAuthor().equals(titel.getAuthor()))
             return;
         Timer timer = new Timer();
@@ -78,7 +80,7 @@ public class CommandGitBug extends CommandHandler {
         try {
             GitHub gitHub = GitHub.connectUsingOAuth(Info.GITHUB_TOKEN);
             GHRepository repository = gitHub.getOrganization("Rubicon-Bot").getRepository("Rubicon");
-            GHIssue Issue = repository.createIssue(titel.getTitle()).body(Header + event.getMessage().getContentDisplay()).label("Bug").label("Requires Testing").create();
+            GHIssue Issue = repository.createIssue(titel.getTitle()).body(Header + event.getAuthor().getName()+"#"+event.getAuthor().getDiscriminator()+Sufix+ event.getMessage().getContentDisplay()).label("Bug").label("Requires Testing").create();
             channelMsg.remove(event.getTextChannel());
             event.getMessage().delete().queue();
             SafeMessage.sendMessage(event.getTextChannel(), new EmbedBuilder().setTitle("Bug successfully send!").setDescription("Bug is available at: " + Issue.getHtmlUrl()).build(), 20);
@@ -92,14 +94,19 @@ public class CommandGitBug extends CommandHandler {
         private final String title;
         private final User author;
         private final TextChannel channel;
+        private final String message;
 
 
-        private Titel(String title, User author, TextChannel channel) {
+        private Titel(String title, User author, TextChannel channel, String message) {
             this.title = title;
             this.author = author;
             this.channel = channel;
+            this.message = message;
         }
 
+        public String getMessage() {
+            return message;
+        }
 
         public String getTitle() {
             return title;
