@@ -41,6 +41,9 @@ public class CommandMute extends CommandHandler {
         Member victim = guild.getMember(message.getMentionedUsers().get(0));
         if(!user.canInteract(victim))
             return new MessageBuilder().setEmbed(EmbedUtil.error("No permission", "You have no permission to interact with " + victim.getAsMention()).build()).build();
+        if(!guild.getSelfMember().hasPermission(Permission.MANAGE_PERMISSIONS)) {
+            return EmbedUtil.message(EmbedUtil.error("Permission Error!", "I need the MANAGE_PERMISSIONS permissions to mute users."));
+        }
         Role muted = createMutedRoleIfNotExists(guild);
         if(victim.getRoles().contains(muted))
             return new MessageBuilder().setEmbed(EmbedUtil.error("Already muted", "This user is already muted").build()).build();

@@ -49,7 +49,7 @@ import java.util.*;
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token", "gip_token", "lucsoft_token", "twitterConsumerKey", "twitterConsumerSecret", "twitterAccessToken", "twitterAccessTokenSecret", "google_token", "musixmatch_key"};
+    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token", "gip_token", "lucsoft_token", "twitterConsumerKey", "twitterConsumerSecret", "twitterAccessToken", "twitterAccessTokenSecret", "google_token", "musixmatch_key","git_token","maintenance"};
     private static final String dataFolder = "data/";
     private static WebpanelManager webpanelManager;
     private static RubiconBot instance;
@@ -106,7 +106,7 @@ public class RubiconBot {
         // init features
         new GiveawayHandler();
         new RemindHandler();
-        VerificationUserHandler.loadVerifyKicks();
+        VerificationUserHandler.loadVerifyUser();
         VerificationKickHandler.loadVerifyKicks();
 
         // post bot stats to discordbots.org and print warning
@@ -243,7 +243,6 @@ public class RubiconBot {
                 new CommandHelp(),
                 new CommandFeedback(),
                 new CommandPing(),
-                new CommandBug(),
                 new CommandInfo(),
                 new CommandInvite(),
                 new CommandSpeedTest(),
@@ -253,7 +252,8 @@ public class RubiconBot {
                 new CommandProfile(),
                 new CommandBio(),
                 new CommandMiner(),
-                new CommandPremium()
+                new CommandPremium(),
+                new CommandGitBug()
         );
         // settings commands package
         commandManager.registerCommandHandlers(
