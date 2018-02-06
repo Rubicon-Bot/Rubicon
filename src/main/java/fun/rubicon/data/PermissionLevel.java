@@ -10,6 +10,7 @@ import java.util.Comparator;
 
 /**
  * Specifies a group of users that can access permission-locked features.
+ *
  * @deprecated Use the {@link fun.rubicon.permission} package instead.
  */
 @Deprecated

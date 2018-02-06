@@ -9,7 +9,9 @@ package fun.rubicon.sql;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.admin.CommandVerification;
 import fun.rubicon.util.Logger;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.sql.*;
 import java.util.ArrayList;

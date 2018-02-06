@@ -19,6 +19,7 @@ import static fun.rubicon.util.EmbedUtil.success;
 
 /**
  * Handles the 'lmgtfy' command which creates google search links using lmgtfy.com.
+ *
  * @author LeeDJD, tr808axm
  */
 public class CommandLmgtfy extends CommandHandler {

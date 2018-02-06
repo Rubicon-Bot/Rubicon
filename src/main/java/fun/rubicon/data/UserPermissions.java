@@ -6,14 +6,12 @@
 
 package fun.rubicon.data;
 
-import fun.rubicon.RubiconBot;
 import fun.rubicon.permission.Permission;
 import fun.rubicon.sql.MemberSQL;
 import fun.rubicon.util.Logger;
-import net.dv8tion.jda.core.entities.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.User;
 
 /**
  * Member/User-specific object used to query all permission-relevant variables.

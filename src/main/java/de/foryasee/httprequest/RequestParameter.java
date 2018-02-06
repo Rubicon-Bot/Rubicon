@@ -1,8 +1,6 @@
 package de.foryasee.httprequest;
 
 
-import org.json.simple.JSONArray;
-
 public class RequestParameter {
 
     private String key;

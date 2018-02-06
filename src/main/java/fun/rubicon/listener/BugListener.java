@@ -12,7 +12,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
  * @license MIT License <http://rubicon.fun/license>
  * @package fun.rubicon.listener
  */
-public class BugListener extends ListenerAdapter{
+public class BugListener extends ListenerAdapter {
 
     public void onMessageReceived(MessageReceivedEvent event) {
         CommandGitBug.handle(event);

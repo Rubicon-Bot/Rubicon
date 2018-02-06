@@ -16,9 +16,9 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
-public class CommandWelcomeChannel extends CommandHandler{
+public class CommandWelcomeChannel extends CommandHandler {
 
-    public CommandWelcomeChannel(){
+    public CommandWelcomeChannel() {
         super(new String[]{"channel", "welcomechannel", "welchannel", "joinchannel"}, CommandCategory.SETTINGS,
                 new PermissionRequirements(3, "command.welcome"),
                 "Set the Server Welcome Channel!", "<#channel>");

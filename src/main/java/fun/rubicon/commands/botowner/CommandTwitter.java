@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 
 /**
  * Handles the 'twitter' command.
+ *
  * @author Yannick Seeger / ForYaSee
  */
 public class CommandTwitter extends CommandHandler {

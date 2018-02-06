@@ -14,7 +14,7 @@ public class GlobalBlacklist {
 
     public static boolean isOnBlacklist(User user) {
         Configuration configuration = new Configuration(FileUtil.createFileIfNotExist("data/global-blacklist.json"));
-        if(configuration.has(user.getId())) {
+        if (configuration.has(user.getId())) {
             return true;
         }
         return false;
@@ -24,6 +24,7 @@ public class GlobalBlacklist {
         Configuration configuration = new Configuration(FileUtil.createFileIfNotExist("data/global-blacklist.json"));
         configuration.set(user.getId(), "true");
     }
+
     public static void removeFromBlacklist(User user) {
         Configuration configuration = new Configuration(FileUtil.createFileIfNotExist("data/global-blacklist.json"));
         configuration.set(user.getId(), null);

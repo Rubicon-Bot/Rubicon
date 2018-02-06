@@ -82,7 +82,7 @@ public class ServerLogSQL implements DatabaseGenerator {
     @Override
     public void createTableIfNotExist() {
         try {
-            if(connection.isClosed())
+            if (connection.isClosed())
                 mySQL.connect();
             PreparedStatement ps = connection.prepareStatement("" +
                     "CREATE TABLE IF NOT EXISTS `serverlog` (\n" +

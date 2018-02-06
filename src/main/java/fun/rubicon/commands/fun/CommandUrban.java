@@ -23,9 +23,9 @@ import org.json.simple.parser.JSONParser;
  * @license MIT License <http://rubicon.fun/license>
  * @package fun.rubicon.commands.fun
  */
-public class CommandUrban extends CommandHandler{
+public class CommandUrban extends CommandHandler {
     public CommandUrban() {
-        super(new String[]{"urban"},CommandCategory.FUN,new PermissionRequirements(0,"command.urban"),"Search for a Term on Urban dictionary","<Define query>");
+        super(new String[]{"urban"}, CommandCategory.FUN, new PermissionRequirements(0, "command.urban"), "Search for a Term on Urban dictionary", "<Define query>");
     }
 
     @Override
@@ -35,25 +35,25 @@ public class CommandUrban extends CommandHandler{
             return createHelpMessage(parsedCommandInvocation);
 
         HttpRequest request = new HttpRequest("http://api.urbandictionary.com/v0/define");
-        request.addParameter("term",args[0]);
+        request.addParameter("term", args[0]);
         try {
             RequestResponse response = request.sendGETRequest();
 
             JSONObject json = (JSONObject) new JSONParser().parse(response.getResponse());
             JSONArray data = (JSONArray) json.get("list");
-            String likes = String.valueOf(((JSONObject)data.get(0)).get("thumbs_up"));
-            String down = String.valueOf(((JSONObject)data.get(0)).get("thumbs_down"));
+            String likes = String.valueOf(((JSONObject) data.get(0)).get("thumbs_up"));
+            String down = String.valueOf(((JSONObject) data.get(0)).get("thumbs_down"));
 
             EmbedBuilder embedBuilder = new EmbedBuilder()
-                    .setTitle("Definition of "+args[0],(String) ((JSONObject)data.get(0)).get("permalink"))
-                    .setDescription((String) ((JSONObject)data.get(0)).get("definition"))
-                    .addField("Example",(String) ((JSONObject)data.get(0)).get("example"),false)
-                    .addField("\uD83D\uDC4D",likes,true)
-                    .addField("\uD83D\uDC4E",down,true)
+                    .setTitle("Definition of " + args[0], (String) ((JSONObject) data.get(0)).get("permalink"))
+                    .setDescription((String) ((JSONObject) data.get(0)).get("definition"))
+                    .addField("Example", (String) ((JSONObject) data.get(0)).get("example"), false)
+                    .addField("\uD83D\uDC4D", likes, true)
+                    .addField("\uD83D\uDC4E", down, true)
                     .setColor(Colors.COLOR_SECONDARY);
 
             parsedCommandInvocation.getTextChannel().sendMessage(embedBuilder.build()).queue();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return EmbedUtil.message(EmbedUtil.error("Error!", "Found no definition."));
         }

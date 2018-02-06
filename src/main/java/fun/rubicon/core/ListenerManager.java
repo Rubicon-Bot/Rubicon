@@ -7,7 +7,6 @@
 package fun.rubicon.core;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.core.webpanel.WebpanelManager;
 import fun.rubicon.listener.*;
 import net.dv8tion.jda.core.JDABuilder;
 

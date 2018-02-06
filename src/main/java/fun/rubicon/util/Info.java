@@ -12,6 +12,7 @@ import java.util.Date;
 
 /**
  * General data object.
+ *
  * @author ForYaSee, DerSchlaubi, LeeDJD, tr808axm
  */
 public class Info {

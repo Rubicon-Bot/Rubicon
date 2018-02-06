@@ -19,11 +19,11 @@ public class ChannelDeleteListener extends ListenerAdapter {
     @Override
     public void onTextChannelDelete(TextChannelDeleteEvent e) {
         String portalStatus = RubiconBot.getMySQL().getGuildValue(e.getGuild(), "portal");
-        if(portalStatus.equalsIgnoreCase("closed") || portalStatus.equalsIgnoreCase("waiting"))
+        if (portalStatus.equalsIgnoreCase("closed") || portalStatus.equalsIgnoreCase("waiting"))
             return;
-        if(portalStatus.equalsIgnoreCase("open")) {
+        if (portalStatus.equalsIgnoreCase("open")) {
             TextChannel channel = e.getJDA().getTextChannelById(RubiconBot.getMySQL().getPortalValue(e.getGuild(), "channelid"));
-            if(e.getChannel().getId() != channel.getId())
+            if (e.getChannel().getId() != channel.getId())
                 return;
 
             Guild partnerGuild = e.getJDA().getGuildById(RubiconBot.getMySQL().getPortalValue(e.getGuild(), "partnerid"));

@@ -18,7 +18,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-import static fun.rubicon.util.EmbedUtil.*;
+import static fun.rubicon.util.EmbedUtil.error;
+import static fun.rubicon.util.EmbedUtil.message;
 
 /**
  * Handles the 'rip' command which fetches tombstone images with a custom sign.

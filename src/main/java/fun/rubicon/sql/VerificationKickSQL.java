@@ -10,7 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class VerificationKickSQL implements DatabaseGenerator{
+public class VerificationKickSQL implements DatabaseGenerator {
 
     private Connection connection;
     private MySQL mySQL;
@@ -25,7 +25,7 @@ public class VerificationKickSQL implements DatabaseGenerator{
         this.connection = MySQL.getConnection();
     }
 
-    public VerificationKickSQL(User user, Guild guild){
+    public VerificationKickSQL(User user, Guild guild) {
         this.mySQL = RubiconBot.getMySQL();
         this.connection = MySQL.getConnection();
         this.user = user;
@@ -72,8 +72,6 @@ public class VerificationKickSQL implements DatabaseGenerator{
     }
 
 
-
-
     @Override
     public void createTableIfNotExist() {
         try {
@@ -89,7 +87,7 @@ public class VerificationKickSQL implements DatabaseGenerator{
                     " `message` TEXT NOT NULL, " +
                     " PRIMARY KEY (`id`)) ENGINE = InnoDB;");
             ps.execute();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             Logger.error(e);
         }
     }

@@ -24,7 +24,7 @@ import java.util.List;
 
 public class CommandMoveAll extends CommandHandler {
     public CommandMoveAll() {
-        super(new String[] {"moveall", "mvall", "mva"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.moveall"), "Move all members in your channel into another channel.", "<#channel>", false);
+        super(new String[]{"moveall", "mvall", "mva"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.moveall"), "Move all members in your channel into another channel.", "<#channel>", false);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class CommandMoveAll extends CommandHandler {
 
         String name;
         name = message.getContentRaw().replace(parsedCommandInvocation.getCommandInvocation(), "");
-        name = name.replace(parsedCommandInvocation.getPrefix(),"");
+        name = name.replace(parsedCommandInvocation.getPrefix(), "");
         name = name.substring(1);
         List<VoiceChannel> channels = message.getGuild().getVoiceChannelsByName(name, true);
         if (channels.isEmpty())
@@ -49,11 +49,11 @@ public class CommandMoveAll extends CommandHandler {
         if (channel.equals(message.getMember().getVoiceState().getChannel()))
             return new MessageBuilder().setEmbed(EmbedUtil.error("Same channel", "You are already connected to that channel").build()).build();
         GuildController controller = message.getGuild().getController();
-        if(!guild.getSelfMember().hasPermission(Permission.VOICE_MOVE_OTHERS)) {
-            return  new MessageBuilder().setEmbed(EmbedUtil.error("Cannot move you!","Cannot move all members in the Channel").build()).build();
+        if (!guild.getSelfMember().hasPermission(Permission.VOICE_MOVE_OTHERS)) {
+            return new MessageBuilder().setEmbed(EmbedUtil.error("Cannot move you!", "Cannot move all members in the Channel").build()).build();
         }
         message.getMember().getVoiceState().getChannel().getMembers().forEach(m -> {
-            if(!parsedCommandInvocation.getSelfMember().canInteract(m))
+            if (!parsedCommandInvocation.getSelfMember().canInteract(m))
                 return;
             controller.moveVoiceMember(m, channel).queue();
         });

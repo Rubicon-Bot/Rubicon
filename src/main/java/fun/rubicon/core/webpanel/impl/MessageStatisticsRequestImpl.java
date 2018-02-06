@@ -5,7 +5,6 @@ import fun.rubicon.core.webpanel.MessageStatisticsRequest;
 import fun.rubicon.core.webpanel.WebpanelData;
 import fun.rubicon.core.webpanel.WebpanelRequest;
 import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Message;
 
 /**
  * @author Yannick Seeger / ForYaSee
