@@ -380,7 +380,7 @@ public class MySQL {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM `guilds` WHERE `serverid` = ?");
             ps.setString(1, guild.getId());
             ps.execute();
-            PreparedStatement ps2 = connection.prepareStatement("DELETE FROM `members` WHERE `guildid` = ?");
+            PreparedStatement ps2 = connection.prepareStatement("DELETE FROM `members` WHERE `serverid` = ?");
             ps2.setString(1, guild.getId());
             ps2.execute();
         } catch (SQLException e) {
@@ -394,7 +394,7 @@ public class MySQL {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM `guilds` WHERE `serverid` = ?");
             ps.setString(1, serverID);
             ps.execute();
-            PreparedStatement ps2 = connection.prepareStatement("DELETE FROM `members` WHERE `guildid` = ?");
+            PreparedStatement ps2 = connection.prepareStatement("DELETE FROM `members` WHERE `serverid` = ?");
             ps2.setString(1, serverID);
             ps2.execute();
         } catch (SQLException e) {

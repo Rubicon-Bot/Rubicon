@@ -106,7 +106,7 @@ public class RubiconBot {
         // init features
         new GiveawayHandler();
         new RemindHandler();
-        VerificationUserHandler.loadVerifyKicks();
+        VerificationUserHandler.loadVerifyUser();
         VerificationKickHandler.loadVerifyKicks();
 
         // post bot stats to discordbots.org and print warning
