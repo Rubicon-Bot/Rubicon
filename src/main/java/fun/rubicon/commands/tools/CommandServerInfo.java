@@ -7,6 +7,7 @@
 package fun.rubicon.commands.tools;
 
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
@@ -26,11 +27,13 @@ import java.time.format.DateTimeFormatter;
 public class CommandServerInfo extends CommandHandler {
 
     public CommandServerInfo() {
-        super(new String[]{"serverinfo", "guild", "guildinfo"}, CommandCategory.TOOLS, new PermissionRequirements(PermissionLevel.EVERYONE, "command.serverinfo"), "Returns some information about the current server", "");
+        super(new String[]{"serverinfo", "guild", "guildinfo"}, CommandCategory.TOOLS, new PermissionRequirements(PermissionLevel.EVERYONE, "command.serverinfo"), "Returns some information about the current/an other server", "[serverid]");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+
+        if (RubiconBot.getJDA().getGuildById(parsedCommandInvocation.getArgs()[0]).equals(null)){
         Message message = parsedCommandInvocation.getMessage();
         Guild guild = message.getGuild();
 
@@ -53,6 +56,12 @@ public class CommandServerInfo extends CommandHandler {
         serverInfo.addField("Server icon url", guild.getIconUrl(), false);
         serverInfo.addField("Server Creation Date", formatDate(guild.getCreationTime()), false);
         return new MessageBuilder().setEmbed(serverInfo.build()).build();
+        }else {
+            Message message = parsedCommandInvocation.getMessage();
+            Guild guild = message.getGuild();
+        }
+        System.out.println();
+return null;
     }
 
     public String formatDate(OffsetDateTime date) {
