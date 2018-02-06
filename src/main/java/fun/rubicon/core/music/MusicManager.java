@@ -265,29 +265,29 @@ public class MusicManager {
     }
 
     public void maintenanceSound() {
-        playerManager.loadItemOrdered(getCurrentMusicManager(), MAINTENANCE_SOUND, new AudioLoadResultHandler() {
-            @Override
-            public void trackLoaded(AudioTrack track) {
-                for (Map.Entry entry : musicManagers.entrySet()) {
+        for (Map.Entry entry : musicManagers.entrySet()) {
+            playerManager.loadItemOrdered(getCurrentMusicManager(), MAINTENANCE_SOUND, new AudioLoadResultHandler() {
+                @Override
+                public void trackLoaded(AudioTrack track) {
                     ((GuildMusicManager) entry.getValue()).getPlayer().playTrack(track);
                 }
-            }
 
-            @Override
-            public void playlistLoaded(AudioPlaylist playlist) {
-                //DO NOTHING
-            }
+                @Override
+                public void playlistLoaded(AudioPlaylist playlist) {
+                    //DO NOTHING
+                }
 
-            @Override
-            public void noMatches() {
-                Logger.error("Can't find maintenance sound.");
-            }
+                @Override
+                public void noMatches() {
+                    Logger.error("Can't find maintenance sound.");
+                }
 
-            @Override
-            public void loadFailed(FriendlyException exception) {
-                Logger.error("Can't load maintenance sound.");
-            }
-        });
+                @Override
+                public void loadFailed(FriendlyException exception) {
+                    Logger.error("Can't load maintenance sound.");
+                }
+            });
+        }
     }
 
     public Message executeShuffle() {
@@ -518,7 +518,8 @@ public class MusicManager {
         lyricsEmbed.setDescription(lyrics.getLyricsBody());
         return new MessageBuilder().setEmbed(lyricsEmbed.build()).build();
     }
-    public Map<Long, GuildMusicManager> getMusicManagers(){
+
+    public Map<Long, GuildMusicManager> getMusicManagers() {
         return musicManagers;
     }
 }
