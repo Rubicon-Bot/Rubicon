@@ -41,7 +41,7 @@ public class CommandGitBug extends CommandHandler {
         super(new String[]{"bug","bugreport"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.gitbug"), "Report an Bug", "<Bug title>");
     }
 
-    private static String Header = "## Issue<br><br>### Issue Type<br>- [x] Bug.<br>- [ ] Feature.<br><br><br><br>### Report<br><br>#### Description<br><br>";
+    private static String Header = "<p><strong>Issue</strong><br><br><strong>Issue Type</strong><br> - [x] Bug <br> - [ ] Feature <br><br><br><br><strong>Report</strong><br><br><strong>Description</strong><br><br></p>";
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {

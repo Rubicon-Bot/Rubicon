@@ -33,7 +33,7 @@ public class CommandServerInfo extends CommandHandler {
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
 
-        if (RubiconBot.getJDA().getGuildById(parsedCommandInvocation.getArgs()[0]).equals(null)){
+        if (!RubiconBot.getMySQL().ifGuildExits(RubiconBot.getJDA().getGuildById(parsedCommandInvocation.getArgs()[0]))){
         Message message = parsedCommandInvocation.getMessage();
         Guild guild = message.getGuild();
 
@@ -57,11 +57,27 @@ public class CommandServerInfo extends CommandHandler {
         serverInfo.addField("Server Creation Date", formatDate(guild.getCreationTime()), false);
         return new MessageBuilder().setEmbed(serverInfo.build()).build();
         }else {
-            Message message = parsedCommandInvocation.getMessage();
-            Guild guild = message.getGuild();
+            Guild guild = RubiconBot.getJDA().getGuildById(parsedCommandInvocation.getArgs()[0]);
+            StringBuilder rawRoles = new StringBuilder();
+            guild.getRoles().forEach(r -> rawRoles.append(r.getName()).append(", "));
+            StringBuilder roles = new StringBuilder(rawRoles.toString());
+            roles.replace(rawRoles.lastIndexOf(","), roles.lastIndexOf(",") + 1, "");
+            EmbedBuilder serverInfo = new EmbedBuilder();
+            serverInfo.setColor(Colors.COLOR_PRIMARY);
+            serverInfo.setTitle(":desktop: Serverinfo of " + guild.getName());
+            serverInfo.setThumbnail(guild.getIconUrl());
+            serverInfo.addField("ID", "`" + guild.getId() + "`", false);
+            serverInfo.addField("Guildname", "`" + guild.getName() + "`", false);
+            serverInfo.addField("Server region", guild.getRegion().toString(), false);
+            serverInfo.addField("Members", String.valueOf(guild.getMembers().size()), false);
+            serverInfo.addField("Textchannels", String.valueOf(guild.getTextChannels().size()), false);
+            serverInfo.addField("Voicechannels", String.valueOf(guild.getVoiceChannels().size()), false);
+            serverInfo.addField("Roles", String.valueOf(guild.getRoles().size()) + "\n ```" + roles.toString() + "```", false);
+            serverInfo.addField("Server owner", guild.getOwner().getUser().getName() + "#" + guild.getOwner().getUser().getDiscriminator(), false);
+            serverInfo.addField("Server icon url", guild.getIconUrl(), false);
+            serverInfo.addField("Server Creation Date", formatDate(guild.getCreationTime()), false);
+            return new MessageBuilder().setEmbed(serverInfo.build()).build();
         }
-        System.out.println();
-return null;
     }
 
     public String formatDate(OffsetDateTime date) {
