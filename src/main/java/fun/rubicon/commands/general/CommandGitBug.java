@@ -35,10 +35,11 @@ import java.util.concurrent.TimeUnit;
  * @package fun.rubicon.commands.general
  */
 public class CommandGitBug extends CommandHandler {
-    public static HashMap<TextChannel, Titel> channelMsg = new HashMap<>();
+    private static HashMap<TextChannel, Titel> channelMsg = new HashMap<>();
+    private static Timer timer = new Timer();
 
     public CommandGitBug() {
-        super(new String[]{"bug","bugreport"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.gitbug"), "Report an Bug", "<Bug title>");
+        super(new String[]{"bug", "bugreport"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.gitbug"), "Report an Bug", "<Bug title>");
     }
 
     private static String Header = "<p><strong>Bugreport</strong><br><br><strong>Bug report by ";
@@ -48,10 +49,19 @@ public class CommandGitBug extends CommandHandler {
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         String title = parsedCommandInvocation.getMessage().getContentDisplay().replace(parsedCommandInvocation.getPrefix() + parsedCommandInvocation.getCommandInvocation(), "");
-        Titel tite1 = new Titel(title, parsedCommandInvocation.getAuthor(), parsedCommandInvocation.getTextChannel(),parsedCommandInvocation.getMessage().getContentDisplay());
+        Titel tite1 = new Titel(title, parsedCommandInvocation.getAuthor(), parsedCommandInvocation.getTextChannel(), parsedCommandInvocation.getMessage().getContentDisplay());
         channelMsg.put(parsedCommandInvocation.getTextChannel(), tite1);
         SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), new EmbedBuilder().setTitle("Set Bug Description").setDescription("Please write a short Description about the Bug in this Channel").setFooter("Will abort in 30sec.", null).build(), 30);
-
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                channelMsg.remove(parsedCommandInvocation.getTextChannel());
+                parsedCommandInvocation.getTextChannel().sendMessage("Setup abort").queue(message -> {
+                    message.delete().queueAfter(5L, TimeUnit.SECONDS);
+                });
+                return;
+            }
+        }, 30000);
         return null;
     }
 
@@ -66,21 +76,10 @@ public class CommandGitBug extends CommandHandler {
 
         if (!event.getAuthor().equals(titel.getAuthor()))
             return;
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                channelMsg.remove(event.getTextChannel());
-                titel.getChannel().sendMessage("Setup abort").queue(message -> {
-                    message.delete().queueAfter(5L, TimeUnit.SECONDS);
-                });
-                return;
-            }
-        }, 30000);
         try {
             GitHub gitHub = GitHub.connectUsingOAuth(Info.GITHUB_TOKEN);
             GHRepository repository = gitHub.getOrganization("Rubicon-Bot").getRepository("Rubicon");
-            GHIssue Issue = repository.createIssue(titel.getTitle()).body(Header + event.getAuthor().getName()+"#"+event.getAuthor().getDiscriminator()+Sufix+ event.getMessage().getContentDisplay()).label("Bug").label("Requires Testing").create();
+            GHIssue Issue = repository.createIssue(titel.getTitle()).body(Header + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + Sufix + event.getMessage().getContentDisplay()).label("Bug").label("Requires Testing").create();
             channelMsg.remove(event.getTextChannel());
             event.getMessage().delete().queue();
             SafeMessage.sendMessage(event.getTextChannel(), new EmbedBuilder().setTitle("Bug successfully send!").setDescription("Bug is available at: " + Issue.getHtmlUrl()).build(), 20);

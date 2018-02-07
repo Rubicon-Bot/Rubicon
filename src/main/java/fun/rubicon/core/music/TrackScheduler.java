@@ -56,8 +56,8 @@ public class TrackScheduler extends AudioEventAdapter {
     }
 
     /**
-     * @deprecated Use {@link TrackScheduler#getQueue()}
      * @return
+     * @deprecated Use {@link TrackScheduler#getQueue()}
      */
     @Deprecated
     public int getQueueSize() {

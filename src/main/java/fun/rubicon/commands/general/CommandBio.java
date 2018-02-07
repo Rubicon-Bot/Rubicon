@@ -8,11 +8,8 @@ import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.sql.UserSQL;
 import fun.rubicon.util.EmbedUtil;
-import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -32,7 +29,7 @@ public class CommandBio extends CommandHandler {
         if (invocation.getArgs()[0].equalsIgnoreCase("set")) {
             UserSQL sql = new UserSQL(invocation.getAuthor());
             String bioText = invocation.getMessage().getContentDisplay().replace(invocation.getPrefix() + invocation.getCommandInvocation() + " set", "");
-            if(bioText.toCharArray().length > 280) {
+            if (bioText.toCharArray().length > 280) {
                 return EmbedUtil.message(EmbedUtil.error("Error!", "Maximum char length is 280."));
             }
             bioText = filterWords(bioText);
@@ -44,7 +41,7 @@ public class CommandBio extends CommandHandler {
 
     private String filterWords(String text) {
         String[] blacklist = {"penis", "dick", "cock", "cunt", "pussy", "nigga", "nigger", "trump", "porno", "porn", ".xxx"};
-        for(String word : blacklist) {
+        for (String word : blacklist) {
             text = text.replace(word, getRandomReplaceWord());
         }
         return text;

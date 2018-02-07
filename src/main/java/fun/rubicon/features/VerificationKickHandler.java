@@ -1,16 +1,19 @@
 package fun.rubicon.features;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.listener.VerificationListener;
 import fun.rubicon.sql.MySQL;
 import fun.rubicon.sql.VerificationKickSQL;
 import fun.rubicon.util.Logger;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TimerTask;
 
 /**
  * Rubicon Discord bot
@@ -49,6 +52,8 @@ public class VerificationKickHandler {
             this.kickText = kicktext;
             this.silent = silent;
             this.save = save;
+            if (user.getUser().isBot())
+                return;
 
             if (save)
                 this.save();
@@ -156,7 +161,9 @@ public class VerificationKickHandler {
                 Date date = new Date(Long.parseLong(channelResult.getString("kicktime")));
                 String text = channelResult.getString("kickText");
                 long messageId = Long.parseLong(channelResult.getString("message"));
-                new VerifyKick(guild, member, date, text, messageId, false, false);
+                if (!member.getUser().isBot())
+                    new VerifyKick(guild, member, date, text, messageId, false, false);
+
             }
         } catch (SQLException | NullPointerException e) {
             Logger.error("Could not load verifykicks.");

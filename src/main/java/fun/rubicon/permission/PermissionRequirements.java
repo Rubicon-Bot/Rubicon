@@ -19,9 +19,9 @@ public class PermissionRequirements {
     /**
      * Constructs a new PermissionRequirements object.
      *
-     * @param requiredPermissionNode  the permission node that allows a user to pass the permission check.
-     * @param isAuthorExclusive whether this permission is exclusively granted for bot authors.
-     * @param isDefault whether users should have this permission by default (if no other permission entry covers it).
+     * @param requiredPermissionNode the permission node that allows a user to pass the permission check.
+     * @param isAuthorExclusive      whether this permission is exclusively granted for bot authors.
+     * @param isDefault              whether users should have this permission by default (if no other permission entry covers it).
      */
     public PermissionRequirements(String requiredPermissionNode, boolean isAuthorExclusive, boolean isDefault) {
         this.requiredPermissionNode = requiredPermissionNode;
@@ -31,6 +31,7 @@ public class PermissionRequirements {
 
     /**
      * Checks whether the conditions set in this object are met by a user's permissions.
+     *
      * @param userPermissions the user permissions access object.
      * @return true if all conditions are met, false otherwise.
      */
@@ -44,11 +45,11 @@ public class PermissionRequirements {
             return false;
 
         // server owner has all perms on his server
-        if(userPermissions.isServerOwner())
+        if (userPermissions.isServerOwner())
             return true;
 
         Permission effectiveEntry = userPermissions.getEffectivePermissionEntry(null, requiredPermissionNode);
-        if(effectiveEntry == null) {
+        if (effectiveEntry == null) {
             // defaults
             return isDefault;
         } else

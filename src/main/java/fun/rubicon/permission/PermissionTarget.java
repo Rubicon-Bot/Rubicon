@@ -24,6 +24,7 @@ public class PermissionTarget {
         private final char identifier;
 
         private final String name;
+
         Type(char identifier, String name) {
             this.identifier = identifier;
             this.name = name;
@@ -45,6 +46,7 @@ public class PermissionTarget {
         }
 
     }
+
     private final Guild guild;
     private final Type type;
     private final long id;
@@ -57,6 +59,7 @@ public class PermissionTarget {
 
     /**
      * Overloading constructor for creating a user permission target.
+     *
      * @param member the target user.
      */
     public PermissionTarget(Member member) {
@@ -65,6 +68,7 @@ public class PermissionTarget {
 
     /**
      * Overloading constructor for creating a role permission target.
+     *
      * @param role the target role.
      */
     public PermissionTarget(Role role) {
@@ -73,7 +77,8 @@ public class PermissionTarget {
 
     /**
      * Overloading constructor for creating a discord-permission permission target.
-     * @param guild the guild this permission should apply for.
+     *
+     * @param guild      the guild this permission should apply for.
      * @param permission the target discord-permission.
      */
     public PermissionTarget(Guild guild, Permission permission) {
@@ -126,6 +131,7 @@ public class PermissionTarget {
 
     /**
      * Checks whether the target exists in the given context (guild).
+     *
      * @return {@code true} if the actual target exists and {@code false} otherwise.
      */
     public boolean exists() {

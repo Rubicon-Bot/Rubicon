@@ -22,6 +22,7 @@ public class BotLeaveListener extends ListenerAdapter {
 
     /**
      * Removes the guild from the database
+     *
      * @param e
      */
     @Override
@@ -29,7 +30,7 @@ public class BotLeaveListener extends ListenerAdapter {
         //post statistics to discordbots.org
         DBLUtil.postStats(e.getJDA());
         try {
-            if(RubiconBot.getMySQL().ifGuildExits(e.getGuild())) {
+            if (RubiconBot.getMySQL().ifGuildExits(e.getGuild())) {
                 RubiconBot.getMySQL().deleteGuild(e.getGuild());
             }
         } catch (Exception ex) {

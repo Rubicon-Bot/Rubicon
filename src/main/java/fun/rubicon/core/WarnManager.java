@@ -49,7 +49,7 @@ public class WarnManager {
                 embedBuilder.addField(emotes[warnCount] + " " + warn.getReason(), "Executor: " + warn.getExecutor().getName() + "\n" +
                         "Date: " + new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(warn.getDate()), false);
                 warnCount++;
-                if(warnCount == 10)
+                if (warnCount == 10)
                     break;
             }
         }

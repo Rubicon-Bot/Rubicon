@@ -7,18 +7,12 @@
 package fun.rubicon.permission;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.permission.Permission;
-import fun.rubicon.permission.PermissionManager;
-import fun.rubicon.permission.PermissionTarget;
 import fun.rubicon.util.Info;
-import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Member/User-specific object used to query all permission-relevant variables.

@@ -18,7 +18,7 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 
 import java.util.concurrent.TimeUnit;
 
-public class CommandPrefix extends CommandHandler{
+public class CommandPrefix extends CommandHandler {
     public CommandPrefix() {
         super(new String[]{"prefix", "pr"}, CommandCategory.SETTINGS,
                 new PermissionRequirements(2, "command.prefix"),
@@ -27,10 +27,10 @@ public class CommandPrefix extends CommandHandler{
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation p, UserPermissions userPermissions) {
-        if(p.getArgs().length <= 1) {
+        if (p.getArgs().length <= 1) {
             MessageChannel ch = p.getMessage().getTextChannel();
 
-            if(p.getArgs().length == 0) {
+            if (p.getArgs().length == 0) {
                 RubiconBot.getMySQL().updateGuildValue(p.getMessage().getGuild(), "prefix", "rc!");
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setAuthor("Prefix updated", null, p.getMessage().getGuild().getIconUrl());

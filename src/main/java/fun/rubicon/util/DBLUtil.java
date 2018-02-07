@@ -13,6 +13,7 @@ import net.dv8tion.jda.core.JDA;
 
 /**
  * Utility class that posts statistical bot information to the https://discordbots.org/ bot-list.
+ *
  * @author DRSchlaubi, tr808axm
  */
 public class DBLUtil {
@@ -21,6 +22,7 @@ public class DBLUtil {
     /**
      * Posts bot statistics to https://discordbots.org/ and suppresses potential {@link PostingException} that occur
      * when the token is invalid.
+     *
      * @param jda unnecessary as it will be statically retrieved from RubiconBot.
      * @deprecated Use postStats() instead.
      */

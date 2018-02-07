@@ -10,6 +10,7 @@ import java.util.Objects;
 
 /**
  * Represents a permission.
+ *
  * @author tr808axm
  */
 public class Permission {
@@ -20,8 +21,9 @@ public class Permission {
 
     /**
      * Constructs a Permission object.
+     *
      * @param permissionString the permission node.
-     * @param negated whether the permission is negated.
+     * @param negated          whether the permission is negated.
      */
     public Permission(String permissionString, boolean negated) {
         this.permissionString = Objects.requireNonNull(permissionString);
@@ -61,6 +63,7 @@ public class Permission {
 
     /**
      * Parses a {@link Permission} object from the serialized form.
+     *
      * @param permissionAsString serialized permission {@link String}.
      * @return the {@link Permission} object.
      */

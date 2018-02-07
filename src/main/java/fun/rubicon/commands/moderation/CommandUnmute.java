@@ -14,16 +14,19 @@ import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.Role;
 
 /**
  * Handles the 'unmute' command.
+ *
  * @author Michael Rittmeister / Schlaubi
  */
 public class CommandUnmute extends CommandHandler {
     public CommandUnmute() {
-        super(new String[]{"unmute", "demute"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.unmute"), "Unmutes users", "<@User>",false);
+        super(new String[]{"unmute", "demute"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.unmute"), "Unmutes users", "<@User>", false);
     }
 
     @Override
@@ -32,13 +35,13 @@ public class CommandUnmute extends CommandHandler {
         Member user = parsedCommandInvocation.getMember();
         Guild guild = parsedCommandInvocation.getGuild();
 
-        if(message.getMentionedUsers().isEmpty())
+        if (message.getMentionedUsers().isEmpty())
             return createHelpMessage();
         Member victim = guild.getMember(message.getMentionedUsers().get(0));
-        if(!user.canInteract(victim))
+        if (!user.canInteract(victim))
             return new MessageBuilder().setEmbed(EmbedUtil.error("No permission", "You have no permission to interact with " + victim.getAsMention()).build()).build();
         Role muted = CommandMute.createMutedRoleIfNotExists(guild);
-        if(!victim.getRoles().contains(muted))
+        if (!victim.getRoles().contains(muted))
             return new MessageBuilder().setEmbed(EmbedUtil.error("Not muted", "This user is not muted").build()).build();
         guild.getController().removeSingleRoleFromMember(victim, muted).queue();
         return new MessageBuilder().setEmbed(EmbedUtil.success("Unmuted", "Successfully unmuted " + victim.getAsMention()).build()).build();
