@@ -52,6 +52,8 @@ public class VerificationKickHandler {
             this.kickText = kicktext;
             this.silent = silent;
             this.save = save;
+            if (user.getUser().isBot())
+                return;
 
             if (save)
                 this.save();
@@ -159,7 +161,9 @@ public class VerificationKickHandler {
                 Date date = new Date(Long.parseLong(channelResult.getString("kicktime")));
                 String text = channelResult.getString("kickText");
                 long messageId = Long.parseLong(channelResult.getString("message"));
-                new VerifyKick(guild, member, date, text, messageId, false, false);
+                if (!member.getUser().isBot())
+                    new VerifyKick(guild, member, date, text, messageId, false, false);
+
             }
         } catch (SQLException | NullPointerException e) {
             Logger.error("Could not load verifykicks.");
