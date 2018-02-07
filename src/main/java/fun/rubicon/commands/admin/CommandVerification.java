@@ -161,8 +161,8 @@ public class CommandVerification extends CommandHandler {
             if (!setups.containsKey(event.getGuild())) return;
             if (!setups.get(event.getGuild()).author.equals(event.getUser())) return;
             if (!event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
-                 message.editMessage(EmbedUtil.error("Aborted", "Bot has not the Permissions MESSAGE_MANAGE.Please contact the Owner for the Permissions").build()).queue();
-                 return;
+                message.editMessage(EmbedUtil.error("Aborted", "Bot has not the Permissions MESSAGE_MANAGE.Please contact the Owner for the Permissions").build()).queue();
+                return;
             }
             event.getReaction().removeReaction(event.getUser()).queue();
             message.getReactions().forEach(r -> r.removeReaction().queue());
@@ -227,12 +227,13 @@ public class CommandVerification extends CommandHandler {
         try {
 
 
-        if (!event.getReactionEmote().getEmote().isManaged()) {
-            if (!event.getGuild().getEmotes().contains(emote.getEmote())) {
-                SafeMessage.sendMessage(message.getTextChannel(), EmbedUtil.message(EmbedUtil.error("Unsupported emote", "You can only use global or custom emotes of your server")), 4);
-                return;
+            if (!event.getReactionEmote().getEmote().isManaged()) {
+                if (!event.getGuild().getEmotes().contains(emote.getEmote())) {
+                    SafeMessage.sendMessage(message.getTextChannel(), EmbedUtil.message(EmbedUtil.error("Unsupported emote", "You can only use global or custom emotes of your server")), 4);
+                    return;
+                }
             }
-        }}catch (NullPointerException ignored){
+        } catch (NullPointerException ignored) {
 
         }
         settings.emote = emote;

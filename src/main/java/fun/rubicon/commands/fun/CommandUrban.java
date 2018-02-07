@@ -12,7 +12,6 @@ import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -36,18 +35,18 @@ public class CommandUrban extends CommandHandler {
         if (args.length < 1)
             return createHelpMessage(parsedCommandInvocation);
 
-        Urban_Thread thread = new Urban_Thread("Urban Thread",parsedCommandInvocation);
+        Urban_Thread thread = new Urban_Thread("Urban Thread", parsedCommandInvocation);
         thread.start();
 
         return null;
     }
 
-    public class Urban_Thread implements Runnable{
+    public class Urban_Thread implements Runnable {
         private Thread t;
         private String threadName;
         private CommandManager.ParsedCommandInvocation parsedCommandInvocation;
 
-        Urban_Thread( String name,CommandManager.ParsedCommandInvocation Invocation) {
+        Urban_Thread(String name, CommandManager.ParsedCommandInvocation Invocation) {
             threadName = name;
             parsedCommandInvocation = Invocation;
         }
@@ -76,14 +75,16 @@ public class CommandUrban extends CommandHandler {
 
                 parsedCommandInvocation.getTextChannel().sendMessage(embedBuilder.build()).queue();
             } catch (Exception e) {
-                 SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(),EmbedUtil.error("Error!", "Found no definition.").build(),10);
+                SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), EmbedUtil.error("Error!", "Found no definition.").build(), 10);
             }
         }
-        public void start () {
-            if (t == null) {
-                t = new Thread (this, threadName);
-                t.start ();
-            }
-    }
 
-}}
+        public void start() {
+            if (t == null) {
+                t = new Thread(this, threadName);
+                t.start();
+            }
+        }
+
+    }
+}
