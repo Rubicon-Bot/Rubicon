@@ -38,7 +38,7 @@ public class ListenerManager {
         b.addEventListener(new RoleListener());
         b.addEventListener(RubiconBot.getWebpanelManager());
         b.addEventListener(new TextChannelListener());
-        b.addEventListener(new BugListener());
+        b.addEventListener(new MessageListener());
 
     }
 }
