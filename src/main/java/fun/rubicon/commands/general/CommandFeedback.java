@@ -30,19 +30,18 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
-import static fun.rubicon.util.EmbedUtil.*;
-
 /**
  * Handles the 'feedback' command which sends a feedback message to the developer server.
  */
 public class CommandFeedback extends CommandHandler {
     private static HashMap<TextChannel, FeedbackTitle> channelMsg = new HashMap<>();
     private static Timer timer = new Timer();
+
     /**
      * Constructs this CommandHandler.
      */
     public CommandFeedback() {
-        super(new String[]{"feedback", "submitidea", "submit-idea","feature"}, CommandCategory.GENERAL,
+        super(new String[]{"feedback", "submitidea", "submit-idea", "feature"}, CommandCategory.GENERAL,
                 new PermissionRequirements(PermissionLevel.EVERYONE, "command.feedback"),
                 "Sends a feedback message to the developers.", "<Feedback title>");
     }
@@ -69,7 +68,7 @@ public class CommandFeedback extends CommandHandler {
             }
         }, 30000);
         return null;
-        }
+    }
 
     public static void handle(MessageReceivedEvent event) {
         if (!channelMsg.containsKey(event.getTextChannel()))
@@ -96,35 +95,35 @@ public class CommandFeedback extends CommandHandler {
     }
 
 
-private class FeedbackTitle {
-    private final String title;
-    private final User author;
-    private final TextChannel channel;
-    private final String message;
+    private class FeedbackTitle {
+        private final String title;
+        private final User author;
+        private final TextChannel channel;
+        private final String message;
 
 
-    private FeedbackTitle(String title, User author, TextChannel channel, String message) {
-        this.title = title;
-        this.author = author;
-        this.channel = channel;
-        this.message = message;
+        private FeedbackTitle(String title, User author, TextChannel channel, String message) {
+            this.title = title;
+            this.author = author;
+            this.channel = channel;
+            this.message = message;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public User getAuthor() {
+            return author;
+        }
+
+        public TextChannel getChannel() {
+            return channel;
+        }
     }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public User getAuthor() {
-        return author;
-    }
-
-    public TextChannel getChannel() {
-        return channel;
-    }
-}
 }
 
