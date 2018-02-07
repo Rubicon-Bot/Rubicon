@@ -18,6 +18,7 @@ import fun.rubicon.features.VerificationUserHandler;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
@@ -159,6 +160,10 @@ public class CommandVerification extends CommandHandler {
         } else {
             if (!setups.containsKey(event.getGuild())) return;
             if (!setups.get(event.getGuild()).author.equals(event.getUser())) return;
+            if (!event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
+                 message.editMessage(EmbedUtil.error("Aborted", "Bot has not the Permissions MESSAGE_MANAGE.Please contact the Owner for the Permissions").build()).queue();
+                 return;
+            }
             event.getReaction().removeReaction(event.getUser()).queue();
             message.getReactions().forEach(r -> r.removeReaction().queue());
             String emote = event.getReactionEmote().getName();
