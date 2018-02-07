@@ -219,11 +219,16 @@ public class CommandVerification extends CommandHandler {
         VerificationSettings settings = settingslist.get(event.getGuild());
         MessageReaction.ReactionEmote emote = event.getReactionEmote();
         //System.out.println(event.getReactionEmote().getEmote().isManaged());
+        try {
+
+
         if (!event.getReactionEmote().getEmote().isManaged()) {
             if (!event.getGuild().getEmotes().contains(emote.getEmote())) {
                 SafeMessage.sendMessage(message.getTextChannel(), EmbedUtil.message(EmbedUtil.error("Unsupported emote", "You can only use global or custom emotes of your server")), 4);
                 return;
             }
+        }}catch (NullPointerException ignored){
+
         }
         settings.emote = emote;
         settingslist.replace(event.getGuild(), settings);
