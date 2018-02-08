@@ -1,44 +1,41 @@
-package fun.rubicon.commands.general;
-
-/**
- * Rubicon Discord bot
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
  *
- * @author Leon Kappes / Lee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package commands.general
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
  */
 
-import fun.rubicon.command.Command;
+package fun.rubicon.commands.general;
+
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import java.util.concurrent.TimeUnit;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
+import fun.rubicon.data.PermissionRequirements;
+import fun.rubicon.data.UserPermissions;
+import fun.rubicon.util.Colors;
+import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Message;
 
-public class CommandPing extends Command{
-
-
-    public CommandPing(String command, CommandCategory category) {
-        super(command, category);
+/**
+ * Handles the 'ping' command.
+ */
+public class CommandPing extends CommandHandler {
+    /**
+     * Constructs the CommandHandler.
+     */
+    public CommandPing() {
+        super(new String[]{"ping"}, CommandCategory.GENERAL,
+                new PermissionRequirements(0, "command.ping"),
+                "Get the bot's ping", "");
     }
 
     @Override
-    protected void execute(String[] args, MessageReceivedEvent e) {
-        long ping = e.getJDA().getPing();
-        e.getChannel().sendMessage("Bot online!").queue(msg -> msg.editMessage("Ping: " + ping + "ms").queueAfter(2, TimeUnit.SECONDS));
-    }
-
-    @Override
-    public String getDescription() {
-        return "Checking bot ping.";
-    }
-
-    @Override
-    public String getUsage() {
-        return "ping";
-    }
-
-    @Override
-    public int getPermissionLevel() {
-        return 0;
+    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        //Returns a Message with Embed included
+        return new MessageBuilder().setEmbed(new EmbedBuilder()
+                .setDescription("Ping: " + RubiconBot.getJDA().getPing() + "ms")
+                .setColor(Colors.COLOR_PRIMARY)
+                .build()).build();
     }
 }

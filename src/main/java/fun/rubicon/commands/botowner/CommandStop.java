@@ -1,45 +1,34 @@
-package fun.rubicon.commands.botowner;
-
-import fun.rubicon.command.Command;
-import fun.rubicon.command.CommandCategory;
-import fun.rubicon.core.Main;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-
-/**
- * Rubicon Discord bot
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
  *
- * @author Leon Kappes / Lee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package commands.botowner
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
  */
 
-public class CommandStop extends Command {
+package fun.rubicon.commands.botowner;
 
-    public CommandStop(String command, CommandCategory category) {
-        super(command, category);
+import fun.rubicon.command.CommandCategory;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
+import fun.rubicon.data.PermissionRequirements;
+import fun.rubicon.data.UserPermissions;
+import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.Message;
+
+/**
+ * Handles the 'stop' command.
+ *
+ * @author Leon Kappes / Lee
+ */
+public class CommandStop extends CommandHandler {
+
+    public CommandStop() {
+        super(new String[]{"botstop"}, CommandCategory.BOT_OWNER, new PermissionRequirements(4, "command.botstop"), "Stops the bot.", "");
     }
 
     @Override
-    protected void execute(String[] args, MessageReceivedEvent e) {
-        //TODO Saving Stuff?
-        Main.getMySQL().disconnect();
-        sendEmbededMessage(":battery: System Shutdown :battery:");
+    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        parsedCommandInvocation.getMessage().getTextChannel().sendMessage(new EmbedBuilder().setDescription(":battery: System Shutdown :battery:").build()).queue();
         System.exit(0);
-    }
-
-    @Override
-    public String getDescription() {
-        return "Stops the bot.";
-    }
-
-    @Override
-    public String getUsage() {
-        return "stop";
-    }
-
-    @Override
-    public int getPermissionLevel() {
-        return 4;
+        return null;
     }
 }

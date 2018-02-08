@@ -1,66 +1,47 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.listener;
 
-import fun.rubicon.core.Main;
-import fun.rubicon.util.Info;
+import fun.rubicon.RubiconBot;
+import fun.rubicon.util.Colors;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.events.channel.category.CategoryDeleteEvent;
 import net.dv8tion.jda.core.events.channel.text.TextChannelDeleteEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-/**
- * Rubicon Discord bot
- *
- * @author Yannick Seeger / ForYaSee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.listener
- */
 public class ChannelDeleteListener extends ListenerAdapter {
 
     @Override
     public void onTextChannelDelete(TextChannelDeleteEvent e) {
-        if (e.getChannel().getName().equals("rubicon-portal")) {
-            String stat = Main.getMySQL().getGuildValue(e.getGuild(), "portal");
-            if (stat.contains("waiting")) {
-                Main.getMySQL().updateGuildValue(e.getGuild(), "portal", "closed");
-                TextChannel tc = null;
-                try {
-                    tc = e.getGuild().getTextChannelsByName("rubicon-portal", true).get(0);
-                    tc.delete().queue();
-                    e.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Portal successfully closed!").queue());
-                } catch (Exception ex) {
+        String portalStatus = RubiconBot.getMySQL().getGuildValue(e.getGuild(), "portal");
+        if (portalStatus.equalsIgnoreCase("closed") || portalStatus.equalsIgnoreCase("waiting"))
+            return;
+        if (portalStatus.equalsIgnoreCase("open")) {
+            TextChannel channel = e.getJDA().getTextChannelById(RubiconBot.getMySQL().getPortalValue(e.getGuild(), "channelid"));
+            if (e.getChannel().getId() != channel.getId())
+                return;
 
-                }
-            } else if (stat.contains("connected")) {
-                Guild otherGuild = e.getJDA().getGuildById(stat.split(":")[1]);
-                otherGuild.getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Portal was closed from the other owner!").queue());
-                Main.getMySQL().updateGuildValue(otherGuild, "portal", "closed");
-                TextChannel tc = null;
-                try {
-                    tc = otherGuild.getTextChannelsByName("rubicon-portal", true).get(0);
-                    tc.delete().queue();
-                } catch (Exception ex) {
+            Guild partnerGuild = e.getJDA().getGuildById(RubiconBot.getMySQL().getPortalValue(e.getGuild(), "partnerid"));
+            RubiconBot.getMySQL().deletePortal(e.getGuild());
+            RubiconBot.getMySQL().deletePortal(partnerGuild);
+            RubiconBot.getMySQL().updateGuildValue(e.getGuild(), "portal", "closed");
+            RubiconBot.getMySQL().updateGuildValue(partnerGuild, "portal", "closed");
 
-                }
-                Main.getMySQL().updateGuildValue(e.getGuild(), "portal", "closed");
-                TextChannel tcc = null;
-                try {
-                    tcc = e.getGuild().getTextChannelsByName("rubicon-portal", true).get(0);
-                    tcc.delete().queue();
-                    e.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Portal successfully closed!").queue());
-                } catch (Exception ex) {
-
-                }
-            }
+            sendPortalNotification(e.getGuild(), "Portal was closed.");
+            sendPortalNotification(partnerGuild, "Portal was closed on the other side.");
         }
     }
 
-    @Override
-    public void onCategoryDelete(CategoryDeleteEvent e) {
-        if (e.getCategory().getName().contains(Info.BOT_NAME)) {
-            e.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("You deleted the rubicon category.\n" +
-                    "Some features doesn't work anymore. Use the rc!rebuild command.").queue());
-        }
+    private void sendPortalNotification(Guild guild, String message) {
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.setAuthor("Portal Notification", null, guild.getIconUrl());
+        builder.setDescription(message);
+        builder.setColor(Colors.COLOR_PRIMARY);
+        guild.getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(builder.build()).queue());
     }
 }

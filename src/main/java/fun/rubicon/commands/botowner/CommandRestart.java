@@ -1,54 +1,50 @@
-package fun.rubicon.commands.botowner;
-
-import fun.rubicon.command.Command;
-import fun.rubicon.command.CommandCategory;
-import fun.rubicon.core.DiscordCore;
-import fun.rubicon.core.Main;
-import fun.rubicon.util.MySQL;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
-
-/**
- * Rubicon Discord bot
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
  *
- * @author Leon Kappes / Lee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package commands.bowowner
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
  */
 
-public class CommandRestart extends Command{
-    public CommandRestart(String command, CommandCategory category) {
-        super(command, category);
+package fun.rubicon.commands.botowner;
+
+import fun.rubicon.RubiconBot;
+import fun.rubicon.command.CommandCategory;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
+import fun.rubicon.data.PermissionRequirements;
+import fun.rubicon.data.UserPermissions;
+import fun.rubicon.sql.MySQL;
+import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Message;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+/**
+ * Handles the 'restart' command.
+ *
+ * @author Leon Kappes / Lee
+ */
+public class CommandRestart extends CommandHandler {
+    public CommandRestart() {
+        super(new String[]{"rs", "restart", "r"}, CommandCategory.BOT_OWNER, new PermissionRequirements(4, "command.restart"), "Restart the Bot!", "");
     }
 
     @Override
-    protected void execute(String[] args, MessageReceivedEvent e) {
-        MySQL sql = Main.getMySQL();
+    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        MySQL sql = RubiconBot.getMySQL();
         sql.disconnect();
-        sendEmbededMessage("Restarting :robot:");
-        try {
-            Thread.sleep(1000L);
-        } catch (InterruptedException e1) {
-            e1.printStackTrace();
-        }
-        DiscordCore.getJDA().shutdown();
-        DiscordCore.start();
+        Message msg = parsedCommandInvocation.getMessage().getTextChannel().sendMessage("Restarting :robot:").complete();
+        Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                msg.delete().queue();
+                RubiconBot.getJDA().shutdown();
+            }
+        }, 20000);
+        RubiconBot.initJDA();
         sql.connect();
-    }
-
-    @Override
-    public String getDescription() {
-        return "Restarts the bot and reconnect the database.";
-    }
-
-    @Override
-    public String getUsage() {
-        return "restart";
-    }
-
-    @Override
-    public int getPermissionLevel() {
-        return 4;
+        return new MessageBuilder().setEmbed(new EmbedBuilder().setDescription(":battery: Restarted :battery:").build()).build();
     }
 }

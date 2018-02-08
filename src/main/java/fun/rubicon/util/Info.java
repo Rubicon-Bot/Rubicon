@@ -1,75 +1,62 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.util;
 
-import fun.rubicon.core.DiscordCore;
-import fun.rubicon.core.Main;
-import net.dv8tion.jda.core.entities.User;
+import fun.rubicon.RubiconBot;
 
 import java.util.Date;
 
 /**
- * Rubicon Discord bot
+ * General data object.
  *
- * @author Yannick Seeger / ForYaSee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.util
+ * @author ForYaSee, DerSchlaubi, LeeDJD, tr808axm
  */
-
 public class Info {
 
-    static Configuration cfg = Main.getConfiguration();
-    public final static String BOT_ID = "380713705073147915";
     public final static String BOT_DEFAULT_PREFIX = "rc!";
-    public static int reconnectCount = 0;
-    public final static String BOT_NAME = "Rubicon";
-    public final static String BOT_VERSION = "0.1.0";
+    public final static String BOT_NAME = "RubiconBot";
+    public final static String BOT_VERSION = "0.2.4";
     public final static String BOT_WEBSITE = "https://rubicon.fun";
-    public final static String BOT_GITHUB = "https://github.com/Rubicon-Bot/RubiCon";
+    public final static String BOT_GITHUB = "https://github.com/Rubicon-Bot/Rubicon";
+    public final static String COMMUNITY_SERVER = "381419503164325900";
+    public final static String PREMIUM_ROLE = "382160159339970560";
     public final static String CONFIG_FILE = "config.json";
-<<<<<<< HEAD:src/main/java/de/rubicon/util/Info.java
-    public final static String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user"};
-=======
-    public final static String EMBED_FOOTER = "© 2017 Rubicon Dev Team";
-    public final static String ICON_URL = "https://images-ext-2.discordapp.net/external/Xae9oFQTIRhV7V21twWufcxtdcxhmW6NFNatN8cyxz8/https/cdn.discordapp.com/icons/380415148545802250/579ee17b8de4d027c98853606567d760.jpg?width=72&height=72";
-    public final static String BITLY_TOKEN = cfg.getString("bitlytoken");
+    public final static String BITLY_TOKEN = RubiconBot.getConfiguration().getString("bitlytoken");
+    public final static String DBL_TOKEN = RubiconBot.getConfiguration().getString("dbl_token");
+    public final static String GIPHY_TOKEN = RubiconBot.getConfiguration().getString("gip_token");
+    public final static String LUCSOFT_TOKEN = RubiconBot.getConfiguration().getString("lucsoft_token");
+    public final static String GOOGLE_TOKEN = RubiconBot.getConfiguration().getString("google_token");
+    public static final String MUSIXMATCH_KEY = RubiconBot.getConfiguration().getString("musixmatch_key");
+    public static final String GITHUB_TOKEN = RubiconBot.getConfiguration().getString("git_token");
     public static Date lastRestart;
 
->>>>>>> foryasee2:src/main/java/fun/rubicon/util/Info.java
-    public final static User[] BOT_AUTHORS = {
-            DiscordCore.getJDA().getUserById(227817074976751616L), //ForYaSee
-            DiscordCore.getJDA().getUserById(153507094933274624L), //Lee
-            DiscordCore.getJDA().getUserById(318773753796624394L), //Scryptex
-            DiscordCore.getJDA().getUserById(138014719582797824L), //Eiskeks
-            DiscordCore.getJDA().getUserById(264048760580079616L), //Schlaubi
-            DiscordCore.getJDA().getUserById(148905646715043841L), //Robert
-            DiscordCore.getJDA().getUserById(224528662710452224L) //ForMoJa
+    /**
+     * Bot author long ids.
+     */
+    public final static Long[] BOT_AUTHOR_IDS = {
+            227817074976751616L, // ForYaSee
+            153507094933274624L, // Lee
+            138014719582797824L, // Eiskeks
+            264048760580079616L, // Schlaubi
+            137253345336229889L, // lucsoft
+            137263174675070976L  // tr808axm
     };
+
+    public final static Long[] COMMUNITY_STAFF_TEAM = {
+            362270177712275491L, //Skidder
+            336415827773358081L, //SLIN
+            240797338430341120L, //Pilz
+            235395943619493888L //ls13game
+    };
+
     /* MySQL login */
-    public final static String MYSQL_HOST = cfg.getString("mysql_host");
-    public final static String MYSQL_PORT = cfg.getString("mysql_port");
-    public final static String MYSQL_USER = cfg.getString("mysql_user");
-    public final static String MYSQL_PASSWORD = cfg.getString("mysql_password");
-    public final static String MYSQL_DATABASE = cfg.getString("mysql_database");
-
-<<<<<<< HEAD:src/main/java/de/rubicon/util/Info.java
-    //TODO Namen richtig?
-    public static void init() {
-        Configuration cfg = Main.getConfiguration();
-        for (String configKey : CONFIG_KEYS) {
-            if (!cfg.has(configKey)) {
-                String input = Setup.prompt("Please enter the the value of " + configKey);
-                cfg.set(configKey, input);
-            }
-
-        }
-
-    }
-<<<<<<< HEAD
+    public final static String MYSQL_HOST = RubiconBot.getConfiguration().getString("mysql_host");
+    public final static String MYSQL_PORT = RubiconBot.getConfiguration().getString("mysql_port");
+    public final static String MYSQL_USER = RubiconBot.getConfiguration().getString("mysql_user");
+    public final static String MYSQL_PASSWORD = RubiconBot.getConfiguration().getString("mysql_password");
+    public final static String MYSQL_DATABASE = RubiconBot.getConfiguration().getString("mysql_database");
 }
-=======
-=======
-
->>>>>>> foryasee2:src/main/java/fun/rubicon/util/Info.java
-
-}
->>>>>>> master

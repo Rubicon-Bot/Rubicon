@@ -1,62 +1,55 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.core;
 
-import fun.rubicon.command.CommandHandler;
+import fun.rubicon.RubiconBot;
 import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.entities.Game;
-import java.util.stream.Collectors;
-
-/**
- * Rubicon Discord bot
- *
- * @author Yannick Seeger / ForYaSee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.core
- */
 
 public class GameAnimator {
 
     private static Thread t;
     private static boolean running = false;
-
     private static int currentGame = 0;
 
-    private static String authors(){
-        String text ="";
-        for(int i = 1; i < Info.BOT_AUTHORS.length; i++) {
-            text += Info.BOT_AUTHORS[i];
-        }
+    private static final String[] gameAnimations = {
+            Info.BOT_VERSION,
+            "rubicon.fun"
 
-        return text;
-    }
-
-    private static String[] gameAnimations = {
-            "Running on " + DiscordCore.getJDA().getGuilds().size() + " servers!",
-            "Helping " + DiscordCore.getJDA().getUsers().stream().filter(u -> u.isBot() == false).collect(Collectors.toList()).size() + " users!",
-            "JDA squad!",
-            Info.BOT_NAME + " " + Info.BOT_VERSION,
-            "Generating new features...",
-            CommandHandler.getCommands().size() + " Commands loaded",
-            "Blowing stuff up!",
     };
 
     public static synchronized void start() {
+        if (!RubiconBot.getConfiguration().has("playingStatus")) {
+            RubiconBot.getConfiguration().set("playingStatus", "0");
+        }
         if (!running) {
             t = new Thread(() -> {
                 long last = 0;
                 while (running) {
-                    if (System.currentTimeMillis() >= last + 60000) {
-                        DiscordCore.getJDA().getPresence().setGame(Game.of(gameAnimations[currentGame]));
-                        last = System.currentTimeMillis();
+                    if (System.currentTimeMillis() >= last + 30000) {
+                        if (RubiconBot.getConfiguration().has("playingStatus")) {
+                            String playStat = RubiconBot.getConfiguration().getString("playingStatus");
+                            if (!playStat.equals("0") && !playStat.equals("")) {
+                                RubiconBot.getJDA().getPresence().setGame(Game.playing(playStat));
+                                last = System.currentTimeMillis();
+                            } else {
+                                RubiconBot.getJDA().getPresence().setGame(Game.playing("rc!help | " + gameAnimations[currentGame]));
 
-                        if (currentGame == gameAnimations.length - 1)
-                            currentGame = 0;
-                        else
-                            currentGame += 1;
+                                if (currentGame == gameAnimations.length - 1)
+                                    currentGame = 0;
+                                else
+                                    currentGame += 1;
+                                last = System.currentTimeMillis();
+                            }
+                        }
                     }
                 }
             });
-            t.setName("GameAnimator Thread");
+            t.setName("GameAnimator");
             running = true;
             t.start();
         }

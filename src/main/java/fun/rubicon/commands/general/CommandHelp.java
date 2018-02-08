@@ -1,99 +1,136 @@
-package fun.rubicon.commands.general;
-
-import fun.rubicon.command.Command;
-import fun.rubicon.command.CommandCategory;
-import fun.rubicon.command.CommandHandler;
-import fun.rubicon.core.DiscordCore;
-import fun.rubicon.core.Main;
-import fun.rubicon.util.Colors;
-import fun.rubicon.util.Info;
-import fun.rubicon.util.MySQL;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-/**
- * Rubicon Discord bot
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
  *
- * @author Yannick Seeger / ForYaSee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.commands.general
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
  */
 
-public class CommandHelp extends Command {
+package fun.rubicon.commands.general;
 
-    public CommandHelp(String command, CommandCategory category) {
-        super(command, category);
+import fun.rubicon.RubiconBot;
+import fun.rubicon.command.CommandCategory;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
+import fun.rubicon.data.PermissionLevel;
+import fun.rubicon.data.PermissionRequirements;
+import fun.rubicon.data.UserPermissions;
+import fun.rubicon.util.Colors;
+import fun.rubicon.util.Info;
+import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Message;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * Handles the 'help' command which prints command description, aliases and usage.
+ *
+ * @author Yannick Seeger, tr808axm
+ */
+public class CommandHelp extends CommandHandler {
+
+    public CommandHelp() {
+        super(new String[]{"help", "usage", "?", "command", "manual", "man"}, CommandCategory.GENERAL,
+                new PermissionRequirements(PermissionLevel.EVERYONE, "command.help"),
+                "Shows the command manual.", "[command]");
     }
 
     @Override
-    protected void execute(String[] args, MessageReceivedEvent e) {
-        MySQL SQL = Main.getMySQL();
-        if (args.length == 1 && CommandHandler.getCommands().containsKey(args[0].toLowerCase())) {
-            EmbedBuilder builder = new EmbedBuilder();
-            builder.setAuthor("Help - " + CommandHandler.getCommands().get(args[0].toLowerCase()).getCommand(), null, DiscordCore.getJDA().getSelfUser().getEffectiveAvatarUrl());
-            builder.setColor(Colors.COLOR_PRIMARY);
-            builder.addField("Description", CommandHandler.getCommands().get(args[0].toLowerCase()).getDescription(), false);
-            builder.addField("Usage", SQL.getGuildValue(e.getGuild(), "prefix") + CommandHandler.getCommands().get(args[0].toLowerCase()).getUsage(), false);
-            e.getTextChannel().sendMessage(builder.build()).queue(msg -> msg.delete().queueAfter(3, TimeUnit.MINUTES));
+    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        if (parsedCommandInvocation.getArgs().length == 0) {
+            // show complete command manual
+            parsedCommandInvocation.getMessage().getTextChannel().sendMessage(new MessageBuilder().setEmbed(generateFullHelp(parsedCommandInvocation).build()).build()).queue();
+            return null;
         } else {
-            StringBuilder sbGeneral = new StringBuilder();
-            StringBuilder sbFun = new StringBuilder();
-            StringBuilder sbAdmin = new StringBuilder();
-            StringBuilder sbGuildOwner = new StringBuilder();
-            StringBuilder sbBotOwner = new StringBuilder();
-            StringBuilder sbTools = new StringBuilder();
-
-            String pref = SQL.getGuildValue(e.getGuild(), "prefix");
-
-            for (Map.Entry<String, Command> c : CommandHandler.getCommands().entrySet()) {
-                if(c.getValue().getCategory().equals(CommandCategory.GENERAL)) {
-                    sbGeneral.append(pref + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
-                } else if(c.getValue().getCategory().equals(CommandCategory.FUN)) {
-                    sbFun.append(pref + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
-                } else if(c.getValue().getCategory().equals(CommandCategory.TOOLS)) {
-                    sbTools.append(pref + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
-                } else if(c.getValue().getCategory().equals(CommandCategory.ADMIN)) {
-                    sbAdmin.append(pref + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
-                } else if(c.getValue().getCategory().equals(CommandCategory.GUILD_OWNER)) {
-                    sbGuildOwner.append(pref + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
-                } else if(c.getValue().getCategory().equals(CommandCategory.BOT_OWNER)) {
-                    sbBotOwner.append(pref + c.getValue().getCommand() + " - " + c.getValue().getDescription() + "\n");
-                }
-            }
-
-            EmbedBuilder builder = new EmbedBuilder();
-            builder.setColor(Colors.COLOR_SECONDARY);
-            builder.setAuthor(Info.BOT_NAME + " Help List", null, e.getJDA().getSelfUser().getEffectiveAvatarUrl());
-            builder.setDescription("--- Want more info? Use `" + pref + "help <command>` ---");
-            builder.addField("General", sbGeneral.toString(), false);
-            builder.addField("Fun", sbFun.toString(), false);
-            builder.addField("Tools", sbTools.toString(), false);
-            builder.addField("Admin", sbAdmin.toString(), false);
-            builder.addField("Server Owner", sbGuildOwner.toString(), false);
-            builder.addField("Bot Owner", sbBotOwner.toString(), false);
-
-            builder.setFooter("Loaded Commands: " + CommandHandler.getCommands().entrySet().size(), null);
-
-            e.getAuthor().openPrivateChannel().queue(ch -> ch.sendMessage(builder.build()).queue());
+            CommandHandler handler = RubiconBot.getCommandManager().getCommandHandler(parsedCommandInvocation.getArgs()[0]);
+            return handler == null
+                    // invalid command
+                    ? new MessageBuilder().setEmbed(new EmbedBuilder()
+                    .setColor(Colors.COLOR_ERROR)
+                    .setTitle(":warning: Invalid command")
+                    .setDescription("There is no command named '" + parsedCommandInvocation.getArgs()[0] + "'. Use `"
+                            + parsedCommandInvocation.getPrefix() + parsedCommandInvocation.getCommandInvocation()
+                            + "` to get a full command list.")
+                    .build()).build()
+                    // show command help for a single command
+                    : handler.createHelpMessage(Info.BOT_DEFAULT_PREFIX, parsedCommandInvocation.getArgs()[0]);
         }
     }
 
-    @Override
-    public String getDescription() {
-        return "Shows all commands in a list.";
-    }
+    private EmbedBuilder generateFullHelp(CommandManager.ParsedCommandInvocation invocation) {
+        EmbedBuilder builder = new EmbedBuilder();
+        List<CommandHandler> filteredCommandList = RubiconBot.getCommandManager().getCommandAssociations().values().stream().filter(commandHandler -> commandHandler.getCategory() != CommandCategory.BOT_OWNER).collect(Collectors.toList());
 
-    @Override
-    public String getUsage() {
-        return "help [command]";
-    }
+        ArrayList<String> alreadyAdded = new ArrayList<>();
 
-    @Override
-    public int getPermissionLevel() {
-        return 0;
+        StringBuilder listGeneral = new StringBuilder();
+        for (CommandHandler commandHandler : filteredCommandList) {
+            if (commandHandler.getCategory() == CommandCategory.GENERAL && !alreadyAdded.contains(commandHandler.getInvocationAliases()[0])) {
+                alreadyAdded.add(commandHandler.getInvocationAliases()[0]);
+                listGeneral.append("`").append(commandHandler.getInvocationAliases()[0]).append("` ");
+            }
+        }
+        StringBuilder listMusic = new StringBuilder();
+        for (CommandHandler commandHandler : filteredCommandList) {
+            if (commandHandler.getCategory() == CommandCategory.MUSIC && !alreadyAdded.contains(commandHandler.getInvocationAliases()[0])) {
+                alreadyAdded.add(commandHandler.getInvocationAliases()[0]);
+                listMusic.append("`").append(commandHandler.getInvocationAliases()[0]).append("` ");
+            }
+        }
+        StringBuilder listModeration = new StringBuilder();
+        for (CommandHandler commandHandler : filteredCommandList) {
+            if (commandHandler.getCategory() == CommandCategory.MODERATION && !alreadyAdded.contains(commandHandler.getInvocationAliases()[0])) {
+                alreadyAdded.add(commandHandler.getInvocationAliases()[0]);
+                listModeration.append("`").append(commandHandler.getInvocationAliases()[0]).append("` ");
+            }
+        }
+        StringBuilder listAdmin = new StringBuilder();
+        for (CommandHandler commandHandler : filteredCommandList) {
+            if (commandHandler.getCategory() == CommandCategory.ADMIN && !alreadyAdded.contains(commandHandler.getInvocationAliases()[0])) {
+                alreadyAdded.add(commandHandler.getInvocationAliases()[0]);
+                listAdmin.append("`").append(commandHandler.getInvocationAliases()[0]).append("` ");
+            }
+        }
+        StringBuilder listSettings = new StringBuilder();
+        for (CommandHandler commandHandler : filteredCommandList) {
+            if (commandHandler.getCategory() == CommandCategory.SETTINGS && !alreadyAdded.contains(commandHandler.getInvocationAliases()[0])) {
+                alreadyAdded.add(commandHandler.getInvocationAliases()[0]);
+                listSettings.append("`").append(commandHandler.getInvocationAliases()[0]).append("` ");
+            }
+        }
+        StringBuilder listTools = new StringBuilder();
+        for (CommandHandler commandHandler : filteredCommandList) {
+            if (commandHandler.getCategory() == CommandCategory.TOOLS && !alreadyAdded.contains(commandHandler.getInvocationAliases()[0])) {
+                alreadyAdded.add(commandHandler.getInvocationAliases()[0]);
+                listTools.append("`").append(commandHandler.getInvocationAliases()[0]).append("` ");
+            }
+        }
+        StringBuilder listFun = new StringBuilder();
+        for (CommandHandler commandHandler : filteredCommandList) {
+            if (commandHandler.getCategory() == CommandCategory.FUN && !alreadyAdded.contains(commandHandler.getInvocationAliases()[0])) {
+                alreadyAdded.add(commandHandler.getInvocationAliases()[0]);
+                listFun.append("`").append(commandHandler.getInvocationAliases()[0]).append("` ");
+            }
+        }
+
+        builder.setTitle(":information_source: Rubicon Bot command manual");
+        builder.setDescription("Use `" + invocation.getPrefix() + "help <command>` to get a more information about a command.\n" +
+                "A detailed command list is available at [rubicon.fun](https://rubicon.fun)");
+        builder.setColor(Colors.COLOR_SECONDARY);
+        builder.setFooter("Loaded a total of "
+                + new HashSet<>(RubiconBot.getCommandManager().getCommandAssociations().values()).size()
+                + " commands.", null);
+
+        //Add Categories
+        builder.addField("General", listGeneral.toString(), false);
+        builder.addField("Music", listMusic.toString(), false);
+        builder.addField("Moderation", listModeration.toString(), false);
+        builder.addField("Admin", listAdmin.toString(), false);
+        builder.addField("Settings", listSettings.toString(), false);
+        builder.addField("Tools", listTools.toString(), false);
+        builder.addField("Fun", listFun.toString(), false);
+        return builder;
     }
 }

@@ -1,70 +1,70 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.commands.tools;
 
-import fun.rubicon.command.Command;
+
 import fun.rubicon.command.CommandCategory;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
+import fun.rubicon.data.PermissionRequirements;
+import fun.rubicon.data.UserPermissions;
 import fun.rubicon.util.Colors;
-import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class CommandUserInfo extends Command{
-    public CommandUserInfo(String command, CommandCategory category) {
-        super(command, category);
+import java.time.OffsetDateTime;
+
+public class CommandUserInfo extends CommandHandler {
+
+    public CommandUserInfo() {
+        super(new String[]{"userinfo", "whois"}, CommandCategory.TOOLS, new PermissionRequirements(0, "comm"), "Returns some information about the specified user", "[@User]");
     }
 
     @Override
-    protected void execute(String[] args, MessageReceivedEvent e) {
-        Message message = e.getMessage();
+    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        Message message = parsedCommandInvocation.getMessage();
         User info;
-        if(args.length > 0){
-            if(message.getMentionedUsers().size() > 0)
+        String[] args = parsedCommandInvocation.getArgs();
+        if (args.length > 0) {
+            if (message.getMentionedUsers().size() > 0)
                 info = message.getMentionedUsers().get(0);
             else {
-                sendUsageMessage();
-                return;
+                return createHelpMessage();
             }
         } else {
             info = message.getAuthor();
         }
 
-        Member user = e.getGuild().getMember(info);
-        StringBuilder rolesraw = new StringBuilder();
-        user.getRoles().forEach(r ->{
-            rolesraw.append(r.getName()).append(", ");
-        });
-        StringBuilder roles = new StringBuilder(rolesraw.toString());
-        roles.replace(rolesraw.lastIndexOf(","), roles.lastIndexOf(",") + 1, "" );
+        Member user = message.getGuild().getMember(info);
+        StringBuilder rawRoles = new StringBuilder();
+        user.getRoles().forEach(r -> rawRoles.append(r.getName()).append(", "));
+        StringBuilder roles = new StringBuilder(rawRoles.toString());
+        if (!user.getRoles().isEmpty())
+            roles.replace(rawRoles.lastIndexOf(","), roles.lastIndexOf(",") + 1, "");
         EmbedBuilder userinfo = new EmbedBuilder();
         userinfo.setColor(Colors.COLOR_PRIMARY);
         userinfo.setTitle("User information of " + user.getUser().getName());
-        userinfo.setFooter(Info.EMBED_FOOTER, Info.ICON_URL);
         userinfo.setThumbnail(info.getAvatarUrl());
         userinfo.addField("Nickname", user.getEffectiveName(), false);
         userinfo.addField("User id", info.getId(), false);
         userinfo.addField("Status", user.getOnlineStatus().toString().replace("_", ""), false);
-        userinfo.addField("Game", user.getGame().toString().replaceFirst("null", "-/-"), false);
-        userinfo.addField("Guild join date", user.getJoinDate().toString(), false);
+        if (user.getGame() != null)
+            userinfo.addField("Game", user.getGame().getName(), false);
+        userinfo.addField("Guild join date", formatDate(user.getJoinDate()), false);
         userinfo.addField("Roles", "`" + roles.toString() + "`", false);
-        userinfo.addField("Discord join date", info.getCreationTime().toString(), false);
-        userinfo.addField("Avatar url", info.getAvatarUrl(), false);
-        e.getChannel().sendMessage(userinfo.build()).queue();
+        userinfo.addField("Discord join date", formatDate(info.getCreationTime()), false);
+        userinfo.addField("Avatar url", (info.getAvatarUrl() != null) ? info.getAvatarUrl() : "https://rubicon.fun", true);
+        return new MessageBuilder().setEmbed(userinfo.build()).build();
     }
 
-    @Override
-    public String getDescription() {
-        return "Returns some information about the specified user";
-    }
-
-    @Override
-    public String getUsage() {
-        return "::userinfo [@User]";
-    }
-
-    @Override
-    public int getPermissionLevel() {
-        return 0;
+    public String formatDate(OffsetDateTime date) {
+        return date.getMonthValue() + "/" + date.getDayOfMonth() + "/" + date.getYear();
     }
 }

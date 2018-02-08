@@ -12,10 +12,10 @@ public class Setup {
      * @copyright Rubicon Dev Team 2017
      * @license MIT License <http://rubicon.fun/license>
      * @package fun.rubicon.util
-     *
      */
 
     private static final BufferedReader sys_in;
+
     static {
         InputStreamReader isr = new InputStreamReader(System.in);
         sys_in = new BufferedReader(isr);
@@ -24,11 +24,11 @@ public class Setup {
     public static String prompt(String req) {
         String token;
 
-        /* prompt for token */
-        System.out.println("Enter you'r "+req+":");
+        // prompt for token
+        System.out.println("Enter your " + req + ":");
 
         try {
-            /* read and trim line */
+            // read and trim line
             String line = sys_in.readLine();
             token = line.trim();
 
@@ -36,7 +36,7 @@ public class Setup {
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
-        /* RAGEQUIT */
+        // RAGEQUIT
         System.out.println("Exiting");
         Runtime.getRuntime().exit(1);
         return null;

@@ -1,38 +1,46 @@
+/*
+ * Copyright (c) 2017 Rubicon Bot Development Team
+ *
+ * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.listener;
 
-import fun.rubicon.core.DiscordCore;
+import fun.rubicon.RubiconBot;
 import fun.rubicon.util.Colors;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
+import java.util.concurrent.TimeUnit;
 
 /**
- * Rubicon Discord bot
- *
  * @author Leon Kappes / Lee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package listener
  */
+public class SelfMentionListener extends ListenerAdapter {
 
-public class SelfMentionListener extends ListenerAdapter{
+    private final String[] RUBICON_EMOJIS = {"\uD83C\uDDF7", "\uD83C\uDDFA", "\uD83C\uDDE7", "\uD83C\uDDEE", "\uD83C\uDDE8", "\uD83C\uDDF4", "\uD83C\uDDF3"};
 
-
-
-    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-        if (event.getMessage().getMentionedUsers().contains(DiscordCore.getJDA().getSelfUser())){
-            event.getChannel().sendMessage(
+    public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
+        if (e.getMessage().getMentionedUsers().contains(e.getJDA().getSelfUser())) {
+            Message message = e.getChannel().sendMessage(
                     new EmbedBuilder()
-                    .setColor(Colors.COLOR_SECONDARY)
-                    .setAuthor(DiscordCore.getJDA().getSelfUser().getName(),null, DiscordCore.getJDA().getSelfUser().getAvatarUrl())
-                    .setDescription("Hey, I am Rubicon and here to help **you**!")
-                    .addField("**Prefix**","-`rc!`",false)
-                    .addField("**Invite**", "[My Invite](https://discordapp.com/oauth2/authorize?client_id=380713705073147915&scope=bot&permissions=2146958591)", false)
-                    .build()
-            ).queue();
+                            .setColor(Colors.COLOR_SECONDARY)
+                            .setAuthor(e.getJDA().getSelfUser().getName(), null, e.getJDA().getSelfUser().getAvatarUrl())
+                            .setDescription("Hey, I am Rubicon and here to help **you**!")
+                            .addField("**Prefix**", "`" + RubiconBot.getMySQL().getGuildValue(e.getGuild(), "prefix") + "`", false)
+                            .addField("**Documentation**", "[rubicon.fun](https://rubicon.fun)", false)
+                            .build()
+            ).complete();
+            //Warning: Useless code!!
+            //Inspired by Lukass27s's (Lukass27s#6595) NerdBot
+            for (String emoji : RUBICON_EMOJIS) {
+                message.addReaction(emoji).queue();
+            }
+            message.delete().queueAfter(5, TimeUnit.MINUTES);
+            e.getMessage().delete().queue();
         }
-
     }
 
 }
