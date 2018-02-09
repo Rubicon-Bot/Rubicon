@@ -25,7 +25,9 @@ public class Setup {
         String token;
 
         // prompt for token
-        System.out.println("Enter you'r " + req + ":");
+
+        System.out.println("Enter your " + req + ":");
+
 
         try {
             // read and trim line
