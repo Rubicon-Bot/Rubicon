@@ -22,13 +22,14 @@ import net.dv8tion.jda.core.entities.User;
 
 /**
  * Handles the 'info' command.
+ *
  * @author Yannick Seeger / ForYaSee
  */
 public class CommandInfo extends CommandHandler {
 
     private String[] arrSupporter = {"Greg"};
 
-    public CommandInfo(){
+    public CommandInfo() {
         super(new String[]{"Info", "inf", "version"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.info"), "Shows some information about the bot!", "");
     }
 

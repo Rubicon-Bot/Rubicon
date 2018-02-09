@@ -16,6 +16,7 @@ import net.dv8tion.jda.core.entities.Message;
 
 /**
  * Handles the 'rockpaperscissor' command.
+ *
  * @author Yannick Seeger / ForYaSee
  */
 public class CommandRockPaperScissor extends CommandHandler {

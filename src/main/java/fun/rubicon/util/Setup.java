@@ -12,10 +12,10 @@ public class Setup {
      * @copyright Rubicon Dev Team 2017
      * @license MIT License <http://rubicon.fun/license>
      * @package fun.rubicon.util
-     *
      */
 
     private static final BufferedReader sys_in;
+
     static {
         InputStreamReader isr = new InputStreamReader(System.in);
         sys_in = new BufferedReader(isr);
@@ -25,7 +25,8 @@ public class Setup {
         String token;
 
         // prompt for token
-        System.out.println("Enter you'r "+req+":");
+        System.out.println("Enter your " + req + ":");
+
 
         try {
             // read and trim line

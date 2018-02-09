@@ -50,9 +50,9 @@ public class CommandLog extends CommandHandler {
         } else if (args.length == 2) {
             switch (args[0]) {
                 case "channel":
-                    if(parsedCommandInvocation.getMessage().getMentionedChannels().size() != 1)
+                    if (parsedCommandInvocation.getMessage().getMentionedChannels().size() != 1)
                         return EmbedUtil.message(EmbedUtil.error("Error!", "You have to mention `one` channel."));
-                   serverLogSQL.set("channel", parsedCommandInvocation.getMessage().getMentionedChannels().get(0).getId());
+                    serverLogSQL.set("channel", parsedCommandInvocation.getMessage().getMentionedChannels().get(0).getId());
                     return EmbedUtil.message(EmbedUtil.success("Success!", "Successfully set logchannel to `" + parsedCommandInvocation.getMessage().getMentionedChannels().get(0).getName() + "`"));
                 case "join":
                     return EmbedUtil.message(handleEventUpdate(LogEventKeys.JOIN, args[1]));
@@ -72,10 +72,10 @@ public class CommandLog extends CommandHandler {
     }
 
     private EmbedBuilder handleEventUpdate(ServerLogHandler.LogEventKeys event, String option) {
-        if(option.equalsIgnoreCase("true") || option.equalsIgnoreCase("enable")) {
+        if (option.equalsIgnoreCase("true") || option.equalsIgnoreCase("enable")) {
             serverLogSQL.set(event.getKey(), "true");
             return EmbedUtil.success("Success!", "Successfully **enabled** " + event.getDisplayname().toLowerCase() + " logging");
-        } else if(option.equalsIgnoreCase("false") || option.equalsIgnoreCase("disable")) {
+        } else if (option.equalsIgnoreCase("false") || option.equalsIgnoreCase("disable")) {
             serverLogSQL.set(event.getKey(), "false");
             return EmbedUtil.success("Success!", "Successfully **disabled** " + event.getDisplayname().toLowerCase() + " logging");
         } else

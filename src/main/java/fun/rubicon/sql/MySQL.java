@@ -9,7 +9,9 @@ package fun.rubicon.sql;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.admin.CommandVerification;
 import fun.rubicon.util.Logger;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -384,7 +386,7 @@ public class MySQL {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM `guilds` WHERE `serverid` = ?");
             ps.setString(1, guild.getId());
             ps.execute();
-            PreparedStatement ps2 = connection.prepareStatement("DELETE FROM `members` WHERE `guildid` = ?");
+            PreparedStatement ps2 = connection.prepareStatement("DELETE FROM `members` WHERE `serverid` = ?");
             ps2.setString(1, guild.getId());
             ps2.execute();
         } catch (SQLException e) {
@@ -398,7 +400,7 @@ public class MySQL {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM `guilds` WHERE `serverid` = ?");
             ps.setString(1, serverID);
             ps.execute();
-            PreparedStatement ps2 = connection.prepareStatement("DELETE FROM `members` WHERE `guildid` = ?");
+            PreparedStatement ps2 = connection.prepareStatement("DELETE FROM `members` WHERE `serverid` = ?");
             ps2.setString(1, serverID);
             ps2.execute();
         } catch (SQLException e) {

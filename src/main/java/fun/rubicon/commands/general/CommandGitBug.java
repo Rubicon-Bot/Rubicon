@@ -1,10 +1,5 @@
-/*
- * Copyright (c) 2017 Rubicon Bot Development Team
- *
- * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
- */
-
 package fun.rubicon.commands.general;
+
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
@@ -30,33 +25,33 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
+
 /**
- * Handles the 'feedback' command which sends a feedback message to the developer server.
+ * Rubicon Discord bot
+ *
+ * @author Leon Kappes / Lee
+ * @copyright Rubicon Dev Team 2018
+ * @license MIT License <http://rubicon.fun/license>
+ * @package fun.rubicon.commands.general
  */
-public class CommandFeedback extends CommandHandler {
-    private static HashMap<TextChannel, FeedbackTitle> channelMsg = new HashMap<>();
+public class CommandGitBug extends CommandHandler {
+    private static HashMap<TextChannel, Titel> channelMsg = new HashMap<>();
     private static Timer timer = new Timer();
 
-    /**
-     * Constructs this CommandHandler.
-     */
-    public CommandFeedback() {
-        super(new String[]{"feedback", "submitidea", "submit-idea", "feature"}, CommandCategory.GENERAL,
-                new PermissionRequirements(PermissionLevel.EVERYONE, "command.feedback"),
-                "Sends a feedback message to the developers.", "<Feedback title>");
+    public CommandGitBug() {
+        super(new String[]{"bug", "bugreport"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.gitbug"), "Report an Bug", "<Bug title>");
     }
 
-
-    private static String Header = "<p><strong>Feedback</strong><br><br><strong>Feedback report by ";
+    private static String Header = "<p><strong>Bugreport</strong><br><br><strong>Bug report by ";
     private static String Sufix = " </strong><br><br><strong>Description</strong><br><br></p>";
 
-    @Override
-    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions permissions) {
-        String title = parsedCommandInvocation.getMessage().getContentDisplay().replace(parsedCommandInvocation.getPrefix() + parsedCommandInvocation.getCommandInvocation(), "");
-        FeedbackTitle tite1 = new FeedbackTitle(title, parsedCommandInvocation.getAuthor(), parsedCommandInvocation.getTextChannel(), parsedCommandInvocation.getMessage().getContentDisplay());
-        channelMsg.put(parsedCommandInvocation.getTextChannel(), tite1);
-        SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), new EmbedBuilder().setTitle("Set Feedback Description").setDescription("Please write a short Description about the Feedback in this Channel").setFooter("Will abort in 30sec.", null).build(), 30);
 
+    @Override
+    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        String title = parsedCommandInvocation.getMessage().getContentDisplay().replace(parsedCommandInvocation.getPrefix() + parsedCommandInvocation.getCommandInvocation(), "");
+        Titel tite1 = new Titel(title, parsedCommandInvocation.getAuthor(), parsedCommandInvocation.getTextChannel(), parsedCommandInvocation.getMessage().getContentDisplay());
+        channelMsg.put(parsedCommandInvocation.getTextChannel(), tite1);
+        SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), new EmbedBuilder().setTitle("Set Bug Description").setDescription("Please write a short Description about the Bug in this Channel").setFooter("Will abort in 30sec.", null).build(), 30);
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -73,7 +68,7 @@ public class CommandFeedback extends CommandHandler {
     public static void handle(MessageReceivedEvent event) {
         if (!channelMsg.containsKey(event.getTextChannel()))
             return;
-        FeedbackTitle titel = channelMsg.get(event.getTextChannel());
+        Titel titel = channelMsg.get(event.getTextChannel());
         if (event.getMessage().getContentDisplay().equals(titel.getMessage()))
             return;
         if (event.getAuthor().equals(RubiconBot.getJDA().getSelfUser()))
@@ -84,25 +79,24 @@ public class CommandFeedback extends CommandHandler {
         try {
             GitHub gitHub = GitHub.connectUsingOAuth(Info.GITHUB_TOKEN);
             GHRepository repository = gitHub.getOrganization("Rubicon-Bot").getRepository("Rubicon");
-            GHIssue Issue = repository.createIssue(titel.getTitle()).body(Header + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + Sufix + event.getMessage().getContentDisplay()).label("Enhancement").label("Up for grabs").create();
+            GHIssue Issue = repository.createIssue(titel.getTitle()).body(Header + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + Sufix + event.getMessage().getContentDisplay()).label("Bug").label("Requires Testing").create();
             channelMsg.remove(event.getTextChannel());
             event.getMessage().delete().queue();
-            SafeMessage.sendMessage(event.getTextChannel(), new EmbedBuilder().setTitle("Feedback successfully send!").setDescription("Feedback is available at: " + Issue.getHtmlUrl()).build(), 20);
+            SafeMessage.sendMessage(event.getTextChannel(), new EmbedBuilder().setTitle("Bug successfully send!").setDescription("Bug is available at: " + Issue.getHtmlUrl()).build(), 20);
             timer.cancel();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-
-    private class FeedbackTitle {
+    private class Titel {
         private final String title;
         private final User author;
         private final TextChannel channel;
         private final String message;
 
 
-        private FeedbackTitle(String title, User author, TextChannel channel, String message) {
+        private Titel(String title, User author, TextChannel channel, String message) {
             this.title = title;
             this.author = author;
             this.channel = channel;
@@ -125,5 +119,6 @@ public class CommandFeedback extends CommandHandler {
             return channel;
         }
     }
+
 }
 

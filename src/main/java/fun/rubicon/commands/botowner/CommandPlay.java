@@ -29,10 +29,10 @@ public class CommandPlay extends CommandHandler {
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         Configuration configuration = RubiconBot.getConfiguration();
         String configKey = "playingStatus";
-        if(!configuration.has(configKey)) {
+        if (!configuration.has(configKey)) {
             configuration.set(configKey, "0");
         }
-        if(parsedCommandInvocation.getArgs().length == 0) {
+        if (parsedCommandInvocation.getArgs().length == 0) {
             configuration.set(configKey, "0");
             return null;
         }

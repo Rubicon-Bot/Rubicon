@@ -3,7 +3,6 @@ package fun.rubicon.util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-// import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -11,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+// import org.apache.commons.io.IOUtils;
 
 public class Configuration {
     /**

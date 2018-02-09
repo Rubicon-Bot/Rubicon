@@ -8,7 +8,6 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,7 +18,8 @@ public class VerificationUserHandler {
 
     public static HashMap<Member, VerifyUser> users = new HashMap<>();
     static Connection connection = MySQL.getConnection();
-    public static class VerifyUser{
+
+    public static class VerifyUser {
         private final long guildid;
         private final long userid;
         private final long messageid;
@@ -30,7 +30,7 @@ public class VerificationUserHandler {
             }
         };
 
-        public VerifyUser(Member member, Message message){
+        public VerifyUser(Member member, Message message) {
             this.guildid = member.getGuild().getIdLong();
             this.userid = member.getUser().getIdLong();
             this.messageid = message.getIdLong();
@@ -40,35 +40,33 @@ public class VerificationUserHandler {
             CommandVerification.users.put(message, member.getUser());
         }
 
-        public static VerifyUser fromMember(Member member){
+        public static VerifyUser fromMember(Member member) {
             return users.get(member);
         }
 
 
-
-
-        private boolean save(){
-            try{
+        private boolean save() {
+            try {
                 PreparedStatement ps = connection.prepareStatement("INSERT INTO `verifyusers` (`guildid`, `userid`, `messageid`) VALUES (?,?,?)");
                 ps.setLong(1, this.guildid);
                 ps.setLong(2, this.userid);
                 ps.setLong(3, this.messageid);
                 ps.execute();
                 return true;
-            } catch (SQLException e){
+            } catch (SQLException e) {
                 Logger.error(e);
                 return false;
             }
         }
 
-        public boolean remove(){
-            try{
+        public boolean remove() {
+            try {
                 PreparedStatement ps = connection.prepareStatement("DELETE FROM `verifyusers` WHERE `userid` =? AND guildid =?");
                 ps.setLong(1, this.userid);
                 ps.setLong(2, this.guildid);
                 ps.execute();
                 return true;
-            } catch (SQLException e){
+            } catch (SQLException e) {
                 Logger.error(e);
                 return false;
             }
@@ -76,25 +74,20 @@ public class VerificationUserHandler {
 
     }
 
-    public static void loadVerifyKicks() {
+    public static void loadVerifyUser() {
         try {
             PreparedStatement selectStatement = MySQL.getConnection()
                     .prepareStatement("SELECT * FROM `verifyusers` ");
             ResultSet channelResult = selectStatement.executeQuery();
             while (channelResult.next()) {
-                Guild guild = RubiconBot.getJDA().getGuildById(channelResult.getLong("guildid"));
+                Guild guild = RubiconBot.getJDA().getGuildById(channelResult.getString("guildid"));
                 Member member = guild.getMemberById(channelResult.getLong("userid"));
-                Message message = guild.getTextChannelById(RubiconBot.getMySQL().getVerificationValue(guild, "channelid")).getMessageById(channelResult.getLong("messageid")).complete();
+                Message message = guild.getTextChannelById(RubiconBot.getMySQL().getVerificationValue(guild, "channelid")).getMessageById(channelResult.getString("messageid")).complete();
                 new VerifyUser(member, message);
             }
-
-
         } catch (SQLException e) {
-            Logger.error("Could not load verifykicks, disabling verification feature");
+            Logger.error("Could not load verifykicks!");
             Logger.error(e);
         }
-        Logger.info("Loaded verifyusers");
-        System.out.println(CommandVerification.users.toString());
-
     }
 }

@@ -21,10 +21,10 @@ import java.util.Date;
  * @license MIT License <http://rubicon.fun/license>
  * @package fun.rubicon.commands.general
  */
-public class CommandUptime extends CommandHandler{
+public class CommandUptime extends CommandHandler {
 
     public CommandUptime() {
-        super(new String[]{"uptime"},CommandCategory.GENERAL,new PermissionRequirements(0,"command.uptime"),"Get the Uptime of the Bot","",false);
+        super(new String[]{"uptime"}, CommandCategory.GENERAL, new PermissionRequirements(0, "command.uptime"), "Get the Uptime of the Bot", "", false);
     }
 
     private String getTime(Date date, String pattern) {

@@ -20,6 +20,7 @@ import net.dv8tion.jda.core.entities.PrivateChannel;
 
 /**
  * Handles the 'ban' command.
+ *
  * @author Michael Rittmeister / Schlaubi
  */
 public class CommandBan extends CommandHandler {

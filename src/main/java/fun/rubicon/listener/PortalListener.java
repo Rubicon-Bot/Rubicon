@@ -7,9 +7,6 @@
 package fun.rubicon.listener;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.util.EmbedUtil;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.Webhook;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;

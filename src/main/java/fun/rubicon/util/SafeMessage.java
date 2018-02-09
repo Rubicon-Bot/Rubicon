@@ -43,6 +43,11 @@ public class SafeMessage {
             textChannel.sendMessage(build).queue();
     }
 
+    public static void sendMessage(TextChannel textChannel, MessageEmbed build, int deleteTime) {
+        if (hasPermissions(textChannel))
+            textChannel.sendMessage(build).queue(msg -> msg.delete().queueAfter(deleteTime, TimeUnit.SECONDS));
+    }
+
     public static Message sendMessageBlocking(TextChannel textChannel, String message) {
         if (hasPermissions(textChannel))
             return textChannel.sendMessage(message).complete();

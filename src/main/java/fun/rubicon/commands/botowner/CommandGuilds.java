@@ -50,7 +50,7 @@ public class CommandGuilds extends CommandHandler {
         int sideNumbAll;
         if (RubiconBot.getJDA().getGuilds().size() >= 20) {
             for (Guild guild : guild_sublist) {
-                runningOnServers.append("`\t " + (((SideNumbInput-1) *20) + count_server) + ". ").append(guild.getName()).append("(").append(guild.getId()).append(")`\n");
+                runningOnServers.append("`\t " + (((SideNumbInput - 1) * 20) + count_server) + ". ").append(guild.getName()).append("(").append(guild.getId()).append(")`\n");
                 count_server++;
             }
             sideNumbAll = RubiconBot.getJDA().getGuilds().size() / 20;

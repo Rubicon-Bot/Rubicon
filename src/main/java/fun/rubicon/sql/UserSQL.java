@@ -32,6 +32,7 @@ public class UserSQL implements DatabaseGenerator {
 
     /**
      * User fromUser(User user) or fromMember(Member member) method
+     *
      * @see UserSQL
      */
     @Deprecated
@@ -43,20 +44,19 @@ public class UserSQL implements DatabaseGenerator {
         create();
     }
 
-    private UserSQL(User user, MySQL mySQL, Connection connection){
+    private UserSQL(User user, MySQL mySQL, Connection connection) {
         this.user = user;
         this.mySQL = mySQL;
         this.connection = connection;
     }
 
-    public static UserSQL fromUser(User user){
+    public static UserSQL fromUser(User user) {
         return new UserSQL(user, RubiconBot.getMySQL(), MySQL.getConnection());
     }
 
-    public static UserSQL fromMember(Member member){
+    public static UserSQL fromMember(Member member) {
         return fromUser(member.getUser());
     }
-
 
 
     //User Stuff
@@ -121,21 +121,21 @@ public class UserSQL implements DatabaseGenerator {
         }
         Date expiry = new Date(Long.parseLong(this.get("premium")));
         Date now = new Date();
-        if(expiry.before(now)){
+        if (expiry.before(now)) {
             this.set("premium", "false");
             return false;
         }
         return true;
     }
 
-    public Date getPremiumExpiryDate(){
-        if(!this.isPremium())
+    public Date getPremiumExpiryDate() {
+        if (!this.isPremium())
             return null;
         return new Date(Long.parseLong(this.get("premium")));
     }
 
-    public String formatExpiryDate(){
-        if(!this.isPremium())
+    public String formatExpiryDate() {
+        if (!this.isPremium())
             return null;
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
         return sdf.format(this.getPremiumExpiryDate());
@@ -145,11 +145,11 @@ public class UserSQL implements DatabaseGenerator {
         return RubiconBot.getJDA().getUserById(this.get("userid"));
     }
 
-    public Member getMember(Guild guild){
+    public Member getMember(Guild guild) {
         return guild.getMember(this.getUser());
     }
 
-    public MemberSQL getMemberSQL(Guild guild){
+    public MemberSQL getMemberSQL(Guild guild) {
         return MemberSQL.fromUser(this.user, guild);
     }
 

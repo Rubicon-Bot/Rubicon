@@ -17,7 +17,6 @@ public class RequestHeader {
     }
 
     /**
-     * 
      * @param key
      * @param value
      */

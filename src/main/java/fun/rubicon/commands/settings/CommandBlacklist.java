@@ -121,15 +121,15 @@ public class CommandBlacklist extends CommandHandler {
         return embed;
     }
 
-    private static MySQL unblockChannel(TextChannel channel){
+    private static MySQL unblockChannel(TextChannel channel) {
         String oldEntry = RubiconBot.getMySQL().getGuildValue(channel.getGuild(), "blacklist");
         String newEntry = oldEntry.replace("," + channel.getId(), "");
         return RubiconBot.getMySQL().updateGuildValue(channel.getGuild(), "blacklist", newEntry);
     }
 
-    public static void handleChannelDeletion(TextChannelDeleteEvent event){
+    public static void handleChannelDeletion(TextChannelDeleteEvent event) {
         TextChannel channel = event.getChannel();
-        if(RubiconBot.getMySQL().isBlacklisted(channel))
+        if (RubiconBot.getMySQL().isBlacklisted(channel))
             unblockChannel(channel);
     }
 

@@ -8,17 +8,12 @@ package fun.rubicon.listener;
 
 import fun.rubicon.sql.MemberSQL;
 import fun.rubicon.sql.UserSQL;
-import fun.rubicon.util.Colors;
-import fun.rubicon.util.Logger;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 public class MemberLevelListener extends ListenerAdapter {
 
