@@ -28,7 +28,7 @@ public class MySQL {
 
     /**
      * @return MySQL connection
-     * Use MySQL.getConnection instead
+     * Use MySQL.getCon() instead
      */
     @Deprecated
     public static Connection getConnection() {
