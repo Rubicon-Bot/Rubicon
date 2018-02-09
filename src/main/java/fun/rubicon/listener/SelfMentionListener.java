@@ -9,6 +9,7 @@ package fun.rubicon.listener;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.util.Colors;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -24,6 +25,7 @@ public class SelfMentionListener extends ListenerAdapter {
 
     public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
         if (e.getMessage().getMentionedUsers().contains(e.getJDA().getSelfUser())) {
+            if(!e.getMessage().getContentDisplay().replaceFirst("@", "").equals(e.getGuild().getSelfMember().getEffectiveName())) return;
             Message message = e.getChannel().sendMessage(
                     new EmbedBuilder()
                             .setColor(Colors.COLOR_SECONDARY)
@@ -38,6 +40,7 @@ public class SelfMentionListener extends ListenerAdapter {
             for (String emoji : RUBICON_EMOJIS) {
                 message.addReaction(emoji).queue();
             }
+            if(!e.getGuild().getSelfMember().getPermissions(e.getChannel()).contains(Permission.MESSAGE_MANAGE)) return; // Do not try to delete message when bot is not allowed to
             message.delete().queueAfter(5, TimeUnit.MINUTES);
             e.getMessage().delete().queue();
         }
