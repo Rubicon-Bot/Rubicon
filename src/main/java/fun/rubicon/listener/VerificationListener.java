@@ -64,6 +64,8 @@ public class VerificationListener extends ListenerAdapter {
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         if (!RubiconBot.getMySQL().verificationEnabled(event.getGuild())) return;
+        if (event.getUser().isBot())
+            return;
         TextChannel channel = event.getGuild().getTextChannelById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "channelid"));
         Message message = SafeMessage.sendMessageBlocking(channel, RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "text").replace("%user%", event.getUser().getAsMention()).replace("%guild%", event.getGuild().getName()));
         CommandVerification.users.put(message, event.getUser());
