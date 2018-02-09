@@ -9,6 +9,7 @@ package fun.rubicon.command;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.music.MusicManager;
 import fun.rubicon.util.*;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -102,6 +103,7 @@ public class CommandManager extends ListenerAdapter {
 
         // delete invocation message
         if (parsedCommandInvocation.getGuild() != null) {
+            if(!parsedCommandInvocation.getGuild().getSelfMember().getPermissions(parsedCommandInvocation.getTextChannel()).contains(Permission.MESSAGE_MANAGE)) return; // Do not try to delete message when bot is not allowed to
             parsedCommandInvocation.getMessage().delete().queue(null, msg -> {
             }); // suppress failure
         }
