@@ -28,7 +28,9 @@ public class MySQL {
 
     /**
      * @return MySQL connection
+     * Use MySQL.getCon() instead
      */
+    @Deprecated
     public static Connection getConnection() {
         return connection;
     }
@@ -73,6 +75,8 @@ public class MySQL {
         }
         return this;
     }
+
+    public Connection getCon(){ return this.connection; }
 
     /**
      * @param table
@@ -496,5 +500,9 @@ public class MySQL {
 
         }
         return false;
+    }
+
+    public PreparedStatement preparedStatement(String sql) throws SQLException {
+        return this.connection.prepareStatement(sql);
     }
 }
