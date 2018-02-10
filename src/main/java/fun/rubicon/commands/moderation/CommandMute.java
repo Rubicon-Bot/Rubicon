@@ -56,7 +56,7 @@ public class CommandMute extends CommandHandler {
         try {
             muted = guild.getController().createRole().setName("rubicon-muted").complete();
         } catch (InsufficientPermissionException | HierarchyException e) {
-            guild.getDefaultChannel().sendMessage("ERROR: Please give me MANAGE_ROLE permission to use mute command and move the Rubicon Role to the top");
+            guild.getDefaultChannel().sendMessage("ERROR: Please give me `MANAGE_ROLE` permission to use mute command and move the Rubicon Role to the top");
         }
         Role finalMuted = muted;
         guild.getTextChannels().forEach(c -> {
@@ -72,7 +72,13 @@ public class CommandMute extends CommandHandler {
         if (!event.getGuild().getSelfMember().canInteract(muted))
             event.getGuild().getOwner().getUser().openPrivateChannel().complete().sendMessage("I am unable to interact with `rubicon-muted` please give me access").queue();
         TextChannel channel = event.getChannel();
-        PermissionOverride override = channel.createPermissionOverride(muted).complete();
+        PermissionOverride override;
+        try {
+            override = channel.createPermissionOverride(muted).complete();
+        } catch (InsufficientPermissionException ex){
+            event.getGuild().getOwner().getUser().openPrivateChannel().complete().sendMessage("I am unable to handle creation of new channel ` " + event.getChannel().getName() + "`! Please give me `" + ex.getPermission().toString() + "` in order to use mute command").queue();
+            return;
+        }
         if (override.getDenied().contains(Permission.MESSAGE_WRITE)) return;
         override.getManager().deny(Permission.MESSAGE_WRITE).queue();
     }
