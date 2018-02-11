@@ -38,8 +38,10 @@ public class CommandKick extends CommandHandler {
         if (!msg.getGuild().getSelfMember().canInteract(target)) {
             return new MessageBuilder().setEmbed(EmbedUtil.error("No permissions", "I can't kick this user because his role is higher then my role.").build()).build();
         } else {
-            PrivateChannel channel = target.getUser().openPrivateChannel().complete();
-            channel.sendMessage(EmbedUtil.success("Kicked", "You got kicked").build()).queue();
+            if(!target.getUser().isBot()) {
+                PrivateChannel channel = target.getUser().openPrivateChannel().complete();
+                channel.sendMessage(EmbedUtil.success("Kicked", "You got kicked").build()).queue();
+            }
             msg.getGuild().getController().kick(target).queue();
 
 
