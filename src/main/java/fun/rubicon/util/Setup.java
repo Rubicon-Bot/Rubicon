@@ -25,7 +25,6 @@ public class Setup {
         String token;
 
         // prompt for token
-
         System.out.println("Enter your " + req + ":");
 
 
