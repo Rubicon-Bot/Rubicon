@@ -26,7 +26,7 @@ public class CommandGlobalBlacklist extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        if (parsedCommandInvocation.getArgs().length == 2) {
+        if (parsedCommandInvocation.getArgs().length == 1) {
             if (parsedCommandInvocation.getMessage().getMentionedUsers().size() == 1) {
                 switch (parsedCommandInvocation.getArgs()[0]) {
                     case "add":
