@@ -264,6 +264,7 @@ public class RubiconBot {
                 new CommandPrefix(),
                 new CommandWelcomeChannel(),
                 new CommandWhitelist(),
+                new CommandBlacklist(),
                 new CommandLeaveMessage(),
                 new CommandLog(),
                 new CommandLevelMessage()
