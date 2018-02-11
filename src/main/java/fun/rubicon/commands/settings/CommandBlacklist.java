@@ -22,11 +22,7 @@ import java.util.List;
 
 public class CommandBlacklist extends CommandHandler{
     public CommandBlacklist() {
-<<<<<<< HEAD
-        super(new String[] {"blacklist", "bl"}, CommandCategory.SETTINGS, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.blacklist"), "Easily blacklist channels from command usage", "blacklist <add/remove/list> <#Channel>", false);
-=======
         super(new String[] {"blacklist", "bl"}, CommandCategory.SETTINGS, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.blacklist"), "Easily blacklist channels from command usage", " <add/remove/list> <#Channel>", false);
->>>>>>> schlaubi_dev
     }
 
     @Override
@@ -64,11 +60,8 @@ public class CommandBlacklist extends CommandHandler{
 
     private void executeRemove(String[] args, Member member, Guild guild, TextChannel textChannel, Message message) {
         GuildSQL sql = GuildSQL.fromGuild(guild);
-<<<<<<< HEAD
-        if(message.getMentionedChannels().isEmpty()){ SafeMessage.sendMessage(textChannel, EmbedUtil.error("Unknown usage", "Please use `rc!whitelist add <#Channel>`").build(), 7); return; }
-=======
         if(message.getMentionedChannels().isEmpty()){ SafeMessage.sendMessage(textChannel, EmbedUtil.error("Unknown usage", "Please use `rc!blacklist add <#Channel>`").build(), 7); return; }
->>>>>>> schlaubi_dev
+
         TextChannel channel = message.getMentionedChannels().get(0);
         if(!sql.isBlacklisted(channel)){ SafeMessage.sendMessage(textChannel, EmbedUtil.info("Not blacklisted", "This channel is not blacklisted").build()); return; }
         String oldEntry = RubiconBot.getMySQL().getGuildValue(guild, "blacklist");
