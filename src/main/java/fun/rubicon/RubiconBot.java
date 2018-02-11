@@ -236,8 +236,8 @@ public class RubiconBot {
                 new CommandGiphy(),
                 new CommandVideo(),
                 new CommandUrban(),
-                new CommandJoke()
-                //new CommandOWStats() TODO:Warten bis die API wieder geht aber sonst fertig
+                new CommandJoke(),
+                new CommandOWStats()
         );
         // general commands package
         commandManager.registerCommandHandlers(
