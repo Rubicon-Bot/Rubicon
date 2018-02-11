@@ -10,6 +10,7 @@ import fun.rubicon.command.CommandManager;
 import fun.rubicon.data.PermissionLevel;
 import fun.rubicon.data.PermissionRequirements;
 import fun.rubicon.data.UserPermissions;
+import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -48,7 +49,7 @@ public class CommandOWStats extends CommandHandler {
 
             EmbedBuilder builder = new EmbedBuilder()
                     .setAuthor((String)root.get("name"),null,(String)root.get("icon"))
-                    .setDescription("**Quickplay:**\n    - KD :"+((JSONObject)quick.get("game_stats")).get("kpd")+"\n    - Won Games :"+((JSONObject)quick.get("overall_stats")).get("wins")+"\n    - Played Games :"+((JSONObject)quick.get("overall_stats")).get("games")+"**Ranked:**\n    - KD :"+((JSONObject)ranked.get("game_stats")).get("kpd")+"\n    - Won Games :"+((JSONObject)ranked.get("overall_stats")).get("wins")+"\n    - Played Games :"+((JSONObject)ranked.get("overall_stats")).get("games"));
+                    .setDescription("**Quickplay:**\n    - KD :"+((JSONObject)quick.get("game_stats")).get("kpd")+"\n    - Won Games :"+((JSONObject)quick.get("overall_stats")).get("wins")+"\n    - Played Games :"+((JSONObject)quick.get("overall_stats")).get("games")+"\n**Ranked:**\n    - KD :"+((JSONObject)ranked.get("game_stats")).get("kpd")+"\n    - Won Games :"+((JSONObject)ranked.get("overall_stats")).get("wins")+"\n    - Played Games :"+((JSONObject)ranked.get("overall_stats")).get("games")).setColor(Colors.COLOR_SECONDARY);
 
             SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(),builder.build(),40);
         } catch (Exception e) {
