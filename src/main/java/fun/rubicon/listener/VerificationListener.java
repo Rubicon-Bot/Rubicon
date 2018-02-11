@@ -30,6 +30,7 @@ public class VerificationListener extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+        if(event.getAuthor().isBot()) return;
         if (!CommandVerification.setups.containsKey(event.getGuild())) return;
         if (!CommandVerification.setups.get(event.getGuild()).author.equals(event.getAuthor())) return;
         CommandVerification.VerificationSetup setup = CommandVerification.setups.get(event.getGuild());
@@ -64,6 +65,7 @@ public class VerificationListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
+        if(event.getUser().isBot()) return;
         if (!RubiconBot.getMySQL().verificationEnabled(event.getGuild())) return;
         if (event.getUser().isBot())
             return;
@@ -84,6 +86,7 @@ public class VerificationListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberLeave(GuildMemberLeaveEvent event) {
+        if(event.getUser().isBot()) return;
         if (VerificationKickHandler.VerifyKick.exists(event.getMember())) {
             VerificationKickHandler.VerifyKick kick = VerificationKickHandler.VerifyKick.fromMember(event.getMember(), true);
             event.getJDA().getTextChannelById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "channelid")).getMessageById(kick.getMessageId()).complete().delete().queue();
