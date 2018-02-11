@@ -2,6 +2,7 @@ package fun.rubicon.commands.fun;
 
 import com.google.api.client.json.Json;
 import de.foryasee.httprequest.HttpRequest;
+import de.foryasee.httprequest.RequestHeader;
 import de.foryasee.httprequest.RequestResponse;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
@@ -27,29 +28,31 @@ import org.json.simple.parser.JSONParser;
 public class CommandOWStats extends CommandHandler {
 
     public CommandOWStats() {
-        super(new String[]{"overwatch","overwatchstats","owstats"}, CommandCategory.FUN, new PermissionRequirements(PermissionLevel.EVERYONE, "command.owstats"), "Get some Overwatch Stats about a Batteltag", "<platform(pc ,ps4, xbox)> <region(eu, us ,asia)> <batteltag(example: LordLee#21645)");
+        super(new String[]{"overwatch","overwatchstats","owstats"}, CommandCategory.FUN, new PermissionRequirements(PermissionLevel.EVERYONE, "command.owstats"), "Get some Overwatch Stats about a Batteltag", "<region(eu/us)> <batteltag(example: LordLee#21645)");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions){
-        if(parsedCommandInvocation.getArgs().length<3)
+        if(parsedCommandInvocation.getArgs().length<2)
             return createHelpMessage();
-
         try {
-        HttpRequest request = new HttpRequest("https://ow-api.com/v1/stats/"+ parsedCommandInvocation.getArgs()[0]+"/"+ parsedCommandInvocation.getArgs()[1]+"/"+ parsedCommandInvocation.getArgs()[2].replace("#","-")+"/profile");
+        HttpRequest request = new HttpRequest("https://owapi.net/api/v3/u/"+ parsedCommandInvocation.getArgs()[1].replace("#","-")+"/stats");
+        request.setRequestHeader(new RequestHeader().addField("User-Agent","RubiconBot"));
             RequestResponse response = request.sendGETRequest();
-            JSONObject root = (JSONObject) new JSONParser().parse(response.getResponse());
-            JSONObject quick = (JSONObject) root.get("quickPlayStats");
-            JSONObject ranked = (JSONObject) root.get("competitiveStats");
-            JSONObject quickgames = (JSONObject) quick.get("games");
-            JSONObject rankedgames = (JSONObject) ranked.get("games");
+            JSONObject reg = (JSONObject) new JSONParser().parse(response.getResponse());
+            JSONObject plat = (JSONObject) reg.get(parsedCommandInvocation.getArgs()[0]);
+            JSONObject root = (JSONObject) plat.get("stats");
+            JSONObject quick = (JSONObject) root.get("quickplay");
+            JSONObject ranked = (JSONObject) root.get("competitive");
+
 
             EmbedBuilder builder = new EmbedBuilder()
                     .setAuthor((String)root.get("name"),null,(String)root.get("icon"))
-                    .setDescription("**Quickplay:**\n    - KD :"+quick.get("soloKillsAvg")+"\n    - Won Games :"+quickgames.get("won")+"\n    - Played Games :"+quick.get("played")+"**Ranked:**\n    - KD :"+ranked.get("soloKillsAvg")+"\n    - Won Games :"+rankedgames.get("won")+"\n    - Played Games :"+rankedgames.get("played"));
+                    .setDescription("**Quickplay:**\n    - KD :"+((JSONObject)quick.get("game_stats")).get("kpd")+"\n    - Won Games :"+((JSONObject)quick.get("overall_stats")).get("wins")+"\n    - Played Games :"+((JSONObject)quick.get("overall_stats")).get("games")+"**Ranked:**\n    - KD :"+((JSONObject)ranked.get("game_stats")).get("kpd")+"\n    - Won Games :"+((JSONObject)ranked.get("overall_stats")).get("wins")+"\n    - Played Games :"+((JSONObject)ranked.get("overall_stats")).get("games"));
 
             SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(),builder.build(),40);
         } catch (Exception e) {
+            e.printStackTrace();
             SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), EmbedUtil.error("Player not found!","Is everything correct?").build(),40);
         }
 

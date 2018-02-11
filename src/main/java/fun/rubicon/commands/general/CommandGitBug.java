@@ -81,7 +81,7 @@ public class CommandGitBug extends CommandHandler {
             GHIssue Issue = repository.createIssue(titel.getTitle()).body(Header + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + Sufix + event.getMessage().getContentDisplay()).label("Bug").label("Requires Testing").create();
             channelMsg.remove(event.getTextChannel());
             event.getMessage().delete().queue();
-            SafeMessage.sendMessage(event.getTextChannel(), new EmbedBuilder().setTitle("Bug successfully send!").setDescription("Bug is available at: " + Issue.getHtmlUrl()).build(), 20);
+            SafeMessage.sendMessage(event.getTextChannel(), new EmbedBuilder().setTitle("Bug successfully send!").setDescription("Bug is available at: " + Issue.getHtmlUrl()).build());
             timer.cancel();
         } catch (IOException e) {
             e.printStackTrace();
