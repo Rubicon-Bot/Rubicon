@@ -355,11 +355,15 @@ public class MySQL {
         return this;
     }
 
+    /**
+     * @see GuildSQL
+     */
+    @Deprecated
     public MySQL createGuildServer(Guild guild) {
         try {
             if (connection.isClosed())
                 connect();
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO `guilds`(`serverid`, `channel`, `prefix`, `joinmsg`, `leavemsg`, `logchannel`, `autorole`, `portal`, `welmsg`, `autochannels`, `blacklist`,`lvlmsg`) VALUES (?, '0', 'rc!', 'Welcome %user% on %guild%', 'Bye %user%', '0', '0', 'closed', '0', '', '','1')");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO `guilds`(`serverid`, `channel`, `prefix`, `joinmsg`, `leavemsg`, `logchannel`, `autorole`, `portal`, `welmsg`, `autochannels`, `blacklist`,`lvlmsg`, `whitelist`) VALUES (?, '0', 'rc!', 'Welcome %user% on %guild%', 'Bye %user%', '0', '0', 'closed', '0', '', '','1', '')");
             ps.setString(1, String.valueOf(guild.getIdLong()));
             ps.execute();
         } catch (SQLException e) {
@@ -487,6 +491,22 @@ public class MySQL {
         return false;
     }
 
+    public boolean isChannelWhitelisted(TextChannel channel) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM guilds WHERE `serverid` = ?");
+            ps.setString(1, channel.getGuild().getId());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next())
+                return rs.getString("blacklist").contains(channel.getId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Logger.error(e);
+        } catch (NullPointerException ignored) {
+
+        }
+        return false;
+    }
+
     public boolean isBlacklisted(TextChannel channel) {
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM guilds WHERE `serverid` = ?");
@@ -502,7 +522,7 @@ public class MySQL {
         return false;
     }
 
-    public PreparedStatement preparedStatement(String sql) throws SQLException {
+    public PreparedStatement prepareStatement(String sql) throws SQLException {
         return this.connection.prepareStatement(sql);
     }
 }
