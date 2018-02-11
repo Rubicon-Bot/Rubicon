@@ -9,9 +9,8 @@ package fun.rubicon.commands.general;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
@@ -20,7 +19,7 @@ import net.dv8tion.jda.core.entities.*;
 public class CommandSay extends CommandHandler {
 
     public CommandSay() {
-        super(new String[]{"say", "s"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.say"), "Send a Message as the Bot!", "<Channel> <Message>");
+        super(new String[]{"say", "s"}, CommandCategory.GENERAL, new PermissionRequirements("command.say", false, true), "Send a Message as the Bot!", "<Channel> <Message>");
     }
 
     @Override
@@ -37,23 +36,23 @@ public class CommandSay extends CommandHandler {
             return EmbedUtil.message(EmbedUtil.error("Error!", "I have no permissions to write in this channel."));
         }
         String text = parsedCommandInvocation.getMessage().getContentDisplay().replace(parsedCommandInvocation.getPrefix() + parsedCommandInvocation.getCommandInvocation() + " #" + textChannel.getName(), "");
-        if(!text.substring(0, parsedCommandInvocation.getPrefix().length() + parsedCommandInvocation.getCommandInvocation().length() + 2).contains("#")) {
+        if (!parsedCommandInvocation.getArgs()[0].contains("#")) {
             return EmbedUtil.message(EmbedUtil.error("No channel!", "Your first parameter must be a #channel."));
         }
 
-        if(parsedCommandInvocation.getMessage().getMentionedUsers().size() >= 1) {
-            for(User user : parsedCommandInvocation.getMessage().getMentionedUsers()) {
+        if (parsedCommandInvocation.getMessage().getMentionedUsers().size() >= 1) {
+            for (User user : parsedCommandInvocation.getMessage().getMentionedUsers()) {
                 Member member = parsedCommandInvocation.getGuild().getMember(user);
                 text = text.replace("@" + member.getEffectiveName(), member.getAsMention());
             }
         }
-        if(parsedCommandInvocation.getMessage().getMentionedRoles().size() >= 1) {
-            for(Role role : parsedCommandInvocation.getMessage().getMentionedRoles()) {
+        if (parsedCommandInvocation.getMessage().getMentionedRoles().size() >= 1) {
+            for (Role role : parsedCommandInvocation.getMessage().getMentionedRoles()) {
                 text = text.replace("@" + role.getName(), role.getAsMention());
             }
         }
-        if(parsedCommandInvocation.getMessage().getMentionedChannels().size() >= 2) {
-            for(int i = 1; i < parsedCommandInvocation.getMessage().getMentionedChannels().size(); i++) {
+        if (parsedCommandInvocation.getMessage().getMentionedChannels().size() >= 2) {
+            for (int i = 1; i < parsedCommandInvocation.getMessage().getMentionedChannels().size(); i++) {
                 TextChannel channel = parsedCommandInvocation.getMessage().getMentionedChannels().get(i);
                 text = text.replace("#" + channel.getName(), channel.getAsMention());
             }

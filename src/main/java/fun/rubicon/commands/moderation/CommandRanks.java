@@ -3,9 +3,8 @@ package fun.rubicon.commands.moderation;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.Configuration;
 import fun.rubicon.util.EmbedUtil;
@@ -24,7 +23,7 @@ import java.util.stream.Collectors;
 
 public class CommandRanks extends CommandHandler {
     public CommandRanks() {
-        super(new String[]{"role", "roles", "rank", "ranks"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.EVERYONE, "command.rank"), "Easily create ranks, that users can assign herself", "<rolename>... <rolename>\n" +
+        super(new String[]{"role", "roles", "rank", "ranks"}, CommandCategory.MODERATION, new PermissionRequirements("command.rank", false, false), "Easily create ranks, that users can assign herself", "<rolename>... <rolename>\n" +
                 "add <rolename>\n" +
                 "remove <rolename>", false);
     }

@@ -4,9 +4,8 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.entities.Message;
 
@@ -22,7 +21,7 @@ import java.util.List;
 public class CommandGenerateDocsJSON extends CommandHandler {
 
     public CommandGenerateDocsJSON() {
-        super(new String[]{"generate-docs"}, CommandCategory.BOT_OWNER, new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.generate-docs"), "Generate json file fou our docs.", "");
+        super(new String[]{"generate-docs"}, CommandCategory.BOT_OWNER, new PermissionRequirements("command.generate-docs", true, false), "Generate json file fou our docs.", "");
     }
 
     @Override

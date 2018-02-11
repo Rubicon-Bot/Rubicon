@@ -9,9 +9,8 @@ package fun.rubicon.commands.moderation;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Guild;
@@ -26,7 +25,7 @@ import net.dv8tion.jda.core.entities.Role;
  */
 public class CommandUnmute extends CommandHandler {
     public CommandUnmute() {
-        super(new String[]{"unmute", "demute"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.unmute"), "Unmutes users", "<@User>", false);
+        super(new String[]{"unmute", "demute"}, CommandCategory.MODERATION, new PermissionRequirements("command.unmute", false, false), "Unmutes users", "<@User>", false);
     }
 
     @Override

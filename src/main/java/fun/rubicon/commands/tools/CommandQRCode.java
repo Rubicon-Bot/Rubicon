@@ -9,8 +9,8 @@ package fun.rubicon.commands.tools;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
@@ -21,7 +21,7 @@ import java.net.URL;
 
 public class CommandQRCode extends CommandHandler {
     public CommandQRCode() {
-        super(new String[]{"qrcode", "qr", "code"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.qr"), "Easily generate a QR code", "<text>");
+        super(new String[]{"qrcode", "qr", "code"}, CommandCategory.TOOLS, new PermissionRequirements("command.qr", false, true), "Easily generate a QR code", "<text>");
     }
 
     @Override

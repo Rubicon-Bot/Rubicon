@@ -10,9 +10,8 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.sql.MySQL;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
@@ -27,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 public class CommandBlacklist extends CommandHandler {
     public CommandBlacklist() {
-        super(new String[]{"blacklist", "bl", "block"}, CommandCategory.SETTINGS, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.blacklist"), "Blacklist channels from commands", "blacklist add <#Channel>\n blacklist remove <#Channel>\n blacklist list", false);
+        super(new String[]{"blacklist", "bl", "block"}, CommandCategory.SETTINGS, new PermissionRequirements("command.blacklist", false, false), "Blacklist channels from commands", "blacklist add <#Channel>\n blacklist remove <#Channel>\n blacklist list", false);
     }
 
     @Override

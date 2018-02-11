@@ -10,9 +10,8 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -33,7 +32,7 @@ public class CommandHelp extends CommandHandler {
 
     public CommandHelp() {
         super(new String[]{"help", "usage", "?", "command", "manual", "man"}, CommandCategory.GENERAL,
-                new PermissionRequirements(PermissionLevel.EVERYONE, "command.help"),
+                new PermissionRequirements("command.help", false, true),
                 "Shows the command manual.", "[command]");
     }
 

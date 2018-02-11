@@ -3,9 +3,8 @@ package fun.rubicon.commands.moderation;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Guild;
@@ -19,7 +18,7 @@ public class CommandUnban extends CommandHandler {
 
 
     public CommandUnban() {
-        super(new String[]{"unban"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.unban"), "Unban", "unban <id>", false);
+        super(new String[]{"unban"}, CommandCategory.MODERATION, new PermissionRequirements("command.unban", false, false), "Unban", "unban <id>", false);
     }
 
 
@@ -30,9 +29,7 @@ public class CommandUnban extends CommandHandler {
         if (args.length == 0)
             return createHelpMessage();
         HashMap<String, Guild.Ban> banned_users_IDS = new HashMap<>();
-        guild.getBanList().complete().forEach(b -> {
-            banned_users_IDS.put(b.getUser().getId(), b);
-        });
+        guild.getBanList().complete().forEach(b -> banned_users_IDS.put(b.getUser().getId(), b));
         if (!banned_users_IDS.containsKey(args[0]))
             return new MessageBuilder().setEmbed(EmbedUtil.error("User not banned", "This user is not banned").build()).build();
         User user = banned_users_IDS.get(args[0]).getUser();

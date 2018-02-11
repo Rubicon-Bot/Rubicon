@@ -10,9 +10,8 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -22,7 +21,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class CommandBug extends CommandHandler {
 
     public CommandBug() {
-        super(new String[]{"bug", "bugreport"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.bug"), "Sends a bug to the bot developers", "<message (min. 3 words)>");
+        super(new String[]{"bug", "bugreport"}, CommandCategory.GENERAL, new PermissionRequirements("command.bug", false, true), "Sends a bug to the bot developers", "<message (min. 3 words)>");
     }
 
     @Override

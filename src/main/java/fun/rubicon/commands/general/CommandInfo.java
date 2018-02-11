@@ -10,9 +10,8 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -30,7 +29,7 @@ public class CommandInfo extends CommandHandler {
     private String[] arrSupporter = {"Greg"};
 
     public CommandInfo() {
-        super(new String[]{"Info", "inf", "version"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.info"), "Shows some information about the bot!", "");
+        super(new String[]{"Info", "inf", "version"}, CommandCategory.GENERAL, new PermissionRequirements("command.info", false, true), "Shows some information about the bot!", "");
     }
 
     @Override
@@ -45,7 +44,7 @@ public class CommandInfo extends CommandHandler {
         //Append Id´s on StringBuilder
         for (long authorId : Info.BOT_AUTHOR_IDS) {
             User authorUser = RubiconBot.getJDA().getUserById(authorId);
-            if (authorUser == null) // TODO use alternative way that does not need to have the authors in cache.
+            if (authorUser == null)
                 authors.append(authorId).append("\n");
             else
                 authors.append(authorUser.getName()).append("#").append(authorUser.getDiscriminator()).append("\n");

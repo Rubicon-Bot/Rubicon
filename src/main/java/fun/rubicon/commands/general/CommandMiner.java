@@ -5,9 +5,8 @@ import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.core.coinhive.CoinhiveManager;
 import fun.rubicon.core.coinhive.CoinhiveUser;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.sql.UserSQL;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
@@ -20,7 +19,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class CommandMiner extends CommandHandler {
 
     public CommandMiner() {
-        super(new String[]{"miner", "mine"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.miner"), "Get your collected hashes, top miners or let payout your hashes in rubys.",
+        super(new String[]{"miner", "mine"}, CommandCategory.GENERAL, new PermissionRequirements("command.miner", false, true), "Get your collected hashes, top miners or let payout your hashes in rubys.",
                 "| Get your hashes\n" +
                         "payout | Payout your mined hashes in rubys");
     }

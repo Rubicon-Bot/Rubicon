@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Rubicon Bot Development Team
+ * Copyright (c) 2018 Rubicon Bot Development Team
  *
  * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
  */
@@ -10,9 +10,8 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -29,7 +28,7 @@ import java.util.*;
 public class CommandAutochannel extends CommandHandler {
 
     public CommandAutochannel() {
-        super(new String[]{"autochannel", "ac"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.autochannel"), "Create channels that duplicate themselves upon joining.", "" +
+        super(new String[]{"autochannel", "ac"}, CommandCategory.MODERATION, new PermissionRequirements("command.autochannel", false, false), "Create channels that duplicate themselves upon joining.", "" +
                 "create <channelname>\n" +
                 "list\n" +
                 "delete <channel name>\n" +

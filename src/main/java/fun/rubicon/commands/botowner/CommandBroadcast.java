@@ -9,8 +9,8 @@ package fun.rubicon.commands.botowner;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -30,7 +30,7 @@ public class CommandBroadcast extends CommandHandler {
 
     public CommandBroadcast() {
         super(new String[]{"broadcast"}, CommandCategory.BOT_OWNER,
-                new PermissionRequirements(4, "command.broadcast"),
+                new PermissionRequirements("command.broadcast", true, false),
                 "Sends a message to all guild owners.", "<message>");
     }
 

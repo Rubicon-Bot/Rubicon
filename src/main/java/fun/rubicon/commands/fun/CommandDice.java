@@ -9,9 +9,8 @@ package fun.rubicon.commands.fun;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import net.dv8tion.jda.core.entities.Message;
 
 import static fun.rubicon.util.EmbedUtil.*;
@@ -25,7 +24,7 @@ public class CommandDice extends CommandHandler {
      */
     public CommandDice() {
         super(new String[]{"dice", "roll", "roll-dice"}, CommandCategory.TOOLS,
-                new PermissionRequirements(PermissionLevel.EVERYONE, "command.dice"),
+                new PermissionRequirements("command.dice", false, true),
                 "Roll a dice.", "<minimum-value> <maximum value>");
     }
 

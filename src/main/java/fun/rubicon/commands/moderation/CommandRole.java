@@ -3,9 +3,8 @@ package fun.rubicon.commands.moderation;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Member;
@@ -15,7 +14,7 @@ import net.dv8tion.jda.core.managers.GuildController;
 
 public class CommandRole extends CommandHandler {
     public CommandRole() {
-        super(new String[]{"mod-role"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.role"), "Easily add or remove roles to users", "add/remove <@User> <role>", false);
+        super(new String[]{"mod-role"}, CommandCategory.MODERATION, new PermissionRequirements("command.role", false, false), "Easily add or remove roles to users", "add/remove <@User> <role>", false);
     }
 
     @Override

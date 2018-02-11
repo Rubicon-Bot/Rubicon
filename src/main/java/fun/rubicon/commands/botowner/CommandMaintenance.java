@@ -5,9 +5,8 @@ import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.core.music.MusicManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
@@ -25,7 +24,7 @@ public class CommandMaintenance extends CommandHandler {
 
 
     public CommandMaintenance() {
-        super(new String[]{"maintenance", "wartung"}, CommandCategory.BOT_OWNER, new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.maintenance"), "Starts bot maintenance.", "<message for playing status>");
+        super(new String[]{"maintenance", "wartung"}, CommandCategory.BOT_OWNER, new PermissionRequirements("command.maintenance", true, false), "Starts bot maintenance.", "<message for playing status>");
     }
 
     @Override
