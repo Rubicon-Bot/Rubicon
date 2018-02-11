@@ -53,7 +53,7 @@ public class CommandPremium extends CommandHandler {
             Guild guild = RubiconBot.getJDA().getGuildById(Info.COMMUNITY_SERVER);
             Role role = guild.getRoleById(Info.PREMIUM_ROLE);
             guild.getMembers().stream().filter(member -> member.getRoles().contains(role)).collect(Collectors.toList()).forEach(m -> {
-                UserSQL user = new UserSQL(m.getUser());
+                UserSQL user = UserSQL.fromMember(m);
                 if (!user.isPremium())
                     guild.getController().removeSingleRoleFromMember(m, role).queue();
             });

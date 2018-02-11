@@ -8,6 +8,7 @@ package fun.rubicon.command;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.music.MusicManager;
+import fun.rubicon.sql.GuildSQL;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
@@ -65,7 +66,12 @@ public class CommandManager extends ListenerAdapter {
         if (event.getAuthor().isBot())
             return;
         if (event.isFromType(ChannelType.PRIVATE)) return;
-        if (!RubiconBot.getMySQL().isWhitelisted(event.getTextChannel())) return;
+        GuildSQL guildSQL = GuildSQL.fromGuild(event.getGuild());
+        if(guildSQL.enabledBlacklist())
+            if (guildSQL.isBlacklisted(event.getTextChannel())) return;
+         else if (guildSQL.enabledWhitelist())
+            if (!guildSQL.isWhitelisted(event.getTextChannel())) return;
+
         MusicManager.handleTrackChoose(event);
         super.onMessageReceived(event);
         ParsedCommandInvocation commandInvocation = parse(event.getMessage());
