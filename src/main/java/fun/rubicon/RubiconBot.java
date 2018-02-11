@@ -238,7 +238,8 @@ public class RubiconBot {
                 new CommandGiphy(),
                 new CommandVideo(),
                 new CommandUrban(),
-                new CommandJoke()
+                new CommandJoke(),
+                new CommandMinecraft()
         );
         // general commands package
         commandManager.registerCommandHandlers(
