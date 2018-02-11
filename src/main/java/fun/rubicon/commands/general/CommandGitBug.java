@@ -57,7 +57,7 @@ public class CommandGitBug extends CommandHandler {
             public void run() {
                 channelMsg.remove(parsedCommandInvocation.getTextChannel());
                 parsedCommandInvocation.getTextChannel().sendMessage("Setup abort").queue(message -> {
-                    message.delete().queueAfter(5L, TimeUnit.SECONDS);
+                    message.delete().queueAfter(7L, TimeUnit.SECONDS);
                 });
                 return;
             }
@@ -73,7 +73,6 @@ public class CommandGitBug extends CommandHandler {
             return;
         if (event.getAuthor().equals(RubiconBot.getJDA().getSelfUser()))
             return;
-
         if (!event.getAuthor().equals(titel.getAuthor()))
             return;
         try {
