@@ -11,6 +11,7 @@ import fun.rubicon.commands.admin.CommandVerification;
 import fun.rubicon.features.VerificationKickHandler;
 import fun.rubicon.features.VerificationUserHandler;
 import fun.rubicon.util.SafeMessage;
+import fun.rubicon.util.StringUtil;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.channel.text.TextChannelDeleteEvent;
@@ -73,7 +74,7 @@ public class VerificationListener extends ListenerAdapter {
         CommandVerification.users.put(message, event.getUser());
 
         String emoteRaw = RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "emote");
-        if (!isNumeric(emoteRaw))
+        if (!StringUtil.isNumeric(emoteRaw))
             message.addReaction(emoteRaw).queue();
         else
             message.addReaction(event.getJDA().getEmoteById(emoteRaw)).queue();
@@ -93,14 +94,6 @@ public class VerificationListener extends ListenerAdapter {
         }
     }
 
-    private boolean isNumeric(String str) {
-        try {
-            double d = Double.parseDouble(str);
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-        return true;
-    }
 
     private Date getKickTime(int mins) {
         Date date = new Date();

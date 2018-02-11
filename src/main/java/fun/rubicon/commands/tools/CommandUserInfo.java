@@ -10,8 +10,8 @@ package fun.rubicon.commands.tools;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -24,7 +24,7 @@ import java.time.OffsetDateTime;
 public class CommandUserInfo extends CommandHandler {
 
     public CommandUserInfo() {
-        super(new String[]{"userinfo", "whois"}, CommandCategory.TOOLS, new PermissionRequirements(0, "comm"), "Returns some information about the specified user", "[@User]");
+        super(new String[]{"userinfo", "whois"}, CommandCategory.TOOLS, new PermissionRequirements("command.userinfo", false, true), "Returns some information about the specified user", "[@User]");
     }
 
     @Override

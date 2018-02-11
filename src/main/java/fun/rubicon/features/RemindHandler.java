@@ -5,8 +5,8 @@ import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.command.UnavailableCommandHandler;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.sql.MySQL;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.Logger;
@@ -162,7 +162,7 @@ public class RemindHandler extends CommandHandler {
     private Set<Remind> reminders = new HashSet<>();
 
     public RemindHandler() {
-        super(new String[]{"remindme", "remind"}, CommandCategory.GENERAL, new PermissionRequirements(0, "command.remindme"), "Get reminded of whatever you want", "create 9d Buy Cheese - you will get Reminded in 9 Days\n" +
+        super(new String[]{"remindme", "remind"}, CommandCategory.GENERAL, new PermissionRequirements("command.remindme", false, true), "Get reminded of whatever you want", "create 9d Buy Cheese - you will get Reminded in 9 Days\n" +
                 "create 5w Buy another Cheese! - you will get Reminded in 5 Weeks\n" +
                 "create 1m Get this Message! - you will get Reminded in 5 Minutes\n" +
                 "create 12mon Lol new Year! - you will get Reminded in 12 Months");

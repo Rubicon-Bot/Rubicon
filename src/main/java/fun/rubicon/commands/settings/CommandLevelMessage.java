@@ -4,9 +4,8 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.entities.Message;
@@ -23,7 +22,7 @@ import java.awt.*;
  */
 public class CommandLevelMessage extends CommandHandler {
     public CommandLevelMessage() {
-        super(new String[]{"levelupmessage", "lvlmsg", "lvlmessage"}, CommandCategory.SETTINGS, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.lvlmessage"), "Toggles the LevelUp Message", "");
+        super(new String[]{"levelupmessage", "lvlmsg", "lvlmessage"}, CommandCategory.SETTINGS, new PermissionRequirements("command.lvlmessage", false, false), "Toggles the LevelUp Message", "");
     }
 
     @Override

@@ -10,8 +10,8 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
@@ -23,7 +23,7 @@ import net.dv8tion.jda.core.entities.Message;
  */
 public class CommandAutorole extends CommandHandler {
     public CommandAutorole() {
-        super(new String[]{"autorole"}, CommandCategory.ADMIN, new PermissionRequirements(2, "command.autorole"), "Set the Autorole. Triggers when a User Join your Guild", "<@Role/Rolename>");
+        super(new String[]{"autorole"}, CommandCategory.ADMIN, new PermissionRequirements("command.autorole", false, false), "Set the Autorole. Triggers when a User Join your Guild", "<@Role/Rolename>");
     }
 
     @Override

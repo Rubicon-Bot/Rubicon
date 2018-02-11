@@ -10,9 +10,8 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -21,7 +20,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class CommandJoinMessage extends CommandHandler {
     public CommandJoinMessage() {
         super(new String[]{"joinmsg", "joinmessage", "joinnachricht"}, CommandCategory.SETTINGS,
-                new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.joinmsg"),
+                new PermissionRequirements("command.joinmsg", false, false),
                 "Set the server's join message!", "<Message(%user% for username, %guild% for guildname)>");
     }
 

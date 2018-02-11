@@ -226,20 +226,22 @@ public class RubiconBot {
                 new CommandResume(),
                 new CommandQueue(),
                 new CommandVolume(),
-                new CommandForceplay(),
-                new CommandLyrics()
+                new CommandForceplay()
         );
         // fun commands package
         commandManager.registerCommandHandlers(
                 new CommandRip(),
                 new CommandSlot(),
                 new CommandRoulette(),
-                new CommandOK(),
                 new CommandGiphy(),
                 new CommandVideo(),
                 new CommandUrban(),
                 new CommandJoke(),
+<<<<<<< HEAD
                 new CommandMinecraft()
+=======
+                new CommandOWStats()
+>>>>>>> dev
         );
         // general commands package
         commandManager.registerCommandHandlers(
@@ -272,8 +274,7 @@ public class RubiconBot {
         );
         // tools commands package
         commandManager.registerCommandHandlers(
-                new CommandASCII(),
-                new fun.rubicon.commands.tools.CommandChoose(),
+                new CommandChoose(),
                 new CommandClear(),
                 new CommandRandomColor(),
                 new CommandDice(),
@@ -286,7 +287,8 @@ public class RubiconBot {
                 new CommandUserInfo(),
                 new CommandVote(),
                 new CommandMoveAll(),
-                new CommandNick()
+                new CommandNick(),
+                new CommandChoose()
         );
 
         // also register commands from the old framework

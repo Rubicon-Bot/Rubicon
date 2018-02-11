@@ -4,9 +4,8 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.sql.GuildSQL;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
@@ -22,7 +21,7 @@ import java.util.List;
 
 public class CommandBlacklist extends CommandHandler{
     public CommandBlacklist() {
-        super(new String[] {"blacklist", "bl"}, CommandCategory.SETTINGS, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.blacklist"), "Easily blacklist channels from command usage", " <add/remove/list> <#Channel>", false);
+        super(new String[] {"blacklist", "bl"}, CommandCategory.SETTINGS, new PermissionRequirements("command.blacklist", false, false), "Easily blacklist channels from command usage", " <add/remove/list> <#Channel>", false);
     }
 
     @Override
@@ -61,6 +60,7 @@ public class CommandBlacklist extends CommandHandler{
     private void executeRemove(String[] args, Member member, Guild guild, TextChannel textChannel, Message message) {
         GuildSQL sql = GuildSQL.fromGuild(guild);
         if(message.getMentionedChannels().isEmpty()){ SafeMessage.sendMessage(textChannel, EmbedUtil.error("Unknown usage", "Please use `rc!blacklist add <#Channel>`").build(), 7); return; }
+
         TextChannel channel = message.getMentionedChannels().get(0);
         if(!sql.isBlacklisted(channel)){ SafeMessage.sendMessage(textChannel, EmbedUtil.info("Not blacklisted", "This channel is not blacklisted").build()); return; }
         String oldEntry = RubiconBot.getMySQL().getGuildValue(guild, "blacklist");
@@ -117,7 +117,7 @@ public class CommandBlacklist extends CommandHandler{
             channels.replace(channels.lastIndexOf(","), channels.lastIndexOf(",") + 1, "");
             SafeMessage.sendMessage(textChannel, EmbedUtil.info("Blacklisted Channels", "Blacklist mode: `" + String.valueOf(guildSQL.enabledBlacklist()).replace("true", "enabled").replace("false", "disabled") + "`\nChannels: `" + channels.toString() + "`").build());
         }else
-        SafeMessage.sendMessage(textChannel, EmbedUtil.info("Blacklisted Channels", "Blacklist mode: `" + String.valueOf(guildSQL.enabledBlacklist()).replace("true", "enabled").replace("false", "disabled") + "`").build());
+            SafeMessage.sendMessage(textChannel, EmbedUtil.info("Blacklisted Channels", "Blacklist mode: `" + String.valueOf(guildSQL.enabledBlacklist()).replace("true", "enabled").replace("false", "disabled") + "`").build());
     }
 
     public static void handleTextChannelDeletion(TextChannelDeleteEvent event){

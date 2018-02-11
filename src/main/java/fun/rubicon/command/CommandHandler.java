@@ -8,9 +8,9 @@ package fun.rubicon.command;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.botowner.CommandMaintenance;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
 import fun.rubicon.listener.ServerLogHandler;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.Info;

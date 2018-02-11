@@ -5,9 +5,8 @@ import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.core.PriceList;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.sql.UserSQL;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
@@ -31,7 +30,7 @@ public class CommandPremium extends CommandHandler {
 
 
     public CommandPremium() {
-        super(new String[]{"premium"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.premium"), "See your premium state or buy premium.",
+        super(new String[]{"premium"}, CommandCategory.GENERAL, new PermissionRequirements("command.premium", false, true), "See your premium state or buy premium.",
                 "| Shows current premium state\n" +
                         "buy | Buy premium");
     }

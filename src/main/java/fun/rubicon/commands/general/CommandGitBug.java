@@ -1,13 +1,11 @@
 package fun.rubicon.commands.general;
 
-
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Info;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -18,7 +16,6 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.kohsuke.github.GHIssue;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Timer;
@@ -39,7 +36,7 @@ public class CommandGitBug extends CommandHandler {
     private static Timer timer = new Timer();
 
     public CommandGitBug() {
-        super(new String[]{"bug", "bugreport"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.gitbug"), "Report an Bug", "<Bug title>");
+        super(new String[]{"bug", "bugreport"}, CommandCategory.GENERAL, new PermissionRequirements("command.gitbug", false, true), "Report an Bug", "<Bug title>");
     }
 
     private static String Header = "<p><strong>Bugreport</strong><br><br><strong>Bug report by ";
@@ -57,7 +54,7 @@ public class CommandGitBug extends CommandHandler {
             public void run() {
                 channelMsg.remove(parsedCommandInvocation.getTextChannel());
                 parsedCommandInvocation.getTextChannel().sendMessage("Setup abort").queue(message -> {
-                    message.delete().queueAfter(5L, TimeUnit.SECONDS);
+                    message.delete().queueAfter(7L, TimeUnit.SECONDS);
                 });
                 return;
             }
@@ -73,7 +70,6 @@ public class CommandGitBug extends CommandHandler {
             return;
         if (event.getAuthor().equals(RubiconBot.getJDA().getSelfUser()))
             return;
-
         if (!event.getAuthor().equals(titel.getAuthor()))
             return;
         try {
@@ -82,7 +78,7 @@ public class CommandGitBug extends CommandHandler {
             GHIssue Issue = repository.createIssue(titel.getTitle()).body(Header + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + Sufix + event.getMessage().getContentDisplay()).label("Bug").label("Requires Testing").create();
             channelMsg.remove(event.getTextChannel());
             event.getMessage().delete().queue();
-            SafeMessage.sendMessage(event.getTextChannel(), new EmbedBuilder().setTitle("Bug successfully send!").setDescription("Bug is available at: " + Issue.getHtmlUrl()).build(), 20);
+            SafeMessage.sendMessage(event.getTextChannel(), new EmbedBuilder().setTitle("Bug successfully send!").setDescription("Bug is available at: " + Issue.getHtmlUrl()).build());
             timer.cancel();
         } catch (IOException e) {
             e.printStackTrace();

@@ -9,9 +9,8 @@ package fun.rubicon.commands.tools;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
@@ -29,7 +28,7 @@ public class CommandChoose extends CommandHandler {
      */
     public CommandChoose() {
         super(new String[]{"choose", "choose-option", "choose-random"}, CommandCategory.TOOLS,
-                new PermissionRequirements(PermissionLevel.EVERYONE, "command.choose"),
+                new PermissionRequirements("command.choose", false, true),
                 "Randomly chooses one of you options.", "<option-1> <option-2> [option-3] [option-...]");
     }
 

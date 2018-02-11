@@ -1,13 +1,12 @@
 package fun.rubicon.commands.fun;
 
-
 import de.foryasee.httprequest.HttpRequest;
 import de.foryasee.httprequest.RequestResponse;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.Info;
@@ -29,7 +28,7 @@ import java.util.Date;
  */
 public class CommandVideo extends CommandHandler {
     public CommandVideo() {
-        super(new String[]{"video", "ytsearch", "youtube"}, CommandCategory.FUN, new PermissionRequirements(0, "command.video"), "Search for a YT Video and get Information about it.", "<Search-Query>");
+        super(new String[]{"video", "ytsearch", "youtube"}, CommandCategory.FUN, new PermissionRequirements("command.video", false, true), "Search for a YT Video and get Information about it.", "<Search-Query>");
     }
 
     @Override

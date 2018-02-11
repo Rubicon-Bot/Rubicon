@@ -9,9 +9,8 @@ package fun.rubicon.commands.moderation;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Member;
@@ -25,7 +24,7 @@ import net.dv8tion.jda.core.entities.PrivateChannel;
  */
 public class CommandKick extends CommandHandler {
     public CommandKick() {
-        super(new String[]{"kick"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.kick"), "Kicks an member out of your server", "<@User>");
+        super(new String[]{"kick"}, CommandCategory.MODERATION, new PermissionRequirements("command.kick", false, false), "Kicks an member out of your server", "<@User>");
     }
 
     @Override
@@ -43,7 +42,6 @@ public class CommandKick extends CommandHandler {
                 channel.sendMessage(EmbedUtil.success("Kicked", "You got kicked").build()).queue();
             }
             msg.getGuild().getController().kick(target).queue();
-
 
             return new MessageBuilder().setEmbed(EmbedUtil.success("Kicked", "Succesfully kicked " + target.getAsMention()).build()).build();
         }

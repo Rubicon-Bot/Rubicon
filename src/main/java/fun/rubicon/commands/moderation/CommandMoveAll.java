@@ -9,9 +9,8 @@ package fun.rubicon.commands.moderation;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
@@ -24,7 +23,7 @@ import java.util.List;
 
 public class CommandMoveAll extends CommandHandler {
     public CommandMoveAll() {
-        super(new String[]{"moveall", "mvall", "mva"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.moveall"), "Move all members in your channel into another channel.", "<#channel>", false);
+        super(new String[]{"moveall", "mvall", "mva"}, CommandCategory.MODERATION, new PermissionRequirements("command.moveall", false, false), "Move all members in your channel into another channel.", "<#channel>", false);
     }
 
     @Override
