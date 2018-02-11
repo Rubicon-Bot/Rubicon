@@ -44,7 +44,6 @@ public class CommandKick extends CommandHandler {
             }
             msg.getGuild().getController().kick(target).queue();
 
-
             return new MessageBuilder().setEmbed(EmbedUtil.success("Kicked", "Succesfully kicked " + target.getAsMention()).build()).build();
         }
     }
