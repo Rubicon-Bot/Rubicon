@@ -41,7 +41,7 @@ public class CommandVerification extends CommandHandler {
     public static HashMap<Message, User> users = new HashMap<>();
 
     public CommandVerification() {
-        super(new String[]{"verification", "verify"}, CommandCategory.ADMIN, new PermissionRequirements("command.verification", false, false), "Let you members accept rules before posting messages", "setup\ndisable");
+        super(new String[]{"verification", "verify"}, CommandCategory.ADMIN, new PermissionRequirements("command.verification", false, false), "Let you members accept rules before posting messages\n\nThis feature is partially inspired by (Flashbot)[https://flashbot.de]", "setup\ndisable");
     }
 
     @Override
