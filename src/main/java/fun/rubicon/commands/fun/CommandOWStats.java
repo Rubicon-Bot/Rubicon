@@ -7,9 +7,8 @@ import de.foryasee.httprequest.RequestResponse;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
@@ -30,7 +29,7 @@ import org.json.simple.parser.JSONParser;
 public class CommandOWStats extends CommandHandler {
 
     public CommandOWStats() {
-        super(new String[]{"overwatch","overwatchstats","owstats"}, CommandCategory.FUN, new PermissionRequirements(PermissionLevel.EVERYONE, "command.owstats"), "Get some Overwatch Stats about a Batteltag", "<region(eu/us)> <batteltag(example: LordLee#21645)");
+        super(new String[]{"overwatch","overwatchstats","owstats"}, CommandCategory.FUN, new PermissionRequirements("command.overwatch", false, true), "Get some Overwatch Stats about a Batteltag", "<region(eu/us)> <batteltag(example: LordLee#21645)");
     }
 
     @Override

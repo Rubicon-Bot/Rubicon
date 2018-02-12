@@ -6,9 +6,8 @@ import de.foryasee.httprequest.RequestResponse;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
@@ -29,7 +28,7 @@ import org.json.simple.parser.JSONParser;
 public class CommandJoke extends CommandHandler {
 
     public CommandJoke() {
-        super(new String[]{"joke"}, CommandCategory.FUN, new PermissionRequirements(PermissionLevel.EVERYONE, "command.joke"), "Get some shitty Joke", "");
+        super(new String[]{"joke"}, CommandCategory.FUN, new PermissionRequirements("command.joke", false, true), "Get some shitty Joke", "");
 
     }
 
