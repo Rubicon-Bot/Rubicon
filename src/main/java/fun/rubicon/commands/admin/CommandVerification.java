@@ -40,6 +40,8 @@ public class CommandVerification extends CommandHandler {
     private static HashMap<Guild, VerificationSettings> settingslist = new HashMap<>();
     public static HashMap<Message, User> users = new HashMap<>();
 
+    public static boolean showInspired = false;
+
     public CommandVerification() {
         super(new String[]{"verification", "verify"}, CommandCategory.ADMIN, new PermissionRequirements("command.verification", false, false), "Let you members accept rules before posting messages\n\nThis feature is partially inspired by [Flashbot](https://flashbot.de)", "setup\ndisable");
     }
@@ -300,5 +302,11 @@ public class CommandVerification extends CommandHandler {
         settingslist.remove(message.getGuild());
     }
 
-
+    public static void toggleInspired() {
+        if (showInspired) {
+            showInspired = false;
+        } else {
+            showInspired = true;
+        }
+    }
 }

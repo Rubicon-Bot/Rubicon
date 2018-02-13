@@ -21,7 +21,7 @@ public class CommandJoinMessage extends CommandHandler {
     public CommandJoinMessage() {
         super(new String[]{"joinmsg", "joinmessage", "joinnachricht"}, CommandCategory.SETTINGS,
                 new PermissionRequirements("command.joinmsg", false, false),
-                "Set the server's join message!", "<Message(%user% for username, %guild% for guildname)>");
+                "Set the server's join message!", "<Message(%user% for username, %guild% for guildname)>\ndisable");
     }
 
     @Override
@@ -33,7 +33,7 @@ public class CommandJoinMessage extends CommandHandler {
             temp += " " + parsedCommandInvocation.getArgs()[i];
         }
         if (temp.equals("disable")) {
-            RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.getMessage().getGuild(), "leavemsg", "0");
+            RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.getMessage().getGuild(), "joinmsg", "0");
             return new MessageBuilder().setEmbed(EmbedUtil.success("Disabled", "Succesfully disabled joinmessages").build()).build();
         }
         RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.getMessage().getGuild(), "joinmsg", temp.replaceFirst("null ", ""));

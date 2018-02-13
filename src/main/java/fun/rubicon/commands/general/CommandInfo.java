@@ -29,7 +29,7 @@ public class CommandInfo extends CommandHandler {
     private String[] arrSupporter = {"Greg"};
 
     public CommandInfo() {
-        super(new String[]{"Info", "inf", "version"}, CommandCategory.GENERAL, new PermissionRequirements("command.info", false, true), "Shows some information about the bot!", "");
+        super(new String[]{"info", "inf", "version"}, CommandCategory.GENERAL, new PermissionRequirements("command.info", false, true), "Shows some information about the bot!", "");
     }
 
     @Override
@@ -60,7 +60,6 @@ public class CommandInfo extends CommandHandler {
         builder.addField("Support Server","[Link](dc.rucb.co)",true);
         builder.addField("Donators", String.join("\n", arrSupporter), true);
         builder.addField("Devs", authors.toString(), false);
-        //Send Message and delete it after 2 Minutes
         return new MessageBuilder().setEmbed(builder.build()).build();
     }
 
