@@ -3,9 +3,8 @@ package fun.rubicon.commands.botowner;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.GlobalBlacklist;
 import net.dv8tion.jda.core.entities.Message;
@@ -21,12 +20,12 @@ import net.dv8tion.jda.core.entities.Message;
 public class CommandGlobalBlacklist extends CommandHandler {
 
     public CommandGlobalBlacklist() {
-        super(new String[]{"globalblacklist", "gbl"}, CommandCategory.BOT_OWNER, new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "cmd.globalblacklist"), "Ban a user from RubiconBot.", "<@User>");
+        super(new String[]{"globalblacklist", "gbl"}, CommandCategory.BOT_OWNER, new PermissionRequirements("command.globalblacklist", true, false), "Ban a user from RubiconBot.", "<@User>");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        if (parsedCommandInvocation.getArgs().length == 2) {
+        if (parsedCommandInvocation.getArgs().length == 1) {
             if (parsedCommandInvocation.getMessage().getMentionedUsers().size() == 1) {
                 switch (parsedCommandInvocation.getArgs()[0]) {
                     case "add":

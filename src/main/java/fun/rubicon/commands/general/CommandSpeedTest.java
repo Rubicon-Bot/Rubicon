@@ -13,8 +13,8 @@ import fr.bmartel.speedtest.model.SpeedTestError;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
@@ -24,7 +24,7 @@ import java.awt.*;
 public class CommandSpeedTest extends CommandHandler {
 
     public CommandSpeedTest() {
-        super(new String[]{"speedtest", "st"}, CommandCategory.GENERAL, new PermissionRequirements(0, "command.speedtest"), "Do a speedtest of the bot-connection.", "");
+        super(new String[]{"speedtest", "st"}, CommandCategory.GENERAL, new PermissionRequirements("command.speedtest", false, true), "Do a speedtest of the bot-connection.", "");
     }
 
     @Override

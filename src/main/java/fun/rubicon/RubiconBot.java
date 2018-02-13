@@ -25,8 +25,6 @@ import fun.rubicon.core.webpanel.WebpanelManager;
 import fun.rubicon.core.webpanel.impl.*;
 import fun.rubicon.features.GiveawayHandler;
 import fun.rubicon.features.RemindHandler;
-import fun.rubicon.features.VerificationKickHandler;
-import fun.rubicon.features.VerificationUserHandler;
 import fun.rubicon.permission.PermissionManager;
 import fun.rubicon.sql.*;
 import fun.rubicon.util.*;
@@ -52,7 +50,7 @@ import java.util.Timer;
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token", "gip_token", "lucsoft_token", "twitterConsumerKey", "twitterConsumerSecret", "twitterAccessToken", "twitterAccessTokenSecret", "google_token", "musixmatch_key", "git_token", "maintenance"};
+    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token", "gip_token", "lucsoft_token", "twitterConsumerKey", "twitterConsumerSecret", "twitterAccessToken", "twitterAccessTokenSecret", "google_token", "musixmatch_key", "git_token", "maintenance", "discord_pw_token"};
     private static final String dataFolder = "data/";
     private static WebpanelManager webpanelManager;
     private static RubiconBot instance;
@@ -64,6 +62,7 @@ public class RubiconBot {
     private final Set<EventListener> eventListeners;
     private final PermissionManager permissionManager;
     private final RubackReceiver rubackReceiver;
+    private final DatabaseManager databaseManager;
 
     /**
      * Constructs the RubiconBot.
@@ -76,6 +75,7 @@ public class RubiconBot {
 
         timer = new Timer();
         eventListeners = new HashSet<>();
+        databaseManager = new DatabaseManager();
 
         // load configuration and obtain missing config values
         new File(dataFolder).mkdirs();
@@ -95,6 +95,7 @@ public class RubiconBot {
         //Create databases if neccesary
         generateDatabases();
 
+
         commandManager = new CommandManager();
         registerCommandHandlers();
         permissionManager = new PermissionManager();
@@ -109,8 +110,8 @@ public class RubiconBot {
         // init features
         new GiveawayHandler();
         new RemindHandler();
-        VerificationUserHandler.loadVerifyUser();
-        VerificationKickHandler.loadVerifyKicks();
+        //VerificationUserHandler.loadVerifyUser();
+        //VerificationKickHandler.loadVerifyKicks();
 
         // post bot stats to discordbots.org and print warning
         DBLUtil.postStats(false);
@@ -214,7 +215,8 @@ public class RubiconBot {
                 new CommandGlobalBlacklist(),
                 new CommandGenerateDocsJSON(),
                 new CommandMaintenance(),
-                new CommandGuildData()
+                new CommandGuildData(),
+                new CommandAlarm()
         );
         // music commands package
         commandManager.registerCommandHandlers(
@@ -228,18 +230,20 @@ public class RubiconBot {
                 new CommandResume(),
                 new CommandQueue(),
                 new CommandVolume(),
-                new CommandForceplay(),
-                new CommandLyrics()
+                new CommandForceplay()
         );
         // fun commands package
         commandManager.registerCommandHandlers(
                 new CommandRip(),
                 new CommandSlot(),
                 new CommandRoulette(),
-                new CommandOK(),
                 new CommandGiphy(),
                 new CommandVideo(),
-                new CommandUrban()
+                new CommandUrban(),
+                new CommandJoke(),
+                new CommandMinecraft(),
+                new CommandOWStats()
+
         );
         // general commands package
         commandManager.registerCommandHandlers(
@@ -264,6 +268,7 @@ public class RubiconBot {
                 new CommandJoinMessage(),
                 new CommandPrefix(),
                 new CommandWelcomeChannel(),
+                new CommandWhitelist(),
                 new CommandBlacklist(),
                 new CommandLeaveMessage(),
                 new CommandLog(),
@@ -271,8 +276,7 @@ public class RubiconBot {
         );
         // tools commands package
         commandManager.registerCommandHandlers(
-                new CommandASCII(),
-                new fun.rubicon.commands.tools.CommandChoose(),
+                new CommandChoose(),
                 new CommandClear(),
                 new CommandRandomColor(),
                 new CommandDice(),
@@ -294,13 +298,17 @@ public class RubiconBot {
     }
 
     private void generateDatabases() {
-        new ServerLogSQL().createTableIfNotExist();
-        new UserMusicSQL().createTableIfNotExist();
-        new GuildMusicSQL().createTableIfNotExist();
-        new WarnSQL().createTableIfNotExist();
-        new MemberSQL().createTableIfNotExist();
-        new VerificationKickSQL().createTableIfNotExist();
-        new VerificationUserSQL().createTableIfNotExist();
+        databaseManager.addGenerators(new ServerLogSQL(),
+                new UserMusicSQL(),
+                new GuildMusicSQL(),
+                new WarnSQL(),
+                new MemberSQL(),
+                new VerificationKickSQL(),
+                new VerificationUserSQL(),
+                new MinecraftSQL());
+
+        databaseManager.generate();
+
     }
 
     private void registerWebpanelRequests() {

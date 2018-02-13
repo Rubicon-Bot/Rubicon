@@ -9,9 +9,8 @@ package fun.rubicon.commands.tools;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.awt.*;
@@ -30,7 +29,7 @@ public class CommandRandomColor extends CommandHandler {
      */
     public CommandRandomColor() {
         super(new String[]{"randomcolor", "rcolor", "randc"}, CommandCategory.TOOLS,
-                new PermissionRequirements(PermissionLevel.EVERYONE, "command.color"),
+                new PermissionRequirements("command.color", false, true),
                 "Generates a random color.", "");
     }
 

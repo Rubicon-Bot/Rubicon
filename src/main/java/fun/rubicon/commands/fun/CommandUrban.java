@@ -5,8 +5,8 @@ import de.foryasee.httprequest.RequestResponse;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
@@ -26,7 +26,7 @@ import org.json.simple.parser.JSONParser;
  */
 public class CommandUrban extends CommandHandler {
     public CommandUrban() {
-        super(new String[]{"urban"}, CommandCategory.FUN, new PermissionRequirements(0, "command.urban"), "Search for a Term on Urban dictionary", "<Define query>");
+        super(new String[]{"urban"}, CommandCategory.FUN, new PermissionRequirements("command.urban", false, true), "Search for a Term on Urban dictionary", "<Define query>");
     }
 
     @Override

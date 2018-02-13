@@ -77,8 +77,14 @@ public class VerificationKickHandler {
             if (!verifyKicks.containsValue(this)) return;
             Guild guild = RubiconBot.getJDA().getGuildById(this.guildid);
             Member member = guild.getMemberById(this.userid);
-            member.getUser().openPrivateChannel().queue(c -> c.sendMessage(this.kickText.replace("%invite%", guild.getTextChannelById(RubiconBot.getMySQL().getVerificationValue(guild, "channelid")).createInvite().setMaxUses(1).complete().getURL())).queue());
-            guild.getController().kick(member).reason(this.kickText).queue();
+            if (member.getUser().isBot()) {
+                verifyKicks.remove(this);
+                return;
+            }
+            if (guild.getSelfMember().canInteract(member)) {
+                member.getUser().openPrivateChannel().queue(c -> c.sendMessage(this.kickText.replace("%invite%", guild.getTextChannelById(RubiconBot.getMySQL().getVerificationValue(guild, "channelid")).createInvite().setMaxUses(1).complete().getURL())).queue());
+                guild.getController().kick(member).reason(this.kickText).queue();
+            }
             VerificationKickSQL sql = new VerificationKickSQL(member.getUser(), member.getGuild());
             RubiconBot.getJDA().getGuildById(guildid).getTextChannelById(RubiconBot.getMySQL().getVerificationValue(guild, "channelid")).getMessageById(Long.parseLong(sql.get("message"))).complete().delete().queue();
             remove();

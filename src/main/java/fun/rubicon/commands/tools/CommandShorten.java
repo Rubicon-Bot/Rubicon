@@ -9,9 +9,8 @@ package fun.rubicon.commands.tools;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Bitly;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.Message;
@@ -32,7 +31,7 @@ public class CommandShorten extends CommandHandler {
      */
     public CommandShorten() {
         super(new String[]{"shorten", "short", "bitly", "schlb.pw"}, CommandCategory.TOOLS,
-                new PermissionRequirements(PermissionLevel.EVERYONE, "command.shorten"),
+                new PermissionRequirements("command.shorten", false, true),
                 "Shortens a URL with schlb.pw", "<URL>");
     }
 

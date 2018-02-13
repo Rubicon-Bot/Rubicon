@@ -9,8 +9,8 @@ package fun.rubicon.commands.general;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -20,7 +20,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class CommandInvite extends CommandHandler {
 
     public CommandInvite() {
-        super(new String[]{"invite", "inv"}, CommandCategory.GENERAL, new PermissionRequirements(0, "command.invite"), "Gives you the invite-link of the bot.", "");
+        super(new String[]{"invite", "inv"}, CommandCategory.GENERAL, new PermissionRequirements("command.invite", false, true), "Gives you the invite-link of the bot.", "");
     }
 
     @Override

@@ -6,13 +6,15 @@
 
 package fun.rubicon.commands.moderation;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
+import fun.rubicon.util.Logger;
+import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
@@ -25,7 +27,7 @@ import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
  */
 public class CommandMute extends CommandHandler {
     public CommandMute() {
-        super(new String[]{"mute"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.mute"), "Mutes an annoying member", "<@User>");
+        super(new String[]{"mute"}, CommandCategory.MODERATION, new PermissionRequirements("command.mute", false, false), "Mutes an annoying member", "<@User>");
     }
 
     @Override
@@ -37,6 +39,8 @@ public class CommandMute extends CommandHandler {
         if (message.getMentionedUsers().isEmpty())
             return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "mute <@User>").build()).build();
         Member victim = guild.getMember(message.getMentionedUsers().get(0));
+        if(victim.equals(guild.getSelfMember()))
+            return new MessageBuilder().setEmbed(EmbedUtil.error("Nice try m8", "PLEASE DO NOT MUTE ME").build()).build();
         if (!user.canInteract(victim))
             return new MessageBuilder().setEmbed(EmbedUtil.error("No permission", "You have no permission to interact with " + victim.getAsMention()).build()).build();
         if (!guild.getSelfMember().hasPermission(Permission.MANAGE_PERMISSIONS)) {
@@ -45,7 +49,11 @@ public class CommandMute extends CommandHandler {
         Role muted = createMutedRoleIfNotExists(guild);
         if (victim.getRoles().contains(muted))
             return new MessageBuilder().setEmbed(EmbedUtil.error("Already muted", "This user is already muted").build()).build();
-        guild.getController().addSingleRoleToMember(victim, muted).queue();
+        try {
+            guild.getController().addSingleRoleToMember(victim, muted).queue();
+        } catch (HierarchyException e){
+            SafeMessage.sendMessage(guild.getDefaultChannel(),"ERROR: Please give me `MANAGE_ROLE` permission to use mute command and move the Rubicon Role to the top", 5);
+        }
         return new MessageBuilder().setEmbed(EmbedUtil.success("Muted", "Successfully muted " + victim.getAsMention()).build()).build();
     }
 
@@ -60,9 +68,15 @@ public class CommandMute extends CommandHandler {
         }
         Role finalMuted = muted;
         guild.getTextChannels().forEach(c -> {
-            PermissionOverride override = c.createPermissionOverride(finalMuted).complete();
-            if (override.getDenied().contains(Permission.MESSAGE_WRITE)) return;
-            override.getManager().deny(Permission.MESSAGE_WRITE).queue();
+            try {
+                PermissionOverride override = c.createPermissionOverride(finalMuted).complete();
+                if (override.getDenied().contains(Permission.MESSAGE_WRITE)) return;
+                override.getManager().deny(Permission.MESSAGE_WRITE).queue();
+                override.getManager().deny(Permission.MESSAGE_ADD_REACTION).queue();
+            } catch (InsufficientPermissionException | HierarchyException e){
+                Logger.error(e);
+                guild.getDefaultChannel().sendMessage("ERROR: Please give me `MANAGE_ROLE` permission to use mute command and move the Rubicon Role to the top");
+            }
         });
         return muted;
     }

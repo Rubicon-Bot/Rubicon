@@ -11,9 +11,8 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -26,7 +25,7 @@ import java.time.OffsetDateTime;
 public class CommandServerInfo extends CommandHandler {
 
     public CommandServerInfo() {
-        super(new String[]{"serverinfo", "guild", "guildinfo"}, CommandCategory.TOOLS, new PermissionRequirements(PermissionLevel.EVERYONE, "command.serverinfo"), "Returns some information about the current/an other server", "[serverid]");
+        super(new String[]{"serverinfo", "guild", "guildinfo"}, CommandCategory.TOOLS, new PermissionRequirements("command.serverinfo", false, true), "Returns some information about the current/an other server", "[serverid]");
     }
 
     @Override

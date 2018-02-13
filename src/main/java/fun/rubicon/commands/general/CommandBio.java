@@ -3,9 +3,8 @@ package fun.rubicon.commands.general;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.sql.UserSQL;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.entities.Message;
@@ -18,7 +17,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class CommandBio extends CommandHandler {
 
     public CommandBio() {
-        super(new String[]{"bio"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.bio"), "Set your bio that is displayed in the rc!profile command. ", "set <text>");
+        super(new String[]{"bio"}, CommandCategory.GENERAL, new PermissionRequirements("command.bio", false, true), "Set your bio that is displayed in the rc!profile command. ", "set <text>");
     }
 
     @Override

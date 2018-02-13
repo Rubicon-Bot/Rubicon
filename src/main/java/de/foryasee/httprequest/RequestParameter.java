@@ -18,12 +18,14 @@ public class RequestParameter {
         this.intValue = value;
     }
 
-    public void setKey(String key) {
+    public RequestParameter setKey(String key) {
         this.key = key;
+        return this;
     }
 
-    public void setValue(String value) {
+    public RequestParameter setValue(String value) {
         this.value = value;
+        return this;
     }
 
     public String getKey() {

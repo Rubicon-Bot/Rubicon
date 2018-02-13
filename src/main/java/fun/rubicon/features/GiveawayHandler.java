@@ -11,9 +11,8 @@ import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.command.UnavailableCommandHandler;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.sql.MySQL;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -354,7 +353,7 @@ public class GiveawayHandler extends CommandHandler {
      */
     public GiveawayHandler() {
         super(new String[]{"giveaway", "giveaways"}, CommandCategory.ADMIN,
-                new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.giveaway"),
+                new PermissionRequirements("command.giveaway", false, false),
                 "Creates an automated giveaway users can take part in by reacting.",
                 "create <runtime-in-minutes> <prize...>");
 

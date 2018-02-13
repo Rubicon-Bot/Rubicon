@@ -10,11 +10,10 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
 import fun.rubicon.features.VerificationKickHandler;
 import fun.rubicon.features.VerificationUserHandler;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -41,8 +40,10 @@ public class CommandVerification extends CommandHandler {
     private static HashMap<Guild, VerificationSettings> settingslist = new HashMap<>();
     public static HashMap<Message, User> users = new HashMap<>();
 
+    public static boolean showInspired = false;
+
     public CommandVerification() {
-        super(new String[]{"verification", "verify"}, CommandCategory.ADMIN, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.verification"), "Let you members accept rules before posting messages", "setup\ndisable");
+        super(new String[]{"verification", "verify"}, CommandCategory.ADMIN, new PermissionRequirements("command.verification", false, false), "Let you members accept rules before posting messages\n\nThis feature is partially inspired by [Flashbot](https://flashbot.de)", "setup\ndisable");
     }
 
     @Override
@@ -301,5 +302,11 @@ public class CommandVerification extends CommandHandler {
         settingslist.remove(message.getGuild());
     }
 
-
+    public static void toggleInspired() {
+        if (showInspired) {
+            showInspired = false;
+        } else {
+            showInspired = true;
+        }
+    }
 }

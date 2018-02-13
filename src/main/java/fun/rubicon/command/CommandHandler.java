@@ -7,10 +7,11 @@
 package fun.rubicon.command;
 
 import fun.rubicon.RubiconBot;
+import fun.rubicon.commands.admin.CommandVerification;
 import fun.rubicon.commands.botowner.CommandMaintenance;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
 import fun.rubicon.listener.ServerLogHandler;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.Info;
@@ -34,7 +35,7 @@ public abstract class CommandHandler {
     private final String[] invocationAliases;
     private final CommandCategory category;
     private final PermissionRequirements permissionRequirements;
-    private final String description;
+    private String description;
     private final String parameterUsage;
     private boolean disabled = false;
 
@@ -172,6 +173,15 @@ public abstract class CommandHandler {
     }
 
     /**
+     * Updates the description of the command
+     *
+     * @param description the new command description
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
      * @return the usage message of this command.
      * @deprecated Use createHelpMessage instead.
      */
@@ -218,6 +228,13 @@ public abstract class CommandHandler {
         StringBuilder usage = new StringBuilder();
         for (String part : getParameterUsage().split("\n")) {
             usage.append(serverPrefix + aliasToUse + " " + part + "\n");
+        }
+        if (this instanceof CommandVerification) {
+            if (CommandVerification.showInspired) {
+                setDescription("Let you members accept rules before posting messages.");
+            } else {
+                setDescription("Let you members accept rules before posting messages\n\nThis feature is partially inspired by [Flashbot](https://flashbot.de)");
+            }
         }
         return message(info('\'' + aliasToUse + "' command help", getDescription())
                 .addField("Aliases", String.join(", ", getInvocationAliases()), false)

@@ -3,11 +3,10 @@ package fun.rubicon.commands.settings;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
 import fun.rubicon.listener.ServerLogHandler;
 import fun.rubicon.listener.ServerLogHandler.LogEventKeys;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.sql.ServerLogSQL;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
@@ -28,7 +27,7 @@ public class CommandLog extends CommandHandler {
     private String[] args;
 
     public CommandLog() {
-        super(new String[]{"log", "logsettings"}, CommandCategory.SETTINGS, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command."), "Enable/Disable log settings", "list\n" +
+        super(new String[]{"log", "logsettings"}, CommandCategory.SETTINGS, new PermissionRequirements("command.log", false, false), "Enable/Disable log settings", "list\n" +
                 "channel <#channel>\n" +
                 "join <enable/disable>\n" +
                 "leave <enable/disable>\n" +

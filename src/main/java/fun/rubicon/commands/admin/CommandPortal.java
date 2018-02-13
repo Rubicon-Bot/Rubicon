@@ -10,9 +10,8 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
@@ -33,7 +32,7 @@ public class CommandPortal extends CommandHandler {
     private File inviteFile = new File(RubiconBot.getDataFolder() + "portal-invites.json");
 
     public CommandPortal() {
-        super(new String[]{"portal", "mirror", "telephone"}, CommandCategory.ADMIN, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.portal"), "Create a portal and talk with users of other guilds.", "create\nclose\ninvite <serverid>\naccept <serverid>");
+        super(new String[]{"portal", "mirror", "telephone"}, CommandCategory.ADMIN, new PermissionRequirements("command.portal", false, false), "Create a portal and talk with users of other guilds.", "create\nclose\ninvite <serverid>\naccept <serverid>");
     }
 
     @Override

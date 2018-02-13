@@ -3,9 +3,8 @@ package fun.rubicon.commands.tools;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
@@ -40,7 +39,7 @@ public class CommandVote extends CommandHandler implements Serializable {
     private List<String> toAddEmojis = new ArrayList<>();
 
     public CommandVote() {
-        super(new String[]{"vote", "v", "poll"}, CommandCategory.TOOLS, new PermissionRequirements(PermissionLevel.EVERYONE, "command.vote"), "Polls", "create <Title>|<Option1>|<Option2>|...\nvote <index of Option>\nstats\nclose");
+        super(new String[]{"vote", "v", "poll"}, CommandCategory.TOOLS, new PermissionRequirements("command.vote", false, true), "Polls", "create <Title>|<Option1>|<Option2>|...\nvote <index of Option>\nstats\nclose");
     }
 
 
