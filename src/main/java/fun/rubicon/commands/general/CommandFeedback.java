@@ -6,12 +6,12 @@
 
 package fun.rubicon.commands.general;
 
-import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
+import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.Info;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -33,95 +33,80 @@ import java.util.concurrent.TimeUnit;
  * Handles the 'feedback' command which sends a feedback message to the developer server.
  */
 public class CommandFeedback extends CommandHandler {
-    private static HashMap<TextChannel, FeedbackTitle> channelMsg = new HashMap<>();
-    private static Timer timer = new Timer();
+    private static HashMap<Long, ReportHolder> reportMap = new HashMap<>();
 
-    /**
-     * Constructs this CommandHandler.
-     */
     public CommandFeedback() {
-        super(new String[]{"feedback", "submitidea", "submit-idea", "feature"}, CommandCategory.GENERAL,
-                new PermissionRequirements("command.feedback", false, true),
-                "Sends a feedback message to the developers.", "<Feedback title>");
+        super(new String[]{"feeback"}, CommandCategory.GENERAL, new PermissionRequirements("command.feedback", false, true), "Sends feedback to developers.", "<Title>");
     }
 
+    private static final String ISSUE_HEADER = "<p><strong>Feedback</strong><br><br><strong>Feedback by ";
+    private static final String ISSUE_SUFFIX = " </strong><br><br><strong>Description</strong><br><br></p>";
 
-    private static String Header = "<p><strong>Feedback</strong><br><br><strong>Feedback report by ";
-    private static String Sufix = " </strong><br><br><strong>Description</strong><br><br></p>";
 
     @Override
-    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions permissions) {
-        String title = parsedCommandInvocation.getMessage().getContentDisplay().replace(parsedCommandInvocation.getPrefix() + parsedCommandInvocation.getCommandInvocation(), "");
-        FeedbackTitle tite1 = new FeedbackTitle(title, parsedCommandInvocation.getAuthor(), parsedCommandInvocation.getTextChannel(), parsedCommandInvocation.getMessage().getContentDisplay());
-        channelMsg.put(parsedCommandInvocation.getTextChannel(), tite1);
-        SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), new EmbedBuilder().setTitle("Set Feedback Description").setDescription("Please write a short Description about the Feedback in this Channel").setFooter("Will abort in 30sec.", null).build(), 30);
-
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                channelMsg.remove(parsedCommandInvocation.getTextChannel());
-                parsedCommandInvocation.getTextChannel().sendMessage("Setup abort").queue(message -> {
-                    message.delete().queueAfter(5L, TimeUnit.SECONDS);
-                });
-                return;
-            }
-        }, 30000);
+    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        Message infoMessage = SafeMessage.sendMessageBlocking(parsedCommandInvocation.getTextChannel(), EmbedUtil.message(new EmbedBuilder().setTitle("Description....").setDescription("Please enter a short description.").setFooter("Will abort in 60 seconds.", null)));
+        reportMap.put(parsedCommandInvocation.getAuthor().getIdLong(), new ReportHolder(
+                parsedCommandInvocation.getTextChannel(),
+                parsedCommandInvocation.getMessage().getContentDisplay().replace(parsedCommandInvocation.getPrefix() + parsedCommandInvocation.getCommandInvocation() + " ", ""),
+                parsedCommandInvocation.getAuthor(),
+                infoMessage
+        ));
         return null;
     }
 
     public static void handle(MessageReceivedEvent event) {
-        if (!channelMsg.containsKey(event.getTextChannel()))
+        if (!reportMap.containsKey(event.getAuthor().getIdLong())) {
             return;
-        FeedbackTitle titel = channelMsg.get(event.getTextChannel());
-        if (event.getMessage().getContentDisplay().equals(titel.getMessage()))
+        }
+        ReportHolder reportHolder = reportMap.get(event.getAuthor().getIdLong());
+        if (event.getMessage().getContentDisplay().contains(reportHolder.title))
             return;
-        if (event.getAuthor().equals(RubiconBot.getJDA().getSelfUser()))
+        if (!event.getTextChannel().getId().equals(reportHolder.textChannel.getId()))
             return;
-
-        if (!event.getAuthor().equals(titel.getAuthor()))
-            return;
+        String description = event.getMessage().getContentDisplay();
         try {
             GitHub gitHub = GitHub.connectUsingOAuth(Info.GITHUB_TOKEN);
             GHRepository repository = gitHub.getOrganization("Rubicon-Bot").getRepository("Rubicon");
-            GHIssue Issue = repository.createIssue(titel.getTitle()).body(Header + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + Sufix + event.getMessage().getContentDisplay()).label("Enhancement").label("Up for grabs").create();
-            channelMsg.remove(event.getTextChannel());
+            GHIssue issue = repository.createIssue(reportHolder.title).body(ISSUE_HEADER + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + ISSUE_SUFFIX + description).label("Enhancement").label("Up for grabs").create();
+            reportHolder.delete(issue.getHtmlUrl().toString());
             event.getMessage().delete().queue();
-            SafeMessage.sendMessage(event.getTextChannel(), new EmbedBuilder().setTitle("Feedback successfully send!").setDescription("Feedback is available at: " + Issue.getHtmlUrl()).build(), 20);
-            timer.cancel();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    private static class ReportHolder {
+        private TextChannel textChannel;
+        private String title;
+        private User author;
+        private Message infoMessage;
 
-    private class FeedbackTitle {
-        private final String title;
-        private final User author;
-        private final TextChannel channel;
-        private final String message;
+        private Timer timer;
 
-
-        private FeedbackTitle(String title, User author, TextChannel channel, String message) {
+        private ReportHolder(TextChannel textChannel, String title, User author, Message infoMessage) {
+            this.textChannel = textChannel;
             this.title = title;
             this.author = author;
-            this.channel = channel;
-            this.message = message;
+            this.infoMessage = infoMessage;
+
+            //Abort
+            timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    infoMessage.delete().queue();
+                    SafeMessage.sendMessage(textChannel, EmbedUtil.message(EmbedUtil.error("Aborted!", "Aborted feedback report.")));
+                    reportMap.remove(author.getIdLong());
+                }
+            }, 60000);
         }
 
-        public String getMessage() {
-            return message;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public User getAuthor() {
-            return author;
-        }
-
-        public TextChannel getChannel() {
-            return channel;
+        private void delete(String link) {
+            reportMap.remove(author.getIdLong());
+            timer.cancel();
+            SafeMessage.sendMessage(textChannel, EmbedUtil.message(EmbedUtil.success("Success!", "Successfully sent feedback. [Your Feedback](" + link + ")")));
+            infoMessage.delete().queue();
         }
     }
 }
