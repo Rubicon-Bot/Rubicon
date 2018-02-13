@@ -11,7 +11,6 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.sql.GuildSQL;
@@ -30,7 +29,8 @@ import java.util.List;
 public class CommandWhitelist extends CommandHandler {
 
     public CommandWhitelist() {
-        super(new String[] {"wl", "whitelist"}, CommandCategory.SETTINGS, new PermissionRequirements("command.whitelist",false,true), "Whitelist one or more channel for bot commands", "whitelist list/add/remove", false);
+        super(new String[] {"wl", "whitelist"}, CommandCategory.SETTINGS, new PermissionRequirements("command.whitelist", false, false), "Whitelist one or more channel for bot commands", "whitelist list/add/remove", false);
+
     }
 
     @Override
