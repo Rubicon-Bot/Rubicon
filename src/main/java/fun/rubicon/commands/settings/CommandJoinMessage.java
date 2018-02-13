@@ -21,23 +21,19 @@ public class CommandJoinMessage extends CommandHandler {
     public CommandJoinMessage() {
         super(new String[]{"joinmsg", "joinmessage", "joinnachricht"}, CommandCategory.SETTINGS,
                 new PermissionRequirements("command.joinmsg", false, false),
-                "Set the server's join message!", "<Message(%user% for username, %guild% for guildname)>\ndisable");
+                "Set the server's join message!", "<Message(%user% for username, %guild% for guildname)>\ndisable/off");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        if (parsedCommandInvocation.getArgs().length <= 1)
+        if (parsedCommandInvocation.getArgs().length == 0)
             return createHelpMessage();
-        String temp = "";
-        for (int i = 0; i < parsedCommandInvocation.getArgs().length; i++) {
-            temp += " " + parsedCommandInvocation.getArgs()[i];
-        }
-        if (temp.equals("disable")) {
+        String content = parsedCommandInvocation.getMessage().getContentDisplay().replace(parsedCommandInvocation.getPrefix() + parsedCommandInvocation.getCommandInvocation() + " ", "");
+        if (content.equalsIgnoreCase("disable") || content.equalsIgnoreCase("false") || content.equalsIgnoreCase("0") || content.equalsIgnoreCase("off")) {
             RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.getMessage().getGuild(), "joinmsg", "0");
-            return new MessageBuilder().setEmbed(EmbedUtil.success("Disabled", "Succesfully disabled joinmessages").build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.success("Disabled!", "Succesfully disabled joinmessages.").build()).build();
         }
-        RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.getMessage().getGuild(), "joinmsg", temp.replaceFirst("null ", ""));
-        String up = RubiconBot.getMySQL().getGuildValue(parsedCommandInvocation.getMessage().getGuild(), "joinmsg");
-        return new MessageBuilder().setEmbed(new EmbedBuilder().setDescription(":white_check_mark:  Successfully set joinmessage to `" + up + "`!").build()).build();
+        RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.getMessage().getGuild(), "joinmsg", content);
+        return new MessageBuilder().setEmbed(EmbedUtil.success("Enabled!", "Successfully set message to `" + content + "`.").build()).build();
     }
 }
