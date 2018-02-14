@@ -19,7 +19,7 @@ import net.dv8tion.jda.core.entities.*;
 public class CommandSay extends CommandHandler {
 
     public CommandSay() {
-        super(new String[]{"say", "s"}, CommandCategory.GENERAL, new PermissionRequirements("command.say", false, true), "Send a Message as the Bot!", "<Channel> <Message>");
+        super(new String[]{"say", "s"}, CommandCategory.GENERAL, new PermissionRequirements("command.say", false, false), "Send a Message as the Bot!", "<Channel> <Message>");
     }
 
     @Override
