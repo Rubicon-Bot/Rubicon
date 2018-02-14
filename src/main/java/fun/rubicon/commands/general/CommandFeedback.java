@@ -35,7 +35,7 @@ public class CommandFeedback extends CommandHandler {
     private static HashMap<Long, ReportHolder> reportMap = new HashMap<>();
 
     public CommandFeedback() {
-        super(new String[]{"feeback"}, CommandCategory.GENERAL, new PermissionRequirements("command.feedback", false, true), "Sends feedback to developers.", "<Title>");
+        super(new String[]{"feedback"}, CommandCategory.GENERAL, new PermissionRequirements("command.feedback", false, true), "Sends feedback to developers.", "<Title>");
     }
 
     private static final String ISSUE_HEADER = "<p><strong>Feedback</strong><br><br><strong>Feedback by ";
