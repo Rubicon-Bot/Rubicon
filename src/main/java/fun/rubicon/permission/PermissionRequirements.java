@@ -6,6 +6,8 @@
 
 package fun.rubicon.permission;
 
+import fun.rubicon.RubiconBot;
+
 /**
  * Permission requirements.
  *
@@ -47,6 +49,11 @@ public class PermissionRequirements {
         // server owner has all perms on his server
         if (userPermissions.isServerOwner())
             return true;
+
+        //MASTER permissions
+        if (userPermissions.getEffectivePermissionEntry(null, "command.*") != null) {
+            return true;
+        }
 
         Permission effectiveEntry = userPermissions.getEffectivePermissionEntry(null, requiredPermissionNode);
         if (effectiveEntry == null) {

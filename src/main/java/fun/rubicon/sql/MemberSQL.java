@@ -25,8 +25,8 @@ public class MemberSQL implements DatabaseGenerator {
      * Uses for database generation
      */
     public MemberSQL() {
-        this.mySQL = RubiconBot.getMySQL();
-        this.connection = this.mySQL.getCon();
+        mySQL = RubiconBot.getMySQL();
+        connection = mySQL.getCon();
     }
 
     /**

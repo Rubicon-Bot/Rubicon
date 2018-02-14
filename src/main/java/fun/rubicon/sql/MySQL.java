@@ -76,7 +76,9 @@ public class MySQL {
         return this;
     }
 
-    public Connection getCon(){ return this.connection; }
+    public Connection getCon() {
+        return connection;
+    }
 
     /**
      * @param table

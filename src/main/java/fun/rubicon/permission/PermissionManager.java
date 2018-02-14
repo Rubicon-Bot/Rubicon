@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Manages the rubicon permission system.
@@ -87,7 +88,7 @@ public class PermissionManager {
                             "WHERE `guildid` = ? " +
                             "AND `type` = ? " +
                             "AND `id` = ? " +
-                            "AND `permission` = ? " +
+                            "AND `permission` = ?" +
                             (!ignoreNegation ? "AND `negated` = ?;" : ";"));
             selectStatement.setLong(1, target.getGuild().getIdLong());
             selectStatement.setString(2, String.valueOf(target.getType().getIdentifier()));
