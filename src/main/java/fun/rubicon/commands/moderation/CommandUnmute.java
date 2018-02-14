@@ -39,7 +39,7 @@ public class CommandUnmute extends CommandHandler {
         Member victim = guild.getMember(message.getMentionedUsers().get(0));
         if (!user.canInteract(victim))
             return new MessageBuilder().setEmbed(EmbedUtil.error("No permission", "You have no permission to interact with " + victim.getAsMention()).build()).build();
-        Role muted = CommandMute.createMutedRoleIfNotExists(guild);
+        Role muted = CommandMute.createMutedRoleIfNotExists(guild, null);
         if (!victim.getRoles().contains(muted))
             return new MessageBuilder().setEmbed(EmbedUtil.error("Not muted", "This user is not muted").build()).build();
         guild.getController().removeSingleRoleFromMember(victim, muted).queue();

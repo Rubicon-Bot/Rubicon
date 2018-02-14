@@ -6,7 +6,6 @@
 
 package fun.rubicon.commands.moderation;
 
-import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
@@ -39,30 +38,32 @@ public class CommandMute extends CommandHandler {
         if (message.getMentionedUsers().isEmpty())
             return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "mute <@User>").build()).build();
         Member victim = guild.getMember(message.getMentionedUsers().get(0));
-        if(victim.equals(guild.getSelfMember()))
-            return new MessageBuilder().setEmbed(EmbedUtil.error("Nice try m8", "PLEASE DO NOT MUTE ME").build()).build();
+        if (victim.equals(guild.getSelfMember()))
+            return new MessageBuilder().setEmbed(EmbedUtil.error("Nice try m8!", "PLEASE DO NOT MUTE ME. thx").build()).build();
         if (!user.canInteract(victim))
             return new MessageBuilder().setEmbed(EmbedUtil.error("No permission", "You have no permission to interact with " + victim.getAsMention()).build()).build();
         if (!guild.getSelfMember().hasPermission(Permission.MANAGE_PERMISSIONS)) {
             return EmbedUtil.message(EmbedUtil.error("Permission Error!", "I need the MANAGE_PERMISSIONS permissions to mute users."));
         }
-        Role muted = createMutedRoleIfNotExists(guild);
+        Role muted = createMutedRoleIfNotExists(guild, parsedCommandInvocation.getTextChannel());
         if (victim.getRoles().contains(muted))
             return new MessageBuilder().setEmbed(EmbedUtil.error("Already muted", "This user is already muted").build()).build();
         try {
             guild.getController().addSingleRoleToMember(victim, muted).queue();
-        } catch (HierarchyException e){
-            SafeMessage.sendMessage(guild.getDefaultChannel(),"ERROR: Please give me `MANAGE_ROLE` permission to use mute command and move the Rubicon Role to the top", 5);
+        } catch (HierarchyException e) {
+            SafeMessage.sendMessage(guild.getDefaultChannel(), "ERROR: Please give me `MANAGE_ROLE` permission to use mute command and move the Rubicon Role to the top", 5);
         }
         return new MessageBuilder().setEmbed(EmbedUtil.success("Muted", "Successfully muted " + victim.getAsMention()).build()).build();
     }
 
-    public static Role createMutedRoleIfNotExists(Guild guild) {
+    public static Role createMutedRoleIfNotExists(Guild guild, TextChannel messageChannel) {
         if (!guild.getRolesByName("rubicon-muted", false).isEmpty())
             return guild.getRolesByName("rubicon-muted", false).get(0);
         Role muted = null;
         try {
             muted = guild.getController().createRole().setName("rubicon-muted").complete();
+            if (messageChannel != null)
+                SafeMessage.sendMessage(messageChannel, EmbedUtil.message(EmbedUtil.info("Mute Role created", "Please move the `rubicon-muted` role over the normal user role.")));
         } catch (InsufficientPermissionException | HierarchyException e) {
             guild.getDefaultChannel().sendMessage("ERROR: Please give me `MANAGE_ROLE` permission to use mute command and move the Rubicon Role to the top");
         }
@@ -73,7 +74,7 @@ public class CommandMute extends CommandHandler {
                 if (override.getDenied().contains(Permission.MESSAGE_WRITE)) return;
                 override.getManager().deny(Permission.MESSAGE_WRITE).queue();
                 override.getManager().deny(Permission.MESSAGE_ADD_REACTION).queue();
-            } catch (InsufficientPermissionException | HierarchyException e){
+            } catch (InsufficientPermissionException | HierarchyException e) {
                 Logger.error(e);
                 guild.getDefaultChannel().sendMessage("ERROR: Please give me `MANAGE_ROLE` permission to use mute command and move the Rubicon Role to the top");
             }
@@ -82,14 +83,14 @@ public class CommandMute extends CommandHandler {
     }
 
     public static void handleTextChannelCreation(TextChannelCreateEvent event) {
-        Role muted = createMutedRoleIfNotExists(event.getGuild());
+        Role muted = createMutedRoleIfNotExists(event.getGuild(), null);
         if (!event.getGuild().getSelfMember().canInteract(muted))
             event.getGuild().getOwner().getUser().openPrivateChannel().complete().sendMessage("I am unable to interact with `rubicon-muted` please give me access").queue();
         TextChannel channel = event.getChannel();
         PermissionOverride override;
         try {
             override = channel.createPermissionOverride(muted).complete();
-        } catch (InsufficientPermissionException ex){
+        } catch (InsufficientPermissionException ex) {
             event.getGuild().getOwner().getUser().openPrivateChannel().complete().sendMessage("I am unable to handle creation of new channel ` " + event.getChannel().getName() + "`! Please give me `" + ex.getPermission().toString() + "` in order to use mute command").queue();
             return;
         }

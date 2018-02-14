@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Handles the 'feedback' command which sends a feedback message to the developer server.
@@ -36,7 +35,9 @@ public class CommandFeedback extends CommandHandler {
     private static HashMap<Long, ReportHolder> reportMap = new HashMap<>();
 
     public CommandFeedback() {
-        super(new String[]{"feeback"}, CommandCategory.GENERAL, new PermissionRequirements("command.feedback", false, true), "Sends feedback to developers.", "<Title>");
+        super(new String[]{"feedback", "submitidea", "submit-idea", "feature"}, CommandCategory.GENERAL,
+                new PermissionRequirements("command.feedback", false, true),
+                "Sends a feedback message to the developers.", "<Feedback title>");
     }
 
     private static final String ISSUE_HEADER = "<p><strong>Feedback</strong><br><br><strong>Feedback by ";
