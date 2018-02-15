@@ -101,12 +101,13 @@ public class HttpRequest {
         return paramsLine;
     }
 
-    private void setHeader(HttpURLConnection conn) {
+    private HttpRequest setHeader(HttpURLConnection conn) {
         if (requestHeader != null) {
             for (RequestHeaderField field : requestHeader.getRequestFields()) {
                 conn.setRequestProperty(field.getKey(), field.getValue());
             }
         }
+        return this;
     }
 
     /**
@@ -114,8 +115,9 @@ public class HttpRequest {
      *
      * @param requestParameter Request Parameter
      */
-    public void addParameter(RequestParameter requestParameter) {
+    public HttpRequest addParameter(RequestParameter requestParameter) {
         params.add(requestParameter);
+        return this;
     }
 
     /**
@@ -124,8 +126,9 @@ public class HttpRequest {
      * @param key   Parameter Key
      * @param value Parameter Value
      */
-    public void addParameter(String key, String value) {
+    public HttpRequest addParameter(String key, String value) {
         params.add(new RequestParameter(key, value));
+        return this;
     }
 
     /**
@@ -134,8 +137,8 @@ public class HttpRequest {
      * @param key   Parameter Key
      * @param value Parameter Value
      */
-    public void addParameter(String key, int value) {
-        params.add(new RequestParameter(key, value));
+    public HttpRequest addParameter(String key, int value) {
+        params.add(new RequestParameter(key, value)); return this;
     }
 
     //Getter & Setter
@@ -158,8 +161,9 @@ public class HttpRequest {
     /**
      * @param requestURL the urls where the request should be executed
      */
-    public void setURL(String requestURL) {
+    public HttpRequest setURL(String requestURL) {
         this.requestURL = requestURL;
+        return this;
     }
 
     /**
@@ -181,7 +185,8 @@ public class HttpRequest {
      *
      * @param requestHeader The request header
      */
-    public void setRequestHeader(RequestHeader requestHeader) {
+    public HttpRequest setRequestHeader(RequestHeader requestHeader) {
         this.requestHeader = requestHeader;
+        return this;
     }
 }

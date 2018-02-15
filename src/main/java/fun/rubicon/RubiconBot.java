@@ -62,6 +62,7 @@ public class RubiconBot {
     private final Set<EventListener> eventListeners;
     private final PermissionManager permissionManager;
     private final RubackReceiver rubackReceiver;
+    private final DatabaseManager databaseManager;
 
     /**
      * Constructs the RubiconBot.
@@ -74,6 +75,7 @@ public class RubiconBot {
 
         timer = new Timer();
         eventListeners = new HashSet<>();
+        databaseManager = new DatabaseManager();
 
         // load configuration and obtain missing config values
         new File(dataFolder).mkdirs();
@@ -92,6 +94,7 @@ public class RubiconBot {
 
         //Create databases if neccesary
         generateDatabases();
+
 
         commandManager = new CommandManager();
         registerCommandHandlers();
@@ -212,7 +215,8 @@ public class RubiconBot {
                 new CommandGlobalBlacklist(),
                 new CommandGenerateDocsJSON(),
                 new CommandMaintenance(),
-                new CommandGuildData()
+                new CommandGuildData(),
+                new CommandAlarm()
         );
         // music commands package
         commandManager.registerCommandHandlers(
@@ -237,7 +241,9 @@ public class RubiconBot {
                 new CommandVideo(),
                 new CommandUrban(),
                 new CommandJoke(),
+                new CommandMinecraft(),
                 new CommandOWStats()
+
         );
         // general commands package
         commandManager.registerCommandHandlers(
@@ -293,13 +299,17 @@ public class RubiconBot {
     }
 
     private void generateDatabases() {
-        new ServerLogSQL().createTableIfNotExist();
-        new UserMusicSQL().createTableIfNotExist();
-        new GuildMusicSQL().createTableIfNotExist();
-        new WarnSQL().createTableIfNotExist();
-        new MemberSQL().createTableIfNotExist();
-        new VerificationKickSQL().createTableIfNotExist();
-        new VerificationUserSQL().createTableIfNotExist();
+        databaseManager.addGenerators(new ServerLogSQL(),
+                new UserMusicSQL(),
+                new GuildMusicSQL(),
+                new WarnSQL(),
+                new MemberSQL(),
+                new VerificationKickSQL(),
+                new VerificationUserSQL(),
+                new MinecraftSQL());
+
+        databaseManager.generate();
+
     }
 
     private void registerWebpanelRequests() {

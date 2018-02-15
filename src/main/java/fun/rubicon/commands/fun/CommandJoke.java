@@ -28,8 +28,7 @@ import org.json.simple.parser.JSONParser;
 public class CommandJoke extends CommandHandler {
 
     public CommandJoke() {
-        super(new String[]{"joke"}, CommandCategory.FUN, new PermissionRequirements("command.joke",false,true), "Get some shitty Joke", "");
-
+        super(new String[]{"joke"}, CommandCategory.FUN, new PermissionRequirements("command.joke", false, true), "Get some shitty Joke", "");
     }
 
     @Override
