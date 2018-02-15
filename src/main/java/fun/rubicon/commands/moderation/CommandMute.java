@@ -6,7 +6,6 @@
 
 package fun.rubicon.commands.moderation;
 
-import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
@@ -39,13 +38,8 @@ public class CommandMute extends CommandHandler {
         if (message.getMentionedUsers().isEmpty())
             return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "mute <@User>").build()).build();
         Member victim = guild.getMember(message.getMentionedUsers().get(0));
-<<<<<<< HEAD
-        if(victim.equals(guild.getSelfMember()))
-            return new MessageBuilder().setEmbed(EmbedUtil.error("Nice try m8", "PLEASE DO NOT MUTE ME").build()).build();
-=======
         if (victim.equals(guild.getSelfMember()))
             return new MessageBuilder().setEmbed(EmbedUtil.error("Nice try m8!", "PLEASE DO NOT MUTE ME. thx").build()).build();
->>>>>>> dev
         if (!user.canInteract(victim))
             return new MessageBuilder().setEmbed(EmbedUtil.error("No permission", "You have no permission to interact with " + victim.getAsMention()).build()).build();
         if (!guild.getSelfMember().hasPermission(Permission.MANAGE_PERMISSIONS)) {
@@ -56,13 +50,10 @@ public class CommandMute extends CommandHandler {
             return new MessageBuilder().setEmbed(EmbedUtil.error("Already muted", "This user is already muted").build()).build();
         try {
             guild.getController().addSingleRoleToMember(victim, muted).queue();
-<<<<<<< HEAD
-        } catch (HierarchyException e){
-            SafeMessage.sendMessage(guild.getDefaultChannel(),"ERROR: Please give me `MANAGE_ROLE` permission to use mute command and move the Rubicon Role to the top", 5);
-=======
+
         } catch (HierarchyException e) {
             SafeMessage.sendMessage(guild.getDefaultChannel(), "ERROR: Please give me `MANAGE_ROLE` permission to use mute command and move the Rubicon Role to the top", 5);
->>>>>>> dev
+
         }
         return new MessageBuilder().setEmbed(EmbedUtil.success("Muted", "Successfully muted " + victim.getAsMention()).build()).build();
     }
@@ -85,11 +76,8 @@ public class CommandMute extends CommandHandler {
                 if (override.getDenied().contains(Permission.MESSAGE_WRITE)) return;
                 override.getManager().deny(Permission.MESSAGE_WRITE).queue();
                 override.getManager().deny(Permission.MESSAGE_ADD_REACTION).queue();
-<<<<<<< HEAD
-            } catch (InsufficientPermissionException | HierarchyException e){
-=======
+
             } catch (InsufficientPermissionException | HierarchyException e) {
->>>>>>> dev
                 Logger.error(e);
                 guild.getDefaultChannel().sendMessage("ERROR: Please give me `MANAGE_ROLE` permission to use mute command and move the Rubicon Role to the top");
             }
