@@ -13,11 +13,7 @@ import net.dv8tion.jda.core.entities.Message;
 
 public class CommandLeaveMessage extends CommandHandler {
     public CommandLeaveMessage() {
-<<<<<<< HEAD
-        super(new String[]{"leavemsg", "leavemessage"}, CommandCategory.SETTINGS, new PermissionRequirements("command.leavemessage", false, false), "Set the server's leave message!", " <disable/Message(%user% for username, %guild% for guildname)>", false);
-=======
         super(new String[]{"leavemsg", "leavemessage", "leavemessages"}, CommandCategory.SETTINGS, new PermissionRequirements("command.leavemessage", false, false), "Set the servers leave message!", "<disable/Message(%user% for username, %guild% for guildname)>\ndisable/off", false);
->>>>>>> master
     }
 
     @Override
