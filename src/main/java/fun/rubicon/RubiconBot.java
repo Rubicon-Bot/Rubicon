@@ -215,7 +215,8 @@ public class RubiconBot {
                 new CommandGlobalBlacklist(),
                 new CommandGenerateDocsJSON(),
                 new CommandMaintenance(),
-                new CommandGuildData()
+                new CommandGuildData(),
+                new CommandAlarm()
         );
         // music commands package
         commandManager.registerCommandHandlers(
