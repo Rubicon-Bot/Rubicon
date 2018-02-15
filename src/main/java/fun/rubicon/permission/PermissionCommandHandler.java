@@ -10,8 +10,9 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.util.Logger;
+import fun.rubicon.util.Colors;
 import fun.rubicon.util.StringUtil;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;
@@ -40,7 +41,7 @@ public class PermissionCommandHandler extends CommandHandler {
         super(new String[]{"permission", "permit", "permissions", "perm", "perms"}, CommandCategory.ADMIN,
                 new PermissionRequirements("command.permission", false, false),
                 "Allows modifying and listing permissions.",
-                "allow/deny <@User/@Role/dp:id> <command>\n" +
+                "allow/deny <@User/@Role/dp:id> <command-permission>\n" +
                         "list <@User/@Role/dp:id> <command>");
     }
 
@@ -90,23 +91,37 @@ public class PermissionCommandHandler extends CommandHandler {
                     return message(no_permissions());
                 List<CommandHandler> filteredCommandList = RubiconBot.getCommandManager().getCommandAssociations().values().stream().filter(commandHandler -> commandHandler.getCategory() != CommandCategory.BOT_OWNER).collect(Collectors.toList());
                 List<Permission> permissionEntries = RubiconBot.sGetPermissionManager().getPermissions(target);
-                StringBuilder permissionString = new StringBuilder();
+                StringBuilder deniedPermissionString = new StringBuilder();
+                StringBuilder allowedPermissionString = new StringBuilder();
                 ArrayList<CommandHandler> alreadyAdded = new ArrayList<>();
                 for (CommandHandler commandHandler : filteredCommandList) {
                     if (alreadyAdded.contains(commandHandler))
                         continue;
                     List<Permission> commandPermissions = permissionEntries.stream().filter(permission -> permission.getPermissionString().replaceFirst("!", "").equalsIgnoreCase(commandHandler.getPermissionRequirements().getRequiredPermissionNode())).collect(Collectors.toList());
                     if (commandPermissions.size() == 0) {
-                        if (!commandHandler.getPermissionRequirements().isDefault())
-                            permissionString.append(":black_small_square: **" + commandHandler.getInvocationAliases()[0] + "** (" + commandHandler.getPermissionRequirements().getRequiredPermissionNode() + ")\n");
+                        if (!commandHandler.getPermissionRequirements().isDefault()) {
+                            deniedPermissionString.append("`").append(commandHandler.getInvocationAliases()[0]).append("` ");
+                            alreadyAdded.add(commandHandler);
+                            continue;
+                        }
                     } else {
                         if (commandPermissions.get(0).isNegated()) {
-                            permissionString.append(":black_small_square: **" + commandHandler.getInvocationAliases()[0] + "** (" + commandHandler.getPermissionRequirements().getRequiredPermissionNode() + ")\n");
+                            deniedPermissionString.append("`").append(commandHandler.getInvocationAliases()[0]).append("` ");
+                            alreadyAdded.add(commandHandler);
+                            continue;
                         }
                     }
+                    allowedPermissionString.append("`" + commandHandler.getInvocationAliases()[0] + "` ");
                     alreadyAdded.add(commandHandler);
                 }
-                return message(info("Denied Permissions", "Denied permissions of " + target.toString() + "\n\n" + permissionString.toString()));
+                EmbedBuilder listBuilder = new EmbedBuilder();
+                listBuilder.setColor(Colors.COLOR_SECONDARY);
+                listBuilder.setTitle(":information_source: Permission list");
+                listBuilder.setDescription("Permissions of " + target.toString());
+                listBuilder.addField("Allowed Permissions", allowedPermissionString.toString(), true);
+                listBuilder.addField("Denied Permissions", deniedPermissionString.toString(), true);
+                listBuilder.setFooter("NOTICE - Permissions always starts with command. | This command is a pre-version.", null);
+                return message(listBuilder);
             }
 
             if (invocation.getArgs().length < 3)
@@ -134,20 +149,6 @@ public class PermissionCommandHandler extends CommandHandler {
                         permissionString + "` for `" + target.toString() + "`."));
             }
             return null;
-
-        /*try {
-                return RubiconBot.sGetPermissionManager().removePermission(target, Permission.parse(invocation.getArgs()[3]))
-                        ? message(success("Updated permissions", "Successfully removed `" +
-                        invocation.getArgs()[3] + "` from `" + target.toString() + "`."))
-                        : message(error("Entry does not exist", "There is no `" + invocation.getArgs()[3] +
-                        "` entry for `" + target.toString() + "` on this guild. Use `" + invocation.getPrefix() +
-                        invocation.getCommandInvocation() + " list " + invocation.getArgs()[1] + ' ' + invocation.getArgs()[2] +
-                        "` to get a list of permission entries for this target."));
-
-            } else {
-                throw new IllegalArgumentException("`" + invocation.getArgs()[0] + "` is not a " +
-                        "valid argument.");
-            }*/
         } catch (
                 IllegalArgumentException e)
 
@@ -183,18 +184,9 @@ public class PermissionCommandHandler extends CommandHandler {
                 .addField("Aliases", String.join(", ", getInvocationAliases()), false)
                 .addField("Usage", usage.toString(), false)
                 .addField("Parameters",
-                        "`<target-type>`\n" +
-                                "Use `user` for user targets, `role` for role targets and `discordpermission` for " +
-                                "discord-permission targets.\n\n" +
-
-                                "`<target-id>`\n" +
-                                "Mention the target or specify it's id. User the user-id for users, the role id for roles and the " +
-                                "permission offset for discord-permissions. Type `" + serverPrefix + aliasToUse + " " +
-                                "show-discord-permissions` for a list of discord permissions.\n\n" +
-
-                                "`<permission-node>`\n" +
-                                "Id of the permission you want to add. If you want to add a command\n" +
+                        "`command-permission`\n" +
+                                "Permission of the command. If you want to add a command\n" +
                                 "you have to use `command.yourCommand`\n" +
-                                "All permission-nodes are displayed next to the commands at our [documentation](http://rubicon.fun)", false));
+                                "All command-permissions are displayed next to the commands at our [documentation](http://rubicon.fun)", false));
     }
 }

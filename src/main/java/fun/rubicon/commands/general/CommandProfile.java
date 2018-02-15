@@ -12,10 +12,7 @@ import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
@@ -42,7 +39,7 @@ public class CommandProfile extends CommandHandler {
         //profile @User
         if (invocation.getMessage().getMentionedUsers().size() == 1) {
             Member mentionedMember = invocation.getGuild().getMember(invocation.getMessage().getMentionedUsers().get(0));
-            if (invocation.getArgs().length == mentionedMember.getEffectiveName().split(" ").length) {
+            if (invocation.getArgs().length == 1) {
                 generateProfile(mentionedMember, invocation.getTextChannel());
                 return null;
             }
@@ -60,8 +57,10 @@ public class CommandProfile extends CommandHandler {
         embedBuilder.setAuthor(member.getEffectiveName() + "'s profile", null, member.getUser().getAvatarUrl());
         if (Arrays.asList(Info.BOT_AUTHOR_IDS).contains(member.getUser().getIdLong())) {
             embedBuilder.addField("VIP", "Official RubiconBot Developer", false);
-        } else if (Arrays.asList(Info.COMMUNITY_STAFF_TEAM).contains(member.getUser().getIdLong())) {
-            embedBuilder.addField("VIP", "RubiconBot Community Staff", false);
+        } else {
+            Role staffRole = member.getGuild().getRoleById(Info.COMMUNITY_STAFF_ROLE);
+            if (member.getRoles().contains(staffRole))
+                embedBuilder.addField("VIP", "RubiconBot Community Staff", false);
         }
         embedBuilder.setDescription(userSQL.get("bio"));
         embedBuilder.addField("Money", "Balance: " + userSQL.get("money") + " Rubys", true);

@@ -107,7 +107,11 @@ public class GuildSQL implements DatabaseGenerator{
     }
 
     public boolean enabledBlacklist(){
-        return !get("blacklist").equals("");
+        try {
+            return !get("blacklist").equals("");
+        } catch (NullPointerException ex) {
+            return false;
+        }
     }
 
     public boolean isBlacklisted(TextChannel channel){

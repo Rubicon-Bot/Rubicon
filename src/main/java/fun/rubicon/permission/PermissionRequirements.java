@@ -6,8 +6,6 @@
 
 package fun.rubicon.permission;
 
-import fun.rubicon.RubiconBot;
-
 /**
  * Permission requirements.
  *
