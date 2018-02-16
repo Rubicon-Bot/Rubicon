@@ -1,9 +1,9 @@
 package fun.rubicon.commands.fun;
 
-import com.google.api.client.json.Json;
-import de.foryasee.httprequest.HttpRequest;
+import de.foryasee.httprequest.HttpRequestBuilder;
 import de.foryasee.httprequest.RequestHeader;
 import de.foryasee.httprequest.RequestResponse;
+import de.foryasee.httprequest.RequestType;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
@@ -14,7 +14,6 @@ import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -56,10 +55,10 @@ public class CommandOWStats extends CommandHandler {
         @Override
         public void run() {
             try {
-                HttpRequest request = new HttpRequest("https://owapi.net/api/v3/u/"+ parsedCommandInvocation.getArgs()[1].replace("#","-")+"/stats");
+                HttpRequestBuilder request = new HttpRequestBuilder("https://owapi.net/api/v3/u/"+ parsedCommandInvocation.getArgs()[1].replace("#","-")+"/stats", RequestType.GET);
                 request.setRequestHeader(new RequestHeader().addField("User-Agent","RubiconBot"));
-                RequestResponse response = request.sendGETRequest();
-                JSONObject reg = (JSONObject) new JSONParser().parse(response.getResponse());
+                RequestResponse response = request.sendRequest();
+                JSONObject reg = (JSONObject) new JSONParser().parse(response.getResponseMessage());
                 JSONObject plat = (JSONObject) reg.get(parsedCommandInvocation.getArgs()[0]);
                 JSONObject root = (JSONObject) plat.get("stats");
                 JSONObject quick = (JSONObject) root.get("quickplay");

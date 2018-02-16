@@ -1,8 +1,9 @@
 package fun.rubicon.commands.fun;
 
-import de.foryasee.httprequest.HttpRequest;
+import de.foryasee.httprequest.HttpRequestBuilder;
 import de.foryasee.httprequest.RequestHeader;
 import de.foryasee.httprequest.RequestResponse;
+import de.foryasee.httprequest.RequestType;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
@@ -34,14 +35,14 @@ public class CommandJoke extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        HttpRequest request = new HttpRequest("https://icanhazdadjoke.com/");
+        HttpRequestBuilder request = new HttpRequestBuilder("https://icanhazdadjoke.com/", RequestType.GET);
         RequestHeader header = new RequestHeader();
         header.addField("Accept","application/json");
         header.addField("User-Agent","RubiconBot (https://github.com/Rubicon-Bot/Rubicon)");
         request.setRequestHeader(header);
         try {
-            RequestResponse response = request.sendGETRequest();
-            JSONObject json = (JSONObject) new JSONParser().parse(response.getResponse());
+            RequestResponse response = request.sendRequest();
+            JSONObject json = (JSONObject) new JSONParser().parse(response.getResponseMessage());
             SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(),new EmbedBuilder().setTitle("Joke").setDescription((String) json.get("joke")).setColor(Colors.COLOR_SECONDARY).build());
         } catch (Exception e) {
             e.printStackTrace();

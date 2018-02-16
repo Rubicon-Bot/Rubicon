@@ -42,15 +42,15 @@ public class GuildSQL implements DatabaseGenerator{
             Logger.error(e);
         }
     }
-        private GuildSQL(Guild guild, MySQL mySQL) {
-            this.guild = guild;
-            this.mySQL = RubiconBot.getMySQL();
-            this.connection = MySQL.getConnection();
-        }
+    private GuildSQL(Guild guild, MySQL mySQL) {
+        this.guild = guild;
+        this.mySQL = RubiconBot.getMySQL();
+        this.connection = MySQL.getConnection();
+    }
 
-        public static GuildSQL fromGuild(Guild guild) {
-            return new GuildSQL(guild, RubiconBot.getMySQL());
-        }
+    public static GuildSQL fromGuild(Guild guild) {
+        return new GuildSQL(guild, RubiconBot.getMySQL());
+    }
 
 
     public boolean exist() {
@@ -107,11 +107,7 @@ public class GuildSQL implements DatabaseGenerator{
     }
 
     public boolean enabledBlacklist(){
-        try {
-            return !get("blacklist").equals("");
-        } catch (NullPointerException ex) {
-            return false;
-        }
+        return !get("blacklist").equals("");
     }
 
     public boolean isBlacklisted(TextChannel channel){

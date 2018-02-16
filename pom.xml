@@ -93,8 +93,13 @@
             <artifactId>github-api</artifactId>
             <version>1.92</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.github.ForYaSee</groupId>
+            <artifactId>HttpRequest</artifactId>
+            <version>LATEST</version>
+        </dependency>
     </dependencies>
+
     <repositories>
         <repository>
             <id>jcenter</id>
