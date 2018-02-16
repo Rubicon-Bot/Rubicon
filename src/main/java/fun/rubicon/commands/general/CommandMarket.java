@@ -19,7 +19,6 @@ public class CommandMarket extends CommandHandler {
 
     public CommandMarket() {
         super(new String[]{}, CommandCategory.GENERAL, new PermissionRequirements("command.market", false, true), "", "");
-        loadItems();
     }
 
     @Override
@@ -27,7 +26,4 @@ public class CommandMarket extends CommandHandler {
         return null;
     }
 
-    public void loadItems(){
-
-    }
 }
