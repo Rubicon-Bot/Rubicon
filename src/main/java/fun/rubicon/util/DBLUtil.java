@@ -79,9 +79,7 @@ public class DBLUtil {
             Logger.error(e);
         }
 
-
         res.close();
-
 
     }
 }

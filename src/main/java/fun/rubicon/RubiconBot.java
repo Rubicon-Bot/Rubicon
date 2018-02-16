@@ -242,7 +242,8 @@ public class RubiconBot {
                 new CommandUrban(),
                 new CommandJoke(),
                 new CommandMinecraft(),
-                new CommandOWStats()
+                new CommandOWStats(),
+                new CommandAsciiText()
 
         );
         // general commands package
