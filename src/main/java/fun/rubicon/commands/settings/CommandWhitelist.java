@@ -29,7 +29,7 @@ import java.util.List;
 public class CommandWhitelist extends CommandHandler {
 
     public CommandWhitelist() {
-        super(new String[] {"wl", "whitelist"}, CommandCategory.SETTINGS, new PermissionRequirements("command.whitelist", false, false), "Whitelist one or more channel for bot commands", "whitelist list/add/remove", false);
+        super(new String[]{"wl", "whitelist"}, CommandCategory.SETTINGS, new PermissionRequirements("command.whitelist", false, false), "Whitelist one or more channel for bot commands", "whitelist list/add/remove", false);
     }
 
     @Override
@@ -40,13 +40,13 @@ public class CommandWhitelist extends CommandHandler {
         TextChannel channel = parsedCommandInvocation.getTextChannel();
         Message message = parsedCommandInvocation.getMessage();
 
-        if(args.length == 0)
+        if (args.length == 0)
             return createHelpMessage();
         GuildSQL guildSQL = GuildSQL.fromGuild(guild);
-        if(guildSQL.enabledBlacklist()){
+        if (guildSQL.enabledBlacklist()) {
             return new MessageBuilder().setEmbed(EmbedUtil.error("Already using blacklist", "You can't use black- and whitelist on the same server").build()).build();
         }
-        switch (args[0]){
+        switch (args[0]) {
             case "list":
                 executeList(args, member, guild, channel);
                 break;
@@ -68,18 +68,24 @@ public class CommandWhitelist extends CommandHandler {
 
     private void executeRemove(String[] args, Member member, Guild guild, TextChannel textChannel, Message message) {
         GuildSQL sql = GuildSQL.fromGuild(guild);
-        if(message.getMentionedChannels().isEmpty()){ SafeMessage.sendMessage(textChannel, EmbedUtil.error("Unknown usage", "Please use `rc!whitelist add <#Channel>`").build(), 7); return; }
+        if (message.getMentionedChannels().isEmpty()) {
+            SafeMessage.sendMessage(textChannel, EmbedUtil.error("Unknown usage", "Please use `rc!whitelist add <#Channel>`").build(), 7);
+            return;
+        }
         TextChannel channel = message.getMentionedChannels().get(0);
-        if(!sql.isWhitelisted(channel)){ SafeMessage.sendMessage(textChannel, EmbedUtil.info("Not whitelisted", "This channel is not whitelisted").build()); return; }
+        if (!sql.isWhitelisted(channel)) {
+            SafeMessage.sendMessage(textChannel, EmbedUtil.info("Not whitelisted", "This channel is not whitelisted").build());
+            return;
+        }
         String oldEntry = RubiconBot.getMySQL().getGuildValue(guild, "whitelist");
         String newEntry;
-        if(oldEntry.equals(channel.getId()))
+        if (oldEntry.equals(channel.getId()))
             newEntry = "";
         else
             newEntry = oldEntry.replace(channel.getId(), "");
 
-        if(newEntry.contains(","))
-            newEntry = new StringBuilder(newEntry).replace(newEntry.lastIndexOf(","), newEntry.lastIndexOf(",") + 1 , "").toString();
+        if (newEntry.contains(","))
+            newEntry = new StringBuilder(newEntry).replace(newEntry.lastIndexOf(","), newEntry.lastIndexOf(",") + 1, "").toString();
 
         RubiconBot.getMySQL().updateGuildValue(guild, "whitelist", newEntry);
         SafeMessage.sendMessage(textChannel, EmbedUtil.success("Successfully removed channel from whitelist", "Successfully removed channel `" + channel.getName() + "` from whitelist!").build(), 5);
@@ -87,12 +93,18 @@ public class CommandWhitelist extends CommandHandler {
     }
 
     private void executeAdd(String[] args, Member member, Guild guild, TextChannel textChannel, Message message) {
-        if(message.getMentionedChannels().isEmpty()){ SafeMessage.sendMessage(textChannel, EmbedUtil.error("Unknown usage", "Please use `rc!whitelist add <#Channel>`").build(), 7); return; }
+        if (message.getMentionedChannels().isEmpty()) {
+            SafeMessage.sendMessage(textChannel, EmbedUtil.error("Unknown usage", "Please use `rc!whitelist add <#Channel>`").build(), 7);
+            return;
+        }
         TextChannel channel = message.getMentionedChannels().get(0);
-        if(RubiconBot.getMySQL().isChannelWhitelisted(channel)){ SafeMessage.sendMessage(textChannel, EmbedUtil.info("Already whitelisted", "This channel is already whitelisted").build()); return; }
+        if (RubiconBot.getMySQL().isChannelWhitelisted(channel)) {
+            SafeMessage.sendMessage(textChannel, EmbedUtil.info("Already whitelisted", "This channel is already whitelisted").build());
+            return;
+        }
         String oldEntry = RubiconBot.getMySQL().getGuildValue(guild, "whitelist");
         String newEntry;
-        if(oldEntry.equals(""))
+        if (oldEntry.equals(""))
             newEntry = channel.getId();
         else
             newEntry = oldEntry + "," + channel.getId();
@@ -102,20 +114,20 @@ public class CommandWhitelist extends CommandHandler {
     }
 
     private void executeList(String[] args, Member member, Guild guild, TextChannel textChannel) {
-        if(whitelistEnabled(guild)) {
+        if (whitelistEnabled(guild)) {
             List<String> channelIDs = Arrays.asList(RubiconBot.getMySQL().getGuildValue(guild, "whitelist").split(","));
             StringBuilder channels = new StringBuilder();
             channelIDs.forEach(id -> {
-                try{
+                try {
                     TextChannel channel = guild.getTextChannelById(id);
                     channels.append(channel.getName()).append(", ");
-                } catch (NullPointerException ignored){
+                } catch (NullPointerException ignored) {
                     String oldEntry = RubiconBot.getMySQL().getGuildValue(guild, "whitelist");
                     String newEntry = oldEntry.replace(id, "");
-                    if(newEntry.contains(","))
+                    if (newEntry.contains(","))
                         newEntry = new StringBuilder(newEntry).replace(newEntry.lastIndexOf(","), newEntry.lastIndexOf(",") + 1, "").toString();
                     RubiconBot.getMySQL().updateGuildValue(guild, "whitelist", newEntry);
-                    if(channelIDs.size() == 0){
+                    if (channelIDs.size() == 0) {
                         SafeMessage.sendMessage(textChannel, EmbedUtil.info("Blacklisted Channels", "Whitelist mode: `" + String.valueOf(whitelistEnabled(guild)).replace("true", "enabled").replace("false", "disabled") + "`").build());
                         return;
                     }
@@ -123,20 +135,20 @@ public class CommandWhitelist extends CommandHandler {
             });
             channels.replace(channels.lastIndexOf(","), channels.lastIndexOf(",") + 1, "");
             SafeMessage.sendMessage(textChannel, EmbedUtil.info("Whitelisted channels", "Whitelist mode: `" + String.valueOf(whitelistEnabled(guild)).replace("true", "enabled").replace("false", "disabled") + "`\nChannels: `" + channels.toString() + "`").build());
-        }else
+        } else
             SafeMessage.sendMessage(textChannel, EmbedUtil.info("Whitelisted channels", "Whitelist mode: `" + String.valueOf(whitelistEnabled(guild)).replace("true", "enabled").replace("false", "disabled") + "`").build());
     }
 
-    public static boolean whitelistEnabled(Guild guild){
+    public static boolean whitelistEnabled(Guild guild) {
         return !RubiconBot.getMySQL().getGuildValue(guild, "whitelist").equals("");
     }
 
-    public static void handleTextChannelDeletion(TextChannelDeleteEvent event){
+    public static void handleTextChannelDeletion(TextChannelDeleteEvent event) {
         GuildSQL sql = GuildSQL.fromGuild(event.getGuild());
-        if(sql.isBlacklisted(event.getChannel())){
+        if (sql.isBlacklisted(event.getChannel())) {
             String oldEntry = RubiconBot.getMySQL().getGuildValue(event.getGuild(), "whitelist");
             String newEntry = oldEntry.replace(event.getChannel().getId(), "");
-            if(newEntry.contains(","))
+            if (newEntry.contains(","))
                 newEntry = new StringBuilder(newEntry).replace(newEntry.lastIndexOf(","), newEntry.lastIndexOf(",") + 1, "").toString();
             RubiconBot.getMySQL().updateGuildValue(event.getGuild(), "whitelist", newEntry);
         }

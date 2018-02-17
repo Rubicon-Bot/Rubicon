@@ -18,7 +18,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class CommandMarket extends CommandHandler {
 
     public CommandMarket() {
-        super(new String[]{}, CommandCategory.GENERAL, new PermissionRequirements("command.market", false, true), "", "",true);
+        super(new String[]{}, CommandCategory.GENERAL, new PermissionRequirements("command.market", false, true), "", "", true);
     }
 
     @Override

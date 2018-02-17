@@ -3,7 +3,6 @@ package fun.rubicon.sql;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.sql.Connection;
@@ -11,7 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class GuildSQL implements DatabaseGenerator{
+public class GuildSQL implements DatabaseGenerator {
 
     private Connection connection;
     private MySQL mySQL;
@@ -42,15 +41,16 @@ public class GuildSQL implements DatabaseGenerator{
             Logger.error(e);
         }
     }
-        private GuildSQL(Guild guild, MySQL mySQL) {
-            this.guild = guild;
-            this.mySQL = RubiconBot.getMySQL();
-            this.connection = MySQL.getConnection();
-        }
 
-        public static GuildSQL fromGuild(Guild guild) {
-            return new GuildSQL(guild, RubiconBot.getMySQL());
-        }
+    private GuildSQL(Guild guild, MySQL mySQL) {
+        this.guild = guild;
+        this.mySQL = RubiconBot.getMySQL();
+        this.connection = MySQL.getConnection();
+    }
+
+    public static GuildSQL fromGuild(Guild guild) {
+        return new GuildSQL(guild, RubiconBot.getMySQL());
+    }
 
 
     public boolean exist() {
@@ -102,19 +102,19 @@ public class GuildSQL implements DatabaseGenerator{
         return null;
     }
 
-    public boolean enabledWhitelist(){
+    public boolean enabledWhitelist() {
         return !get("whitelist").equals("");
     }
 
-    public boolean enabledBlacklist(){
+    public boolean enabledBlacklist() {
         return !get("blacklist").equals("");
     }
 
-    public boolean isBlacklisted(TextChannel channel){
+    public boolean isBlacklisted(TextChannel channel) {
         return get("blacklist").contains(channel.getId());
     }
 
-    public boolean isWhitelisted(TextChannel channel){
+    public boolean isWhitelisted(TextChannel channel) {
         return get("whitelist").contains(channel.getId());
     }
 

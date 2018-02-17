@@ -67,10 +67,10 @@ public class CommandManager extends ListenerAdapter {
             return;
         if (event.isFromType(ChannelType.PRIVATE)) return;
         GuildSQL guildSQL = GuildSQL.fromGuild(event.getGuild());
-        if(guildSQL.enabledBlacklist())
+        if (guildSQL.enabledBlacklist())
             if (guildSQL.isBlacklisted(event.getTextChannel())) return;
-         else if (guildSQL.enabledWhitelist())
-            if (!guildSQL.isWhitelisted(event.getTextChannel())) return;
+            else if (guildSQL.enabledWhitelist())
+                if (!guildSQL.isWhitelisted(event.getTextChannel())) return;
 
         MusicManager.handleTrackChoose(event);
         super.onMessageReceived(event);
@@ -109,7 +109,8 @@ public class CommandManager extends ListenerAdapter {
 
         // delete invocation message
         if (parsedCommandInvocation.getGuild() != null) {
-            if(!parsedCommandInvocation.getGuild().getSelfMember().getPermissions(parsedCommandInvocation.getTextChannel()).contains(Permission.MESSAGE_MANAGE)) return; // Do not try to delete message when bot is not allowed to
+            if (!parsedCommandInvocation.getGuild().getSelfMember().getPermissions(parsedCommandInvocation.getTextChannel()).contains(Permission.MESSAGE_MANAGE))
+                return; // Do not try to delete message when bot is not allowed to
             parsedCommandInvocation.getMessage().delete().queue(null, msg -> {
             }); // suppress failure
         }

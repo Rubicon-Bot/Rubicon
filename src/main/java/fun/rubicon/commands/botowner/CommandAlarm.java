@@ -20,7 +20,7 @@ public class CommandAlarm extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        if(parsedCommandInvocation.getArgs().length == 0) {
+        if (parsedCommandInvocation.getArgs().length == 0) {
             return EmbedUtil.message(EmbedUtil.error("Dein Ernst?", ":facepalm:"));
         }
         switch (parsedCommandInvocation.getArgs()[0]) {

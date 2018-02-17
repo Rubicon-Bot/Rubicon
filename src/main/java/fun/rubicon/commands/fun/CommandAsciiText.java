@@ -21,25 +21,25 @@ import java.io.IOException;
  * @license MIT License <http://rubicon.fun/license>
  * @package fun.rubicon.commands.fun
  */
-public class CommandAsciiText extends CommandHandler{
+public class CommandAsciiText extends CommandHandler {
 
 
-    public CommandAsciiText(){
-        super(new String[]{"ascii","asciitext","texttoascii"}, CommandCategory.FUN, new PermissionRequirements("command.ascii",false,true), "Make a Senteces to Ascii Art","<text>",false);
+    public CommandAsciiText() {
+        super(new String[]{"ascii", "asciitext", "texttoascii"}, CommandCategory.FUN, new PermissionRequirements("command.ascii", false, true), "Make a Senteces to Ascii Art", "<text>", false);
     }
 
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        String text = parsedCommandInvocation.getMessage().getContentDisplay().replace(parsedCommandInvocation.getPrefix(),"").replace(parsedCommandInvocation.getCommandInvocation(),"").replace(" ","+");
+        String text = parsedCommandInvocation.getMessage().getContentDisplay().replace(parsedCommandInvocation.getPrefix(), "").replace(parsedCommandInvocation.getCommandInvocation(), "").replace(" ", "+");
         Request req = new Request.Builder()
-                .url("http://artii.herokuapp.com/make?text="+text)
+                .url("http://artii.herokuapp.com/make?text=" + text)
                 .build();
         Response response = null;
         try {
             response = new OkHttpClient().newCall(req).execute();
-            SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(),"```fix\n"+response.body().string()+"```");
-        }catch (IOException e) {
+            SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), "```fix\n" + response.body().string() + "```");
+        } catch (IOException e) {
             e.printStackTrace();
         }
         response.close();

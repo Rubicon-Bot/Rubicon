@@ -35,16 +35,16 @@ public class CommandJoke extends CommandHandler {
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         HttpRequest request = new HttpRequest("https://icanhazdadjoke.com/");
         RequestHeader header = new RequestHeader();
-        header.addField("Accept","application/json");
-        header.addField("User-Agent","RubiconBot (https://github.com/Rubicon-Bot/Rubicon)");
+        header.addField("Accept", "application/json");
+        header.addField("User-Agent", "RubiconBot (https://github.com/Rubicon-Bot/Rubicon)");
         request.setRequestHeader(header);
         try {
             RequestResponse response = request.sendGETRequest();
             JSONObject json = (JSONObject) new JSONParser().parse(response.getResponse());
-            SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(),new EmbedBuilder().setTitle("Joke").setDescription((String) json.get("joke")).setColor(Colors.COLOR_SECONDARY).build());
+            SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), new EmbedBuilder().setTitle("Joke").setDescription((String) json.get("joke")).setColor(Colors.COLOR_SECONDARY).build());
         } catch (Exception e) {
             e.printStackTrace();
-            SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), EmbedUtil.error("Error 404","No joke was found!").build(),30);
+            SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), EmbedUtil.error("Error 404", "No joke was found!").build(), 30);
         }
 
 

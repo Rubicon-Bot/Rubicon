@@ -138,7 +138,8 @@ public class HttpRequest {
      * @param value Parameter Value
      */
     public HttpRequest addParameter(String key, int value) {
-        params.add(new RequestParameter(key, value)); return this;
+        params.add(new RequestParameter(key, value));
+        return this;
     }
 
     //Getter & Setter

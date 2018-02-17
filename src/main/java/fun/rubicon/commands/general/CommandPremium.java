@@ -17,7 +17,10 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.User;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -63,7 +66,7 @@ public class CommandPremium extends CommandHandler {
         //call this method from your servlet init method
         public static void startTask() {
             Timer timer = new Timer();
-            timer.schedule(new PremiumChecker(), 10* 60 * 1000, 10 * 60 * 1000);
+            timer.schedule(new PremiumChecker(), 10 * 60 * 1000, 10 * 60 * 1000);
         }
     }
 

@@ -61,7 +61,6 @@ public class DBLUtil {
         JSONObject json = new JSONObject();
 
 
-
         json.put("server_count", RubiconBot.getJDA().getGuilds().size());
 
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json.toString());
@@ -75,8 +74,8 @@ public class DBLUtil {
         try {
             res = new OkHttpClient().newCall(req).execute();
         } catch (IOException e) {
-            if(!silent)
-            Logger.error(e);
+            if (!silent)
+                Logger.error(e);
         }
 
         res.close();

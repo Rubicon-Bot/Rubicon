@@ -3,8 +3,8 @@ package fun.rubicon.util;
 
 import de.foryasee.httprequest.HttpRequest;
 import de.foryasee.httprequest.RequestResponse;
-import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -15,7 +15,7 @@ public class MojangUtil {
 
     private JSONParser parser = new JSONParser();
 
-    public String fetchUUID(String playername){
+    public String fetchUUID(String playername) {
         HttpRequest request = new HttpRequest("https://api.mojang.com/users/profiles/minecraft/" + playername);
         RequestResponse response = null;
         try {
@@ -23,7 +23,7 @@ public class MojangUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if(response.getResponseCode() != 200)
+        if (response.getResponseCode() != 200)
             return null;
         JSONObject json = null;
         try {
@@ -34,7 +34,7 @@ public class MojangUtil {
         return json.get("id").toString();
     }
 
-    private String fetchName(String playername){
+    private String fetchName(String playername) {
         HttpRequest request = new HttpRequest("https://api.mojang.com/users/profiles/minecraft/" + playername);
         RequestResponse response = null;
         try {
@@ -42,7 +42,7 @@ public class MojangUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if(response.getResponseCode() != 200)
+        if (response.getResponseCode() != 200)
             return null;
         JSONObject json = null;
         try {
@@ -53,7 +53,7 @@ public class MojangUtil {
         return json.get("name").toString();
     }
 
-    public JSONArray fetchStatus(){
+    public JSONArray fetchStatus() {
         HttpRequest request = new HttpRequest("https://status.mojang.com/check");
         RequestResponse response = null;
         try {
@@ -62,16 +62,16 @@ public class MojangUtil {
             e.printStackTrace();
         }
         JSONArray res = null;
-        try{
+        try {
             res = ((JSONArray) parser.parse(response.getResponse()));
-        } catch (ParseException e){
+        } catch (ParseException e) {
             Logger.error(e);
         }
         return res;
     }
 
 
-    private String fetchNameHistory(String uuid){
+    private String fetchNameHistory(String uuid) {
         HttpRequest request = new HttpRequest("https://api.mojang.com/user/profiles/" + uuid + "/names");
         RequestResponse response = null;
         try {
@@ -79,12 +79,12 @@ public class MojangUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if(response.getResponseCode() != 200)
+        if (response.getResponseCode() != 200)
             return null;
         return response.getResponse();
     }
 
-    private String fetchFirstNamme(String uuid){
+    private String fetchFirstNamme(String uuid) {
         JSONArray data = null;
         try {
             data = (JSONArray) parser.parse(fetchNameHistory(uuid));
@@ -112,7 +112,7 @@ public class MojangUtil {
         private HashMap<String, Date> namechanges;
         private String firstName;
 
-        private MinecraftPlayer(String uuid, String name, HashMap<String, Date> namechanges, String firstName){
+        private MinecraftPlayer(String uuid, String name, HashMap<String, Date> namechanges, String firstName) {
             this.uuid = uuid;
             this.name = name;
             this.firstName = firstName;
@@ -124,11 +124,11 @@ public class MojangUtil {
         }
     }
 
-    public MinecraftPlayer fromName(String name){
+    public MinecraftPlayer fromName(String name) {
         HashMap<String, Date> history = new HashMap<>();
         try {
             JSONArray data = (JSONArray) new JSONParser().parse(fetchNameHistory(fetchUUID(name)));
-            if(data.size() != 0) {
+            if (data.size() != 0) {
                 data.remove(0);
                 data.forEach(d -> {
                     JSONObject object = (JSONObject) d;
@@ -142,12 +142,12 @@ public class MojangUtil {
         return new MinecraftPlayer(fetchUUID(name), fetchName(name), history, fetchFirstNamme(fetchUUID(name)));
     }
 
-    public MinecraftPlayer fromUUID(String uuid){
-        try{
+    public MinecraftPlayer fromUUID(String uuid) {
+        try {
             JSONArray data = (JSONArray) new JSONParser().parse(fetchNameHistory(uuid));
-            String name = ( (JSONObject) data.get(data.size() - 1)).get("name").toString();
+            String name = ((JSONObject) data.get(data.size() - 1)).get("name").toString();
             return fromName(name);
-        } catch (ParseException e){
+        } catch (ParseException e) {
             Logger.error(e);
             return null;
         }

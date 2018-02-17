@@ -46,6 +46,9 @@ public class CommandFeedback extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        if (parsedCommandInvocation.getArgs().length<1){
+            return createHelpMessage();
+        }
         Message infoMessage = SafeMessage.sendMessageBlocking(parsedCommandInvocation.getTextChannel(), EmbedUtil.message(new EmbedBuilder().setTitle("Description....").setDescription("Please enter a short description.").setFooter("Will abort in 60 seconds.", null)));
         reportMap.put(parsedCommandInvocation.getAuthor().getIdLong(), new ReportHolder(
                 parsedCommandInvocation.getTextChannel(),

@@ -7,20 +7,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class MinecraftSQL implements DatabaseGenerator{
+public class MinecraftSQL implements DatabaseGenerator {
 
     private Connection connection;
     private MySQL mySQL;
 
-    public MinecraftSQL(){
+    public MinecraftSQL() {
         this.mySQL = RubiconBot.getMySQL();
         this.connection = this.mySQL.getCon();
     }
 
     @Override
     public void createTableIfNotExist() {
-        try{
-            if(connection.isClosed())
+        try {
+            if (connection.isClosed())
                 mySQL.connect();
             PreparedStatement ps = connection.prepareStatement("" +
                     "CREATE TABLE IF NOT EXISTS `mincraft` (" +
@@ -31,7 +31,7 @@ public class MinecraftSQL implements DatabaseGenerator{
                     " PRIMARY KEY (`id`)" +
                     ") ENGINE=InnoDB AUTO_INCREMENT=3918 DEFAULT CHARSET=utf8;");
             ps.execute();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             Logger.error(e);
         }
     }

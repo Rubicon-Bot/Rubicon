@@ -25,7 +25,8 @@ public class SelfMentionListener extends ListenerAdapter {
 
     public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
         if (e.getMessage().getMentionedUsers().contains(e.getJDA().getSelfUser())) {
-            if(!e.getMessage().getContentDisplay().replaceFirst("@", "").equals(e.getGuild().getSelfMember().getEffectiveName())) return;
+            if (!e.getMessage().getContentDisplay().replaceFirst("@", "").equals(e.getGuild().getSelfMember().getEffectiveName()))
+                return;
             Message message = e.getChannel().sendMessage(
                     new EmbedBuilder()
                             .setColor(Colors.COLOR_SECONDARY)
@@ -40,7 +41,8 @@ public class SelfMentionListener extends ListenerAdapter {
             for (String emoji : RUBICON_EMOJIS) {
                 message.addReaction(emoji).queue();
             }
-            if(!e.getGuild().getSelfMember().getPermissions(e.getChannel()).contains(Permission.MESSAGE_MANAGE)) return; // Do not try to delete message when bot is not allowed to
+            if (!e.getGuild().getSelfMember().getPermissions(e.getChannel()).contains(Permission.MESSAGE_MANAGE))
+                return; // Do not try to delete message when bot is not allowed to
             message.delete().queueAfter(5, TimeUnit.MINUTES);
             e.getMessage().delete().queue();
         }
