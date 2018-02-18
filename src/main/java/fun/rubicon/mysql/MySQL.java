@@ -6,18 +6,26 @@
 
 package fun.rubicon.mysql;
 
+import fun.rubicon.util.Logger;
+
 import java.sql.*;
 
 public class MySQL {
 
-    private static Connection connection;
-    private String host;
-    private String port;
-    private String user;
-    private String password;
-    private String database;
+    private Connection connection;
+    private final String host;
+    private final String port;
+    private final String user;
+    private final String password;
+    private final String database;
 
-
+    public MySQL(String host, String port, String user, String password, String dbname) throws NullPointerException {
+        this.host = host;
+        this.port = port;
+        this.user = user;
+        this.password = password;
+        this.database = dbname;
+    }
 
 
     /**
@@ -36,4 +44,42 @@ public class MySQL {
         return this;
     }
 
+    /**
+     * Close connection
+     * @return MySQL connection
+     */
+
+    public MySQL disconnect() {
+        try {
+            connection.close();
+            System.out.println("disconnected from MYSQL");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+
+    public MySQL executePreparedStatement(PreparedStatement ps) {
+        try {
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+
+    public MySQL executePreparedStatements(PreparedStatement... statements) {
+        for (PreparedStatement statement : statements) {
+            try {
+                statement.execute();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return this;
+    }
+
+    public PreparedStatement prepareStatement(String sql) throws SQLException {
+        return this.connection.prepareStatement(sql);
+    }
 }
