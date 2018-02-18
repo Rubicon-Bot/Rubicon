@@ -6,6 +6,7 @@
 
 package fun.rubicon.listener;
 
+import fun.rubicon.core.entities.RubiconGuild;
 import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -16,12 +17,12 @@ public class BotJoinListener extends ListenerAdapter {
 
     @Override
     public void onGuildJoin(GuildJoinEvent event) {
+        RubiconGuild.fromGuild(event.getGuild());
         /* TODO DB
-        * - Insert guild in database
         * - Insert new users in database
         * - Insert new members in database
         *
-        * TODO Update stats
+        *   Update stats
         * - discordbotlist.org
         * - bots.discord.pw
         */

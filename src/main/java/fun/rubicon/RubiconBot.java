@@ -7,6 +7,7 @@
 package fun.rubicon;
 
 import fun.rubicon.listener.BotJoinListener;
+import fun.rubicon.listener.DebugMessageEvent;
 import fun.rubicon.mysql.DatabaseGenerator;
 import fun.rubicon.mysql.MySQL;
 import fun.rubicon.util.*;
@@ -68,7 +69,7 @@ public class RubiconBot {
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    System.exit(404);
+                    System.exit(1);
                 }
             },5000);
             throw new RuntimeException("Failed to create Databases! Aborting!");
@@ -100,8 +101,12 @@ public class RubiconBot {
         builder.setGame(Game.playing("Starting..."));
         builder.setStatus(OnlineStatus.DO_NOT_DISTURB);
         builder.setShardsTotal(SHARD_COUNT);
+
+        //Register Event Listeners
+
         builder.addEventListeners(
-            new BotJoinListener()
+            new BotJoinListener(),
+                new DebugMessageEvent()
         );
         try {
             shardManager = builder.build();

@@ -7,6 +7,7 @@
 package fun.rubicon.mysql;
 
 import fun.rubicon.RubiconBot;
+import fun.rubicon.util.Logger;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -16,8 +17,10 @@ public class DatabaseGenerator {
 
     public static boolean createAllDatabasesIfNecessary() {
         try {
-            createGuildDatabase();
-            createMemberDatabase();
+            createGuildTable();
+            createMemberTable();
+            createJoinmessageTable();
+            createLeavemessageTable();
             createUserDatabase();
         } catch (Exception e) {
             e.printStackTrace();
@@ -26,38 +29,58 @@ public class DatabaseGenerator {
         return true;
     }
 
-    private static void createGuildDatabase() {
+    private static void createGuildTable() {
         try {
             PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS `guilds`" +
                     "(`id` INT(25) UNSIGNED NOT NULL AUTO_INCREMENT," +
-                    "`serverid` INT(25) NOT NULL ," +
+                    "`serverid` BIGINT(25) NOT NULL ," +
                     "`prefix` VARCHAR(5) NOT NULL ," +
-                    "`joinmsg` TEXT," +
-                    "`leavemsg` TEXT," +
-                    "`channel` INT(25)," +
-                    "`logchannel` INT(25)," +
-                    "`autorole` INT(25)," +
-                    "`portal` TEXT," +
-                    "`autochannels` VARCHAR(250)," +
-                    "`cases` INT(11)," +
-                    "`lvlmsg` INT(11)," +
-                    "`whitelist` TEXT," +
-                    "`blacklist` TEXT," +
                     " PRIMARY KEY (`id`)" +
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
     }
 
-    private static void createMemberDatabase() {
+    private static void createJoinmessageTable() {
+        try {
+            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS `joinmessages`" +
+                    "(`id` INT(25) UNSIGNED NOT NULL AUTO_INCREMENT," +
+                    "`serverid` BIGINT(25) NOT NULL," +
+                    "`message` TEXT NOT NULL," +
+                    "`channel` BIGINT(25)," +
+                    "PRIMARY KEY (`id`)" +
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8"
+            );
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+    }
+
+    private static void createLeavemessageTable() {
+        try {
+            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS `leavemessages`" +
+                    "(`id` INT(25) UNSIGNED NOT NULL AUTO_INCREMENT," +
+                    "`serverid` BIGINT(25) NOT NULL," +
+                    "`message` TEXT NOT NULL," +
+                    "`channel` BIGINT(25)," +
+                    "PRIMARY KEY (`id`)" +
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8"
+            );
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+    }
+
+    private static void createMemberTable() {
         try {
             PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS `members`" +
                     "(`id` INT(250) UNSIGNED NOT NULL AUTO_INCREMENT," +
-                    "`userid` INT(25)," +
-                    "`serverid` INT(25)," +
-                    "`permissionlevel` VARCHAR(50)," +
+                    "`userid` BIGINT(25)," +
+                    "`serverid` BIGINT(25)," +
                     "`level` INT(50)," +
                     "`points` INT(50)," +
                     " PRIMARY KEY (`id`)" +
@@ -70,12 +93,12 @@ public class DatabaseGenerator {
 
     private static void createUserDatabase() {
         try {
-            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS `members`" +
+            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS `users`" +
                     "(`id` INT(250) UNSIGNED NOT NULL AUTO_INCREMENT," +
-                    "`userid` INT(25)," +
+                    "`userid` BIGINT(25)," +
                     "`bio` TEXT," +
                     "`money` INT(250)," +
-                    "`premium` VARCHAR(50)," +
+                    "`premium` BIGINT(50)," +
                     " PRIMARY KEY (`id`)" +
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();
