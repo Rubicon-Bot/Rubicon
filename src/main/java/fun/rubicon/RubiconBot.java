@@ -31,7 +31,6 @@ public class RubiconBot {
     private static RubiconBot instance;
     private final Configuration configuration;
     private final MySQL mySQL;
-    private final DatabaseGenerator databaseGenerator;
     private ShardManager shardManager;
 
     private static final int SHARD_COUNT = 5;
@@ -63,8 +62,7 @@ public class RubiconBot {
                 configuration.getString("mysql_database"));
         mySQL.connect();
 
-        databaseGenerator = new DatabaseGenerator();
-        databaseGenerator.createAllDatabasesIfNecessary();
+        DatabaseGenerator.createAllDatabasesIfNecessary();
 
         initShardManager();
     }

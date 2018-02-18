@@ -14,7 +14,6 @@ import java.sql.SQLException;
 public class DatabaseGenerator {
 
 
-
     public static void createAllDatabasesIfNecessary() {
         createGuildDatabase();
     }
