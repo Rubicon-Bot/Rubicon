@@ -58,8 +58,6 @@ public class WarnManager {
 
     public static boolean isWarned(User user, Guild guild) {
         List<Warn> warnList = new WarnSQL().getWarns(user, guild);
-        if (warnList.size() == 0)
-            return false;
-        return true;
+        return warnList.size() != 0;
     }
 }

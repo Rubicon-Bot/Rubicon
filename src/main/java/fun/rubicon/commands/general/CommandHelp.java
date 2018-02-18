@@ -45,8 +45,8 @@ public class CommandHelp extends CommandHandler {
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
         TranslationLocale locale = RubiconBot.sGetTranslations()
-                .getUserLocale(invocation.invocationMessage.getAuthor());
-        if (invocation.args.length == 0) {
+                .getUserLocale(invocation.getAuthor());
+        if (invocation.getArgs().length == 0) {
             // show complete command manual
             return message(info(locale.getResourceBundle().getString("command.help.title"),
                             commandFormat(invocation, locale, "command.help.description"))
@@ -57,21 +57,21 @@ public class CommandHelp extends CommandHandler {
                             String.valueOf(new HashSet<>(RubiconBot.getCommandManager().getCommandAssociations().values()).size())),
                             null));
         } else {
-            CommandHandler handler = RubiconBot.getCommandManager().getCommandHandler(invocation.args[0]);
+            CommandHandler handler = RubiconBot.getCommandManager().getCommandHandler(invocation.getArgs()[0]);
             return handler == null
                     // invalid command
                     ? message(error(locale.getResourceBundle().getString("command.help.error.invalidcommand.title"),
                         commandFormat(invocation, locale, "command.help.error.invalidcommand.description")
                                 .replaceAll("%othercommand%", invocation.getArgs()[0])))
                     // show command help for a single command
-                    : handler.createHelpMessage(invocation.getPrefix(), invocation.args[0]);
+                    : handler.createHelpMessage(invocation.getPrefix(), invocation.getArgs()[0]);
         }
     }
 
     private String commandFormat(CommandManager.ParsedCommandInvocation invocation, TranslationLocale locale, String key) {
         return locale.getResourceBundle().getString(key)
-                .replaceAll("%prefix%", invocation.serverPrefix)
-                .replaceAll("%command%", invocation.invocationCommand);
+                .replaceAll("%prefix%", invocation.getPrefix())
+                .replaceAll("%command%", invocation.getCommandInvocation());
     }
 
     private EmbedBuilder generateFullHelp(CommandManager.ParsedCommandInvocation invocation) {

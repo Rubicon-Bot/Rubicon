@@ -303,10 +303,6 @@ public class CommandVerification extends CommandHandler {
     }
 
     public static void toggleInspired() {
-        if (showInspired) {
-            showInspired = false;
-        } else {
-            showInspired = true;
-        }
+        showInspired = !showInspired;
     }
 }

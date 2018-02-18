@@ -66,9 +66,7 @@ public class AutochannelListener extends ListenerAdapter {
     private boolean isAutoChannel(Guild g, Channel ch) {
         String oldEntry = RubiconBot.getMySQL().getGuildValue(g, "autochannels");
         if (oldEntry != null)
-            if (oldEntry.contains(ch.getId())) {
-                return true;
-            }
+            return oldEntry.contains(ch.getId());
         return false;
     }
 }

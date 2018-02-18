@@ -76,7 +76,7 @@ public class MySQL {
         return this;
     }
 
-    public Connection getCon(){ return this.connection; }
+    public Connection getCon(){ return connection; }
 
     /**
      * @param table
@@ -523,6 +523,6 @@ public class MySQL {
     }
 
     public PreparedStatement prepareStatement(String sql) throws SQLException {
-        return this.connection.prepareStatement(sql);
+        return connection.prepareStatement(sql);
     }
 }

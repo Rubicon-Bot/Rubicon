@@ -308,7 +308,9 @@ public class RubiconBot {
                 new MemberSQL(),
                 new VerificationKickSQL(),
                 new VerificationUserSQL(),
-                new MinecraftSQL());
+                new MinecraftSQL(),
+                new UserSQL()
+        );
 
         databaseManager.generate();
 
