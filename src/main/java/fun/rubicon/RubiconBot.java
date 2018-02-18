@@ -19,6 +19,8 @@ import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Rubicon-bot's main class. Initializes all components.
@@ -31,7 +33,6 @@ public class RubiconBot {
     private static RubiconBot instance;
     private final Configuration configuration;
     private final MySQL mySQL;
-    private final DatabaseGenerator databaseGenerator;
     private ShardManager shardManager;
 
     private static final int SHARD_COUNT = 5;
@@ -63,8 +64,15 @@ public class RubiconBot {
                 configuration.getString("mysql_database"));
         mySQL.connect();
 
-        databaseGenerator = new DatabaseGenerator();
-        databaseGenerator.createAllDatabasesIfnecessary();
+        if (!DatabaseGenerator.createAllDatabasesIfNecessary()){
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    System.exit(404);
+                }
+            },5000);
+            throw new RuntimeException("Failed to create Databases! Aborting!");
+        }
 
         initShardManager();
     }
