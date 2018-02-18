@@ -13,35 +13,30 @@ import java.sql.SQLException;
 
 public class DatabaseGenerator {
 
-    public DatabaseGenerator(){
-
-    }
-
-
-
-    public void createAllDatabasesIfnecessary() {
+    public static void createAllDatabasesIfNecessary() {
         createGuildDatabase();
     }
 
-    public void createGuildDatabase(){
+    private static void createGuildDatabase() {
         try {
-            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS `guilds`"+
-            "(`id` INT(25) unsigned NOT NULL auto_increment,"+
-            "`serverid` INT(25) NOT NULL ,"+
-            "`prefix` VARCHAR(5) NOT NULL ,"+
-            "`joinmsg` TEXT," +
-            "`leavemsg` TEXT," +
-            "`channel` INT(25),"+
-            "`logchannel` INT(25),"+
-            "`autorole` INT(25),"+
-            "`portal` TEXT,"+
-            "`autochannels` VARCHAR(250),"+
-            "`cases` INT(11),"+
-            "`lvlmsg` INT(11),"+
-            "`whitelist` TEXT,"+
-            "`blacklist` TEXT," +
-            " PRIMARY KEY (`id`)"+
-            ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
+            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS `guilds`" +
+                    "(`id` INT(25) UNSIGNED NOT NULL AUTO_INCREMENT," +
+                    "`serverid` INT(25) NOT NULL ," +
+                    "`prefix` VARCHAR(5) NOT NULL ," +
+                    "`joinmsg` TEXT," +
+                    "`leavemsg` TEXT," +
+                    "`channel` INT(25)," +
+                    "`logchannel` INT(25)," +
+                    "`autorole` INT(25)," +
+                    "`portal` TEXT," +
+                    "`autochannels` VARCHAR(250)," +
+                    "`cases` INT(11)," +
+                    "`lvlmsg` INT(11)," +
+                    "`whitelist` TEXT," +
+                    "`blacklist` TEXT," +
+                    " PRIMARY KEY (`id`)" +
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
+            ps.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
