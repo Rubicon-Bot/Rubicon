@@ -6,8 +6,6 @@
 
 package fun.rubicon.util;
 
-import java.util.Date;
-
 /**
  * General data object.
  *
@@ -19,7 +17,6 @@ public class Info {
     public final static String BOT_NAME = "RubiconBot";
     public final static String BOT_VERSION = "0.2.7";
     public final static String CONFIG_FILE = "config.json";
-    public static Date startedAt;
 
     /**
      * Bot author long ids.

@@ -20,6 +20,7 @@ import fun.rubicon.permission.PermissionManager;
 import fun.rubicon.sql.*;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
+import net.dv8tion.jda.bot.sharding.ShardManager;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -44,6 +45,7 @@ public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
     private static final String[] CONFIG_KEYS = {"token"};
     private static RubiconBot instance;
+    private static ShardManager shardManager;
     private final Configuration configuration;
     private final CommandManager commandManager;
     private final Set<EventListener> eventListeners;
@@ -72,8 +74,7 @@ public class RubiconBot {
         registerCommandHandlers();
         permissionManager = new PermissionManager();
 
-        // init JDA
-        initJDA();
+        initShardManager();
     }
 
     /**
@@ -90,7 +91,7 @@ public class RubiconBot {
     /**
      * Initializes the JDA instance.
      */
-    public static void initJDA() {
+    public static void initShardManager() {
         if (instance == null)
             throw new NullPointerException("RubiconBot has not been initialized yet.");
 
@@ -98,33 +99,12 @@ public class RubiconBot {
         builder.setToken(instance.configuration.getString("token"));
         builder.setGame(Game.playing("Starting..."));
         builder.setStatus(OnlineStatus.DO_NOT_DISTURB);
-
-        for(EventListener listener : instance.eventListeners) {
-            
-        }
-
-        /*JDABuilder builder = new JDABuilder(AccountType.BOT);
-        builder.setToken(instance.configuration.getString("token"));
-        builder.setGame(Game.playing("Starting...."));
-        builder.setStatus(OnlineStatus.DO_NOT_DISTURB);
-
-        // add all EventListeners
-        for (EventListener listener : instance.eventListeners)
-            builder.addEventListener(listener);
-
-        registerListeners(builder);
-
+        builder.addEventListeners(instance.eventListeners);
         try {
-            instance.jda = builder.buildBlocking();
-        } catch (LoginException | InterruptedException e) {
-            Logger.error(e.getMessage());
+            shardManager = builder.build();
+        } catch (LoginException e) {
+            Logger.error(e);
         }
-
-        getJDA().getPresence().setGame(Game.playing("Success."));
-        getJDA().getPresence().setStatus(OnlineStatus.ONLINE);
-
-        Info.startedAt = new Date();
-        getJDA().getPresence().setGame(Game.playing("Started."));*/
     }
 
     /**
@@ -187,13 +167,6 @@ public class RubiconBot {
     }
 
     /**
-     * @return the JDA instance.
-     */
-    public static JDA getJDA() {
-        return instance == null ? null : instance.jda;
-    }
-
-    /**
      * @return the CommandManager.
      */
     public static CommandManager getCommandManager() {
@@ -223,8 +196,8 @@ public class RubiconBot {
      */
     public static boolean registerEventListener(EventListener listener) {
         if (instance != null && instance.eventListeners.add(listener)) {
-            if (instance.jda != null)
-                instance.jda.addEventListener(listener);
+            if (shardManager != null)
+                shardManager.addEventListener(listener);
             return true;
         }
         return false;
@@ -235,12 +208,5 @@ public class RubiconBot {
      */
     public static String getNewTimestamp() {
         return timeStampFormatter.format(new Date());
-    }
-
-    /**
-     * @return the data folder path
-     */
-    public static String getDataFolder() {
-        return dataFolder;
     }
 }
