@@ -6,23 +6,19 @@
 
 package fun.rubicon;
 
+import fun.rubicon.listener.BotJoinListener;
 import fun.rubicon.mysql.DatabaseGenerator;
 import fun.rubicon.mysql.MySQL;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.bot.sharding.ShardManager;
-
 import net.dv8tion.jda.core.OnlineStatus;
-
 import net.dv8tion.jda.core.entities.Game;
-
 import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.hooks.EventListener;
-
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
 
 /**
  * Rubicon-bot's main class. Initializes all components.
@@ -31,14 +27,13 @@ import java.util.*;
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"token"};
+    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_database", "mysql_user", "mysql_password"};
     private static RubiconBot instance;
     private final Configuration configuration;
-    private final Set<EventListener> eventListeners;
     private final MySQL mySQL;
-    private final DatabaseGenerator generator;
-
+    private final DatabaseGenerator databaseGenerator;
     private ShardManager shardManager;
+
     private static final int SHARD_COUNT = 5;
 
 
@@ -52,6 +47,7 @@ public class RubiconBot {
         new File("data/").mkdirs();
         Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, "rubicon_logs/");
 
+        //Init config
         configuration = new Configuration(new File(Info.CONFIG_FILE));
         for (String configKey : CONFIG_KEYS) {
             if (!configuration.has(configKey)) {
@@ -59,12 +55,16 @@ public class RubiconBot {
                 configuration.set(configKey, input);
             }
         }
-        //Build MySQL Connection
-        mySQL = new MySQL(Info.MYSQL_HOST, Info.MYSQL_PORT, Info.MYSQL_USER, Info.MYSQL_PASSWORD, Info.MYSQL_DATABASE);
+        //Init MySQL Connection
+        mySQL = new MySQL(
+                configuration.getString("mysql_host"),
+                "3306", configuration.getString("mysql_user"),
+                configuration.getString("mysql_password"),
+                configuration.getString("mysql_database"));
         mySQL.connect();
-        generator = new DatabaseGenerator();
-        generator.createAllDatabasesIfNecessary();
-        eventListeners = new HashSet<>();
+
+        databaseGenerator = new DatabaseGenerator();
+        databaseGenerator.createAllDatabasesIfNecessary();
 
         initShardManager();
     }
@@ -93,7 +93,7 @@ public class RubiconBot {
         builder.setStatus(OnlineStatus.DO_NOT_DISTURB);
         builder.setShardsTotal(SHARD_COUNT);
         builder.addEventListeners(
-
+            new BotJoinListener()
         );
         try {
             shardManager = builder.build();

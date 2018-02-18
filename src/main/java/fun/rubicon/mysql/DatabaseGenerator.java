@@ -13,17 +13,13 @@ import java.sql.SQLException;
 
 public class DatabaseGenerator {
 
-    public DatabaseGenerator(){
-
-    }
 
 
-
-    public void createAllDatabasesIfNecessary() {
+    public static void createAllDatabasesIfNecessary() {
         createGuildDatabase();
     }
 
-    private void createGuildDatabase(){
+    private static void createGuildDatabase(){
         try {
             PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS `guilds`"+
             "(`id` INT(25) unsigned NOT NULL auto_increment,"+

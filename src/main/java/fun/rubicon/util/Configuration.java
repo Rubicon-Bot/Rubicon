@@ -103,7 +103,7 @@ public class Configuration {
                 br.close();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         return this;
     }
@@ -115,8 +115,8 @@ public class Configuration {
     public String getString(final String key) {
         try {
             return json.get(key).getAsString();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (NullPointerException e) {
+            Logger.error(e);
         }
         return "";
     }
