@@ -6,24 +6,10 @@
 
 package fun.rubicon;
 
-import fun.rubicon.command.CommandManager;
-import fun.rubicon.commands.botowner.*;
-import fun.rubicon.commands.general.*;
-import fun.rubicon.commands.tools.*;
-import fun.rubicon.core.GameAnimator;
-import fun.rubicon.core.ListenerManager;
-import fun.rubicon.core.webpanel.WebpanelManager;
-import fun.rubicon.core.webpanel.impl.*;
-import fun.rubicon.features.GiveawayHandler;
-import fun.rubicon.features.RemindHandler;
 import fun.rubicon.permission.PermissionManager;
-import fun.rubicon.sql.*;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.bot.sharding.ShardManager;
-import net.dv8tion.jda.core.AccountType;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.hooks.EventListener;
@@ -34,7 +20,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Timer;
 
 /**
  * Rubicon-bot's main class. Initializes all components.
@@ -47,7 +32,6 @@ public class RubiconBot {
     private static RubiconBot instance;
     private static ShardManager shardManager;
     private final Configuration configuration;
-    private final CommandManager commandManager;
     private final Set<EventListener> eventListeners;
     private final PermissionManager permissionManager;
 
@@ -70,8 +54,6 @@ public class RubiconBot {
         }
 
         eventListeners = new HashSet<>();
-        commandManager = new CommandManager();
-        registerCommandHandlers();
         permissionManager = new PermissionManager();
 
         initShardManager();
@@ -117,60 +99,10 @@ public class RubiconBot {
     }
 
     /**
-     * Registers all command handlers used in this project.
-     *
-     * @see CommandManager
-     */
-    private void registerCommandHandlers() {
-        // Usage: commandManager.registerCommandHandler(yourCommandHandler...);
-
-        // admin commands package
-        commandManager.registerCommandHandlers(
-
-        );
-        // botowner commands package
-        commandManager.registerCommandHandlers(
-
-        );
-        // music commands package
-        commandManager.registerCommandHandlers(
-
-        );
-        // fun commands package
-        commandManager.registerCommandHandlers(
-
-
-        );
-        // general commands package
-        commandManager.registerCommandHandlers(
-
-        );
-        // settings commands package
-        commandManager.registerCommandHandlers(
-
-        );
-        // tools commands package
-        commandManager.registerCommandHandlers(
-
-        );
-
-        // also register commands from the old framework
-        //noinspection deprecation
-        new CommandManager();
-    }
-
-    /**
      * @return the bot configuration.
      */
     public static Configuration getConfiguration() {
         return instance == null ? null : instance.configuration;
-    }
-
-    /**
-     * @return the CommandManager.
-     */
-    public static CommandManager getCommandManager() {
-        return instance == null ? null : instance.commandManager;
     }
 
     /**
