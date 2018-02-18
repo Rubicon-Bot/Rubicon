@@ -30,7 +30,6 @@ public class CommandJoke extends CommandHandler {
 
     public CommandJoke() {
         super(new String[]{"joke"}, CommandCategory.FUN, new PermissionRequirements("command.joke", false, true), "Get some shitty Joke", "");
-
     }
 
     @Override

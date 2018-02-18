@@ -30,7 +30,6 @@ public class CommandWhitelist extends CommandHandler {
 
     public CommandWhitelist() {
         super(new String[] {"wl", "whitelist"}, CommandCategory.SETTINGS, new PermissionRequirements("command.whitelist", false, false), "Whitelist one or more channel for bot commands", "whitelist list/add/remove", false);
-
     }
 
     @Override
