@@ -3,8 +3,8 @@ package fun.rubicon.commands.general;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
@@ -21,10 +21,10 @@ import java.util.Date;
  * @license MIT License <http://rubicon.fun/license>
  * @package fun.rubicon.commands.general
  */
-public class CommandUptime extends CommandHandler{
+public class CommandUptime extends CommandHandler {
 
     public CommandUptime() {
-        super(new String[]{"uptime"},CommandCategory.GENERAL,new PermissionRequirements(0,"command.uptime"),"Get the Uptime of the Bot","",false);
+        super(new String[]{"uptime"}, CommandCategory.GENERAL, new PermissionRequirements("command.uptime", false, true), "Get the Uptime of the Bot", "", false);
     }
 
     private String getTime(Date date, String pattern) {

@@ -9,9 +9,8 @@ package fun.rubicon.commands.moderation;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Member;
@@ -20,11 +19,12 @@ import net.dv8tion.jda.core.entities.PrivateChannel;
 
 /**
  * Handles the 'ban' command.
+ *
  * @author Michael Rittmeister / Schlaubi
  */
 public class CommandBan extends CommandHandler {
     public CommandBan() {
-        super(new String[]{"ban"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.ban"), "Bans a user from your server", "<@User>");
+        super(new String[]{"ban"}, CommandCategory.MODERATION, new PermissionRequirements("command.ban", false, false), "Bans a user from your server", "<@User>");
     }
 
     @Override

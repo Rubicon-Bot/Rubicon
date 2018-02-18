@@ -15,7 +15,7 @@ import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-public class ReactionListener extends ListenerAdapter{
+public class ReactionListener extends ListenerAdapter {
 
     @Override
     public void onMessageReactionAdd(MessageReactionAddEvent event) {

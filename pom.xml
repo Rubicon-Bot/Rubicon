@@ -65,12 +65,12 @@
         <dependency>
             <groupId>com.sedmelluq</groupId>
             <artifactId>lavaplayer</artifactId>
-            <version>1.2.42</version>
+            <version>LATEST</version>
         </dependency>
         <dependency>
-            <groupId>com.github.natanbc</groupId>
-            <artifactId>discordbots-api</artifactId>
-            <version>1.2</version>
+            <groupId>com.github.DiscordBotList</groupId>
+            <artifactId>DBL-Java-Library</artifactId>
+            <version>v1.0</version>
         </dependency>
         <dependency>
             <groupId>org.twitter4j</groupId>
@@ -87,12 +87,23 @@
             <artifactId>jMusixMatch</artifactId>
             <version>1.1.4</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.kohsuke/github-api -->
+        <dependency>
+            <groupId>org.kohsuke</groupId>
+            <artifactId>github-api</artifactId>
+            <version>1.92</version>
+        </dependency>
+
     </dependencies>
     <repositories>
         <repository>
             <id>jcenter</id>
             <name>jcenter</name>
             <url>http://jcenter.bintray.com/</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
         <repository>
             <id>oss.snapshots</id>

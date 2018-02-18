@@ -9,7 +9,9 @@ package fun.rubicon.sql;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.admin.CommandVerification;
 import fun.rubicon.util.Logger;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -26,7 +28,9 @@ public class MySQL {
 
     /**
      * @return MySQL connection
+     * Use MySQL.getCon() instead
      */
+    @Deprecated
     public static Connection getConnection() {
         return connection;
     }
@@ -71,6 +75,8 @@ public class MySQL {
         }
         return this;
     }
+
+    public Connection getCon(){ return this.connection; }
 
     /**
      * @param table
@@ -349,11 +355,15 @@ public class MySQL {
         return this;
     }
 
+    /**
+     * @see GuildSQL
+     */
+    @Deprecated
     public MySQL createGuildServer(Guild guild) {
         try {
             if (connection.isClosed())
                 connect();
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO `guilds`(`serverid`, `channel`, `prefix`, `joinmsg`, `leavemsg`, `logchannel`, `autorole`, `portal`, `welmsg`, `autochannels`, `blacklist`) VALUES (?, '0', 'rc!', 'Welcome %user% on %guild%', 'Bye %user%', '0', '0', 'closed', '0', '', '')");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO `guilds`(`serverid`, `channel`, `prefix`, `joinmsg`, `leavemsg`, `logchannel`, `autorole`, `portal`, `welmsg`, `autochannels`, `blacklist`,`lvlmsg`, `whitelist`) VALUES (?, '0', 'rc!', 'Welcome %user% on %guild%', 'Bye %user%', '0', '0', 'closed', '0', '', '','1', '')");
             ps.setString(1, String.valueOf(guild.getIdLong()));
             ps.execute();
         } catch (SQLException e) {
@@ -380,7 +390,7 @@ public class MySQL {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM `guilds` WHERE `serverid` = ?");
             ps.setString(1, guild.getId());
             ps.execute();
-            PreparedStatement ps2 = connection.prepareStatement("DELETE FROM `members` WHERE `guildid` = ?");
+            PreparedStatement ps2 = connection.prepareStatement("DELETE FROM `members` WHERE `serverid` = ?");
             ps2.setString(1, guild.getId());
             ps2.execute();
         } catch (SQLException e) {
@@ -394,7 +404,7 @@ public class MySQL {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM `guilds` WHERE `serverid` = ?");
             ps.setString(1, serverID);
             ps.execute();
-            PreparedStatement ps2 = connection.prepareStatement("DELETE FROM `members` WHERE `guildid` = ?");
+            PreparedStatement ps2 = connection.prepareStatement("DELETE FROM `members` WHERE `serverid` = ?");
             ps2.setString(1, serverID);
             ps2.execute();
         } catch (SQLException e) {
@@ -481,6 +491,22 @@ public class MySQL {
         return false;
     }
 
+    public boolean isChannelWhitelisted(TextChannel channel) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM guilds WHERE `serverid` = ?");
+            ps.setString(1, channel.getGuild().getId());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next())
+                return rs.getString("blacklist").contains(channel.getId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Logger.error(e);
+        } catch (NullPointerException ignored) {
+
+        }
+        return false;
+    }
+
     public boolean isBlacklisted(TextChannel channel) {
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM guilds WHERE `serverid` = ?");
@@ -494,5 +520,9 @@ public class MySQL {
 
         }
         return false;
+    }
+
+    public PreparedStatement prepareStatement(String sql) throws SQLException {
+        return this.connection.prepareStatement(sql);
     }
 }

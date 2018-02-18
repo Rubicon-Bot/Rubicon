@@ -38,5 +38,5 @@ public class Colors {
     /**
      * For Premium messages
      */
-    public static Color COLOR_PREMIUM = new Color(255,215,0);
+    public static Color COLOR_PREMIUM = new Color(255, 215, 0);
 }

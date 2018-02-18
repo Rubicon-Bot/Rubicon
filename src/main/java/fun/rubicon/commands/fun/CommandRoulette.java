@@ -6,14 +6,12 @@
 
 package fun.rubicon.commands.fun;
 
-import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.core.minigames.RouletteNumber;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.sql.UserSQL;
 import net.dv8tion.jda.core.entities.Message;
 
@@ -32,7 +30,7 @@ public class CommandRoulette extends CommandHandler {
      */
     public CommandRoulette() {
         super(new String[]{"roulette", "roulete", "rulette", "roullete"}, CommandCategory.FUN,
-                new PermissionRequirements(PermissionLevel.EVERYONE, "command.roulette"),
+                new PermissionRequirements("command.roulette", false, false),
                 "Play Roulette to win some extra rubys.", "<bet-amount> <bet-option>");
     }
 

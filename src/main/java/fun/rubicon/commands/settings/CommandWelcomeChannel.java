@@ -10,17 +10,17 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
-public class CommandWelcomeChannel extends CommandHandler{
+public class CommandWelcomeChannel extends CommandHandler {
 
-    public CommandWelcomeChannel(){
-        super(new String[]{"channel", "welcomechannel", "welchannel", "joinchannel"}, CommandCategory.SETTINGS,
-                new PermissionRequirements(3, "command.welcome"),
+    public CommandWelcomeChannel() {
+        super(new String[]{"channel", "welcomechannel", "welchannel", "joinchannel", "messagechannel"}, CommandCategory.SETTINGS,
+                new PermissionRequirements("command.channel", false, false),
                 "Set the Server Welcome Channel!", "<#channel>");
     }
 

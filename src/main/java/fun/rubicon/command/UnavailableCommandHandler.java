@@ -6,8 +6,8 @@
 
 package fun.rubicon.command;
 
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.entities.Message;
 

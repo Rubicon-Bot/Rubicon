@@ -2,7 +2,6 @@ package fun.rubicon.listener;
 
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.util.Logger;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;

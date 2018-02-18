@@ -5,8 +5,8 @@ import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.command.UnavailableCommandHandler;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.sql.MySQL;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.Logger;
@@ -25,9 +25,7 @@ import java.util.Set;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
-import static fun.rubicon.util.EmbedUtil.embed;
-import static fun.rubicon.util.EmbedUtil.error;
-import static fun.rubicon.util.EmbedUtil.message;
+import static fun.rubicon.util.EmbedUtil.*;
 
 /**
  * Rubicon Discord bot
@@ -164,7 +162,7 @@ public class RemindHandler extends CommandHandler {
     private Set<Remind> reminders = new HashSet<>();
 
     public RemindHandler() {
-        super(new String[]{"remindme", "remind"}, CommandCategory.GENERAL, new PermissionRequirements(0, "command.remindme"), "Get reminded of whatever you want", "create 9d Buy Cheese - you will get Reminded in 9 Days\n" +
+        super(new String[]{"remindme", "remind"}, CommandCategory.GENERAL, new PermissionRequirements("command.remindme", false, true), "Get reminded of whatever you want", "create 9d Buy Cheese - you will get Reminded in 9 Days\n" +
                 "create 5w Buy another Cheese! - you will get Reminded in 5 Weeks\n" +
                 "create 1m Get this Message! - you will get Reminded in 5 Minutes\n" +
                 "create 12mon Lol new Year! - you will get Reminded in 12 Months");
@@ -229,18 +227,18 @@ public class RemindHandler extends CommandHandler {
                     double extra = 0;
                     try {
                         int time;
-                        if (invocation.getArgs()[1].endsWith("m")){
+                        if (invocation.getArgs()[1].endsWith("m")) {
                             timeunit = TimeUnit.MINUTES;
-                            runtime = Integer.parseInt(invocation.getArgs()[1].replace("m",""));
-                        }else if (invocation.getArgs()[1].endsWith("d")){
+                            runtime = Integer.parseInt(invocation.getArgs()[1].replace("m", ""));
+                        } else if (invocation.getArgs()[1].endsWith("d")) {
                             timeunit = TimeUnit.DAYS;
-                            runtime = Integer.parseInt(invocation.getArgs()[1].replace("d",""));
-                        }else if(invocation.getArgs()[1].endsWith("w")){
+                            runtime = Integer.parseInt(invocation.getArgs()[1].replace("d", ""));
+                        } else if (invocation.getArgs()[1].endsWith("w")) {
                             extra = 604800000.002;
-                            runtime = Integer.parseInt(invocation.getArgs()[1].replace("w",""));
-                        }else if(invocation.getArgs()[1].endsWith("mon")) {
-                            extra =2629745999.989;
-                            runtime = Integer.parseInt(invocation.getArgs()[1].replace("mon",""));
+                            runtime = Integer.parseInt(invocation.getArgs()[1].replace("w", ""));
+                        } else if (invocation.getArgs()[1].endsWith("mon")) {
+                            extra = 2629745999.989;
+                            runtime = Integer.parseInt(invocation.getArgs()[1].replace("mon", ""));
                         }
 
                         if (runtime < 0)
@@ -253,17 +251,17 @@ public class RemindHandler extends CommandHandler {
                     StringBuilder prize = new StringBuilder(invocation.getArgs()[2]);
                     for (int i = 3; i < invocation.getArgs().length; i++)
                         prize.append(" ").append(invocation.getArgs()[i]);
-                    if (extra == 0){
-                    Remind remind = createRemind(invocation.getTextChannel().getIdLong(),
-                            prize.toString(),
-                            (System.currentTimeMillis() + timeunit.toMillis(runtime)),
-                            invocation.getAuthor().getIdLong());
-
-                    return remind == null ? message(error()) : null;}
-                    else {
+                    if (extra == 0) {
                         Remind remind = createRemind(invocation.getTextChannel().getIdLong(),
                                 prize.toString(),
-                                (long) (System.currentTimeMillis() + runtime*extra),
+                                (System.currentTimeMillis() + timeunit.toMillis(runtime)),
+                                invocation.getAuthor().getIdLong());
+
+                        return remind == null ? message(error()) : null;
+                    } else {
+                        Remind remind = createRemind(invocation.getTextChannel().getIdLong(),
+                                prize.toString(),
+                                (long) (System.currentTimeMillis() + runtime * extra),
                                 invocation.getAuthor().getIdLong());
                         return remind == null ? message(error()) : null;
                     }

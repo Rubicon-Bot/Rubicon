@@ -1,10 +1,12 @@
 package de.foryasee.httprequest;
 
+
 public class RequestParameter {
 
     private String key;
     private String value = null;
     private int intValue = 0;
+
 
     public RequestParameter(String key, String value) {
         this.key = key;
@@ -16,12 +18,14 @@ public class RequestParameter {
         this.intValue = value;
     }
 
-    public void setKey(String key) {
+    public RequestParameter setKey(String key) {
         this.key = key;
+        return this;
     }
 
-    public void setValue(String value) {
+    public RequestParameter setValue(String value) {
         this.value = value;
+        return this;
     }
 
     public String getKey() {

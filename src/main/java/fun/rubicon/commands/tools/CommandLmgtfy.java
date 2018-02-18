@@ -9,9 +9,8 @@ package fun.rubicon.commands.tools;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import net.dv8tion.jda.core.entities.Message;
 
 import static fun.rubicon.util.EmbedUtil.message;
@@ -19,6 +18,7 @@ import static fun.rubicon.util.EmbedUtil.success;
 
 /**
  * Handles the 'lmgtfy' command which creates google search links using lmgtfy.com.
+ *
  * @author LeeDJD, tr808axm
  */
 public class CommandLmgtfy extends CommandHandler {
@@ -27,7 +27,7 @@ public class CommandLmgtfy extends CommandHandler {
      */
     public CommandLmgtfy() {
         super(new String[]{"lmgtfy", "letmegooglethatforyou", "let-me-google-that-for-you"}, CommandCategory.TOOLS,
-                new PermissionRequirements(PermissionLevel.EVERYONE, "command.lmgtfy"),
+                new PermissionRequirements("command.lmgtfy", false, true),
                 "Creates a let-me-google-that-for-you link.", "<search query...>");
     }
 

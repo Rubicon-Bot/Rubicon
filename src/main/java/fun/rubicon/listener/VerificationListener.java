@@ -8,11 +8,11 @@ package fun.rubicon.listener;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.admin.CommandVerification;
-import fun.rubicon.features.VerificationUserHandler;
 import fun.rubicon.features.VerificationKickHandler;
+import fun.rubicon.features.VerificationUserHandler;
 import fun.rubicon.util.SafeMessage;
+import fun.rubicon.util.StringUtil;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.channel.text.TextChannelDeleteEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
@@ -30,6 +30,7 @@ public class VerificationListener extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+        if(event.getAuthor().isBot()) return;
         if (!CommandVerification.setups.containsKey(event.getGuild())) return;
         if (!CommandVerification.setups.get(event.getGuild()).author.equals(event.getAuthor())) return;
         CommandVerification.VerificationSetup setup = CommandVerification.setups.get(event.getGuild());
@@ -64,13 +65,16 @@ public class VerificationListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
+        if(event.getUser().isBot()) return;
         if (!RubiconBot.getMySQL().verificationEnabled(event.getGuild())) return;
+        if (event.getUser().isBot())
+            return;
         TextChannel channel = event.getGuild().getTextChannelById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "channelid"));
         Message message = SafeMessage.sendMessageBlocking(channel, RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "text").replace("%user%", event.getUser().getAsMention()).replace("%guild%", event.getGuild().getName()));
         CommandVerification.users.put(message, event.getUser());
 
         String emoteRaw = RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "emote");
-        if (!isNumeric(emoteRaw))
+        if (!StringUtil.isNumeric(emoteRaw))
             message.addReaction(emoteRaw).queue();
         else
             message.addReaction(event.getJDA().getEmoteById(emoteRaw)).queue();
@@ -82,6 +86,7 @@ public class VerificationListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberLeave(GuildMemberLeaveEvent event) {
+        if(event.getUser().isBot()) return;
         if (VerificationKickHandler.VerifyKick.exists(event.getMember())) {
             VerificationKickHandler.VerifyKick kick = VerificationKickHandler.VerifyKick.fromMember(event.getMember(), true);
             event.getJDA().getTextChannelById(RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "channelid")).getMessageById(kick.getMessageId()).complete().delete().queue();
@@ -89,14 +94,6 @@ public class VerificationListener extends ListenerAdapter {
         }
     }
 
-    private boolean isNumeric(String str) {
-        try {
-            double d = Double.parseDouble(str);
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-        return true;
-    }
 
     private Date getKickTime(int mins) {
         Date date = new Date();

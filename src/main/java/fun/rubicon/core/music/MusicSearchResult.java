@@ -40,7 +40,7 @@ public class MusicSearchResult {
     }
 
     public void addTrack(AudioTrack track) throws Exception {
-        if(trackList.size() >= 5)
+        if (trackList.size() >= 5)
             throw new Exception("No support for more than 5 links.");
         trackList.add(track);
     }
@@ -50,8 +50,8 @@ public class MusicSearchResult {
         builder.setColor(Colors.COLOR_PRIMARY);
         int i = 0;
         StringBuilder description = new StringBuilder();
-        for(AudioTrack track : trackList) {
-           description.append(emotes[i]).append("  [").append(track.getInfo().title).append("](").append(track.getInfo().uri).append(")\n\n");
+        for (AudioTrack track : trackList) {
+            description.append(emotes[i]).append("  [").append(track.getInfo().title).append("](").append(track.getInfo().uri).append(")\n\n");
             i++;
         }
         builder.setFooter("Type in your choose. <1-5> (After 15 seconds the request will be deleted)", null);

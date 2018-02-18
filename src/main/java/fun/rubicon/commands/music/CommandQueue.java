@@ -4,9 +4,8 @@ import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.core.music.MusicManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import net.dv8tion.jda.core.entities.Message;
 
 /**
@@ -15,7 +14,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class CommandQueue extends CommandHandler {
 
     public CommandQueue() {
-        super(new String[]{"queue"}, CommandCategory.MUSIC, new PermissionRequirements(PermissionLevel.EVERYONE, "command.queue"), "Shows the songs that are in the queue", "");
+        super(new String[]{"queue"}, CommandCategory.MUSIC, new PermissionRequirements("command.queue", false, true), "Shows the songs that are in the queue", "");
     }
 
     @Override

@@ -26,11 +26,12 @@ public class MemberSQL implements DatabaseGenerator {
      */
     public MemberSQL() {
         this.mySQL = RubiconBot.getMySQL();
-        this.connection = MySQL.getConnection();
+        this.connection = this.mySQL.getCon();
     }
 
     /**
      * User fromUser(User user, Guild guild) or fromMember(Member member) method
+     *
      * @see MemberSQL
      */
     @Deprecated
@@ -43,18 +44,18 @@ public class MemberSQL implements DatabaseGenerator {
         create();
     }
 
-    private MemberSQL(Member member, MySQL mySQL){
+    private MemberSQL(Member member, MySQL mySQL) {
         this.member = member;
         this.user = member.getUser();
         this.mySQL = RubiconBot.getMySQL();
         this.connection = MySQL.getConnection();
     }
 
-    public static MemberSQL fromMember(Member member){
+    public static MemberSQL fromMember(Member member) {
         return new MemberSQL(member, RubiconBot.getMySQL());
     }
 
-    public static MemberSQL fromUser(User user, Guild guild){
+    public static MemberSQL fromUser(User user, Guild guild) {
         return new MemberSQL(guild.getMember(user), RubiconBot.getMySQL());
     }
 
@@ -121,7 +122,7 @@ public class MemberSQL implements DatabaseGenerator {
         }
     }
 
-    public UserSQL getUserSQL(){
+    public UserSQL getUserSQL() {
         return UserSQL.fromUser(this.user);
     }
 

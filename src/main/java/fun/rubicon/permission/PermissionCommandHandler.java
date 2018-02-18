@@ -10,9 +10,6 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 
@@ -27,17 +24,16 @@ import static fun.rubicon.util.EmbedUtil.*;
  * @author tr808axm
  */
 public class PermissionCommandHandler extends CommandHandler {
-    private static final PermissionRequirements MODIFY_PERMISSIONS = new PermissionRequirements(PermissionLevel.ADMINISTRATOR,
-            "permissions.modify"),
-            LIST_PERMISSIONS = new PermissionRequirements(PermissionLevel.ADMINISTRATOR,
-                    "permissions.list");
+    private static final PermissionRequirements MODIFY_PERMISSIONS = new PermissionRequirements(
+            "permissions.modify", false, false),
+            LIST_PERMISSIONS = new PermissionRequirements("permissions.list", false, false);
 
     /**
      * Initializes the command handler.
      */
     protected PermissionCommandHandler() {
         super(new String[]{"permission", "permit", "permissions", "perm", "perms"}, CommandCategory.ADMIN,
-                new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.permission"),
+                new PermissionRequirements("command.permission", false, false),
                 "Allows modifying and listing permissions.",
                 "add/remove <user/role/dperm> <userId/roleId> <command>\n" +
                         "list <user/role/dperm> <command>");
@@ -90,7 +86,7 @@ public class PermissionCommandHandler extends CommandHandler {
                 if (!target.exists())
                     return message(error("Target does not exit", "`" + target.toString() + "` is not on this server!"));
 
-                return RubiconBot.sGetPermissionManager().addPermission(target, Permission.parse(invocation.args[3]))
+                return RubiconBot.sGetPermissionManager().addPermission(target, Permission.parse(invocation.getArgs()[3]))
                         ? message(success("Updated permissions", "Successfully added `" +
                         invocation.getArgs()[3] + "` to `" + target.toString() + "`."))
                         : message(error("Entry already exists", "There already is a `" +

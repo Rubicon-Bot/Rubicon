@@ -6,13 +6,12 @@
 
 package fun.rubicon.commands.fun;
 
-import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.core.minigames.SlotMachine;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.sql.UserSQL;
 import fun.rubicon.util.Colors;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -28,7 +27,7 @@ public class CommandSlot extends CommandHandler {
 
     public CommandSlot() {
         super(new String[]{"slot", "slots"}, CommandCategory.FUN,
-                new PermissionRequirements(0, "command.slot"),
+                new PermissionRequirements("command.slot", false, true),
                 "Play a short round on a slot machine. Winning only at three of a kind!", "<money>");
     }
 

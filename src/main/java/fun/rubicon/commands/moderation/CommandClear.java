@@ -8,14 +8,11 @@ package fun.rubicon.commands.moderation;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.StringUtil;
-import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.User;
 
 import java.time.OffsetDateTime;
@@ -30,7 +27,7 @@ import java.util.stream.Collectors;
 public class CommandClear extends CommandHandler {
 
     public CommandClear() {
-        super(new String[]{"clear", "purge"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.clear"), "Clear the chat.", "<amount of messages> [@User]");
+        super(new String[]{"clear", "purge"}, CommandCategory.MODERATION, new PermissionRequirements("command.clear", false, false), "Clear the chat.", "<amount of messages> [@User]");
     }
 
     @Override

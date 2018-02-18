@@ -9,8 +9,8 @@ package fun.rubicon.commands.tools;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -23,7 +23,7 @@ import java.awt.*;
 public class CommandSearch extends CommandHandler {
 
     public CommandSearch() {
-        super(new String[]{"search", "find"}, CommandCategory.TOOLS, new PermissionRequirements(0, "command.find"), "Searches for users, roles and channels with a specified name.", "<query>");
+        super(new String[]{"search", "find"}, CommandCategory.TOOLS, new PermissionRequirements("command.search", false, true), "Searches for users, roles and channels with a specified name.", "<query>");
     }
 
     @Override
@@ -33,7 +33,7 @@ public class CommandSearch extends CommandHandler {
         TextChannel channel = message.getTextChannel();
         Guild guild = message.getGuild();
 
-        if(args.length == 0){
+        if (args.length == 0) {
             return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "search <query>").build()).build();
         }
         StringBuilder query = new StringBuilder();
@@ -49,7 +49,7 @@ public class CommandSearch extends CommandHandler {
         Message mymsg = channel.sendMessage(new EmbedBuilder().setColor(Color.cyan).setDescription("Collecting textchannels ...").build()).complete();
 
         guild.getTextChannels().forEach(i -> {
-            if(i.getName().toLowerCase().contains(query.toString().toLowerCase()))
+            if (i.getName().toLowerCase().contains(query.toString().toLowerCase()))
                 textchannels.append(i.getName() + "(`" + i.getId() + "`)").append("\n");
         });
 
@@ -57,7 +57,7 @@ public class CommandSearch extends CommandHandler {
 
 
         guild.getVoiceChannels().forEach(i -> {
-            if(i.getName().toLowerCase().contains(query.toString().toLowerCase()))
+            if (i.getName().toLowerCase().contains(query.toString().toLowerCase()))
                 voicechannels.append(i.getName() + "(`" + i.getId() + "`)").append("\n");
         });
 
@@ -65,14 +65,14 @@ public class CommandSearch extends CommandHandler {
 
 
         guild.getMembers().forEach(i -> {
-            if(i.getUser().getName().toLowerCase().contains(query.toString().toLowerCase()) || i.getEffectiveName().toLowerCase().contains(query.toString().toLowerCase()))
+            if (i.getUser().getName().toLowerCase().contains(query.toString().toLowerCase()) || i.getEffectiveName().toLowerCase().contains(query.toString().toLowerCase()))
                 members.append(i.getUser().getName() + "(`" + i.getUser().getId() + "`)").append("\n");
         });
 
         mymsg.editMessage(new EmbedBuilder().setColor(Color.cyan).setDescription("Collecting roles ...").build()).queue();
 
         guild.getRoles().forEach(i -> {
-            if(i.getName().toLowerCase().contains(query.toString().toLowerCase()))
+            if (i.getName().toLowerCase().contains(query.toString().toLowerCase()))
                 roles.append(i.getName() + "(`" + i.getId() + "`)").append("\n");
         });
         mymsg.delete().queue();
@@ -84,7 +84,7 @@ public class CommandSearch extends CommandHandler {
                     .addField("**Members**", members.toString(), false)
                     .addField("**Roles**", roles.toString(), false);
             return new MessageBuilder().setEmbed(results.build()).build();
-        } catch (IllegalArgumentException ex){
+        } catch (IllegalArgumentException ex) {
             return new MessageBuilder().setEmbed(EmbedUtil.error("Error!", "Too many results!").build()).build();
         }
 

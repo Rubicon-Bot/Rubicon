@@ -7,13 +7,21 @@
 package fun.rubicon.command;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.commands.admin.CommandVerification;
+import fun.rubicon.commands.botowner.CommandMaintenance;
 import fun.rubicon.listener.ServerLogHandler;
-import fun.rubicon.util.*;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
+import fun.rubicon.util.Colors;
+import fun.rubicon.util.EmbedUtil;
+import fun.rubicon.util.Info;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Message;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static fun.rubicon.util.EmbedUtil.info;
 import static fun.rubicon.util.EmbedUtil.message;
@@ -27,7 +35,7 @@ public abstract class CommandHandler {
     private final String[] invocationAliases;
     private final CommandCategory category;
     private final PermissionRequirements permissionRequirements;
-    private final String description;
+    private String description;
     private final String parameterUsage;
     private boolean disabled = false;
 
@@ -56,7 +64,7 @@ public abstract class CommandHandler {
      * @param parameterUsage         the usage message.
      */
     protected CommandHandler(String[] invocationAliases, CommandCategory category,
-                                  PermissionRequirements permissionRequirements, String description, String parameterUsage) {
+                             PermissionRequirements permissionRequirements, String description, String parameterUsage) {
         this.invocationAliases = invocationAliases;
         this.category = category;
         this.permissionRequirements = permissionRequirements;
@@ -81,8 +89,14 @@ public abstract class CommandHandler {
      * @return a response that will be sent and deleted by the caller.
      */
     public Message call(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
-        if(disabled) {
+        if (disabled) {
             return new MessageBuilder().setEmbed(EmbedUtil.info("Command disabled", "Command is currently disabled.").setFooter("RubiconBot Dev Team", null).build()).build();
+        }
+        if (CommandMaintenance.maintenance) {
+            ArrayList<Long> authors = new ArrayList<>(Arrays.asList(Info.BOT_AUTHOR_IDS));
+            if (!authors.contains(parsedCommandInvocation.getAuthor().getIdLong())) {
+                return EmbedUtil.message(EmbedUtil.info("Maintenance!", "Bots maintenance is enabled. Please be patient."));
+            }
         }
         UserPermissions userPermissions = new UserPermissions(parsedCommandInvocation.getMessage().getAuthor(),
                 parsedCommandInvocation.getMessage().getGuild());
@@ -159,6 +173,15 @@ public abstract class CommandHandler {
     }
 
     /**
+     * Updates the description of the command
+     *
+     * @param description the new command description
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
      * @return the usage message of this command.
      * @deprecated Use createHelpMessage instead.
      */
@@ -205,6 +228,13 @@ public abstract class CommandHandler {
         StringBuilder usage = new StringBuilder();
         for (String part : getParameterUsage().split("\n")) {
             usage.append(serverPrefix + aliasToUse + " " + part + "\n");
+        }
+        if (this instanceof CommandVerification) {
+            if (CommandVerification.showInspired) {
+                setDescription("Let you members accept rules before posting messages.");
+            } else {
+                setDescription("Let you members accept rules before posting messages\n\nThis feature is partially inspired by [Flashbot](https://flashbot.de)");
+            }
         }
         return message(info('\'' + aliasToUse + "' command help", getDescription())
                 .addField("Aliases", String.join(", ", getInvocationAliases()), false)

@@ -5,14 +5,13 @@ import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class VerificationUserSQL implements DatabaseGenerator{
+public class VerificationUserSQL implements DatabaseGenerator {
 
     private Connection connection;
     private MySQL mySQL;
@@ -27,7 +26,7 @@ public class VerificationUserSQL implements DatabaseGenerator{
         return member;
     }
 
-    public VerificationUserSQL(){
+    public VerificationUserSQL() {
         this.mySQL = RubiconBot.getMySQL();
         this.connection = MySQL.getConnection();
 
@@ -37,14 +36,14 @@ public class VerificationUserSQL implements DatabaseGenerator{
         return guild.getTextChannelById(RubiconBot.getMySQL().getVerificationValue(guild, "channelid")).getMessageById(Long.parseLong(this.get("messageid"))).complete();
     }
 
-    public VerificationUserSQL(Guild guild, Member member){
+    public VerificationUserSQL(Guild guild, Member member) {
         this.connection = MySQL.getConnection();
         this.mySQL = RubiconBot.getMySQL();
         this.guild = guild;
         this.member = member;
     }
 
-    public static VerificationUserSQL fromMember(Member member){
+    public static VerificationUserSQL fromMember(Member member) {
 
         return new VerificationUserSQL(member.getGuild(), member);
     }
@@ -53,8 +52,8 @@ public class VerificationUserSQL implements DatabaseGenerator{
     public void createTableIfNotExist() {
 
 
-        try{
-            if(connection.isClosed())
+        try {
+            if (connection.isClosed())
                 mySQL.connect();
             PreparedStatement ps = connection.prepareStatement("CREATE TABLE IF NOT EXISTS " +
                     "`verifyusers`" +
@@ -64,7 +63,7 @@ public class VerificationUserSQL implements DatabaseGenerator{
                     "`messageid` TEXT NOT NULL," +
                     "PRIMARY KEY (`id`)) ENGINE = InnoDB;");
             ps.execute();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             Logger.error(e);
         }
     }
@@ -107,14 +106,14 @@ public class VerificationUserSQL implements DatabaseGenerator{
         return null;
     }
 
-    public boolean insert(){
-        try{
+    public boolean insert() {
+        try {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO `verifyusers` (`guildid`, `userid`, `messageid`) VALUES (?,?,?)");
             ps.setLong(1, this.getGuild().getIdLong());
             ps.setLong(2, this.getMember().getUser().getIdLong());
             ps.setLong(3, this.getMessage().getIdLong());
             return true;
-        } catch (SQLException e){
+        } catch (SQLException e) {
             Logger.error(e);
             return false;
         }

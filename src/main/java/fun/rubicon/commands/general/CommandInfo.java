@@ -10,9 +10,8 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -22,14 +21,15 @@ import net.dv8tion.jda.core.entities.User;
 
 /**
  * Handles the 'info' command.
+ *
  * @author Yannick Seeger / ForYaSee
  */
 public class CommandInfo extends CommandHandler {
 
     private String[] arrSupporter = {"Greg"};
 
-    public CommandInfo(){
-        super(new String[]{"Info", "inf", "version"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.info"), "Shows some information about the bot!", "");
+    public CommandInfo() {
+        super(new String[]{"info", "inf", "version"}, CommandCategory.GENERAL, new PermissionRequirements("command.info", false, true), "Shows some information about the bot!", "");
     }
 
     @Override
@@ -44,7 +44,7 @@ public class CommandInfo extends CommandHandler {
         //Append Id´s on StringBuilder
         for (long authorId : Info.BOT_AUTHOR_IDS) {
             User authorUser = RubiconBot.getJDA().getUserById(authorId);
-            if (authorUser == null) // TODO use alternative way that does not need to have the authors in cache.
+            if (authorUser == null)
                 authors.append(authorId).append("\n");
             else
                 authors.append(authorUser.getName()).append("#").append(authorUser.getDiscriminator()).append("\n");
@@ -57,9 +57,9 @@ public class CommandInfo extends CommandHandler {
         builder.addField("Github Link", "[Github Link](" + Info.BOT_GITHUB + ")", true);
         builder.addField("Patreon Link", "[RubiconBot Dev Team](https://www.patreon.com/rubiconbot)", true);
         builder.addField("discordbots.org", "[discordbots.org](https://discordbots.org/bot/380713705073147915)\n", true);
+        builder.addField("Support Server","[Link](dc.rucb.co)",true);
         builder.addField("Donators", String.join("\n", arrSupporter), true);
         builder.addField("Devs", authors.toString(), false);
-        //Send Message and delete it after 2 Minutes
         return new MessageBuilder().setEmbed(builder.build()).build();
     }
 

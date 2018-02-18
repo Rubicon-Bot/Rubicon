@@ -8,13 +8,13 @@ package fun.rubicon.command;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.music.MusicManager;
+import fun.rubicon.sql.GuildSQL;
 import fun.rubicon.util.*;
-import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -66,7 +66,12 @@ public class CommandManager extends ListenerAdapter {
         if (event.getAuthor().isBot())
             return;
         if (event.isFromType(ChannelType.PRIVATE)) return;
-        if (!RubiconBot.getMySQL().isWhitelisted(event.getTextChannel())) return;
+        GuildSQL guildSQL = GuildSQL.fromGuild(event.getGuild());
+        if(guildSQL.enabledBlacklist())
+            if (guildSQL.isBlacklisted(event.getTextChannel())) return;
+         else if (guildSQL.enabledWhitelist())
+            if (!guildSQL.isWhitelisted(event.getTextChannel())) return;
+
         MusicManager.handleTrackChoose(event);
         super.onMessageReceived(event);
         ParsedCommandInvocation commandInvocation = parse(event.getMessage());
@@ -104,6 +109,7 @@ public class CommandManager extends ListenerAdapter {
 
         // delete invocation message
         if (parsedCommandInvocation.getGuild() != null) {
+            if(!parsedCommandInvocation.getGuild().getSelfMember().getPermissions(parsedCommandInvocation.getTextChannel()).contains(Permission.MESSAGE_MANAGE)) return; // Do not try to delete message when bot is not allowed to
             parsedCommandInvocation.getMessage().delete().queue(null, msg -> {
             }); // suppress failure
         }
@@ -162,14 +168,6 @@ public class CommandManager extends ListenerAdapter {
     }
 
     public static final class ParsedCommandInvocation {
-        @Deprecated
-        public final Message invocationMessage;
-        @Deprecated
-        public final String serverPrefix;
-        @Deprecated
-        public final String invocationCommand;
-        @Deprecated
-        public final String[] args;
 
         private final String[] argsNew;
         private final String commandInvocation;
@@ -177,13 +175,9 @@ public class CommandManager extends ListenerAdapter {
         private final String prefix;
 
         private ParsedCommandInvocation(Message invocationMessage, String serverPrefix, String invocationCommand, String[] args) {
-            this.invocationMessage = invocationMessage;
             this.message = invocationMessage;
-            this.serverPrefix = serverPrefix;
             this.prefix = serverPrefix;
-            this.invocationCommand = invocationCommand;
             this.commandInvocation = invocationCommand;
-            this.args = args;
             this.argsNew = args;
         }
 

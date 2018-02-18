@@ -10,9 +10,8 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 
@@ -24,7 +23,7 @@ import static fun.rubicon.util.EmbedUtil.message;
 public class CommandGuilds extends CommandHandler {
     public CommandGuilds() {
         super(new String[]{"guilds"}, CommandCategory.BOT_OWNER,
-                new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.guilds"),
+                new PermissionRequirements("command.guilds", true, false),
                 "Shows all Guilds the Bot is running on!", "guilds");
     }
 
@@ -50,7 +49,7 @@ public class CommandGuilds extends CommandHandler {
         int sideNumbAll;
         if (RubiconBot.getJDA().getGuilds().size() >= 20) {
             for (Guild guild : guild_sublist) {
-                runningOnServers.append("`\t " + (((SideNumbInput-1) *20) + count_server) + ". ").append(guild.getName()).append("(").append(guild.getId()).append(")`\n");
+                runningOnServers.append("`\t " + (((SideNumbInput - 1) * 20) + count_server) + ". ").append(guild.getName()).append("(").append(guild.getId()).append(")`\n");
                 count_server++;
             }
             sideNumbAll = RubiconBot.getJDA().getGuilds().size() / 20;

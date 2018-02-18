@@ -9,16 +9,16 @@ package fun.rubicon.commands.fun;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-import static fun.rubicon.util.EmbedUtil.*;
+import static fun.rubicon.util.EmbedUtil.error;
+import static fun.rubicon.util.EmbedUtil.message;
 
 /**
  * Handles the 'rip' command which fetches tombstone images with a custom sign.
@@ -31,7 +31,7 @@ public class CommandRip extends CommandHandler {
      */
     public CommandRip() {
         super(new String[]{"rip", "rest-in-peace", "tombstone"}, CommandCategory.FUN,
-                new PermissionRequirements(PermissionLevel.EVERYONE, "command.rip"),
+                new PermissionRequirements("command.rip", false, true),
                 "Creates a tombstone with custom text.", "<who-died> <sign text...>");
     }
 

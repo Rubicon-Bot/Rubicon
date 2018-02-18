@@ -5,14 +5,10 @@ import de.foryasee.httprequest.RequestResponse;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
-import fun.rubicon.util.Colors;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.Info;
-import fun.rubicon.util.Logger;
-import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -29,7 +25,7 @@ import org.json.simple.parser.JSONParser;
 public class CommandGiphy extends CommandHandler {
 
     public CommandGiphy() {
-        super(new String[]{"giphy", "gif",}, CommandCategory.FUN, new PermissionRequirements(PermissionLevel.EVERYONE, "command.giphy"), "Search a gif on Giphy and sends it in the channel", "<keyword>", false);
+        super(new String[]{"giphy", "gif",}, CommandCategory.FUN, new PermissionRequirements("command.giphy", false, true), "Search a gif on Giphy and sends it in the channel", "<keyword>", false);
     }
 
     @Override

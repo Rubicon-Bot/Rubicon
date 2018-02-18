@@ -10,9 +10,8 @@ package fun.rubicon.commands.tools;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
@@ -21,7 +20,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class CommandASCII extends CommandHandler {
 
     public CommandASCII() {
-        super(new String[]{"ascii"}, CommandCategory.TOOLS, new PermissionRequirements(PermissionLevel.EVERYONE, "command.ascii"), "Convert an Text to ASCII-Code", "<string>");
+        super(new String[]{"ascii"}, CommandCategory.TOOLS, new PermissionRequirements("command.ascii", false, true), "Convert an Text to ASCII-Code", "<string>");
     }
 
     @Override

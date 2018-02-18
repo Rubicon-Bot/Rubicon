@@ -10,8 +10,8 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.sql.MySQL;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -22,11 +22,12 @@ import java.util.TimerTask;
 
 /**
  * Handles the 'restart' command.
+ *
  * @author Leon Kappes / Lee
  */
-public class CommandRestart extends CommandHandler{
+public class CommandRestart extends CommandHandler {
     public CommandRestart() {
-        super(new String[]{"rs", "restart", "r"}, CommandCategory.BOT_OWNER, new PermissionRequirements(4, "command.restart"), "Restart the Bot!", "");
+        super(new String[]{"rs", "restart", "r"}, CommandCategory.BOT_OWNER, new PermissionRequirements("command.restart", true, false), "Restart the Bot!", "");
     }
 
     @Override

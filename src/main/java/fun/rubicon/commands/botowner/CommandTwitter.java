@@ -10,9 +10,8 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
@@ -27,12 +26,13 @@ import java.text.SimpleDateFormat;
 
 /**
  * Handles the 'twitter' command.
+ *
  * @author Yannick Seeger / ForYaSee
  */
 public class CommandTwitter extends CommandHandler {
 
     public CommandTwitter() {
-        super(new String[]{"twitter", "tweet"}, CommandCategory.BOT_OWNER, new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.twitter"), "Tweet with with the bot.", "<message>");
+        super(new String[]{"twitter", "tweet"}, CommandCategory.BOT_OWNER, new PermissionRequirements("command.twitter", true, false), "Tweet with with the bot.", "<message>");
     }
 
     @Override

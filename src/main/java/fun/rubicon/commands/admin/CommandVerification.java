@@ -10,14 +10,14 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
-import fun.rubicon.features.VerificationUserHandler;
 import fun.rubicon.features.VerificationKickHandler;
+import fun.rubicon.features.VerificationUserHandler;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
@@ -40,13 +40,15 @@ public class CommandVerification extends CommandHandler {
     private static HashMap<Guild, VerificationSettings> settingslist = new HashMap<>();
     public static HashMap<Message, User> users = new HashMap<>();
 
+    public static boolean showInspired = false;
+
     public CommandVerification() {
-        super(new String[]{"verification", "verify"}, CommandCategory.ADMIN, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.verification"), "Let you members accept rules before posting messages", "setup\ndisable");
+        super(new String[]{"verification", "verify"}, CommandCategory.ADMIN, new PermissionRequirements("command.verification", false, false), "Let you members accept rules before posting messages\n\nThis feature is partially inspired by [Flashbot](https://flashbot.de)", "setup\ndisable");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        String[] args = parsedCommandInvocation.args;
+        String[] args = parsedCommandInvocation.getArgs();
         if (args.length == 0) {
             return createHelpMessage();
         }
@@ -159,6 +161,10 @@ public class CommandVerification extends CommandHandler {
         } else {
             if (!setups.containsKey(event.getGuild())) return;
             if (!setups.get(event.getGuild()).author.equals(event.getUser())) return;
+            if (!event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
+                message.editMessage(EmbedUtil.error("Aborted", "Bot has not the Permissions MESSAGE_MANAGE.Please contact the Owner for the Permissions").build()).queue();
+                return;
+            }
             event.getReaction().removeReaction(event.getUser()).queue();
             message.getReactions().forEach(r -> r.removeReaction().queue());
             String emote = event.getReactionEmote().getName();
@@ -219,11 +225,17 @@ public class CommandVerification extends CommandHandler {
         VerificationSettings settings = settingslist.get(event.getGuild());
         MessageReaction.ReactionEmote emote = event.getReactionEmote();
         //System.out.println(event.getReactionEmote().getEmote().isManaged());
-        if (!event.getReactionEmote().getEmote().isManaged()) {
-            if (!event.getGuild().getEmotes().contains(emote.getEmote())) {
-                SafeMessage.sendMessage(message.getTextChannel(), EmbedUtil.message(EmbedUtil.error("Unsupported emote", "You can only use global or custom emotes of your server")), 4);
-                return;
+        try {
+
+
+            if (!event.getReactionEmote().getEmote().isManaged()) {
+                if (!event.getGuild().getEmotes().contains(emote.getEmote())) {
+                    SafeMessage.sendMessage(message.getTextChannel(), EmbedUtil.message(EmbedUtil.error("Unsupported emote", "You can only use global or custom emotes of your server")), 4);
+                    return;
+                }
             }
+        } catch (NullPointerException ignored) {
+
         }
         settings.emote = emote;
         settingslist.replace(event.getGuild(), settings);
@@ -290,5 +302,11 @@ public class CommandVerification extends CommandHandler {
         settingslist.remove(message.getGuild());
     }
 
-
+    public static void toggleInspired() {
+        if (showInspired) {
+            showInspired = false;
+        } else {
+            showInspired = true;
+        }
+    }
 }

@@ -6,21 +6,27 @@
 
 package fun.rubicon.util;
 
-import com.github.natanbc.discordbotsapi.DiscordBotsAPI;
-import com.github.natanbc.discordbotsapi.PostingException;
+
 import fun.rubicon.RubiconBot;
 import net.dv8tion.jda.core.JDA;
+import okhttp3.*;
+import org.discordbots.api.client.DiscordBotListAPI;
+import org.json.JSONObject;
+
+import java.io.IOException;
 
 /**
  * Utility class that posts statistical bot information to the https://discordbots.org/ bot-list.
+ *
  * @author DRSchlaubi, tr808axm
  */
 public class DBLUtil {
-    private static DiscordBotsAPI discordBotsOrgAPI;
+    private static DiscordBotListAPI discordBotsOrgAPI;
 
     /**
-     * Posts bot statistics to https://discordbots.org/ and suppresses potential {@link PostingException} that occur
+     * Posts bot statistics to https://discordbots.org/
      * when the token is invalid.
+     *
      * @param jda unnecessary as it will be statically retrieved from RubiconBot.
      * @deprecated Use postStats() instead.
      */
@@ -43,15 +49,35 @@ public class DBLUtil {
 
         // init api if necessary
         if (discordBotsOrgAPI == null)
-            discordBotsOrgAPI = new DiscordBotsAPI(Info.DBL_TOKEN);
+            discordBotsOrgAPI = new DiscordBotListAPI.Builder()
+                    .token(Info.DBL_TOKEN)
+                    .build();
 
+
+        // post stats to discordbots.org
+        discordBotsOrgAPI.setStats(RubiconBot.getJDA().getSelfUser().getId(), RubiconBot.getJDA().getGuilds().size());
+
+
+        JSONObject json = new JSONObject();
+
+        json.put("server_count", RubiconBot.getJDA().getGuilds().size());
+
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json.toString());
+        //Post stats to bots.discord.pw
+        Request req = new Request.Builder()
+                .url("https://bots.discord.pw/api/bots/" + RubiconBot.getJDA().getSelfUser().getId() + "/stats")
+                .addHeader("Authorization", Info.DISCORD_PW_TOKEN)
+                .post(body)
+                .build();
+        Response res = null;
         try {
-            // post stats
-            discordBotsOrgAPI.postStats(new int[]{RubiconBot.getJDA().getGuilds().size()});
-        } catch (PostingException e) {
-            // suppress warning if silent
-            if (!silent)
-                Logger.warning("Could not post discordbots.org stats: " + e.getMessage());
+            res = new OkHttpClient().newCall(req).execute();
+        } catch (IOException e) {
+            if(!silent)
+            Logger.error(e);
         }
+        res.close();
+
+
     }
 }

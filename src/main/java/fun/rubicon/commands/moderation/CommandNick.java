@@ -3,9 +3,8 @@ package fun.rubicon.commands.moderation;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
@@ -17,7 +16,7 @@ import java.util.Arrays;
 
 public class CommandNick extends CommandHandler {
     public CommandNick() {
-        super(new String[]{"nick", "nickname", "name"}, CommandCategory.TOOLS, new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.nick"), "Easily nick yourself or others", "[@User] <nickname/reset>", false);
+        super(new String[]{"nick", "nickname", "name"}, CommandCategory.TOOLS, new PermissionRequirements("command.nick", false, false), "Easily nick yourself or others", "[@User] <nickname/reset>", false);
     }
 
     @Override

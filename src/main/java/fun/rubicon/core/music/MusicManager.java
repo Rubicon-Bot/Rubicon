@@ -45,6 +45,7 @@ public class MusicManager {
     private final fun.rubicon.permission.UserPermissions userPermissions;
     private final CommandManager.ParsedCommandInvocation parsedCommandInvocation;
 
+    private final String MAINTENANCE_SOUND = "https://lordlee.de/m/maintenance.mp3";
     private final int PLAYLIST_MAXIMUM_DEFAULT = 1;
     private final int PLAYLIST_MAXIMUM_VIP = 5;
     private final int QUEUE_MAXIMUM = 50;
@@ -162,7 +163,7 @@ public class MusicManager {
             return message(EmbedUtil.error("Error!", "Volume must be 200 or less."));
         }
         getCurrentMusicManager().getPlayer().setVolume(userVolI);
-        return message(success("Set volume!", "Successfully resumed playing music."));
+        return message(success("Set volume!", "Successfully changed the volume."));
     }
 
     public void loadSong(boolean force) {
@@ -262,6 +263,32 @@ public class MusicManager {
                 textChannel.sendMessage(embedBuilder.build()).queue();
             }
         });
+    }
+
+    public void maintenanceSound() {
+        for (Map.Entry entry : musicManagers.entrySet()) {
+            playerManager.loadItemOrdered(getCurrentMusicManager(), MAINTENANCE_SOUND, new AudioLoadResultHandler() {
+                @Override
+                public void trackLoaded(AudioTrack track) {
+                    ((GuildMusicManager) entry.getValue()).getPlayer().playTrack(track);
+                }
+
+                @Override
+                public void playlistLoaded(AudioPlaylist playlist) {
+                    //DO NOTHING
+                }
+
+                @Override
+                public void noMatches() {
+                    Logger.error("Can't find maintenance sound.");
+                }
+
+                @Override
+                public void loadFailed(FriendlyException exception) {
+                    Logger.error("Can't load maintenance sound.");
+                }
+            });
+        }
     }
 
     public Message executeShuffle() {
@@ -451,12 +478,12 @@ public class MusicManager {
             return String.format("%02d:%02d", minutes, seconds);
     }
 
-    private AudioTrack getCurrentTrack(){
+    private AudioTrack getCurrentTrack() {
         MusicManager manager = this;
         return manager.getCurrentMusicManager().getScheduler().getPlayer().getPlayingTrack();
     }
 
-    public Message executeLyrics(){
+    public Message executeLyrics() {
         if (!isBotInVoiceChannel())
             return message(error("Error!", "Bot is not in a voice channel."));
         VoiceChannel channel = getBotsVoiceChannel();
@@ -473,7 +500,7 @@ public class MusicManager {
             track = musixMatch.getMatchingTrack(info.title, info.author);
             lyrics = musixMatch.getLyrics(track.getTrack().getTrackId());
         } catch (MusixMatchException e) {
-            return new MessageBuilder().setEmbed(EmbedUtil.error("No lyrics found", "There are no lyrics of the current song on Musixmathc").build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error("No lyrics found", "There are no lyrics of the current song on Musixmatch").build()).build();
         }
         EmbedBuilder lyricsEmbed = new EmbedBuilder();
         lyricsEmbed.setColor(Colors.COLOR_PREMIUM);
@@ -481,5 +508,9 @@ public class MusicManager {
         lyricsEmbed.setFooter(lyrics.getLyricsCopyright(), null);
         lyricsEmbed.setDescription(lyrics.getLyricsBody());
         return new MessageBuilder().setEmbed(lyricsEmbed.build()).build();
+    }
+
+    public Map<Long, GuildMusicManager> getMusicManagers() {
+        return musicManagers;
     }
 }

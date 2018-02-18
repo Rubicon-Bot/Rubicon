@@ -9,8 +9,8 @@ package fun.rubicon.commands.botowner;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -19,8 +19,10 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CommandBroadcast extends CommandHandler {
 
@@ -28,13 +30,13 @@ public class CommandBroadcast extends CommandHandler {
 
     public CommandBroadcast() {
         super(new String[]{"broadcast"}, CommandCategory.BOT_OWNER,
-                new PermissionRequirements(4, "command.broadcast"),
+                new PermissionRequirements("command.broadcast", true, false),
                 "Sends a message to all guild owners.", "<message>");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        String[] args = parsedCommandInvocation.args;
+        String[] args = parsedCommandInvocation.getArgs();
         if (args.length < 3) {
             return new MessageBuilder().setEmbed(EmbedUtil.error("You have to use more arguments!", "Use at least 3 arguments.").build()).build();
         }

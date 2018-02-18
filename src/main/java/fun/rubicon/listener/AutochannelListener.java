@@ -25,7 +25,7 @@ public class AutochannelListener extends ListenerAdapter {
     public void onVoiceChannelDelete(VoiceChannelDeleteEvent e) {
         String oldEntry = RubiconBot.getMySQL().getGuildValue(e.getGuild(), "autochannels");
         if (oldEntry != null)
-            if(oldEntry.contains(e.getChannel().getId())) {
+            if (oldEntry.contains(e.getChannel().getId())) {
                 String newEntry = oldEntry.replace(e.getChannel().getId() + ",", "");
                 RubiconBot.getMySQL().updateGuildValue(e.getGuild(), "autochannels", newEntry);
             }
@@ -34,7 +34,7 @@ public class AutochannelListener extends ListenerAdapter {
     @Override
     public void onGuildVoiceJoin(GuildVoiceJoinEvent e) {
         VoiceChannel ch = e.getChannelJoined();
-        if(isAutoChannel(e.getGuild(), ch)) {
+        if (isAutoChannel(e.getGuild(), ch)) {
             VoiceChannel newChannel = (VoiceChannel) e.getGuild().getController().createCopyOfChannel(ch).setName(ch.getName() + " [AC]").complete();
             e.getGuild().getController().moveVoiceMember(e.getMember(), newChannel).queue();
         }
@@ -43,11 +43,11 @@ public class AutochannelListener extends ListenerAdapter {
     @Override
     public void onGuildVoiceMove(GuildVoiceMoveEvent e) {
         VoiceChannel ch = e.getChannelJoined();
-        if(isAutoChannel(e.getGuild(), ch)) {
+        if (isAutoChannel(e.getGuild(), ch)) {
             VoiceChannel newChannel = (VoiceChannel) e.getGuild().getController().createCopyOfChannel(ch).setName(ch.getName() + " [AC]").complete();
             e.getGuild().getController().moveVoiceMember(e.getMember(), newChannel).queue();
         }
-        if(e.getChannelLeft().getMembers().size() == 0) {
+        if (e.getChannelLeft().getMembers().size() == 0) {
             if (e.getChannelLeft().getName().contains("[AC]")) {
                 e.getChannelLeft().delete().queue();
             }
@@ -56,7 +56,7 @@ public class AutochannelListener extends ListenerAdapter {
 
     @Override
     public void onGuildVoiceLeave(GuildVoiceLeaveEvent e) {
-        if(e.getChannelLeft().getMembers().size() == 0) {
+        if (e.getChannelLeft().getMembers().size() == 0) {
             if (e.getChannelLeft().getName().contains("[AC]")) {
                 e.getChannelLeft().delete().queue();
             }
@@ -66,7 +66,7 @@ public class AutochannelListener extends ListenerAdapter {
     private boolean isAutoChannel(Guild g, Channel ch) {
         String oldEntry = RubiconBot.getMySQL().getGuildValue(g, "autochannels");
         if (oldEntry != null)
-            if(oldEntry.contains(ch.getId())) {
+            if (oldEntry.contains(ch.getId())) {
                 return true;
             }
         return false;

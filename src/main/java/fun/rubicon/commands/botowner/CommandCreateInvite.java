@@ -9,9 +9,8 @@ package fun.rubicon.commands.botowner;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -20,7 +19,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class CommandCreateInvite extends CommandHandler {
 
     public CommandCreateInvite() {
-        super(new String[]{"createinvite"}, CommandCategory.BOT_OWNER, new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.createinvite"), "Creates an invite", "<guildid>");
+        super(new String[]{"createinvite"}, CommandCategory.BOT_OWNER, new PermissionRequirements("command.createinvite", true, false), "Creates an invite", "<guildid>");
     }
 
     @Override

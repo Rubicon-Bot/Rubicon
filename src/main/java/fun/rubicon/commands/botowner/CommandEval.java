@@ -10,11 +10,9 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 
 import javax.script.ScriptEngine;
@@ -23,7 +21,7 @@ import javax.script.ScriptException;
 
 public class CommandEval extends CommandHandler {
     public CommandEval() {
-        super(new String[]{"eval", "e"}, CommandCategory.BOT_OWNER, new PermissionRequirements(4, "command.eval"), "Just Eval", "<code>");
+        super(new String[]{"eval", "e"}, CommandCategory.BOT_OWNER, new PermissionRequirements("command.eval", true, false), "Just Eval", "<code>");
     }
 
     @Override

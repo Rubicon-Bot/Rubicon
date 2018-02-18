@@ -12,13 +12,14 @@ import java.util.Date;
 
 /**
  * General data object.
+ *
  * @author ForYaSee, DerSchlaubi, LeeDJD, tr808axm
  */
 public class Info {
 
     public final static String BOT_DEFAULT_PREFIX = "rc!";
     public final static String BOT_NAME = "RubiconBot";
-    public final static String BOT_VERSION = "0.2.3";
+    public final static String BOT_VERSION = "0.2.7";
     public final static String BOT_WEBSITE = "https://rubicon.fun";
     public final static String BOT_GITHUB = "https://github.com/Rubicon-Bot/Rubicon";
     public final static String COMMUNITY_SERVER = "381419503164325900";
@@ -26,10 +27,12 @@ public class Info {
     public final static String CONFIG_FILE = "config.json";
     public final static String BITLY_TOKEN = RubiconBot.getConfiguration().getString("bitlytoken");
     public final static String DBL_TOKEN = RubiconBot.getConfiguration().getString("dbl_token");
+    public final static String DISCORD_PW_TOKEN = RubiconBot.getConfiguration().getString("discord_pw_token");
     public final static String GIPHY_TOKEN = RubiconBot.getConfiguration().getString("gip_token");
     public final static String LUCSOFT_TOKEN = RubiconBot.getConfiguration().getString("lucsoft_token");
     public final static String GOOGLE_TOKEN = RubiconBot.getConfiguration().getString("google_token");
     public static final String MUSIXMATCH_KEY = RubiconBot.getConfiguration().getString("musixmatch_key");
+    public static final String GITHUB_TOKEN = RubiconBot.getConfiguration().getString("git_token");
     public static Date lastRestart;
 
     /**
@@ -46,7 +49,7 @@ public class Info {
 
     public final static Long[] COMMUNITY_STAFF_TEAM = {
             362270177712275491L, //Skidder
-            336415827773358081L, //SLIN
+            333220752117596160L, //BaseChip
             240797338430341120L, //Pilz
             235395943619493888L //ls13game
     };

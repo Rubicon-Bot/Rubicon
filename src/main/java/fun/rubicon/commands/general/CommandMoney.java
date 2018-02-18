@@ -6,13 +6,11 @@
 
 package fun.rubicon.commands.general;
 
-import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.sql.UserSQL;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
@@ -25,7 +23,7 @@ import static fun.rubicon.util.EmbedUtil.*;
 public class CommandMoney extends CommandHandler {
     public CommandMoney() {
         super(new String[]{"money", "ruby"}, CommandCategory.GENERAL,
-                new PermissionRequirements(PermissionLevel.EVERYONE, "command.money"),
+                new PermissionRequirements("command.money", false, true),
                 "You can donate Ruby's to someone!", "<give | set | add | remove> <@User> <amount>");
     }
 
@@ -75,7 +73,7 @@ public class CommandMoney extends CommandHandler {
                     return message(error("Wrong count of arguments", "Three arguments are necessary!\n" + getParameterUsage()));
                 }
             case "set":
-                if (new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.money.modify").coveredBy(userPermissions)) {
+                if (new PermissionRequirements("command.money.modify", true, false).coveredBy(userPermissions)) {
                     if (parsedCommandInvocation.getArgs().length == 3) {
                         try {
                             user_spend_money = Integer.parseInt(parsedCommandInvocation.getArgs()[parsedCommandInvocation.getArgs().length - 1]);
@@ -98,7 +96,7 @@ public class CommandMoney extends CommandHandler {
             case "add":
                 int max_money = 2147483647;
                 user2_has_money = Integer.parseInt(userSQL.get("money"));
-                if (new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.money.modify").coveredBy(userPermissions)) {
+                if (new PermissionRequirements("command.money.modify", true, false).coveredBy(userPermissions)) {
                     if (parsedCommandInvocation.getArgs().length == 3) {
                         try {
                             user_spend_money = Integer.parseInt(parsedCommandInvocation.getArgs()[parsedCommandInvocation.getArgs().length - 1]);
@@ -129,7 +127,7 @@ public class CommandMoney extends CommandHandler {
 
             case "remove":
                 user2_has_money = Integer.parseInt(userSQL2.get("money"));
-                if (new PermissionRequirements(PermissionLevel.BOT_AUTHOR, "command.money.modify").coveredBy(userPermissions)) {
+                if (new PermissionRequirements("command.money.modify", true, false).coveredBy(userPermissions)) {
                     if (parsedCommandInvocation.getArgs().length == 3) {
                         try {
                             user_spend_money = Integer.parseInt(parsedCommandInvocation.getArgs()[parsedCommandInvocation.getArgs().length - 1]);

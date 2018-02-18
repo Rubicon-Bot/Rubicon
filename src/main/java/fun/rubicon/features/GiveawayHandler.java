@@ -11,11 +11,10 @@ import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.command.UnavailableCommandHandler;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
-import fun.rubicon.util.Logger;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.sql.MySQL;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
@@ -354,7 +353,7 @@ public class GiveawayHandler extends CommandHandler {
      */
     public GiveawayHandler() {
         super(new String[]{"giveaway", "giveaways"}, CommandCategory.ADMIN,
-                new PermissionRequirements(PermissionLevel.ADMINISTRATOR, "command.giveaway"),
+                new PermissionRequirements("command.giveaway", false, false),
                 "Creates an automated giveaway users can take part in by reacting.",
                 "create <runtime-in-minutes> <prize...>");
 
@@ -424,15 +423,15 @@ public class GiveawayHandler extends CommandHandler {
         if (invocation.getArgs().length == 0)
             return createHelpMessage(invocation);
         else {
-            switch (invocation.args[0]) {
+            switch (invocation.getArgs()[0]) {
                 case "create":
-                    if (invocation.args.length < 3)
+                    if (invocation.getArgs().length < 3)
                         return createHelpMessage(invocation);
 
                     // parse runtime
                     int runtime;
                     try {
-                        runtime = Integer.parseInt(invocation.args[1]);
+                        runtime = Integer.parseInt(invocation.getArgs()[1]);
                         if (runtime < 0)
                             throw new IllegalArgumentException();
                     } catch (IllegalArgumentException e) {
@@ -441,9 +440,9 @@ public class GiveawayHandler extends CommandHandler {
                     }
 
                     // parse prize
-                    StringBuilder prize = new StringBuilder(invocation.args[2]);
-                    for (int i = 3; i < invocation.args.length; i++)
-                        prize.append(" ").append(invocation.args[i]);
+                    StringBuilder prize = new StringBuilder(invocation.getArgs()[2]);
+                    for (int i = 3; i < invocation.getArgs().length; i++)
+                        prize.append(" ").append(invocation.getArgs()[i]);
 
                     // create giveaway
                     Giveaway giveaway = createGiveaway(invocation.getTextChannel().getIdLong(),
@@ -453,7 +452,7 @@ public class GiveawayHandler extends CommandHandler {
 
                     return giveaway == null ? message(error()) : null; // message should not be deleted and is sent
                 default:
-                    return message(error("Invalid arguments", '`' + invocation.args[0] + "` is not a " +
+                    return message(error("Invalid arguments", '`' + invocation.getArgs()[0] + "` is not a " +
                             "valid subcommand."));
             }
         }

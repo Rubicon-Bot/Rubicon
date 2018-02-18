@@ -5,9 +5,8 @@ import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.core.PriceList;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.sql.UserSQL;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
@@ -16,11 +15,9 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.core.entities.User;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -29,11 +26,14 @@ import java.util.stream.Collectors;
  */
 public class CommandPremium extends CommandHandler {
 
+    private PermissionRequirements authorPermissions;
+    private final long PREMIUM_TIME = new Date().getTime() + 15638400000L;
 
     public CommandPremium() {
-        super(new String[]{"premium"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.premium"), "See your premium state or buy premium.",
+        super(new String[]{"premium"}, CommandCategory.GENERAL, new PermissionRequirements("command.premium", false, true), "See your premium state or buy premium.",
                 "| Shows current premium state\n" +
                         "buy | Buy premium");
+        authorPermissions = new PermissionRequirements("command.premium.modify", true, false);
     }
 
     public static void assignPremiumRole(UserSQL user) {
@@ -55,36 +55,24 @@ public class CommandPremium extends CommandHandler {
             if(guild != null) {
                 Role role = guild.getRoleById(Info.PREMIUM_ROLE);
                 guild.getMembers().stream().filter(member -> member.getRoles().contains(role)).collect(Collectors.toList()).forEach(m -> {
-                    UserSQL user = new UserSQL(m.getUser());
+                    UserSQL user = UserSQL.fromMember(m);
                     if (!user.isPremium())
                         guild.getController().removeSingleRoleFromMember(m, role).queue();
                 });
             }
         }
 
-        private static Date getTomorrowMorning11PM() {
-
-            Date date = new Date();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            calendar.set(Calendar.HOUR_OF_DAY, 23);
-            calendar.set(Calendar.MINUTE, 0);
-
-            return calendar.getTime();
-        }
-
         //call this method from your servlet init method
         public static void startTask() {
             Timer timer = new Timer();
-            timer.schedule(new PremiumChecker(), getTomorrowMorning11PM(), 1000 * 10);// for your case u need to give 1000*60*60*24
+            timer.schedule(new PremiumChecker(), 10* 60 * 1000, 10 * 60 * 1000);
         }
     }
-
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         String[] args = parsedCommandInvocation.getArgs();
-        UserSQL userSQL = new UserSQL(parsedCommandInvocation.getAuthor());
+        UserSQL userSQL = UserSQL.fromUser(parsedCommandInvocation.getAuthor());
         if (args.length == 0) {
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setAuthor(parsedCommandInvocation.getAuthor().getName(), null, parsedCommandInvocation.getAuthor().getAvatarUrl());
@@ -104,16 +92,50 @@ public class CommandPremium extends CommandHandler {
             }
             int userMoney = Integer.parseInt(userSQL.get("money"));
             if (userMoney - PriceList.PREMIUM.getPrice() >= 0) {
-                userSQL.set("premium", (new Date().getTime() + 15638400000L) + "");
+                userSQL.set("premium", (PREMIUM_TIME) + "");
                 userSQL.set("money", userMoney - PriceList.PREMIUM.getPrice() + "");
                 assignPremiumRole(userSQL);
                 return EmbedUtil.message(EmbedUtil.success("Success!", "Successfully bought premium."));
             } else {
                 return EmbedUtil.message(EmbedUtil.error("Not enough money!", "Premium costs `" + PriceList.PREMIUM.getPrice() + "` rubys but you only have `" + userMoney + "` rubys"));
             }
+        } else if (args[0].equalsIgnoreCase("add")) {
+            if (authorPermissions.coveredBy(userPermissions)) {
+                List<User> users = parsedCommandInvocation.getMessage().getMentionedUsers();
+                if (users.size() == 0) {
+                    return EmbedUtil.message(EmbedUtil.error("Error!", "You have to mention at least 1 user."));
+                } else {
+                    StringBuilder successValue = new StringBuilder();
+                    successValue.append("Successfully added premium to");
+                    for (User user : users) {
+                        UserSQL pUser = UserSQL.fromUser(user);
+                        pUser.set("premium", (PREMIUM_TIME) + "");
+                        assignPremiumRole(pUser);
+                        successValue.append(" / ").append(user.getAsMention());
+                    }
+                    String successText = successValue.toString().replaceFirst(" /", "");
+                    return EmbedUtil.message(EmbedUtil.success("Success!", successText + "."));
+                }
+            }
+        } else if (args[0].equalsIgnoreCase("remove")) {
+            if (authorPermissions.coveredBy(userPermissions)) {
+                List<User> users = parsedCommandInvocation.getMessage().getMentionedUsers();
+                if (users.size() == 0) {
+                    return EmbedUtil.message(EmbedUtil.error("Error!", "You have to mention at least 1 user."));
+                } else {
+                    StringBuilder successValue = new StringBuilder();
+                    successValue.append("Successfully removed premium from");
+                    for (User user : users) {
+                        UserSQL pUser = UserSQL.fromUser(user);
+                        pUser.set("premium", "false");
+                        assignPremiumRole(pUser);
+                        successValue.append(" / ").append(user.getAsMention());
+                    }
+                    String successText = successValue.toString().replaceFirst(" /", "");
+                    return EmbedUtil.message(EmbedUtil.success("Success!", successText + "."));
+                }
+            }
         }
         return createHelpMessage();
     }
-
-
 }

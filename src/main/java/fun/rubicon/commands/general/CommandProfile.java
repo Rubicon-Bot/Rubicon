@@ -3,20 +3,21 @@ package fun.rubicon.commands.general;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
 import fun.rubicon.listener.MemberLevelListener;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.sql.MemberSQL;
 import fun.rubicon.sql.UserSQL;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
 
 import java.util.Arrays;
-
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -25,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 public class CommandProfile extends CommandHandler {
 
     public CommandProfile() {
-        super(new String[]{"profile", "user", "level", "profil"}, CommandCategory.GENERAL, new PermissionRequirements(PermissionLevel.EVERYONE, "command.profile"), "Displays the bio, money and level of a user.", "" +
+        super(new String[]{"profile", "user", "level", "profil"}, CommandCategory.GENERAL, new PermissionRequirements("command.profile", false, true), "Displays the bio, money and level of a user.", "" +
                 "\n" +
                 "[@User]");
     }

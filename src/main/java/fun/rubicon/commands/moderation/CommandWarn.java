@@ -4,9 +4,8 @@ import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.core.WarnManager;
-import fun.rubicon.data.PermissionLevel;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.sql.WarnSQL;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.StringUtil;
@@ -19,7 +18,7 @@ import net.dv8tion.jda.core.entities.User;
 public class CommandWarn extends CommandHandler {
 
     public CommandWarn() {
-        super(new String[]{"warn", "warns"}, CommandCategory.MODERATION, new PermissionRequirements(PermissionLevel.WITH_PERMISSION, "command.warn"), "Warn user and let them kick/ban automatically.", "<@User> <reason>\n" +
+        super(new String[]{"warn", "warns"}, CommandCategory.MODERATION, new PermissionRequirements("command.warn", false, false), "Warn user and let them kick/ban automatically.", "<@User> <reason>\n" +
                 "list [@User]\n" +
                 "unwarn <@User> <index> (Use `rc!warn list` to get warns of a user.)");
     }

@@ -71,7 +71,7 @@ public class ServerLogSQL implements DatabaseGenerator {
             ResultSet checkResult = checkStatement.executeQuery();
             if (checkResult.next())
                 return;
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO serverlog (guildid, channel, ev_join, ev_leave, ev_command, ev_ban, ev_voice) VALUES (?, '0', 'false', 'false', 'false', 'false', 'false')");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO serverlog (guildid, channel, ev_join, ev_leave, ev_command, ev_ban, ev_voice, ev_role) VALUES (?, '0', 'false', 'false', 'false', 'false', 'false', 'false')");
             ps.setString(1, guild.getId());
             ps.execute();
         } catch (SQLException e) {
@@ -82,7 +82,7 @@ public class ServerLogSQL implements DatabaseGenerator {
     @Override
     public void createTableIfNotExist() {
         try {
-            if(connection.isClosed())
+            if (connection.isClosed())
                 mySQL.connect();
             PreparedStatement ps = connection.prepareStatement("" +
                     "CREATE TABLE IF NOT EXISTS `serverlog` (\n" +
@@ -94,6 +94,7 @@ public class ServerLogSQL implements DatabaseGenerator {
                     "  `ev_command` varchar(50) NOT NULL,\n" +
                     "  `ev_ban` varchar(50) NOT NULL,\n" +
                     "  `ev_voice` varchar(50) NOT NULL,\n" +
+                    "  `ev_role` varchar(50) NOT NULL,\n" +
                     "  PRIMARY KEY (`id`)\n" +
                     ") ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;");
             ps.execute();

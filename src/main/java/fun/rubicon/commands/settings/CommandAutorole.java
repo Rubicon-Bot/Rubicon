@@ -10,19 +10,20 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.data.PermissionRequirements;
-import fun.rubicon.data.UserPermissions;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
 /**
  * Handles the 'autorole' command.
+ *
  * @author Leon Kappes / Lee
  */
-public class CommandAutorole extends CommandHandler{
-    public CommandAutorole(){
-        super(new String[]{"autorole"}, CommandCategory.ADMIN, new PermissionRequirements(2, "command.autorole"), "Set the Autorole. Triggers when a User Join your Guild", "<@Role/Rolename>");
+public class CommandAutorole extends CommandHandler {
+    public CommandAutorole() {
+        super(new String[]{"autorole"}, CommandCategory.ADMIN, new PermissionRequirements("command.autorole", false, false), "Set the Autorole. Triggers when a User Join your Guild", "<@Role/Rolename>");
     }
 
     @Override
@@ -30,12 +31,12 @@ public class CommandAutorole extends CommandHandler{
         if (parsedCommandInvocation.getArgs().length < 1) {
             return createHelpMessage();
         }
-        if (parsedCommandInvocation.getMessage().getMentionedRoles().size() <1){
-            String toset = parsedCommandInvocation.getMessage().getGuild().getRolesByName(parsedCommandInvocation.getArgs()[0],true).get(0).getId();
+        if (parsedCommandInvocation.getMessage().getMentionedRoles().size() < 1) {
+            String toset = parsedCommandInvocation.getMessage().getGuild().getRolesByName(parsedCommandInvocation.getArgs()[0], true).get(0).getId();
             RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.getMessage().getGuild(), "autorole", toset);
-        }else {
+        } else {
             RubiconBot.getMySQL().updateGuildValue(parsedCommandInvocation.getMessage().getGuild(), "autorole", parsedCommandInvocation.getMessage().getMentionedRoles().get(0).getId());
         }
-        return new MessageBuilder().setEmbed(EmbedUtil.success("Succes","Succesfully set the Autorole!").build()).build();
+        return new MessageBuilder().setEmbed(EmbedUtil.success("Succes", "Succesfully set the Autorole!").build()).build();
     }
 }
