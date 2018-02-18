@@ -6,7 +6,10 @@
 
 package fun.rubicon.util;
 
+
 import fun.rubicon.RubiconBot;
+import net.dv8tion.jda.core.Permission;
+
 
 /**
  * General data object.
@@ -19,6 +22,12 @@ public class Info {
     public final static String BOT_NAME = "RubiconBot";
     public final static String BOT_VERSION = "0.2.7";
     public final static String CONFIG_FILE = "config.json";
+
+    public final static long PERMISSIONS =
+            Permission.ALL_CHANNEL_PERMISSIONS +
+                    Permission.ALL_TEXT_PERMISSIONS +
+                    Permission.ALL_VOICE_PERMISSIONS +
+                    Permission.ALL_GUILD_PERMISSIONS;
 
     /**
      * Bot author long ids.

@@ -11,16 +11,18 @@ import fun.rubicon.mysql.MySQL;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.bot.sharding.ShardManager;
+
 import net.dv8tion.jda.core.OnlineStatus;
+
 import net.dv8tion.jda.core.entities.Game;
+
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.hooks.EventListener;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Rubicon-bot's main class. Initializes all components.
@@ -31,11 +33,14 @@ public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
     private static final String[] CONFIG_KEYS = {"token"};
     private static RubiconBot instance;
-    private static ShardManager shardManager;
     private final Configuration configuration;
     private final Set<EventListener> eventListeners;
     private final MySQL mySQL;
     private final DatabaseGenerator generator;
+
+    private ShardManager shardManager;
+    private static final int SHARD_COUNT = 5;
+
 
     /**
      * Constructs the RubiconBot.
@@ -54,14 +59,11 @@ public class RubiconBot {
                 configuration.set(configKey, input);
             }
         }
-
         //Build MySQL Connection
         mySQL = new MySQL(Info.MYSQL_HOST, Info.MYSQL_PORT, Info.MYSQL_USER, Info.MYSQL_PASSWORD, Info.MYSQL_DATABASE);
         mySQL.connect();
         generator = new DatabaseGenerator();
         generator.createAllDatabasesIfnecessary();
-
-
         eventListeners = new HashSet<>();
 
         initShardManager();
@@ -81,7 +83,7 @@ public class RubiconBot {
     /**
      * Initializes the JDA instance.
      */
-    public static void initShardManager() {
+    private void initShardManager() {
         if (instance == null)
             throw new NullPointerException("RubiconBot has not been initialized yet.");
 
@@ -89,21 +91,31 @@ public class RubiconBot {
         builder.setToken(instance.configuration.getString("token"));
         builder.setGame(Game.playing("Starting..."));
         builder.setStatus(OnlineStatus.DO_NOT_DISTURB);
-        builder.addEventListeners(instance.eventListeners);
+        builder.setShardsTotal(SHARD_COUNT);
+        builder.addEventListeners(
+
+        );
         try {
             shardManager = builder.build();
+            shardManager.setGame(Game.playing("Started!"));
+            shardManager.setStatus(OnlineStatus.ONLINE);
         } catch (LoginException e) {
             Logger.error(e);
         }
     }
 
     /**
-     * Registers all jda event listeners
+     * @return the {@link ShardManager} that is used in the Rubicon project
      */
-    private static void registerListeners(DefaultShardManagerBuilder shardManagerBuilder) {
-        shardManagerBuilder.addEventListeners(
+    public static ShardManager getShardManager() {
+        return instance.shardManager;
+    }
 
-        );
+    /**
+     * @return the Rubicon {@link User} instance
+     */
+    public static User getSelfUser() {
+        return instance.shardManager.getApplicationInfo().getJDA().getSelfUser();
     }
 
     /**
@@ -114,19 +126,17 @@ public class RubiconBot {
     }
 
     /**
-     * Adds an EventListener to the event pipe. EventListeners registered here will be re-registered when the JDA
-     * instance is initialized again.
-     *
-     * @param listener the EventListener to register.
-     * @return false if the bot has never been initialized or if the EventListener is already registered.
+     * @return the rubicon instance
      */
-    public static boolean registerEventListener(EventListener listener) {
-        if (instance != null && instance.eventListeners.add(listener)) {
-            if (shardManager != null)
-                shardManager.addEventListener(listener);
-            return true;
-        }
-        return false;
+    public static RubiconBot getRubiconBot() {
+        return instance;
+    }
+
+    /**
+     * @return the maximum shard count
+     */
+    public static int getMaximumShardCount() {
+        return SHARD_COUNT;
     }
 
     /**
