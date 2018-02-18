@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2018  Rubicon Bot Development Team
+ * Licensed under the GPL-3.0 license.
+ * The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.util;
 
 import com.google.gson.JsonElement;
@@ -11,13 +17,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-// import org.apache.commons.io.IOUtils;
-
+/**
+ * @author Schlaubi
+ */
 public class Configuration {
-    /**
-     * @author Schlaubi
-     * @version
-     */
 
     private File file;
     private JsonObject json;
@@ -158,6 +161,4 @@ public class Configuration {
         }
         return values;
     }
-
-
 }

@@ -1,18 +1,19 @@
+/*
+ * Copyright (c) 2018  Rubicon Bot Development Team
+ * Licensed under the GPL-3.0 license.
+ * The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class Setup {
-    /**
-     * Rubicon Discord bot
-     *
-     * @author Schlaubi
-     * @copyright Rubicon Dev Team 2017
-     * @license MIT License <http://rubicon.fun/license>
-     * @package fun.rubicon.util
-     */
+/**
+ *  @author Schlaubi
+ */
+public class ConfigSetup {
 
     private static final BufferedReader sys_in;
 
