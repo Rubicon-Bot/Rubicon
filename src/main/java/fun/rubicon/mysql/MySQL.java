@@ -59,6 +59,15 @@ public class MySQL {
         return this;
     }
 
+    /**
+     * Get connection
+     * @return MySQL connection
+     */
+
+    public Connection getConnection(){
+        return this.connection;
+    }
+
     public PreparedStatement prepareStatement(String sql) throws SQLException {
         return this.connection.prepareStatement(sql);
     }
