@@ -34,7 +34,7 @@ public class DatabaseGenerator {
             "`channel` INT(25),"+
             "`logchannel` INT(25),"+
             "`autorole` INT(25),"+
-            "`portal` VARCHAR(250),"+
+            "`portal` TEXT,"+
             "`autochannels` VARCHAR(250),"+
             "`cases` INT(11),"+
             "`lvlmsg` INT(11),"+
