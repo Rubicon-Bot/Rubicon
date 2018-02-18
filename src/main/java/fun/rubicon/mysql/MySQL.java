@@ -59,26 +59,6 @@ public class MySQL {
         return this;
     }
 
-    public MySQL executePreparedStatement(PreparedStatement ps) {
-        try {
-            ps.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return this;
-    }
-
-    public MySQL executePreparedStatements(PreparedStatement... statements) {
-        for (PreparedStatement statement : statements) {
-            try {
-                statement.execute();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return this;
-    }
-
     public PreparedStatement prepareStatement(String sql) throws SQLException {
         return this.connection.prepareStatement(sql);
     }
