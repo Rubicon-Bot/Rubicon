@@ -5,17 +5,23 @@
  */
 
 package fun.rubicon.mysql;
-
 import fun.rubicon.RubiconBot;
-
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class DatabaseGenerator {
 
 
-    public static void createAllDatabasesIfNecessary() {
-        createGuildDatabase();
+    public static boolean createAllDatabasesIfNecessary() {
+        try {
+            createGuildDatabase();
+            createMemberDatabase();
+            createUserDatabase();
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     private static void createGuildDatabase(){
@@ -37,10 +43,45 @@ public class DatabaseGenerator {
             "`blacklist` TEXT," +
             " PRIMARY KEY (`id`)"+
             ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
+            ps.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+    private static void createMemberDatabase(){
+        try {
+            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS `members`"+
+            "(`id` INT(250) unsigned NOT NULL auto_increment,"+
+            "`userid` INT(25),"+
+            "`serverid` INT(25),"+
+            "`permissionlevel` VARCHAR(50),"+
+            "`level` INT(50),"+
+            "`points` INT(50),"+
+            " PRIMARY KEY (`id`)"+
+            ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void createUserDatabase(){
+        try {
+            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS `members`"+
+            "(`id` INT(250) unsigned NOT NULL auto_increment,"+
+            "`userid` INT(25),"+
+            "`bio` TEXT,"+
+            "`money` INT(250),"+
+            "`premium` VARCHAR(50),"+
+            " PRIMARY KEY (`id`)"+
+            ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
 }
