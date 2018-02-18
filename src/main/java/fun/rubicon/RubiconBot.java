@@ -63,7 +63,7 @@ public class RubiconBot {
         mySQL = new MySQL(Info.MYSQL_HOST, Info.MYSQL_PORT, Info.MYSQL_USER, Info.MYSQL_PASSWORD, Info.MYSQL_DATABASE);
         mySQL.connect();
         generator = new DatabaseGenerator();
-        generator.createAllDatabasesIfnecessary();
+        generator.createAllDatabasesIfNecessary();
         eventListeners = new HashSet<>();
 
         initShardManager();

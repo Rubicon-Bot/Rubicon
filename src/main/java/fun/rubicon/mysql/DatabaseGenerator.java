@@ -19,11 +19,11 @@ public class DatabaseGenerator {
 
 
 
-    public void createAllDatabasesIfnecessary() {
+    public void createAllDatabasesIfNecessary() {
         createGuildDatabase();
     }
 
-    public void createGuildDatabase(){
+    private void createGuildDatabase(){
         try {
             PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS `guilds`"+
             "(`id` INT(25) unsigned NOT NULL auto_increment,"+
