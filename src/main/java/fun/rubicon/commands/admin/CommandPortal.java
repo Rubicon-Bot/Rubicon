@@ -32,7 +32,7 @@ public class CommandPortal extends CommandHandler {
     private File inviteFile = new File(RubiconBot.getDataFolder() + "portal-invites.json");
 
     public CommandPortal() {
-        super(new String[]{"portal", "mirror", "telephone"}, CommandCategory.ADMIN, new PermissionRequirements("command.portal", false, false), "Create a portal and talk with users of other guilds.", "create\nclose\ninvite <serverid>\naccept <serverid>");
+        super(new String[]{"portal", "mirror", "telephone"}, CommandCategory.ADMIN, new PermissionRequirements("command.portal", false, false), "Create a portal and talk with users of other guilds.", "create\nclose\ninvite <serverid>\naccept <serverid>\ninfo");
     }
 
     @Override
@@ -67,9 +67,26 @@ public class CommandPortal extends CommandHandler {
                     createHelpMessage();
                 }
                 return null;
+            case "info":
+                portalInfo(parsedCommandInvocation);
+                return null;
             default:
                 return createHelpMessage(parsedCommandInvocation);
         }
+    }
+
+    private void portalInfo(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
+        String entry = RubiconBot.getMySQL().getGuildValue(parsedCommandInvocation.getGuild(), "portal");
+        TextChannel channel = parsedCommandInvocation.getTextChannel();
+        if(entry.equals("open")){
+            Guild guild = RubiconBot.getJDA().getGuildById(RubiconBot.getMySQL().getPortalValue(parsedCommandInvocation.getGuild(), "partnerid"));
+            SafeMessage.sendMessage(channel, EmbedUtil.info("Connected to " + guild.getName(), "This server is currently connected to `" + guild.getName() + "`!").build(), 8);
+        } else if (entry.equals("waiting")){
+            SafeMessage.sendMessage(channel, EmbedUtil.error("Portal is waitng", "The portal is currently waiting to be accepted by the other side").build(), 5);
+        } else if(entry.equals("closed")){
+            SafeMessage.sendMessage(channel, EmbedUtil.error("Portal is closed", "The portal is currently closed").build(), 5);
+        }
+
     }
 
     /**
