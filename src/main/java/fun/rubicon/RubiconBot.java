@@ -6,7 +6,6 @@
 
 package fun.rubicon;
 
-import fun.rubicon.permission.PermissionManager;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.bot.sharding.ShardManager;
@@ -33,7 +32,6 @@ public class RubiconBot {
     private static ShardManager shardManager;
     private final Configuration configuration;
     private final Set<EventListener> eventListeners;
-    private final PermissionManager permissionManager;
 
     /**
      * Constructs the RubiconBot.
@@ -54,7 +52,6 @@ public class RubiconBot {
         }
 
         eventListeners = new HashSet<>();
-        permissionManager = new PermissionManager();
 
         initShardManager();
     }
@@ -103,20 +100,6 @@ public class RubiconBot {
      */
     public static Configuration getConfiguration() {
         return instance == null ? null : instance.configuration;
-    }
-
-    /**
-     * @return the {@link PermissionManager}.
-     */
-    public PermissionManager getPermissionManager() {
-        return permissionManager;
-    }
-
-    /**
-     * @return the {@link PermissionManager} via a static reference.
-     */
-    public static PermissionManager sGetPermissionManager() {
-        return instance == null ? null : instance.permissionManager;
     }
 
     /**
