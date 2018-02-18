@@ -6,6 +6,8 @@
 
 package fun.rubicon;
 
+import fun.rubicon.mysql.DatabaseGenerator;
+import fun.rubicon.mysql.MySQL;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.bot.sharding.ShardManager;
@@ -32,6 +34,8 @@ public class RubiconBot {
     private static ShardManager shardManager;
     private final Configuration configuration;
     private final Set<EventListener> eventListeners;
+    private final MySQL mySQL;
+    private final DatabaseGenerator generator;
 
     /**
      * Constructs the RubiconBot.
@@ -50,6 +54,13 @@ public class RubiconBot {
                 configuration.set(configKey, input);
             }
         }
+
+        //Build MySQL Connection
+        mySQL = new MySQL(Info.MYSQL_HOST, Info.MYSQL_PORT, Info.MYSQL_USER, Info.MYSQL_PASSWORD, Info.MYSQL_DATABASE);
+        mySQL.connect();
+        generator = new DatabaseGenerator();
+        generator.createAllDatabasesIfnecessary();
+
 
         eventListeners = new HashSet<>();
 
@@ -123,5 +134,9 @@ public class RubiconBot {
      */
     public static String getNewTimestamp() {
         return timeStampFormatter.format(new Date());
+    }
+
+    public static MySQL getMySQL() {
+        return instance == null ? null : instance.mySQL;
     }
 }
