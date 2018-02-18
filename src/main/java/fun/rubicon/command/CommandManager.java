@@ -8,10 +8,7 @@ package fun.rubicon.command;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.music.MusicManager;
-import fun.rubicon.util.EmbedUtil;
-import fun.rubicon.util.GlobalBlacklist;
-import fun.rubicon.util.Info;
-import fun.rubicon.util.Logger;
+import fun.rubicon.util.*;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -66,22 +63,15 @@ public class CommandManager extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if (event.getAuthor().equals(RubiconBot.getJDA().getSelfUser()))
-            if (event.isFromType(ChannelType.PRIVATE)) return;
-        if (RubiconBot.getMySQL().isBlacklisted(event.getTextChannel())) return;
+        if (event.getAuthor().isBot())
+            return;
+        if (event.isFromType(ChannelType.PRIVATE)) return;
+        if (!RubiconBot.getMySQL().isWhitelisted(event.getTextChannel())) return;
         MusicManager.handleTrackChoose(event);
         super.onMessageReceived(event);
         ParsedCommandInvocation commandInvocation = parse(event.getMessage());
         //Send typing because it's useless
         if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake() && !event.isWebhookMessage()) {
-            if (event.getAuthor().getId().equals("343825218718007296")) {
-                event.getTextChannel().sendMessage(new EmbedBuilder()
-                        .setTitle(":rotating_light: __**ERROR**__ :rotating_light:")
-                        .setDescription("403 WRONG GUY")
-                        .setColor(Color.RED)
-                        .build()).queue();
-                return;
-            }
             if (GlobalBlacklist.isOnBlacklist(event.getAuthor())) {
                 event.getTextChannel().sendMessage(EmbedUtil.message(EmbedUtil.error("Blacklisted", "You are on the RubiconBot blacklist! ;)"))).queue(msg -> msg.delete().queueAfter(20, TimeUnit.SECONDS));
                 return;
@@ -103,8 +93,10 @@ public class CommandManager extends ListenerAdapter {
                     + "' could not be resolved to a command.\nType '" + parsedCommandInvocation.serverPrefix
                     + "help' to get a list of all commands.")));*/
             return;
-        } else
+        } else {
+            DevCommandLog.log(parsedCommandInvocation);
             response = commandHandler.call(parsedCommandInvocation);
+        }
 
         // respond
         if (response != null)
@@ -130,9 +122,10 @@ public class CommandManager extends ListenerAdapter {
         if (message.getContentRaw().startsWith(RubiconBot.getJDA().getSelfUser().getAsMention())) {
             prefix = RubiconBot.getJDA().getSelfUser().getAsMention();
             // react to default prefix: 'rc!<majorcommand> [arguments]'
-        } else if (message.getContentRaw().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase()))
-            prefix = Info.BOT_DEFAULT_PREFIX;
-            // react to custom server prefix: '<custom-server-prefix><majorcommand> [arguments...]'
+        } else if (message.getContentRaw().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase())) {
+            prefix = message.getContentRaw().substring(0, Info.BOT_DEFAULT_PREFIX.length());
+        }
+        // react to custom server prefix: '<custom-server-prefix><majorcommand> [arguments...]'
         else if (message.getChannelType() == ChannelType.TEXT) { // ensure bot is on a server
             String serverPrefix = RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix");
             if (message.getContentRaw().toLowerCase().startsWith(serverPrefix.toLowerCase()))

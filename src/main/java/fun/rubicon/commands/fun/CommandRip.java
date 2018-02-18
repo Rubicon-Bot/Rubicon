@@ -60,8 +60,7 @@ public class CommandRip extends CommandHandler {
             }
 
             // respond
-            invocation.getMessage().getTextChannel().sendMessage(success("Buried " + whoDied, "Here's an image of his tombstone:")
-                    .setImage(tombstoneURL).build()).queue();
+            invocation.getMessage().getTextChannel().sendMessage(tombstoneURL).queue();
             return null;
         }
     }

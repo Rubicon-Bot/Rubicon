@@ -7,6 +7,8 @@
 package fun.rubicon.listener;
 
 import fun.rubicon.RubiconBot;
+import fun.rubicon.commands.general.CommandPremium;
+import fun.rubicon.sql.UserSQL;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -29,5 +31,7 @@ public class UserJoinListener extends ListenerAdapter {
         } catch (NullPointerException ex) {
             //Channel does not exits
         }
+        UserSQL userSQL = new UserSQL(e.getUser());
+        CommandPremium.assignPremiumRole(userSQL);
     }
 }

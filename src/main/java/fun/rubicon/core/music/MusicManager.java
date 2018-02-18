@@ -9,19 +9,22 @@ import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.sql.GuildMusicSQL;
 import fun.rubicon.sql.UserMusicSQL;
-import fun.rubicon.util.Colors;
-import fun.rubicon.util.EmbedUtil;
-import fun.rubicon.util.Logger;
-import fun.rubicon.util.StringUtil;
+import fun.rubicon.util.*;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.PermissionException;
+import org.jmusixmatch.MusixMatch;
+import org.jmusixmatch.MusixMatchException;
+import org.jmusixmatch.entity.lyrics.Lyrics;
+import org.jmusixmatch.entity.track.Track;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -49,7 +52,7 @@ public class MusicManager {
     private final int SKIP_MAXIMUM = 10;
 
     private final AudioPlayerManager playerManager;
-    private static  final Map<Long, GuildMusicManager> musicManagers = new HashMap<>();
+    private static final Map<Long, GuildMusicManager> musicManagers = new HashMap<>();
 
     public MusicManager(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         this.parsedCommandInvocation = parsedCommandInvocation;
@@ -126,7 +129,7 @@ public class MusicManager {
         return message(success("Resumed!", "Successfully resumed playing music."));
     }
 
-    public Message playMusic() {
+    public Message playMusic(boolean force) {
         if (!isMemberInVoiceChannel())
             return message(error("Error!", "To use this command you have to be in a voice channel."));
         if (!isBotInVoiceChannel())
@@ -135,11 +138,34 @@ public class MusicManager {
         if (player.isPaused()) {
             player.setPaused(false);
         }
-        loadSong();
+        loadSong(force);
         return null;
     }
 
-    public void loadSong() {
+    public Message executeVolume() {
+        if (!isBotInVoiceChannel())
+            return message(error("Error!", "Bot is not in a voice channel."));
+        VoiceChannel channel = getBotsVoiceChannel();
+        if (parsedCommandInvocation.getMember().getVoiceState().getChannel() != channel)
+            return message(error("Error!", "You have to be in the same voice channel as the bot."));
+        String userVolume = "";
+        if (parsedCommandInvocation.getArgs().length == 1) {
+            userVolume = parsedCommandInvocation.getArgs()[0];
+        } else {
+            return null;
+        }
+        int userVolI = Integer.parseInt(userVolume);
+        if (userVolI < 1) {
+            return message(EmbedUtil.error("Error!", "Volume must be a minimum of 1."));
+        }
+        if (userVolI > 200) {
+            return message(EmbedUtil.error("Error!", "Volume must be 200 or less."));
+        }
+        getCurrentMusicManager().getPlayer().setVolume(userVolI);
+        return message(success("Set volume!", "Successfully resumed playing music."));
+    }
+
+    public void loadSong(boolean force) {
         TextChannel textChannel = parsedCommandInvocation.getMessage().getTextChannel();
         boolean isURL = false;
         StringBuilder searchParam = new StringBuilder();
@@ -162,14 +188,15 @@ public class MusicManager {
                 boolean isStream = audioTrack.getInfo().isStream;
                 long trackDuration = audioTrack.getDuration();
 
-                getCurrentMusicManager().getScheduler().queue(audioTrack);
-
-                embedBuilder.setAuthor("Added a new song to queue", trackURL, null);
-                embedBuilder.addField("Title", trackName, true);
-                embedBuilder.addField("Author", trackAuthor, true);
-                embedBuilder.addField("Duration", (isStream) ? "Stream" : getTimestamp(trackDuration), false);
-                embedBuilder.setColor(Colors.COLOR_PRIMARY);
-                textChannel.sendMessage(embedBuilder.build()).queue();
+                if (!force) {
+                    getCurrentMusicManager().getScheduler().queue(audioTrack);
+                    embedBuilder.setAuthor("Added a new song to queue", trackURL, null);
+                    embedBuilder.addField("Title", trackName, true);
+                    embedBuilder.addField("Author", trackAuthor, true);
+                    embedBuilder.addField("Duration", (isStream) ? "Stream" : getTimestamp(trackDuration), false);
+                    embedBuilder.setColor(Colors.COLOR_PRIMARY);
+                    textChannel.sendMessage(embedBuilder.build()).queue();
+                }
             }
 
             @Override
@@ -180,6 +207,10 @@ public class MusicManager {
 
                 if (firstTrack == null)
                     firstTrack = playlistTracks.get(0);
+                if (force) {
+                    getCurrentMusicManager().getPlayer().playTrack(firstTrack);
+                    return;
+                }
                 if (isURLFinal) {
                     playlistTracks.forEach(getCurrentMusicManager().getScheduler()::queue);
 
@@ -335,15 +366,11 @@ public class MusicManager {
     }
 
     private boolean isMemberInVoiceChannel() {
-        if (parsedCommandInvocation.getMember().getVoiceState().inVoiceChannel())
-            return true;
-        return false;
+        return parsedCommandInvocation.getMember().getVoiceState().inVoiceChannel();
     }
 
     private boolean isBotInVoiceChannel() {
-        if (guild.getSelfMember().getVoiceState().inVoiceChannel())
-            return true;
-        return false;
+        return guild.getSelfMember().getVoiceState().inVoiceChannel();
     }
 
     private VoiceChannel getBotsVoiceChannel() {
@@ -356,21 +383,15 @@ public class MusicManager {
         Role role = getDJRole();
         if (role == null)
             return true;
-        if (member.getRoles().contains(role))
-            return true;
-        return false;
+        return member.getRoles().contains(role);
     }
 
     private boolean isDJEnabled() {
-        if (guildMusicSQL.get("dj").equalsIgnoreCase("false"))
-            return false;
-        return true;
+        return !guildMusicSQL.get("dj").equalsIgnoreCase("false");
     }
 
     private boolean isChannelLockActivated() {
-        if (guildMusicSQL.get("locked_channel").equalsIgnoreCase("false"))
-            return false;
-        return true;
+        return !guildMusicSQL.get("locked_channel").equalsIgnoreCase("false");
     }
 
     private VoiceChannel getLockedChannel() {
@@ -428,5 +449,37 @@ public class MusicManager {
             return String.format("%02d:%02d:%02d", hours, minutes, seconds);
         else
             return String.format("%02d:%02d", minutes, seconds);
+    }
+
+    private AudioTrack getCurrentTrack(){
+        MusicManager manager = this;
+        return manager.getCurrentMusicManager().getScheduler().getPlayer().getPlayingTrack();
+    }
+
+    public Message executeLyrics(){
+        if (!isBotInVoiceChannel())
+            return message(error("Error!", "Bot is not in a voice channel."));
+        VoiceChannel channel = getBotsVoiceChannel();
+        if (parsedCommandInvocation.getMember().getVoiceState().getChannel() != channel)
+            return message(error("Error!", "You have to be in the same voice channel as the bot."));
+        if (getCurrentMusicManager().getPlayer().getPlayingTrack() == null) {
+            return message(error("Error!", "Bot is playing nothing."));
+        }
+        MusixMatch musixMatch = new MusixMatch(Info.MUSIXMATCH_KEY);
+        AudioTrackInfo info = this.getCurrentTrack().getInfo();
+        Track track;
+        Lyrics lyrics;
+        try {
+            track = musixMatch.getMatchingTrack(info.title, info.author);
+            lyrics = musixMatch.getLyrics(track.getTrack().getTrackId());
+        } catch (MusixMatchException e) {
+            return new MessageBuilder().setEmbed(EmbedUtil.error("No lyrics found", "There are no lyrics of the current song on Musixmathc").build()).build();
+        }
+        EmbedBuilder lyricsEmbed = new EmbedBuilder();
+        lyricsEmbed.setColor(Colors.COLOR_PREMIUM);
+        lyricsEmbed.setTitle("Lyrics of `" + track.getTrack().getTrackName() + "`", track.getTrack().getTrackShareUrl());
+        lyricsEmbed.setFooter(lyrics.getLyricsCopyright(), null);
+        lyricsEmbed.setDescription(lyrics.getLyricsBody());
+        return new MessageBuilder().setEmbed(lyricsEmbed.build()).build();
     }
 }

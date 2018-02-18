@@ -149,3 +149,4 @@ data/portal-invites.json
 data/global-blacklist.json
 src/main/java/fun/rubicon/RubiconBot.java___jb_tmp___
 *.MF
+/data/global-blacklist.json

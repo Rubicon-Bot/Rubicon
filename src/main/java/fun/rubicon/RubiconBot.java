@@ -20,11 +20,14 @@ import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.ListenerManager;
-import fun.rubicon.core.webpanel.impl.*;
+import fun.rubicon.core.RubackReceiver;
 import fun.rubicon.core.webpanel.WebpanelManager;
+import fun.rubicon.core.webpanel.impl.*;
 import fun.rubicon.features.GiveawayHandler;
 import fun.rubicon.features.translation.TranslationManager;
 import fun.rubicon.features.RemindHandler;
+import fun.rubicon.features.VerificationUserHandler;
+import fun.rubicon.features.VerificationKickHandler;
 import fun.rubicon.permission.PermissionManager;
 import fun.rubicon.sql.*;
 import fun.rubicon.util.*;
@@ -33,18 +36,12 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.hooks.EventListener;
 
 import javax.security.auth.login.LoginException;
-import java.io.*;
+import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Timer;
+import java.util.*;
 
 /**
  * Rubicon-bot's main class. Initializes all components.
@@ -53,7 +50,7 @@ import java.util.Timer;
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token", "gip_token", "lucsoft_token", "twitterConsumerKey", "twitterConsumerSecret", "twitterAccessToken", "twitterAccessTokenSecret","google_token"};
+    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token", "gip_token", "lucsoft_token", "twitterConsumerKey", "twitterConsumerSecret", "twitterAccessToken", "twitterAccessTokenSecret", "google_token", "musixmatch_key"};
     private static final String dataFolder = "data/";
     private static WebpanelManager webpanelManager;
     private static RubiconBot instance;
@@ -64,6 +61,7 @@ public class RubiconBot {
     private final Timer timer;
     private final Set<EventListener> eventListeners;
     private final PermissionManager permissionManager;
+    private final RubackReceiver rubackReceiver;
     private final TranslationManager translationManager;
 
     /**
@@ -101,6 +99,8 @@ public class RubiconBot {
         permissionManager = new PermissionManager();
         translationManager = new TranslationManager();
         webpanelManager = new WebpanelManager(getConfiguration().getString("lucsoft_token"));
+        rubackReceiver = new RubackReceiver();
+        rubackReceiver.start();
 
         registerWebpanelRequests();
         // init JDA
@@ -109,6 +109,8 @@ public class RubiconBot {
         // init features
         new GiveawayHandler();
         new RemindHandler();
+        VerificationUserHandler.loadVerifyKicks();
+        VerificationKickHandler.loadVerifyKicks();
 
         // post bot stats to discordbots.org and print warning
         DBLUtil.postStats(false);
@@ -154,11 +156,18 @@ public class RubiconBot {
 
         CommandVote.loadPolls(instance.jda);
         Info.lastRestart = new Date();
-//      CommandGiveaway.startGiveawayManager(instance.jda);
-
         getJDA().getPresence().setGame(Game.playing("Started."));
         GameAnimator.start();
+        /**
+         *
+         * Check if every user, that has the prmium role hase premium
+         *
+         * @see CommandPremium
+         */
+        CommandPremium.PremiumChecker.check();
+        CommandPremium.PremiumChecker.startTask();
     }
+
 
     /**
      * Registers all command handlers used in this project.
@@ -205,7 +214,10 @@ public class RubiconBot {
                 new CommandNow(),
                 new CommandPause(),
                 new CommandResume(),
-                new CommandQueue()
+                new CommandQueue(),
+                new CommandVolume(),
+                new CommandForceplay(),
+                new CommandLyrics()
         );
         // fun commands package
         commandManager.registerCommandHandlers(
@@ -214,7 +226,8 @@ public class RubiconBot {
                 new CommandRoulette(),
                 new CommandOK(),
                 new CommandGiphy(),
-                new CommandVideo()
+                new CommandVideo(),
+                new CommandUrban()
         );
         // general commands package
         commandManager.registerCommandHandlers(
@@ -272,6 +285,9 @@ public class RubiconBot {
         new UserMusicSQL().createTableIfNotExist();
         new GuildMusicSQL().createTableIfNotExist();
         new WarnSQL().createTableIfNotExist();
+        new MemberSQL().createTableIfNotExist();
+        new VerificationKickSQL().createTableIfNotExist();
+        new VerificationUserSQL().createTableIfNotExist();
     }
 
     private void registerWebpanelRequests() {

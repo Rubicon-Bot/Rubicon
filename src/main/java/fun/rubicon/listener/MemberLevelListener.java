@@ -60,7 +60,7 @@ public class MemberLevelListener extends ListenerAdapter {
             userSQL.set("money", (oldMoney + (currentLevel * 100)) + "");
 
             //Level Up
-            if (event.getMessage().getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_READ) && event.getMessage().getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_WRITE)) {
+            /*if (event.getMessage().getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_READ) && event.getMessage().getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_WRITE)) {
                 event.getChannel().sendMessage(new EmbedBuilder()
                         .setAuthor(event.getAuthor().getName() + " leveled up!", null, event.getAuthor().getAvatarUrl())
                         .setDescription("You are now level **" + fina + "**")
@@ -68,7 +68,7 @@ public class MemberLevelListener extends ListenerAdapter {
                         .setColor(Colors.COLOR_SECONDARY)
                         .build()
                 ).queue(message -> message.delete().queueAfter(10, TimeUnit.SECONDS));
-            }
+            }*/
         }
     }
 
@@ -83,11 +83,7 @@ public class MemberLevelListener extends ListenerAdapter {
         public static ArrayList<String> ids = new ArrayList<>();
 
         public static boolean has(String id) {
-            if (ids.contains(id)) {
-                return true;
-            } else {
-                return false;
-            }
+            return ids.contains(id);
         }
 
         public static void add(String id) {

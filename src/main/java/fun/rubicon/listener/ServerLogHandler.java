@@ -164,7 +164,11 @@ public class ServerLogHandler extends ListenerAdapter {
 
     public static boolean isEventEnabled(Guild guild, LogEventKeys key) {
         String entry = new ServerLogSQL(guild).get(key.getKey());
-        return entry.equalsIgnoreCase("true");
+        try {
+            return entry.equalsIgnoreCase("true");
+        } catch (NullPointerException ignored) {
+            return false;
+        }
     }
 
     public enum LogEventKeys {
