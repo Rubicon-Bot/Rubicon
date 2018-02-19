@@ -130,7 +130,7 @@ public class RubiconUser {
             PreparedStatement ps = mySQL.prepareStatement("SELECT language FROM users WHERE userid = ?");
             ps.setLong(1, user.getIdLong());
             ResultSet rs = ps.executeQuery();
-            return rs.next() ? rs.getString("bio") : null;
+            return rs.next() ? rs.getString("language") : null;
         } catch (SQLException e) {
             Logger.error(e);
         }
