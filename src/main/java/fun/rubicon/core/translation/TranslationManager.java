@@ -7,6 +7,7 @@
 package fun.rubicon.core.translation;
 
 import fun.rubicon.RubiconBot;
+import fun.rubicon.core.entities.RubiconUser;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.User;
 
@@ -19,9 +20,6 @@ import java.util.*;
 public class TranslationManager {
     private final List<TranslationLocale> translationLocaleList;
     private final TranslationLocale defaultTranslationLocale;
-
-    //TODO replace with database source
-    private final Map<User, TranslationLocale> userLocales = new HashMap<>();
 
     public TranslationManager() {
         defaultTranslationLocale = new TranslationLocale(this, new Locale("en", "US"), "English (United States)") {
@@ -60,14 +58,9 @@ public class TranslationManager {
     }
 
     public TranslationLocale getUserLocale(User user) {
-        return userLocales.getOrDefault(user, defaultTranslationLocale);
-    }
-
-    public void setUserLocale(User user, TranslationLocale translationLocale) {
-        if(translationLocale == null)
-            userLocales.remove(user);
-        else
-            userLocales.put(user, translationLocale);
+        String languageTag = RubiconUser.fromUser(user).getLanguage();
+        Locale locale = Locale.forLanguageTag(languageTag);
+        return getTranslationLocaleByLocale(locale);
     }
 
     public List<TranslationLocale> getLocales() {

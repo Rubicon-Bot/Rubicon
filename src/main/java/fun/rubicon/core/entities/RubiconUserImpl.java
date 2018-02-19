@@ -195,12 +195,13 @@ public abstract class RubiconUserImpl {
         if (exist())
             return;
         try {
-            PreparedStatement ps = mySQL.prepareStatement("INSERT INTO users(`userid`, `bio`, `money`, `premium`, `afk`) VALUES (?, ?, ?, ?, ?)");
+            PreparedStatement ps = mySQL.prepareStatement("INSERT INTO users(`userid`, `bio`, `money`, `premium`, `language`, `afk`) VALUES (?, ?, ?, ?, ?, ?)");
             ps.setLong(1, user.getIdLong());
             ps.setString(2, "No bio set.");
             ps.setInt(3, 0);
             ps.setLong(4, 0);
-            ps.setString(5, "none");
+            ps.setString(5, "en-US");
+            ps.setString(6, "none");
             ps.execute();
         } catch (SQLException e) {
             Logger.error(e);

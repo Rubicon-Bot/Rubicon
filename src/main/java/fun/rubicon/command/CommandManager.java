@@ -8,6 +8,9 @@ package fun.rubicon.command;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.RubiconGuild;
+import fun.rubicon.core.entities.RubiconMember;
+import fun.rubicon.core.entities.RubiconUser;
+import fun.rubicon.core.translation.TranslationLocale;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
@@ -16,6 +19,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 /**
  * Maintains command invocation associations.
@@ -143,6 +147,7 @@ public class CommandManager extends ListenerAdapter {
 
     public static final class ParsedCommandInvocation {
 
+        private final ResourceBundle language;
         private final String[] argsNew;
         private final String commandInvocation;
         private final Message message;
@@ -153,6 +158,10 @@ public class CommandManager extends ListenerAdapter {
             this.prefix = serverPrefix;
             this.commandInvocation = invocationCommand;
             this.argsNew = args;
+
+            RubiconGuild.fromGuild(message.getGuild());
+            RubiconMember.fromMember(message.getMember());
+            this.language = RubiconBot.sGetTranslations().getUserLocale(invocationMessage.getAuthor()).getResourceBundle();
         }
 
         public Message getMessage() {
@@ -189,6 +198,10 @@ public class CommandManager extends ListenerAdapter {
 
         public TextChannel getTextChannel() {
             return message.getTextChannel();
+        }
+
+        public String translate(String key) {
+            return language.getString(key);
         }
     }
 }

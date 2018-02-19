@@ -100,11 +100,11 @@ public abstract class CommandHandler {
     /**
      * Method to be implemented by actual command handlers.
      *
-     * @param command the command arguments with prefix and command head removed.
+     * @param invocation the command arguments with prefix and command head removed.
      * @param userPermissions         an object to query the invoker's permissions.
      * @return a response that will be sent and deleted by the caller.
      */
-    protected abstract Message execute(CommandManager.ParsedCommandInvocation command, UserPermissions userPermissions);
+    protected abstract Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions);
 
     /**
      * @return all aliases this CommandHandler wants to listen to.
