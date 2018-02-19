@@ -31,6 +31,10 @@ public class RubiconGuild {
         createIfNotExist();
     }
 
+    public Guild getGuild() {
+        return guild;
+    }
+
     public void setPrefix(String prefix) {
         try {
             PreparedStatement ps = mySQL.prepareStatement("UPDATE guilds SET prefix=? WHERE serverid=?");

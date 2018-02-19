@@ -7,6 +7,7 @@
 package fun.rubicon.listener;
 
 import fun.rubicon.core.entities.RubiconGuild;
+import fun.rubicon.core.entities.RubiconUser;
 import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
