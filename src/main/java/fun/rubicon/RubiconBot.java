@@ -7,6 +7,7 @@
 package fun.rubicon;
 
 import fun.rubicon.command.CommandManager;
+import fun.rubicon.commands.botowner.CommandBotPlay;
 import fun.rubicon.commands.botowner.CommandEval;
 import fun.rubicon.commands.test.CommandFirstCommandEver;
 import fun.rubicon.listener.BotJoinListener;
@@ -32,7 +33,7 @@ import java.util.Date;
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_database", "mysql_user", "mysql_password"};
+    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_database", "mysql_user", "mysql_password","playingStatus"};
     private static RubiconBot instance;
     private final Configuration configuration;
     private final MySQL mySQL;
@@ -83,7 +84,8 @@ public class RubiconBot {
     private void registerCommands() {
         commandManager.registerCommandHandlers(
                 new CommandFirstCommandEver(),
-                new CommandEval()
+                new CommandEval(),
+                new CommandBotPlay()
         );
     }
 

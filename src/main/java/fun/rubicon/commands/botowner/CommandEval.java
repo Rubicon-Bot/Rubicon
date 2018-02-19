@@ -24,7 +24,7 @@ import javax.script.ScriptException;
 public class CommandEval extends CommandHandler {
 
     public CommandEval() {
-        super(new String[]{}, CommandCategory.BOT_OWNER, new PermissionRequirements("eval", true, false), "Just Eval. Nothing to see here.", "Ähhm Nothing");
+        super(new String[]{"eval","ausführen"}, CommandCategory.BOT_OWNER, new PermissionRequirements("eval", true, false), "Just Eval. Nothing to see here.", "Ähhm Nothing");
     }
 
     @Override
@@ -82,4 +82,3 @@ public class CommandEval extends CommandHandler {
         return null;
     }
     }
-}
