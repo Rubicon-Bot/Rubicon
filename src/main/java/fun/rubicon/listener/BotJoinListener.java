@@ -9,7 +9,6 @@ package fun.rubicon.listener;
 import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.util.BotListHandler;
 import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
