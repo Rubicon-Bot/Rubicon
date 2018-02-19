@@ -7,6 +7,7 @@
 package fun.rubicon;
 
 import fun.rubicon.command.CommandManager;
+import fun.rubicon.commands.botowner.CommandEval;
 import fun.rubicon.commands.test.CommandFirstCommandEver;
 import fun.rubicon.listener.BotJoinListener;
 import fun.rubicon.mysql.DatabaseGenerator;
@@ -81,7 +82,8 @@ public class RubiconBot {
 
     private void registerCommands() {
         commandManager.registerCommandHandlers(
-                new CommandFirstCommandEver()
+                new CommandFirstCommandEver(),
+                new CommandEval()
         );
     }
 
