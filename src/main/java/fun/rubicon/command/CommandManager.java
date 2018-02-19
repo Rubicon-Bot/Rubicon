@@ -78,7 +78,7 @@ public class CommandManager extends ListenerAdapter {
 
         // respond
         if (response != null)
-            EmbedUtil.sendAndDeleteOnGuilds(parsedCommandInvocation.getMessage().getChannel(), response);
+            SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), response, 60);
 
         // delete invocation message
         if (parsedCommandInvocation.getGuild() != null) {

@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- *  @author Schlaubi
+ * @author Schlaubi
  */
 public class ConfigSetup {
 
@@ -27,7 +27,6 @@ public class ConfigSetup {
 
         // prompt for token
         System.out.println("Enter your " + req + ":");
-
 
         try {
             // read and trim line

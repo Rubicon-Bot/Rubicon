@@ -13,6 +13,10 @@ import net.dv8tion.jda.core.entities.User;
  */
 public class RubiconUser extends RubiconUserImpl {
 
+    /*
+     *  If you want to add new methods, add them in RubiconUserImpl
+     */
+
     public RubiconUser(User user) {
         super(user);
     }

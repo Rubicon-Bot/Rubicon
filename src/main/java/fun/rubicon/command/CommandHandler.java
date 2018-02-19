@@ -68,7 +68,7 @@ public abstract class CommandHandler {
      */
     public Message call(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         if (disabled) {
-            return new MessageBuilder().setEmbed(EmbedUtil.info("Command disabled", "Command is currently disabled.").setFooter("RubiconBot Dev Team", null).build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.info("Command disabled", "Command is currently disabled.").build()).build();
         }
         UserPermissions userPermissions = new UserPermissions(parsedCommandInvocation.getMessage().getAuthor(),
                 parsedCommandInvocation.getMessage().getGuild());
@@ -82,7 +82,7 @@ public abstract class CommandHandler {
                 Logger.error(e);
                 return new MessageBuilder().setEmbed(new EmbedBuilder()
                         .setAuthor("Error", null, RubiconBot.getSelfUser().getEffectiveAvatarUrl())
-                        .setDescription("An unknown error occured while executing your command.")
+                        .setDescription("An unknown error occurred while executing your command.")
                         .setColor(Colors.COLOR_ERROR)
                         .setFooter(RubiconBot.getNewTimestamp(), null)
                         .build()).build();
