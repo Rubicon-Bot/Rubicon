@@ -7,6 +7,7 @@
 package fun.rubicon.listener;
 
 import fun.rubicon.core.entities.RubiconGuild;
+import fun.rubicon.core.entities.RubiconMember;
 import fun.rubicon.util.BotListHandler;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
@@ -23,18 +24,10 @@ public class BotJoinListener extends ListenerAdapter {
     public void onGuildJoin(GuildJoinEvent event) {
         RubiconGuild.fromGuild(event.getGuild());
 
-        for (Member user: event.getGuild().getMembers()) {
-
+        for (Member member: event.getGuild().getMembers()) {
+            new RubiconMember(member);
         }
 
         BotListHandler.postStats(false);
-        /* TODO DB
-        * - Insert new users in database
-        * - Insert new members in database
-        *
-        *   Update stats
-        * - discordbotlist.org
-        * - bots.discord.pw
-        */
     }
 }
