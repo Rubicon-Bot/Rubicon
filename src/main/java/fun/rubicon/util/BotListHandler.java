@@ -44,7 +44,7 @@ public class BotListHandler {
         //Post stats to bots.discord.pw
         Request req = new Request.Builder()
                 .url("https://bots.discord.pw/api/bots/" + RubiconBot.getSelfUser().getId() + "/stats")
-                .addHeader("Authorization", RubiconBot.getConfiguration().getString("dbl_token"))
+                .addHeader("Authorization", RubiconBot.getConfiguration().getString("discord_pw_token"))
                 .post(body)
                 .build();
         Response res = null;
