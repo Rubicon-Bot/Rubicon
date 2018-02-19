@@ -6,10 +6,9 @@
 
 package fun.rubicon.listener;
 
-import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.core.entities.RubiconMember;
-import fun.rubicon.core.entities.RubiconUser;
+import fun.rubicon.util.BotListHandler;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -17,15 +16,12 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 public class BotLeaveListener extends ListenerAdapter{
 
     public void onGuildLeave(GuildLeaveEvent event) {
-
+        //Database Deletes
         RubiconGuild.fromGuild(event.getGuild()).delete();
-
         for (Member member: event.getGuild().getMembers()) {
             new RubiconMember(member).delete();
         }
 
+        BotListHandler.postStats(false);
     }
-
-
-
 }
