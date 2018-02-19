@@ -35,7 +35,7 @@ public abstract class RubiconUserImpl {
         return user;
     }
 
-    public void setBio(String bio) {
+    public RubiconUserImpl setBio(String bio) {
         try {
             PreparedStatement ps = mySQL.prepareStatement("UPDATE users SET bio=? WHERE userid=?");
             ps.setString(1, bio);
@@ -44,6 +44,7 @@ public abstract class RubiconUserImpl {
         } catch (SQLException e) {
             Logger.error(e);
         }
+        return this;
     }
 
     public String getBio() {
@@ -58,7 +59,7 @@ public abstract class RubiconUserImpl {
         return null;
     }
 
-    public void setMoney(int amount) {
+    public RubiconUserImpl setMoney(int amount) {
         try {
             PreparedStatement ps = mySQL.prepareStatement("UPDATE users SET money=? WHERE userid=?");
             ps.setInt(1, amount);
@@ -67,6 +68,7 @@ public abstract class RubiconUserImpl {
         } catch (SQLException e) {
             Logger.error(e);
         }
+        return this;
     }
 
     public int getMoney() {
@@ -81,15 +83,17 @@ public abstract class RubiconUserImpl {
         return 0;
     }
 
-    public void addMoney(int amount) {
+    public RubiconUserImpl addMoney(int amount) {
         setMoney(getMoney() + amount);
+        return this;
     }
 
-    public void removeMoney(int amount) {
+    public RubiconUserImpl removeMoney(int amount) {
         setMoney(getMoney() - amount);
+        return this;
     }
 
-    public void setPremium(long time) {
+    public RubiconUserImpl setPremium(long time) {
         try {
             PreparedStatement ps = mySQL.prepareStatement("UPDATE users SET premium=? WHERE userid=?");
             ps.setLong(1, time);
@@ -98,6 +102,7 @@ public abstract class RubiconUserImpl {
         } catch (SQLException e) {
             Logger.error(e);
         }
+        return this;
     }
 
     public long getPremiumRaw() {
@@ -118,7 +123,7 @@ public abstract class RubiconUserImpl {
         return true;
     }
 
-    public void setLanguage(String languageKey) {
+    public RubiconUserImpl setLanguage(String languageKey) {
         try {
             PreparedStatement ps = mySQL.prepareStatement("UPDATE users SET language=? WHERE userid=?");
             ps.setString(1, languageKey);
@@ -127,6 +132,7 @@ public abstract class RubiconUserImpl {
         } catch (SQLException e) {
             Logger.error(e);
         }
+        return this;
     }
 
     public String getLanguage() {
@@ -142,7 +148,7 @@ public abstract class RubiconUserImpl {
     }
 
 
-    public void setAFKState(String afk) {
+    public RubiconUserImpl setAFKState(String afk) {
         try {
             PreparedStatement ps = mySQL.prepareStatement("UPDATE users SET afk=? WHERE userid=?");
             ps.setString(1, afk);
@@ -151,6 +157,7 @@ public abstract class RubiconUserImpl {
         } catch (SQLException e) {
             Logger.error(e);
         }
+        return this;
     }
 
     public String getAFKState() {

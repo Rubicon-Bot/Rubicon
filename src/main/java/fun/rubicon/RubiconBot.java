@@ -88,7 +88,7 @@ public class RubiconBot {
     }
 
     private void registerCommands() {
-        //Test
+        //Bot Owner
         commandManager.registerCommandHandlers(
                 new CommandFirstCommandEver(),
                 new CommandEval(),

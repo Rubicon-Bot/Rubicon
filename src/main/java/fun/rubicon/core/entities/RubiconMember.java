@@ -35,7 +35,7 @@ public class RubiconMember extends RubiconUserImpl {
         return member;
     }
 
-    public void setLevel(int level) {
+    public RubiconMember setLevel(int level) {
         try {
             PreparedStatement ps = mySQL.prepareStatement("UPDATE members SET level=? WHERE userid=? AND serverid=?");
             ps.setInt(1, level);
@@ -45,6 +45,7 @@ public class RubiconMember extends RubiconUserImpl {
         } catch (SQLException e) {
             Logger.error(e);
         }
+        return this;
     }
 
     public String getLevel() {
@@ -60,7 +61,7 @@ public class RubiconMember extends RubiconUserImpl {
         return null;
     }
 
-    public void setPoints(int points) {
+    public RubiconMember setPoints(int points) {
         try {
             PreparedStatement ps = mySQL.prepareStatement("UPDATE members SET points=? WHERE userid=? AND serverid=?");
             ps.setInt(1, points);
@@ -70,6 +71,7 @@ public class RubiconMember extends RubiconUserImpl {
         } catch (SQLException e) {
             Logger.error(e);
         }
+        return this;
     }
 
     public String getPoints() {
