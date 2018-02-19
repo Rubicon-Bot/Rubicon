@@ -7,6 +7,7 @@
 package fun.rubicon;
 
 import fun.rubicon.command.CommandManager;
+import fun.rubicon.commands.test.CommandFirstCommandEver;
 import fun.rubicon.listener.BotJoinListener;
 import fun.rubicon.mysql.DatabaseGenerator;
 import fun.rubicon.mysql.MySQL;
