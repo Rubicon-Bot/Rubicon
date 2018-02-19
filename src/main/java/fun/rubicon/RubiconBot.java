@@ -7,6 +7,11 @@
 package fun.rubicon;
 
 import fun.rubicon.command.CommandManager;
+import fun.rubicon.commands.general.CommandAFK;
+import fun.rubicon.commands.general.CommandHelp;
+import fun.rubicon.commands.test.CommandFirstCommandEver;
+import fun.rubicon.core.translation.LanguageCommandHandler;
+import fun.rubicon.core.translation.TranslationManager;
 import fun.rubicon.listener.BotJoinListener;
 import fun.rubicon.mysql.DatabaseGenerator;
 import fun.rubicon.mysql.MySQL;
@@ -36,6 +41,7 @@ public class RubiconBot {
     private final MySQL mySQL;
     private final CommandManager commandManager;
     private final PermissionManager permissionManager;
+    private final TranslationManager translationManager;
     private ShardManager shardManager;
 
     private static final int SHARD_COUNT = 5;
@@ -68,19 +74,28 @@ public class RubiconBot {
         mySQL.connect();
 
         DatabaseGenerator.createAllDatabasesIfNecessary();
-        //Post Guild Stats
-        BotListHandler.postStats(false);
 
         commandManager = new CommandManager();
         registerCommands();
         permissionManager = new PermissionManager();
+        translationManager = new TranslationManager();
 
         initShardManager();
+
+        //Post Guild Stats
+        BotListHandler.postStats(false);
     }
 
     private void registerCommands() {
+        //Test
         commandManager.registerCommandHandlers(
                 new CommandFirstCommandEver()
+        );
+
+        //General
+        commandManager.registerCommandHandlers(
+                new CommandHelp(),
+                new CommandAFK()
         );
     }
 
@@ -185,5 +200,19 @@ public class RubiconBot {
      */
     public static MySQL getMySQL() {
         return instance == null ? null : instance.mySQL;
+    }
+
+    /**
+     * @return the translation manager.
+     */
+    public TranslationManager getTranslationManager() {
+        return translationManager;
+    }
+
+    /**
+     * @return the translation manager via a static reference.
+     */
+    public static TranslationManager sGetTranslations() {
+        return instance == null ? null : instance.translationManager;
     }
 }

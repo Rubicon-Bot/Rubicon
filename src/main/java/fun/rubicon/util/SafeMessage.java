@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2018  Rubicon Bot Development Team
+ * Licensed under the GPL-3.0 license.
+ * The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.util;
 
 import net.dv8tion.jda.core.Permission;
@@ -7,11 +13,6 @@ import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.util.concurrent.TimeUnit;
 
-/*
- * Copyright (c) 2018  Rubicon Bot Development Team
- * Licensed under the GPL-3.0 license.
- * The full license text is available in the LICENSE file provided with this project.
- */
 public class SafeMessage {
     public static void sendMessage(TextChannel textChannel, Message message) {
         if (hasPermissions(textChannel))
@@ -37,7 +38,7 @@ public class SafeMessage {
     public static void sendMessage(TextChannel textChannel, String message, int deleteTime) {
         if (hasPermissions(textChannel) && hasDeletePermission(textChannel))
             textChannel.sendMessage(message).queue(msg -> msg.delete().queueAfter(deleteTime, TimeUnit.SECONDS));
-        else if(hasPermissions(textChannel))
+        else if (hasPermissions(textChannel))
             textChannel.sendMessage(message).queue();
 
     }
@@ -50,7 +51,7 @@ public class SafeMessage {
     public static void sendMessage(TextChannel textChannel, MessageEmbed build, int deleteTime) {
         if (hasPermissions(textChannel) && hasDeletePermission(textChannel))
             textChannel.sendMessage(build).queue(msg -> msg.delete().queueAfter(deleteTime, TimeUnit.SECONDS));
-        else if(hasPermissions(textChannel))
+        else if (hasPermissions(textChannel))
             textChannel.sendMessage(build).queue();
     }
 
@@ -62,15 +63,10 @@ public class SafeMessage {
 
 
     private static boolean hasPermissions(TextChannel channel) {
-        if (channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_READ) && channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE))
-            return true;
-        channel.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(EmbedUtil.error("Permission Error!", "The bot need the `MESSAGE_READ` and `MESSAGE_WRITE` permissions in the ``" + channel.getName() + "` channel to run without errors.").build()));
-        return false;
+        return channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_READ) && channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE);
     }
-    private static boolean hasDeletePermission(TextChannel channel){
-        if(channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_MANAGE))
-            return true;
-        channel.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(EmbedUtil.error("Permission Error!", "The bot need the `MESSAGE_READ` and `MESSAGE_MANAGE` permissions in the ``" + channel.getName() + "` channel to run without errors.").build()));
-        return false;
+
+    private static boolean hasDeletePermission(TextChannel channel) {
+        return channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_MANAGE);
     }
 }

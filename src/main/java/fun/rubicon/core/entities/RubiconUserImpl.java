@@ -141,6 +141,34 @@ public abstract class RubiconUserImpl {
         return null;
     }
 
+
+    public void setAFKState(String afk) {
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("UPDATE users SET afk=? WHERE userid=?");
+            ps.setString(1, afk);
+            ps.setLong(2, user.getIdLong());
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+    }
+
+    public String getAFKState() {
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("SELECT afk FROM users WHERE userid = ?");
+            ps.setLong(1, user.getIdLong());
+            ResultSet rs = ps.executeQuery();
+            return rs.next() ? rs.getString("afk") : null;
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+        return null;
+    }
+
+    public boolean isAFK() {
+        return !getAFKState().equals("none");
+    }
+
     public void delete() {
         try {
             PreparedStatement ps = mySQL.prepareStatement("DELETE FROM users WHERE userid=?");
@@ -167,11 +195,12 @@ public abstract class RubiconUserImpl {
         if (exist())
             return;
         try {
-            PreparedStatement ps = mySQL.prepareStatement("INSERT INTO users(`userid`, `bio`, `money`, `premium`) VALUES (?, ?, ?, ?)");
+            PreparedStatement ps = mySQL.prepareStatement("INSERT INTO users(`userid`, `bio`, `money`, `premium`, `afk`) VALUES (?, ?, ?, ?, ?)");
             ps.setLong(1, user.getIdLong());
             ps.setString(2, "No bio set.");
             ps.setInt(3, 0);
             ps.setLong(4, 0);
+            ps.setString(5, "none");
             ps.execute();
         } catch (SQLException e) {
             Logger.error(e);

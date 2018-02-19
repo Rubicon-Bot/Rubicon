@@ -14,6 +14,7 @@ import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.Info;
+import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
@@ -37,24 +38,24 @@ public class CommandHelp extends CommandHandler {
     }
 
     @Override
-    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        if (parsedCommandInvocation.getArgs().length == 0) {
+    protected Message execute(CommandManager.ParsedCommandInvocation command, UserPermissions userPermissions) {
+        if (command.getArgs().length == 0) {
             // show complete command manual
-            parsedCommandInvocation.getMessage().getTextChannel().sendMessage(new MessageBuilder().setEmbed(generateFullHelp(parsedCommandInvocation).build()).build()).queue();
+            SafeMessage.sendMessage(command.getTextChannel(), generateFullHelp(command).build());
             return null;
         } else {
-            CommandHandler handler = RubiconBot.getCommandManager().getCommandHandler(parsedCommandInvocation.getArgs()[0]);
+            CommandHandler handler = RubiconBot.getCommandManager().getCommandHandler(command.getArgs()[0]);
             return handler == null
                     // invalid command
                     ? new MessageBuilder().setEmbed(new EmbedBuilder()
                     .setColor(Colors.COLOR_ERROR)
                     .setTitle(":warning: Invalid command")
-                    .setDescription("There is no command named '" + parsedCommandInvocation.getArgs()[0] + "'. Use `"
-                            + parsedCommandInvocation.getPrefix() + parsedCommandInvocation.getCommandInvocation()
+                    .setDescription("There is no command named '" + command.getArgs()[0] + "'. Use `"
+                            + command.getPrefix() + command.getCommandInvocation()
                             + "` to get a full command list.")
                     .build()).build()
                     // show command help for a single command
-                    : handler.createHelpMessage(Info.BOT_DEFAULT_PREFIX, parsedCommandInvocation.getArgs()[0]);
+                    : handler.createHelpMessage(Info.BOT_DEFAULT_PREFIX, command.getArgs()[0]);
         }
     }
 
