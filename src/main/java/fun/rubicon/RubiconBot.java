@@ -7,6 +7,7 @@
 package fun.rubicon;
 
 import fun.rubicon.listener.BotJoinListener;
+import fun.rubicon.listener.BotLeaveListener;
 import fun.rubicon.listener.DebugMessageEvent;
 import fun.rubicon.mysql.DatabaseGenerator;
 import fun.rubicon.mysql.MySQL;
@@ -109,7 +110,8 @@ public class RubiconBot {
 
         builder.addEventListeners(
             new BotJoinListener(),
-                new DebugMessageEvent()
+            new DebugMessageEvent(),
+            new BotLeaveListener()
         );
         try {
             shardManager = builder.build();
@@ -162,6 +164,9 @@ public class RubiconBot {
         return timeStampFormatter.format(new Date());
     }
 
+    /**
+     * @return the {@Link MySQL} instance
+     */
     public static MySQL getMySQL() {
         return instance == null ? null : instance.mySQL;
     }

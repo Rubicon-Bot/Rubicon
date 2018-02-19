@@ -10,6 +10,8 @@ import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
+
+
 public class BotLeaveListener extends ListenerAdapter{
 
     public void onGuildLeave(GuildLeaveEvent event) {
