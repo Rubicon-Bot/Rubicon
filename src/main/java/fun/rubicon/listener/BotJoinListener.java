@@ -22,8 +22,8 @@ public class BotJoinListener extends ListenerAdapter {
 
     @Override
     public void onGuildJoin(GuildJoinEvent event) {
+        //Database Inserts
         RubiconGuild.fromGuild(event.getGuild());
-
         for (Member member: event.getGuild().getMembers()) {
             new RubiconMember(member);
         }
