@@ -6,8 +6,6 @@
 
 package fun.rubicon.util;
 
-
-import fun.rubicon.RubiconBot;
 import net.dv8tion.jda.core.Permission;
 
 
@@ -41,10 +39,4 @@ public class Info {
             137263174675070976L  // tr808axm
     };
 
-    /* MySQL login */
-    public final static String MYSQL_HOST = RubiconBot.getConfiguration().getString("mysql_host");
-    public final static String MYSQL_PORT = RubiconBot.getConfiguration().getString("mysql_port");
-    public final static String MYSQL_USER = RubiconBot.getConfiguration().getString("mysql_user");
-    public final static String MYSQL_PASSWORD = RubiconBot.getConfiguration().getString("mysql_password");
-    public final static String MYSQL_DATABASE = RubiconBot.getConfiguration().getString("mysql_database");
 }

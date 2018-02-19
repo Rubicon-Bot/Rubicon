@@ -99,6 +99,7 @@ public class DatabaseGenerator {
                     "`bio` TEXT," +
                     "`money` INT(250)," +
                     "`premium` BIGINT(50)," +
+                    "`language` VARCHAR(10),"+
                     " PRIMARY KEY (`id`)" +
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();
