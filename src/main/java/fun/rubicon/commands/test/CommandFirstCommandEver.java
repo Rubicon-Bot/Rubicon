@@ -4,7 +4,7 @@
  * The full license text is available in the LICENSE file provided with this project.
  */
 
-package fun.rubicon;
+package fun.rubicon.commands.test;
 
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;

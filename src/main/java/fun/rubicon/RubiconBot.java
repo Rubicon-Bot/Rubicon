@@ -163,7 +163,7 @@ public class RubiconBot {
      * @return the rubicon instance
      */
     public static RubiconBot getRubiconBot() {
-        return instance == null ? null : instance;
+        return instance;
     }
 
     /**
@@ -181,7 +181,7 @@ public class RubiconBot {
     }
 
     /**
-     * @return the {@Link MySQL} instance
+     * @return the {@link MySQL} instance
      */
     public static MySQL getMySQL() {
         return instance == null ? null : instance.mySQL;
