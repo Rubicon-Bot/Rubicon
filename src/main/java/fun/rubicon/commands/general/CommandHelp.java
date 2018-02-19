@@ -38,24 +38,22 @@ public class CommandHelp extends CommandHandler {
     }
 
     @Override
-    protected Message execute(CommandManager.ParsedCommandInvocation command, UserPermissions userPermissions) {
-        if (command.getArgs().length == 0) {
+    protected Message execute(CommandManager.ParsedCommandInvocation invoke, UserPermissions userPermissions) {
+        if (invoke.getArgs().length == 0) {
             // show complete command manual
-            SafeMessage.sendMessage(command.getTextChannel(), generateFullHelp(command).build());
+            SafeMessage.sendMessage(invoke.getTextChannel(), generateFullHelp(invoke).build());
             return null;
         } else {
-            CommandHandler handler = RubiconBot.getCommandManager().getCommandHandler(command.getArgs()[0]);
+            CommandHandler handler = RubiconBot.getCommandManager().getCommandHandler(invoke.getArgs()[0]);
             return handler == null
                     // invalid command
                     ? new MessageBuilder().setEmbed(new EmbedBuilder()
                     .setColor(Colors.COLOR_ERROR)
-                    .setTitle(":warning: Invalid command")
-                    .setDescription("There is no command named '" + command.getArgs()[0] + "'. Use `"
-                            + command.getPrefix() + command.getCommandInvocation()
-                            + "` to get a full command list.")
+                    .setTitle(invoke.translate("command.help.warning.title"))
+                    .setDescription(invoke.translate("command.help.warning.description").replaceAll("%command%", invoke.getArgs()[0]).replaceAll("%help_command%", invoke.getPrefix() + invoke.getCommandInvocation()))
                     .build()).build()
                     // show command help for a single command
-                    : handler.createHelpMessage(Info.BOT_DEFAULT_PREFIX, command.getArgs()[0]);
+                    : handler.createHelpMessage(Info.BOT_DEFAULT_PREFIX, invoke.getArgs()[0]);
         }
     }
 
@@ -115,22 +113,19 @@ public class CommandHelp extends CommandHandler {
             }
         }
 
-        builder.setTitle(":information_source: Rubicon Bot command manual");
-        builder.setDescription("Use `" + invocation.getPrefix() + "help <command>` to get a more information about a command.\n" +
-                "A detailed command list is available at [rubicon.fun](https://rubicon.fun)");
+        builder.setTitle(invocation.translate("command.help.list.title"));
+        builder.setDescription(invocation.translate("command.help.list.description").replaceAll("%help_command%", invocation.getPrefix() + "help <command>"));
         builder.setColor(Colors.COLOR_SECONDARY);
-        builder.setFooter("Loaded a total of "
-                + new HashSet<>(RubiconBot.getCommandManager().getCommandAssociations().values()).size()
-                + " commands.", null);
+        builder.setFooter(invocation.translate("command.help.list.footer").replaceAll("%command_amount%", new HashSet<>(RubiconBot.getCommandManager().getCommandAssociations().values()).size() + ""), null);
 
         //Add Categories
-        builder.addField("General", listGeneral.toString(), false);
-        builder.addField("Music", listMusic.toString(), false);
-        builder.addField("Moderation", listModeration.toString(), false);
-        builder.addField("Admin", listAdmin.toString(), false);
-        builder.addField("Settings", listSettings.toString(), false);
-        builder.addField("Tools", listTools.toString(), false);
-        builder.addField("Fun", listFun.toString(), false);
+        builder.addField(invocation.translate("command.help.list.category.general"), listGeneral.toString(), false);
+        builder.addField(invocation.translate("command.help.list.category.music"), listMusic.toString(), false);
+        builder.addField(invocation.translate("command.help.list.category.moderation"), listModeration.toString(), false);
+        builder.addField(invocation.translate("command.help.list.category.admin"), listAdmin.toString(), false);
+        builder.addField(invocation.translate("command.help.list.category.settings"), listSettings.toString(), false);
+        builder.addField(invocation.translate("command.help.list.category.tools"), listTools.toString(), false);
+        builder.addField(invocation.translate("command.help.list.category.fun"), listFun.toString(), false);
         return builder;
     }
 }
