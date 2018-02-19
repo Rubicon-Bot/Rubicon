@@ -7,6 +7,9 @@
 package fun.rubicon.listener;
 
 import fun.rubicon.core.entities.RubiconGuild;
+import fun.rubicon.util.BotListHandler;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -15,9 +18,17 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
  */
 public class BotJoinListener extends ListenerAdapter {
 
+
+
     @Override
     public void onGuildJoin(GuildJoinEvent event) {
         RubiconGuild.fromGuild(event.getGuild());
+
+        for (Member user: event.getGuild().getMembers()) {
+
+        }
+
+        BotListHandler.postStats(false);
         /* TODO DB
         * - Insert new users in database
         * - Insert new members in database

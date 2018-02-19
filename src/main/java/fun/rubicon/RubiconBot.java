@@ -65,6 +65,9 @@ public class RubiconBot {
                 configuration.getString("mysql_database"));
         mySQL.connect();
 
+        //Post Guild Stats
+        BotListHandler.postStats(false);
+
         if (!DatabaseGenerator.createAllDatabasesIfNecessary()){
             new Timer().schedule(new TimerTask() {
                 @Override
