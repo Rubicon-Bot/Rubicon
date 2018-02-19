@@ -6,16 +6,18 @@
 
 package fun.rubicon;
 
+import fun.rubicon.command.CommandManager;
 import fun.rubicon.listener.BotJoinListener;
-import fun.rubicon.listener.DebugMessageEvent;
 import fun.rubicon.mysql.DatabaseGenerator;
 import fun.rubicon.mysql.MySQL;
+import fun.rubicon.permission.PermissionManager;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.bot.sharding.ShardManager;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.User;
+
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -34,6 +36,8 @@ public class RubiconBot {
     private static RubiconBot instance;
     private final Configuration configuration;
     private final MySQL mySQL;
+    private final CommandManager commandManager;
+    private final PermissionManager permissionManager;
     private ShardManager shardManager;
 
     private static final int SHARD_COUNT = 5;
@@ -65,17 +69,27 @@ public class RubiconBot {
                 configuration.getString("mysql_database"));
         mySQL.connect();
 
-        if (!DatabaseGenerator.createAllDatabasesIfNecessary()){
+        if (!DatabaseGenerator.createAllDatabasesIfNecessary()) {
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
                     System.exit(1);
                 }
-            },5000);
+            }, 5000);
             throw new RuntimeException("Failed to create Databases! Aborting!");
         }
 
+        commandManager = new CommandManager();
+        registerCommands();
+        permissionManager = new PermissionManager();
+
         initShardManager();
+    }
+
+    private void registerCommands() {
+        commandManager.registerCommandHandlers(
+                new CommandFirstCommandEver()
+        );
     }
 
     /**
@@ -105,8 +119,8 @@ public class RubiconBot {
         //Register Event Listeners
 
         builder.addEventListeners(
-            new BotJoinListener(),
-                new DebugMessageEvent()
+                new BotJoinListener(),
+                commandManager
         );
         try {
             shardManager = builder.build();
@@ -121,14 +135,14 @@ public class RubiconBot {
      * @return the {@link ShardManager} that is used in the Rubicon project
      */
     public static ShardManager getShardManager() {
-        return instance.shardManager;
+        return instance == null ? null : instance.shardManager;
     }
 
     /**
      * @return the Rubicon {@link User} instance
      */
     public static User getSelfUser() {
-        return instance.shardManager.getApplicationInfo().getJDA().getSelfUser();
+        return instance == null ? null : instance.shardManager.getApplicationInfo().getJDA().getSelfUser();
     }
 
     /**
@@ -138,11 +152,26 @@ public class RubiconBot {
         return instance == null ? null : instance.configuration;
     }
 
+    public static CommandManager getCommandManager() {
+        return instance == null ? null : instance.commandManager;
+    }
+
+    public PermissionManager getPermissionManager() {
+        return instance.permissionManager;
+    }
+
+    /**
+     * @return the {@link PermissionManager} via a static reference.
+     */
+    public static PermissionManager sGetPermissionManager() {
+        return instance == null ? null : instance.permissionManager;
+    }
+
     /**
      * @return the rubicon instance
      */
     public static RubiconBot getRubiconBot() {
-        return instance;
+        return instance == null ? null : instance;
     }
 
     /**
