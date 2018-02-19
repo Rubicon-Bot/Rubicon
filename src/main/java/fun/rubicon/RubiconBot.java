@@ -7,8 +7,8 @@
 package fun.rubicon;
 
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.commands.general.CommandAFK;
 import fun.rubicon.commands.general.CommandHelp;
+import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.commands.test.CommandFirstCommandEver;
 import fun.rubicon.core.translation.TranslationManager;
 import fun.rubicon.commands.botowner.CommandBotPlay;
@@ -98,7 +98,7 @@ public class RubiconBot {
         //General
         commandManager.registerCommandHandlers(
                 new CommandHelp(),
-                new CommandAFK()
+                new CommandInfo()
         );
     }
 
@@ -134,7 +134,7 @@ public class RubiconBot {
         );
         try {
             shardManager = builder.build();
-            shardManager.setGame(Game.playing("Started!"));
+            shardManager.setGame(Game.playing("rb!help")); //TODO Change this
             shardManager.setStatus(OnlineStatus.ONLINE);
         } catch (LoginException e) {
             Logger.error(e);
