@@ -16,12 +16,9 @@ import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
 import fun.rubicon.util.StringUtil;
-import jdk.nashorn.internal.scripts.JD;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.Message;
-
-import java.util.stream.Collectors;
 
 /**
  * @author Yannick Seeger / ForYaSee

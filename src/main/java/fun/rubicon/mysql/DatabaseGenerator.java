@@ -83,6 +83,7 @@ public class DatabaseGenerator {
                     "`serverid` BIGINT(25)," +
                     "`level` INT(50)," +
                     "`points` INT(50)," +
+                    "`mute` VARCHAR (50), " +
                     " PRIMARY KEY (`id`)" +
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();

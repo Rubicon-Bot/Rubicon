@@ -6,6 +6,9 @@
 
 package fun.rubicon.listener;
 
+import fun.rubicon.commands.moderation.CommandMute;
+import fun.rubicon.util.BotListHandler;
+
 /**
  * @author Yannick Seeger / ForYaSee
  */
@@ -16,6 +19,8 @@ public class AllShardsLoadedEvent {
     }
 
     private void call() {
-        
+        CommandMute.loadMutes();
+        //Post Guild Stats
+        BotListHandler.postStats(false);
     }
 }

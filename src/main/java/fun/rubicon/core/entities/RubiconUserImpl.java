@@ -8,7 +8,6 @@ package fun.rubicon.core.entities;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.mysql.MySQL;
-import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.User;
 
