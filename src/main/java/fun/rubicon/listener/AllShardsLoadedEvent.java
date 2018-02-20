@@ -6,6 +6,8 @@
 
 package fun.rubicon.listener;
 
+import fun.rubicon.commands.moderation.CommandMute;
+
 /**
  * @author Yannick Seeger / ForYaSee
  */
@@ -16,6 +18,6 @@ public class AllShardsLoadedEvent {
     }
 
     private void call() {
-        
+        CommandMute.loadMutes();
     }
 }

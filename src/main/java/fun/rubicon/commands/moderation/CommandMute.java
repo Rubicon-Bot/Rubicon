@@ -129,6 +129,7 @@ public class CommandMute extends CommandHandler {
             PreparedStatement ps = mySQL.getConnection().prepareStatement("SELECT * FROM members WHERE NOT mute = '' AND NOT mute = 'permanent'");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
+                Logger.debug("test");
                 Date expiry = new Date(rs.getLong("mute"));
                 if (expiry.after(new Date())) {
                     Guild guild = RubiconBot.getShardManager().getGuildById(rs.getLong("serverid"));

@@ -20,6 +20,9 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
+import static fun.rubicon.util.EmbedUtil.error;
+import static fun.rubicon.util.EmbedUtil.message;
+
 /**
  * Rubicon Discord bot
  *
@@ -58,7 +61,7 @@ public class CommandMoney extends CommandHandler {
                     try {
                         if (invocation.getMessage().getMentionedMembers().size() == 1) {
                             if (invocation.getMessage().getMentionedMembers().get(0).getUser().getId().equalsIgnoreCase(invocation.getAuthor().getId())) {
-                                return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.money.give.selferror.title"), invocation.translate("command.money.give.selferror.desc")).build()).build();
+                                return new MessageBuilder().setEmbed(error(invocation.translate("command.money.give.selferror.title"), invocation.translate("command.money.give.selferror.desc")).build()).build();
                             }
                         }else {
                             return createHelpMessage();
@@ -67,7 +70,7 @@ public class CommandMoney extends CommandHandler {
                         user1_has_money = user.getMoney();
                         user2_has_money = user2.getMoney();
                         if (user1_has_money < user_spend_money) {
-                            SafeMessage.sendMessage(invocation.getTextChannel(),EmbedUtil.error(invocation.translate("command.money.give.notmoney.title"), invocation.translate("command.money.give.notmoney.des1") + invocation.getMessage().getAuthor().getAsMention() + invocation.translate("command.money.give.notmoney.des2") + user1_has_money + invocation.translate("command.money.give.notmoney.des3")).build());
+                            SafeMessage.sendMessage(invocation.getTextChannel(), error(invocation.translate("command.money.give.notmoney.title"), invocation.translate("command.money.give.notmoney.des1") + invocation.getMessage().getAuthor().getAsMention() + invocation.translate("command.money.give.notmoney.des2") + user1_has_money + invocation.translate("command.money.give.notmoney.des3")).build());
                             return null;
                         } else {
                             if ((user2_has_money + user_spend_money) <= 2147483647) {

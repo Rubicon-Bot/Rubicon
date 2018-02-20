@@ -17,15 +17,9 @@ import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.translation.TranslationManager;
 import fun.rubicon.commands.botowner.CommandEval;
 import fun.rubicon.listener.BotJoinListener;
-<<<<<<< HEAD
-<<<<<<< HEAD
 import fun.rubicon.listener.MuteListener;
-=======
-=======
 import fun.rubicon.listener.ShardListener;
->>>>>>> Rework-1.0.0
 import fun.rubicon.listener.UserMentionListener;
->>>>>>> Rework-1.0.0
 import fun.rubicon.mysql.DatabaseGenerator;
 import fun.rubicon.mysql.MySQL;
 import fun.rubicon.permission.PermissionManager;
@@ -149,24 +143,16 @@ public class RubiconBot {
         builder.setStatus(OnlineStatus.DO_NOT_DISTURB);
         builder.setShardsTotal(SHARD_COUNT);
 
-        //Init features
-        CommandMute.loadMutes();
 
         //Register Event Listeners
         builder.addEventListeners(
                 new BotJoinListener(),
-<<<<<<< HEAD
                 new MuteListener(),
-                commandManager
-=======
                 commandManager,
-<<<<<<< HEAD
-                new UserMentionListener()
->>>>>>> Rework-1.0.0
-=======
+                commandManager,
+                new UserMentionListener(),
                 new UserMentionListener(),
                 new ShardListener()
->>>>>>> Rework-1.0.0
         );
         try {
             shardManager = builder.build();
