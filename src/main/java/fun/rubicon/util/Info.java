@@ -18,8 +18,10 @@ public class Info {
 
     public final static String BOT_DEFAULT_PREFIX = "rc!";
     public final static String BOT_NAME = "RubiconBot";
-    public final static String BOT_VERSION = "0.2.7";
+    public final static String BOT_VERSION = "1.0.0";
     public final static String CONFIG_FILE = "config.json";
+
+    public final static long RUBICON_SERVER = 381419503164325900L;
 
     public final static long PERMISSIONS =
             Permission.ALL_CHANNEL_PERMISSIONS +
@@ -39,4 +41,14 @@ public class Info {
             137263174675070976L  // tr808axm
     };
 
+    public final static Long[] COMMUNITY_STAFF_TEAM = {
+            362270177712275491L, //Skidder
+            333220752117596160L, //BaseChip
+            240797338430341120L, //Pilz
+            235395943619493888L //ls13game
+    };
+
+    public final static long ROLE_TRANSLATOR = 415237125299109889L;
+    public final static long ROLE_STAFF = 387228153753632768L;
+    public final static long ROLE_DONATOR = 385812692629323798L;
 }

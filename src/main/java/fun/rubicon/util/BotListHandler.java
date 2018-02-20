@@ -6,8 +6,6 @@
 
 package fun.rubicon.util;
 
-import fun.rubicon.RubiconBot;
-import fun.rubicon.core.entities.RubiconMember;
 import okhttp3.*;
 import org.discordbots.api.client.DiscordBotListAPI;
 import org.json.JSONObject;
@@ -22,7 +20,7 @@ public class BotListHandler {
     public static void postStats(boolean silent) {
         // check if bot has already been initialized
         if (RubiconBot.getShardManager() == null) {
-            Logger.warning("Could not post discordbots.org stats as the bot has not been initialized yet.");
+            Logger.warning("Could not post discordbots.org stats because the bot has not been initialized yet.");
             return;
         }
 
@@ -44,7 +42,7 @@ public class BotListHandler {
         //Post stats to bots.discord.pw
         Request req = new Request.Builder()
                 .url("https://bots.discord.pw/api/bots/" + RubiconBot.getSelfUser().getId() + "/stats")
-                .addHeader("Authorization", RubiconBot.getConfiguration().getString("dbl_token"))
+                .addHeader("Authorization", RubiconBot.getConfiguration().getString("discord_pw_token"))
                 .post(body)
                 .build();
         Response res = null;

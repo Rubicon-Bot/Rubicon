@@ -6,7 +6,6 @@
 
 package fun.rubicon.mysql;
 
-import fun.rubicon.RubiconBot;
 import fun.rubicon.util.Logger;
 
 import java.sql.PreparedStatement;
@@ -101,6 +100,7 @@ public class DatabaseGenerator {
                     "`money` INT(250)," +
                     "`premium` BIGINT(50)," +
                     "`language` VARCHAR(10),"+
+                    "`afk` VARCHAR(30)," +
                     " PRIMARY KEY (`id`)" +
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();

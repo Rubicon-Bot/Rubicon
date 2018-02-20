@@ -6,7 +6,6 @@
 
 package fun.rubicon.command;
 
-import fun.rubicon.RubiconBot;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
@@ -68,7 +67,7 @@ public abstract class CommandHandler {
      */
     public Message call(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         if (disabled) {
-            return new MessageBuilder().setEmbed(EmbedUtil.info("Command disabled", "Command is currently disabled.").setFooter("RubiconBot Dev Team", null).build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.info("Command disabled", "Command is currently disabled.").build()).build();
         }
         UserPermissions userPermissions = new UserPermissions(parsedCommandInvocation.getMessage().getAuthor(),
                 parsedCommandInvocation.getMessage().getGuild());
@@ -82,7 +81,7 @@ public abstract class CommandHandler {
                 Logger.error(e);
                 return new MessageBuilder().setEmbed(new EmbedBuilder()
                         .setAuthor("Error", null, RubiconBot.getSelfUser().getEffectiveAvatarUrl())
-                        .setDescription("An unknown error occured while executing your command.")
+                        .setDescription("An unknown error occurred while executing your command.")
                         .setColor(Colors.COLOR_ERROR)
                         .setFooter(RubiconBot.getNewTimestamp(), null)
                         .build()).build();
@@ -100,11 +99,11 @@ public abstract class CommandHandler {
     /**
      * Method to be implemented by actual command handlers.
      *
-     * @param command the command arguments with prefix and command head removed.
+     * @param invocation the command arguments with prefix and command head removed.
      * @param userPermissions         an object to query the invoker's permissions.
      * @return a response that will be sent and deleted by the caller.
      */
-    protected abstract Message execute(CommandManager.ParsedCommandInvocation command, UserPermissions userPermissions);
+    protected abstract Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions);
 
     /**
      * @return all aliases this CommandHandler wants to listen to.

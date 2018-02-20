@@ -1,9 +1,7 @@
 package fun.rubicon.commands.moderation;
 
-import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
-import fun.rubicon.command.CommandManager;
 import fun.rubicon.core.entities.RubiconMember;
 import fun.rubicon.mysql.MySQL;
 import fun.rubicon.permission.PermissionRequirements;
