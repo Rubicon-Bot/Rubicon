@@ -13,13 +13,11 @@ import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.commands.moderation.CommandMute;
 import fun.rubicon.commands.moderation.CommandUnmute;
+import fun.rubicon.commands.tools.CommandPoll;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.translation.TranslationManager;
 import fun.rubicon.commands.botowner.CommandEval;
-import fun.rubicon.listener.BotJoinListener;
-import fun.rubicon.listener.MuteListener;
-import fun.rubicon.listener.ShardListener;
-import fun.rubicon.listener.UserMentionListener;
+import fun.rubicon.listener.*;
 import fun.rubicon.mysql.DatabaseGenerator;
 import fun.rubicon.mysql.MySQL;
 import fun.rubicon.permission.PermissionManager;
@@ -117,6 +115,11 @@ public class RubiconBot {
                 new CommandMute(),
                 new CommandUnmute()
         );
+
+        //Tools
+        commandManager.registerCommandHandlers(
+                new CommandPoll()
+        );
     }
 
     /**
@@ -151,7 +154,8 @@ public class RubiconBot {
                 commandManager,
                 new UserMentionListener(),
                 new UserMentionListener(),
-                new ShardListener()
+                new ShardListener(),
+                new SelfMentionListener()
         );
         try {
             shardManager = builder.build();
