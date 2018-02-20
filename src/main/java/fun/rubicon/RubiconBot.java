@@ -155,7 +155,6 @@ public class RubiconBot {
                 new MuteListener(),
                 commandManager,
                 new UserMentionListener(),
-                new UserMentionListener(),
                 new ShardListener(),
                 new SelfMentionListener(),
                 new VoteListener()

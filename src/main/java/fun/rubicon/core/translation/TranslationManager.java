@@ -51,7 +51,7 @@ public class TranslationManager {
         translationLocales.add(new TranslationLocale(this, new Locale("fr", "FR"), "French (France)"));
         translationLocales.add(new TranslationLocale(this, new Locale("it", "IT"), "Italian (Italy)"));
         translationLocales.add(new TranslationLocale(this, new Locale("no", "NO"), "Norwegian (Norway)"));
-        translationLocales.add(new TranslationLocale(this, new Locale("sv", "SE"), "Swedish (Sweden)"));
+        //translationLocales.add(new TranslationLocale(this, new Locale("sv", "SE"), "Swedish (Sweden)"));
         translationLocaleList = Collections.unmodifiableList(translationLocales);
 
         RubiconBot.getCommandManager().registerCommandHandler(new LanguageCommandHandler(this));
@@ -77,8 +77,10 @@ public class TranslationManager {
         String languageTag = RubiconUser.fromUser(user).getLanguage();
         try {
             Locale locale = Locale.forLanguageTag(languageTag);
+            TranslationLocale translationLocale = getTranslationLocaleByLocale(locale);
+            translationLocale.getResourceBundle();
             return getTranslationLocaleByLocale(locale);
-        } catch (MissingResourceException ex) {
+        } catch (Exception ex) {
             return defaultTranslationLocale;
         }
     }

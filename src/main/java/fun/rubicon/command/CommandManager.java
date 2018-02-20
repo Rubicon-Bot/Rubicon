@@ -174,7 +174,7 @@ public class CommandManager extends ListenerAdapter {
             this.defaultResourceBundle = RubiconBot.sGetTranslations().getDefaultTranslationLocale().getResourceBundle();
             try {
                 this.language = RubiconBot.sGetTranslations().getUserLocale(invocationMessage.getAuthor()).getResourceBundle();
-            } catch (NullPointerException ex) {
+            } catch (NullPointerException | MissingResourceException e) {
                 this.language = defaultResourceBundle;
                 RubiconUser.fromUser(getAuthor()).setLanguage("en-US");
             }
