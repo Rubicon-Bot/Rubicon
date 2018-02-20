@@ -28,7 +28,7 @@ public class UserMentionListener extends ListenerAdapter {
             if(rubiconUser.getUser() == event.getAuthor())
                 return;
             if(rubiconUser.isAFK()) {
-                SafeMessage.sendMessage(event.getTextChannel(), EmbedUtil.info("**" + rubiconUser.getUser().getName() + "**" + RubiconBot.sGetTranslations().getUserLocale(event.getAuthor()).getResourceBundle().getString("command.afk.title") + "!", rubiconUser.getAFKState()).build());
+                SafeMessage.sendMessage(event.getTextChannel(), EmbedUtil.info("**" + rubiconUser.getUser().getName() + "** " + RubiconBot.sGetTranslations().getUserLocale(event.getAuthor()).getResourceBundle().getString("event.afk.title") + "!", rubiconUser.getAFKState()).build());
             }
         }
     }

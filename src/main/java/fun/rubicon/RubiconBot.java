@@ -11,13 +11,14 @@ import fun.rubicon.commands.botowner.CommandShardManage;
 import fun.rubicon.commands.general.CommandAFK;
 import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
+import fun.rubicon.commands.moderation.CommandMute;
+import fun.rubicon.commands.moderation.CommandUnmute;
+import fun.rubicon.commands.tools.CommandPoll;
 import fun.rubicon.commands.settings.CommandPrefix;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.translation.TranslationManager;
 import fun.rubicon.commands.botowner.CommandEval;
-import fun.rubicon.listener.BotJoinListener;
-import fun.rubicon.listener.ShardListener;
-import fun.rubicon.listener.UserMentionListener;
+import fun.rubicon.listener.*;
 import fun.rubicon.mysql.DatabaseGenerator;
 import fun.rubicon.mysql.MySQL;
 import fun.rubicon.permission.PermissionManager;
@@ -49,6 +50,7 @@ public class RubiconBot {
     private final PermissionManager permissionManager;
     private final TranslationManager translationManager;
     private ShardManager shardManager;
+    private boolean allShardsInited;
 
     private static final int SHARD_COUNT = 5;
 
@@ -92,8 +94,7 @@ public class RubiconBot {
 
         gameAnimator.start();
 
-        //Post Guild Stats
-        BotListHandler.postStats(false);
+
     }
 
     private void registerCommands() {
@@ -109,6 +110,17 @@ public class RubiconBot {
                 new CommandInfo(),
                 new CommandAFK(),
                 new CommandPrefix()
+        );
+
+        //Moderation
+        commandManager.registerCommandHandlers(
+                new CommandMute(),
+                new CommandUnmute()
+        );
+
+        //Tools
+        commandManager.registerCommandHandlers(
+                new CommandPoll()
         );
     }
 
@@ -136,13 +148,17 @@ public class RubiconBot {
         builder.setStatus(OnlineStatus.DO_NOT_DISTURB);
         builder.setShardsTotal(SHARD_COUNT);
 
-        //Register Event Listeners
 
+        //Register Event Listeners
         builder.addEventListeners(
                 new BotJoinListener(),
+                new MuteListener(),
                 commandManager,
                 new UserMentionListener(),
-                new ShardListener()
+                new UserMentionListener(),
+                new ShardListener(),
+                new SelfMentionListener(),
+                new VoteListener()
         );
         try {
             shardManager = builder.build();
@@ -227,5 +243,13 @@ public class RubiconBot {
      */
     public static TranslationManager sGetTranslations() {
         return instance == null ? null : instance.translationManager;
+    }
+
+    public static boolean isAllShardsInited() {
+        return instance.allShardsInited;
+    }
+
+    public static void setAllShardsInited(boolean allShardsInited) {
+        instance.allShardsInited = allShardsInited;
     }
 }

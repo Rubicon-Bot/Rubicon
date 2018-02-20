@@ -37,13 +37,13 @@ public class TranslationManager {
         translationLocales.add(defaultTranslationLocale);
         translationLocales.add(new TranslationLocale(this, new Locale("de", "DE"), "German (Germany)"));
         translationLocales.add(new TranslationLocale(this, new Locale("de", "SA"), "Saxon (Germany, Saxony)"));
-        translationLocales.add(new TranslationLocale(this, new Locale("de", "WF"), "Westphalian (Germany, Westphalia)"));
-        translationLocales.add(new TranslationLocale(this, new Locale("de", "ko"), "Kölsch (Germany, Westphalia)"));
-        translationLocales.add(new TranslationLocale(this, new Locale("de", "ba"), "Bavarian (Germany, Bavaria)"));
+        translationLocales.add(new TranslationLocale(this, new Locale("de", "wf"), "Westphalian (Germany, Westphalia)"));
+        translationLocales.add(new TranslationLocale(this, new Locale("de", "KO"), "Kölsch (Germany, Westphalia)"));
+        translationLocales.add(new TranslationLocale(this, new Locale("de", "BA"), "Bavarian (Germany, Bavaria)"));
         translationLocales.add(new TranslationLocale(this, new Locale("de", "AT"), "Austrian (Austria)"));
         translationLocales.add(new TranslationLocale(this, new Locale("de", "CH"), "Swiss German (Switzerland)"));
         translationLocales.add(new TranslationLocale(this, new Locale("es", "ES"), "Spanish (Spain)"));
-        translationLocales.add(new TranslationLocale(this, new Locale("sp", "ka"), "Catalan (Catalonia)"));
+        translationLocales.add(new TranslationLocale(this, new Locale("sp", "KA"), "Catalan (Catalonia)"));
         translationLocales.add(new TranslationLocale(this, new Locale("pt", "PT"), "Portuguese (Portugal)"));
         translationLocales.add(new TranslationLocale(this, new Locale("pt", "BR"), "Portuguese (Brazil)"));
         translationLocales.add(new TranslationLocale(this, new Locale("lol", "US"), "Lolcat (lol)"));
@@ -75,8 +75,12 @@ public class TranslationManager {
 
     public TranslationLocale getUserLocale(User user) {
         String languageTag = RubiconUser.fromUser(user).getLanguage();
-        Locale locale = Locale.forLanguageTag(languageTag);
-        return getTranslationLocaleByLocale(locale);
+        try {
+            Locale locale = Locale.forLanguageTag(languageTag);
+            return getTranslationLocaleByLocale(locale);
+        } catch (MissingResourceException ex) {
+            return defaultTranslationLocale;
+        }
     }
 
     public List<TranslationLocale> getLocales() {
