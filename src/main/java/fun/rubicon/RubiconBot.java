@@ -18,8 +18,12 @@ import fun.rubicon.core.translation.TranslationManager;
 import fun.rubicon.commands.botowner.CommandEval;
 import fun.rubicon.listener.BotJoinListener;
 <<<<<<< HEAD
+<<<<<<< HEAD
 import fun.rubicon.listener.MuteListener;
 =======
+=======
+import fun.rubicon.listener.ShardListener;
+>>>>>>> Rework-1.0.0
 import fun.rubicon.listener.UserMentionListener;
 >>>>>>> Rework-1.0.0
 import fun.rubicon.mysql.DatabaseGenerator;
@@ -55,7 +59,6 @@ public class RubiconBot {
     private ShardManager shardManager;
 
     private static final int SHARD_COUNT = 5;
-
 
     /**
      * Constructs the RubiconBot.
@@ -157,7 +160,12 @@ public class RubiconBot {
                 commandManager
 =======
                 commandManager,
+<<<<<<< HEAD
                 new UserMentionListener()
+>>>>>>> Rework-1.0.0
+=======
+                new UserMentionListener(),
+                new ShardListener()
 >>>>>>> Rework-1.0.0
         );
         try {
