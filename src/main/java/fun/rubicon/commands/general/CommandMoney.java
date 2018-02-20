@@ -78,7 +78,8 @@ public class CommandMoney extends CommandHandler {
                                 user2.setMoney(user2_has_money + user_spend_money);
                                 SafeMessage.sendMessage(invocation.getTextChannel(),EmbedUtil.success(invocation.translate("command.money.give.suc.title"), invocation.getMessage().getAuthor().getAsMention() + invocation.translate("command.money.give.suc.des1") + user_spend_money + invocation.translate("command.money.give.suc.des2") + invocation.getMessage().getMentionedUsers().get(0).getAsMention() + ".").build());
                             } else {
-                                return message(error("Money value to big!", "Money value must be smaller than " + ((2147483647 - user2_has_money) + 1) + "!"));
+                                SafeMessage.sendMessage(invocation.getTextChannel(),EmbedUtil.error(invocation.translate("command.money.give.tran.title"), invocation.translate("comamnd.money.give.tran.des") + ((2147483647 - user2_has_money) + 1) + "!").build());
+                                return null;
                             }
                         }
                     } catch (NumberFormatException e) {

@@ -66,7 +66,6 @@ public class SafeMessage {
         if(channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_READ) && channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE)) {
             return true;
         }
-        Logger.debug("shit");
         return false;
     }
 
