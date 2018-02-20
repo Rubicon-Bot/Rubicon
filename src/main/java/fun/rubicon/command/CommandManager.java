@@ -19,6 +19,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
@@ -153,6 +154,7 @@ public class CommandManager extends ListenerAdapter {
     public static final class ParsedCommandInvocation {
 
         private final ResourceBundle language;
+        private final ResourceBundle defaultResourceBundle;
         private final String[] argsNew;
         private final String commandInvocation;
         private final Message message;
@@ -166,6 +168,8 @@ public class CommandManager extends ListenerAdapter {
 
             RubiconGuild.fromGuild(message.getGuild());
             RubiconMember.fromMember(message.getMember());
+
+            this.defaultResourceBundle = RubiconBot.sGetTranslations().getDefaultTranslationLocale().getResourceBundle();
             this.language = RubiconBot.sGetTranslations().getUserLocale(invocationMessage.getAuthor()).getResourceBundle();
         }
 
@@ -206,7 +210,13 @@ public class CommandManager extends ListenerAdapter {
         }
 
         public String translate(String key) {
-            return language.getString(key);
+            String entry;
+            try {
+                entry = language.getString(key);
+            } catch (MissingResourceException e) {
+                entry = defaultResourceBundle.getString(key);
+            }
+            return entry;
         }
     }
 }

@@ -6,7 +6,7 @@
 
 package fun.rubicon.listener;
 
-import fun.rubicon.util.Logger;
+import fun.rubicon.RubiconBot;
 import net.dv8tion.jda.core.events.*;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -15,9 +15,13 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
  */
 public class ShardListener extends ListenerAdapter {
 
+    private static int tempLoadedShards = 0;
+
     @Override
     public void onReady(ReadyEvent event) {
-        Logger.debug("Ready");
+        tempLoadedShards++;
+        if(tempLoadedShards == RubiconBot.getMaximumShardCount())
+            new AllShardsLoadedEvent();
     }
 
     @Override
