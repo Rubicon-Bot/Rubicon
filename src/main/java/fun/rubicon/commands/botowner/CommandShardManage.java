@@ -37,8 +37,7 @@ public class CommandShardManage extends CommandHandler {
                 "| Info about current shard.\n" +
                         "[shardid] | Shows info about a specific shard.\n" +
                         "[shardid] start/s | Starts a shard.\n" +
-                        "[shardid] restart/rs | Restarts a shard." +
-                        "[shardid] stop | Stops a shard.");
+                        "[shardid] restart/rs | Restarts a shard.");
     }
 
     @Override
@@ -47,9 +46,9 @@ public class CommandShardManage extends CommandHandler {
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setTitle("Shardinfo - Overview");
             embedBuilder.setColor(Colors.COLOR_SECONDARY);
-            embedBuilder.setDescription("Loaded " + RubiconBot.getMaximumShardCount() + " Shards.\nAverage Ping: " + RubiconBot.getShardManager().getAveragePing() + "ms");
+            embedBuilder.setDescription("Loaded " + RubiconBot.getMaximumShardCount() + " Shards.\nAverage Ping: " + RubiconBot.getShardManager().getAveragePing() + "ms.\nCurrent Shard: " + invocation.getMessage().getJDA().getShardInfo().getShardId());
             for (JDA jda : RubiconBot.getShardManager().getShards()) {
-                embedBuilder.addField("Shard " + jda.getShardInfo().getShardId() + "/" + RubiconBot.getMaximumShardCount(),
+                embedBuilder.addField("ShardId " + jda.getShardInfo().getShardId() + "/" + RubiconBot.getMaximumShardCount(),
                         "Status: " + jda.getStatus() + "\n" +
                                 "Ping: " + jda.getPing() + "ms", false);
             }
@@ -67,13 +66,13 @@ public class CommandShardManage extends CommandHandler {
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setColor(Colors.COLOR_SECONDARY);
             embedBuilder.setTitle("Shardinfo - " + shard.getShardInfo().getShardId() + "/" + RubiconBot.getMaximumShardCount());
-            embedBuilder.setDescription("ID: " + shard.getShardInfo().getShardId());
+            embedBuilder.setDescription("ID: " + shard.getShardInfo().getShardId() + "\nStatus: " + shard.getStatus());
             embedBuilder.addField("Ping", shard.getPing() + "ms", false);
             embedBuilder.addField("Guilds", shard.getGuilds().size() + " Guilds", true);
             embedBuilder.addField("Users", shard.getUsers().size() + " Users", true);
             embedBuilder.addField("Channels", (shard.getTextChannels().size() + shard.getVoiceChannels().size()) + " Channels", true);
             SafeMessage.sendMessage(invocation.getTextChannel(), embedBuilder.build(), 300);
-        } else if(invocation.getArgs().length == 2) {
+        } else if (invocation.getArgs().length == 2) {
             if (!StringUtil.isNumeric(invocation.getArgs()[0])) {
                 return EmbedUtil.message(EmbedUtil.error("Wrong argument!", "Parameter must be numeric."));
             }
@@ -86,7 +85,16 @@ public class CommandShardManage extends CommandHandler {
             switch (invocation.getArgs()[1]) {
                 case "s":
                 case "start":
-                    break;
+                    if (shard.getStatus() != JDA.Status.SHUTDOWN)
+                        return EmbedUtil.message(EmbedUtil.error("Can't start shard!", "Shard is already starting/started."));
+                    RubiconBot.getShardManager().start(shardId);
+                    return EmbedUtil.message(EmbedUtil.success("Starting shard!", "Shard will be started soon."));
+                case "rs":
+                case "restart":
+                    if (shard.getStatus() != JDA.Status.SHUTDOWN && shard.getStatus() != JDA.Status.CONNECTED)
+                        return EmbedUtil.message(EmbedUtil.error("Can't restart shard!", "Shard is already starting/started."));
+                    RubiconBot.getShardManager().restart(shardId);
+                    return EmbedUtil.message(EmbedUtil.success("Restarting shard!", "Shard will be restarted soon."));
                 default:
                     return createHelpMessage();
             }

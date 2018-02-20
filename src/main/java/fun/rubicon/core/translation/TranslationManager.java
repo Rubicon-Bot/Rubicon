@@ -38,11 +38,10 @@ public class TranslationManager {
         translationLocales.add(new TranslationLocale(this, new Locale("de", "DE"), "Deutsch (Deutschland)"));
         translationLocales.add(new TranslationLocale(this, new Locale("de", "SA"), "Sächsisch (Deutschland, Sachsen)"));
         translationLocales.add(new TranslationLocale(this, new Locale("de", "AT"), "Österreichisch (Österreich)"));
-        translationLocales.add(new TranslationLocale(this, new Locale("de", "CH"), "Schweizerdeutsch (Schweiz)"));
         translationLocales.add(new TranslationLocale(this, new Locale("es", "ES"), "Español (España)"));
         translationLocales.add(new TranslationLocale(this, new Locale("pt", "PT"), "Português (Portugal)"));
         translationLocales.add(new TranslationLocale(this, new Locale("pt", "BR"), "Português (Brasileiro)"));
-        translationLocales.add(new TranslationLocale(this, new Locale("lol", "LOL"), "Lolcat (lol)"));
+        translationLocales.add(new TranslationLocale(this, new Locale("lo", "LO"), "Lolcat (lol)"));
         translationLocales.add(new TranslationLocale(this, new Locale("fi", "FI"), "Suomalainen (Suomi)"));
         translationLocales.add(new TranslationLocale(this, new Locale("fr", "FR"), "Français (France)"));
         translationLocales.add(new TranslationLocale(this, new Locale("it", "IT"), "Italiano (Italia)"));
