@@ -27,8 +27,9 @@ public class CommandPrefix extends CommandHandler {
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
         RubiconGuild rubiconGuild = RubiconGuild.fromGuild(invocation.getGuild());
-        if (invocation.getArgs().length <= 1)
-            return createHelpMessage();
+        if (invocation.getArgs().length <= 1) {
+            return EmbedUtil.message(EmbedUtil.info(invocation.translate("command.prefix.info.title"), invocation.translate("command.prefix.info.description").replaceAll("%prefix%", "`" + rubiconGuild.getPrefix() + "`")));
+        }
 
         String subCommand = invocation.getArgs()[0];
         if (!subCommand.equalsIgnoreCase("set")) {
