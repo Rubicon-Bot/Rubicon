@@ -15,6 +15,7 @@ import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.translation.TranslationManager;
 import fun.rubicon.commands.botowner.CommandEval;
 import fun.rubicon.listener.BotJoinListener;
+import fun.rubicon.listener.ShardListener;
 import fun.rubicon.listener.UserMentionListener;
 import fun.rubicon.mysql.DatabaseGenerator;
 import fun.rubicon.mysql.MySQL;
@@ -49,7 +50,6 @@ public class RubiconBot {
     private ShardManager shardManager;
 
     private static final int SHARD_COUNT = 5;
-
 
     /**
      * Constructs the RubiconBot.
@@ -139,7 +139,8 @@ public class RubiconBot {
         builder.addEventListeners(
                 new BotJoinListener(),
                 commandManager,
-                new UserMentionListener()
+                new UserMentionListener(),
+                new ShardListener()
         );
         try {
             shardManager = builder.build();
