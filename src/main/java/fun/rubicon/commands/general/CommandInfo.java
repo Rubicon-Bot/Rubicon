@@ -77,7 +77,7 @@ public class CommandInfo extends CommandHandler {
         embedBuilder.addField(invocation.translate("command.info.votes"), "[discordbots.org](https://discordbots.org/bot/380713705073147915)", true);
         embedBuilder.addBlankField(false);
         embedBuilder.addField(invocation.translate("command.info.developer"), devsString.toString(), true);
-        embedBuilder.addField(invocation.translate("command.info.staff"), devsString.toString(), true);
+        embedBuilder.addField(invocation.translate("command.info.staff"), staffString.toString(), true);
         embedBuilder.addBlankField(false);
         embedBuilder.addField(invocation.translate("command.info.translator"), translatorString.toString(), true);
         embedBuilder.addField(invocation.translate("command.info.donator"), donatorString.toString(), true);
