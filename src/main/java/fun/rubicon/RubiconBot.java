@@ -11,6 +11,7 @@ import fun.rubicon.commands.botowner.CommandShardManage;
 import fun.rubicon.commands.general.CommandAFK;
 import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
+import fun.rubicon.commands.settings.CommandPrefix;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.translation.TranslationManager;
 import fun.rubicon.commands.botowner.CommandEval;
@@ -106,7 +107,8 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(
                 new CommandHelp(),
                 new CommandInfo(),
-                new CommandAFK()
+                new CommandAFK(),
+                new CommandPrefix()
         );
     }
 
