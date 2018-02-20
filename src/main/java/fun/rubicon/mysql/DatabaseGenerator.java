@@ -100,7 +100,7 @@ public class DatabaseGenerator {
                     "`money` INT(250)," +
                     "`premium` BIGINT(50)," +
                     "`language` VARCHAR(10),"+
-                    "`afk` VARCHAR(30)," +
+                    "`afk` TEXT," +
                     " PRIMARY KEY (`id`)" +
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();

@@ -8,12 +8,14 @@ package fun.rubicon;
 
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.commands.botowner.CommandShardManage;
+import fun.rubicon.commands.general.CommandAFK;
 import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.translation.TranslationManager;
 import fun.rubicon.commands.botowner.CommandEval;
 import fun.rubicon.listener.BotJoinListener;
+import fun.rubicon.listener.UserMentionListener;
 import fun.rubicon.mysql.DatabaseGenerator;
 import fun.rubicon.mysql.MySQL;
 import fun.rubicon.permission.PermissionManager;
@@ -103,7 +105,8 @@ public class RubiconBot {
         //General
         commandManager.registerCommandHandlers(
                 new CommandHelp(),
-                new CommandInfo()
+                new CommandInfo(),
+                new CommandAFK()
         );
     }
 
@@ -135,7 +138,8 @@ public class RubiconBot {
 
         builder.addEventListeners(
                 new BotJoinListener(),
-                commandManager
+                commandManager,
+                new UserMentionListener()
         );
         try {
             shardManager = builder.build();
