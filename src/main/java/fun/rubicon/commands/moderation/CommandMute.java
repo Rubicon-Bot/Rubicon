@@ -5,20 +5,17 @@ import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.core.entities.RubiconMember;
-import fun.rubicon.core.translation.TranslationLocale;
-import fun.rubicon.core.translation.TranslationManager;
 import fun.rubicon.mysql.MySQL;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
+import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
-import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.channel.text.TextChannelCreateEvent;
 
-import javax.xml.soap.Text;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -87,8 +84,10 @@ public class CommandMute extends CommandHandler {
         Member victimMember = guild.getMember(message.getMentionedUsers().get(0));
         RubiconMember victim = RubiconMember.fromMember(victimMember);
         if (victim.isMuted())
-            return new MessageBuilder().setEmbed(EmbedUtil.error("Already muted", "This user is already muted").build()).build();
-        if (!member.canInteract(victimMember))
+            return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.muted.permanent.title"), command.translate("command.mute.muted.permanent.description")).build()).build();
+        if(victimMember.equals(guild.getSelfMember()))
+            return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.donotmuterubicon.title"), command.translate("command.mute.donotmuterubicon.description")).build()).build();
+        if (!member.canInteract(victimMember) && !Arrays.asList(Info.BOT_AUTHOR_IDS).contains(member.getUser().getIdLong()))
             return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.nopermissions.user.title"), String.format(command.translate("command.mute.nopermissions.user.description"), victimMember.getAsMention())).build()).build();
         if (!command.getSelfMember().canInteract(victimMember))
             return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.nopermissions.bot.title"), String.format(command.translate("command.mute.nopermissions.bot.description"), victimMember.getAsMention())).build()).build();
@@ -98,7 +97,7 @@ public class CommandMute extends CommandHandler {
             victim.mute();
             return new MessageBuilder().setEmbed(EmbedUtil.success(command.translate("command.mute.muted.permanent.title"), String.format(command.translate("command.mute.muted.permanent.description"), victimMember.getAsMention())).build()).build();
         } else if (args.length > 1) {
-            Integer delay = 0;
+            Integer delay;
             try {
                 delay = Integer.parseInt(args[1]);
             } catch (NumberFormatException e) {
@@ -129,12 +128,14 @@ public class CommandMute extends CommandHandler {
             PreparedStatement ps = mySQL.getConnection().prepareStatement("SELECT * FROM members WHERE NOT mute = '' AND NOT mute = 'permanent'");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Logger.debug("test");
                 Date expiry = new Date(rs.getLong("mute"));
+                Long guildid = rs.getLong("serverid");
+                Long memberid = rs.getLong("userid");
+                Guild guild = RubiconBot.getShardManager().getGuildById(rs.getLong("serverid"));
+
+                Member member = guild.getMemberById(rs.getLong("userid"));
+                RubiconMember rMember = RubiconMember.fromMember(member);
                 if (expiry.after(new Date())) {
-                    Guild guild = RubiconBot.getShardManager().getGuildById(rs.getLong("serverid"));
-                    Member member = guild.getMemberById(rs.getLong("userid"));
-                    RubiconMember rMember = RubiconMember.fromMember(member);
                     rMember.unmute();
                     CommandUnmute.deassignRole(member);
                     return;
@@ -142,12 +143,8 @@ public class CommandMute extends CommandHandler {
                 new Timer().schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        try {
-                            Member member = RubiconMember.fromMember(RubiconBot.getShardManager().getGuildById(rs.getLong("serverid")).getMemberById(rs.getLong("userid"))).unmute().getMember();
-                            CommandUnmute.deassignRole(member);
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
+                        rMember.unmute();
+                        CommandUnmute.deassignRole(member);
                     }
                 }, expiry);
             }

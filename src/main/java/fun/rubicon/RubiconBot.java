@@ -149,7 +149,6 @@ public class RubiconBot {
                 new BotJoinListener(),
                 new MuteListener(),
                 commandManager,
-                commandManager,
                 new UserMentionListener(),
                 new UserMentionListener(),
                 new ShardListener()
