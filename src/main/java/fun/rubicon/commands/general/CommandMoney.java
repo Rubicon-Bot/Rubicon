@@ -14,7 +14,6 @@ import fun.rubicon.core.entities.RubiconUser;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
-import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -83,7 +82,7 @@ public class CommandMoney extends CommandHandler {
                             }
                         }
                     } catch (NumberFormatException e) {
-                        SafeMessage.sendMessage(invocation.getTextChannel(), invocation.translate("command.money.give.numbertoobig"));
+                        SafeMessage.sendMessage(invocation.getTextChannel(), invocation.translate("command.money.give.numbertoobig").replace("%s","2.147.483.647"));
                         return null;
                     }
                 } else {
@@ -113,7 +112,7 @@ public class CommandMoney extends CommandHandler {
                         return null;
                     }
                 } else {
-                    SafeMessage.sendMessage(invocation.getTextChannel(),no_permissions().build());
+                    SafeMessage.sendMessage(invocation.getTextChannel(), no_permissions().build());
                     return null;
                 }
             case "add":
