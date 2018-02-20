@@ -10,6 +10,7 @@ import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.core.entities.RubiconMember;
 import fun.rubicon.util.BotListHandler;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.events.ReconnectedEvent;
 import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -17,8 +18,6 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
  * @author Yannick Seeger / ForYaSee
  */
 public class BotJoinListener extends ListenerAdapter {
-
-
 
     @Override
     public void onGuildJoin(GuildJoinEvent event) {
