@@ -3,6 +3,7 @@ package fun.rubicon.commands.moderation;
 
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
 import fun.rubicon.core.entities.RubiconMember;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
@@ -26,23 +27,22 @@ public class CommandUnmute extends CommandHandler {
         Message message = command.getMessage();
         Member member = command.getMember();
         Guild guild = command.getGuild();
-
         if(args.length == 0)
             return createHelpMessage();
         if(message.getMentionedUsers().isEmpty())
-            return new MessageBuilder().setEmbed(EmbedUtil.error("No member", "Please specify a member").build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.unknownuser.title"), command.translate("command.mute.unknownuser.description")).build()).build();
         Member victimMember = guild.getMember(message.getMentionedUsers().get(0));
         RubiconMember victim = RubiconMember.fromMember(victimMember);
         if(!victim.isMuted())
-            return new MessageBuilder().setEmbed(EmbedUtil.error("Not muted", "This user is not muted").build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.unmute.notmuted.title"), command.translate("command.unmute.notmuted.description")).build()).build();
         if(!member.canInteract(victimMember))
-            return new MessageBuilder().setEmbed(EmbedUtil.error("No permission", "You have no permission to interact with " + victimMember.getAsMention()).build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.nopermissions.user.title"), String.format(command.translate("command.mute.nopermissions.user.description"), victimMember.getAsMention())).build()).build();
         if(!command.getSelfMember().canInteract(victimMember))
-            return new MessageBuilder().setEmbed(EmbedUtil.error("No permission", "Rubicon has no permission to interact with " + victimMember.getAsMention()).build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.nopermissions.bot.title"), String.format(command.translate("command.mute.nopermissions.bot.description"), victimMember.getAsMention())).build()).build();
         victim.unmute();
         if(!deassignRole(victimMember))
-            return new MessageBuilder().setEmbed(EmbedUtil.error("No permission", "Rubicon has no permission to remove roles").build()).build();
-        return new MessageBuilder().setEmbed(EmbedUtil.success("Unmuted", "Successfully unmuted " + victimMember.getAsMention()).build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.nopermissions.role.title"), command.translate("command.unmute.nopermissions.role.description")).build()).build();
+        return new MessageBuilder().setEmbed(EmbedUtil.success(command.translate("command.unmute.unmuted.title"), String.format(command.translate("command.unmute.unmuted.description"), victimMember.getAsMention())).build()).build();
         }
 
         public static boolean deassignRole(Member member){

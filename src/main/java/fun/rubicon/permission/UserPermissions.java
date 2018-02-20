@@ -6,6 +6,7 @@
 
 package fun.rubicon.permission;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.entities.*;
 
