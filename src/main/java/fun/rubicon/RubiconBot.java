@@ -92,8 +92,7 @@ public class RubiconBot {
 
         gameAnimator.start();
 
-        //Post Guild Stats
-        BotListHandler.postStats(false);
+
     }
 
     private void registerCommands() {
@@ -155,7 +154,8 @@ public class RubiconBot {
                 new UserMentionListener(),
                 new UserMentionListener(),
                 new ShardListener(),
-                new SelfMentionListener()
+                new SelfMentionListener(),
+                new VoteListener()
         );
         try {
             shardManager = builder.build();
