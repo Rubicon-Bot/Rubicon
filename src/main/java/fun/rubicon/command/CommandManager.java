@@ -153,7 +153,7 @@ public class CommandManager extends ListenerAdapter {
 
     public static final class ParsedCommandInvocation {
 
-        private final ResourceBundle language;
+        private ResourceBundle language;
         private final ResourceBundle defaultResourceBundle;
         private final String[] argsNew;
         private final String commandInvocation;
@@ -170,7 +170,12 @@ public class CommandManager extends ListenerAdapter {
             RubiconMember.fromMember(message.getMember());
 
             this.defaultResourceBundle = RubiconBot.sGetTranslations().getDefaultTranslationLocale().getResourceBundle();
-            this.language = RubiconBot.sGetTranslations().getUserLocale(invocationMessage.getAuthor()).getResourceBundle();
+            try {
+                this.language = RubiconBot.sGetTranslations().getUserLocale(invocationMessage.getAuthor()).getResourceBundle();
+            } catch (NullPointerException ex) {
+                this.language = defaultResourceBundle;
+                RubiconUser.fromUser(getAuthor()).setLanguage("en-US");
+            }
         }
 
         public Message getMessage() {
