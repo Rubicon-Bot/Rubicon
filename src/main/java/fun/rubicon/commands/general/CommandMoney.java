@@ -20,6 +20,8 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
+import static fun.rubicon.util.EmbedUtil.*;
+
 /**
  * Rubicon Discord bot
  *
@@ -58,32 +60,124 @@ public class CommandMoney extends CommandHandler {
                     try {
                         if (invocation.getMessage().getMentionedMembers().size() == 1) {
                             if (invocation.getMessage().getMentionedMembers().get(0).getUser().getId().equalsIgnoreCase(invocation.getAuthor().getId())) {
-                                return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.money.give.selferror.title"), invocation.translate("command.money.give.selferror.desc")).build()).build();
+                                return new MessageBuilder().setEmbed(error(invocation.translate("command.money.give.selferror.title"), invocation.translate("command.money.give.selferror.desc")).build()).build();
                             }
-                        }else {
+                        } else {
                             return createHelpMessage();
                         }
                         user_spend_money = Integer.parseInt(invocation.getArgs()[invocation.getArgs().length - 1]);
                         user1_has_money = user.getMoney();
                         user2_has_money = user2.getMoney();
                         if (user1_has_money < user_spend_money) {
-                            SafeMessage.sendMessage(invocation.getTextChannel(),EmbedUtil.error(invocation.translate("command.money.give.notmoney.title"), invocation.translate("command.money.give.notmoney.des1") + invocation.getMessage().getAuthor().getAsMention() + invocation.translate("command.money.give.notmoney.des2") + user1_has_money + invocation.translate("command.money.give.notmoney.des3")).build());
+                            SafeMessage.sendMessage(invocation.getTextChannel(), error(invocation.translate("command.money.give.notmoney.title"), invocation.translate("command.money.give.notmoney.des1") + invocation.getMessage().getAuthor().getAsMention() + invocation.translate("command.money.give.notmoney.des2") + user1_has_money + invocation.translate("command.money.give.notmoney.des3")).build());
                             return null;
                         } else {
                             if ((user2_has_money + user_spend_money) <= 2147483647) {
                                 user.setMoney(user1_has_money - user_spend_money);
                                 user2.setMoney(user2_has_money + user_spend_money);
-                                SafeMessage.sendMessage(invocation.getTextChannel(),EmbedUtil.success(invocation.translate("command.money.give.suc.title"), invocation.getMessage().getAuthor().getAsMention() + invocation.translate("command.money.give.suc.des1") + user_spend_money + invocation.translate("command.money.give.suc.des2") + invocation.getMessage().getMentionedUsers().get(0).getAsMention() + ".").build());
+                                SafeMessage.sendMessage(invocation.getTextChannel(), success(invocation.translate("command.money.give.suc.title"), invocation.getMessage().getAuthor().getAsMention() + invocation.translate("command.money.give.suc.des1") + user_spend_money + invocation.translate("command.money.give.suc.des2") + invocation.getMessage().getMentionedUsers().get(0).getAsMention() + ".").build());
                             } else {
-                                return message(error("Money value to big!", "Money value must be smaller than " + ((2147483647 - user2_has_money) + 1) + "!"));
+                                SafeMessage.sendMessage(invocation.getTextChannel(), error(invocation.translate("command.money.give.tran.title"), invocation.translate("command.money.give.tran.des") + ((2147483647 - user2_has_money) + 1) + "!").build());
+                                return null;
                             }
                         }
                     } catch (NumberFormatException e) {
                         SafeMessage.sendMessage(invocation.getTextChannel(), invocation.translate("command.money.give.numbertoobig"));
                         return null;
                     }
+                } else {
+                    SafeMessage.sendMessage(invocation.getTextChannel(), error(invocation.translate("command.money.args.title"), invocation.translate("command.money.args.des") + getParameterUsage()).build());
+                    return null;
                 }
+            case "set":
+                if (new PermissionRequirements("command.money.modify", true, false).coveredBy(userPermissions)) {
+                    if (invocation.getArgs().length == 3) {
+                        try {
+                            user_spend_money = Integer.parseInt(invocation.getArgs()[invocation.getArgs().length - 1]);
+                            if (user_spend_money > -1) {
+                                user2.setMoney((user_spend_money));
+                                SafeMessage.sendMessage(invocation.getTextChannel(), success("Money has been set!", "Money of " + invocation.getMessage().getMentionedUsers().get(0).getAsMention() + " has been set to " + user_spend_money + " Ruby's.").build());
+                                return null;
+                            } else {
+                                SafeMessage.sendMessage(invocation.getTextChannel(), error("Money value to small!", "Money value must be 0 or bigger!").build());
+                                return null;
+                            }
 
+                        } catch (NumberFormatException exception) {
+                            SafeMessage.sendMessage(invocation.getTextChannel(), error("NaN or money value is to big!", "The money value is not a number or bigger than 2.147.483.647!").build());
+                            return null;
+                        }
+                    } else {
+                        SafeMessage.sendMessage(invocation.getTextChannel(), error("Wrong count of arguments", "Three arguments are necessary!\n" + getParameterUsage()).build());
+                        return null;
+                    }
+                } else {
+                    SafeMessage.sendMessage(invocation.getTextChannel(),no_permissions().build());
+                    return null;
+                }
+            case "add":
+                int max_money = 2147483647;
+                user2_has_money = user2.getMoney();
+                if (new PermissionRequirements("command.money.modify", true, false).coveredBy(userPermissions)) {
+                    if (invocation.getArgs().length == 3) {
+                        try {
+                            user_spend_money = Integer.parseInt(invocation.getArgs()[invocation.getArgs().length - 1]);
+                            if (user_spend_money > 0) {
+                                if ((user2_has_money + user_spend_money) <= 2147483647 && (user2_has_money + user_spend_money) > 0) {
+                                    if (user2_has_money == 2147483647) {
+                                        SafeMessage.sendMessage(invocation.getTextChannel(), error("Too much money!", invocation.getMessage().getMentionedUsers().get(0).getAsMention() + " has already the money maximum!").build());
+                                        return null;
+                                    } else {
+                                        user2.setMoney((user2_has_money + user_spend_money));
+                                        SafeMessage.sendMessage(invocation.getTextChannel(), success("Money has been added!", "Money of " + invocation.getMessage().getMentionedUsers().get(0).getAsMention() + " has been set to " + (user2_has_money + user_spend_money) + " Ruby's.").build());
+                                        return null;
+                                    }
+                                } else {
+                                    SafeMessage.sendMessage(invocation.getTextChannel(), error("Money value to big!", "Money value must be smaller than " + ((max_money - user2_has_money) + 1) + "!").build());
+                                    return null;
+                                }
+                            } else {
+                                SafeMessage.sendMessage(invocation.getTextChannel(), error("Money value to small!", "Money value must be bigger than 0!").build());
+                                return null;
+                            }
+
+                        } catch (NumberFormatException exception) {
+                            SafeMessage.sendMessage(invocation.getTextChannel(), error("Not a number!", "The money value is not a number!").build());
+                            return null;
+                        }
+                    } else {
+                        SafeMessage.sendMessage(invocation.getTextChannel(), error("Wrong count of arguments", "Three arguments are necessary!\n" + getParameterUsage()).build());
+                        return null;
+                    }
+                } else {
+                    return message(no_permissions());
+                }
+            case "remove":
+                user2_has_money = user2.getMoney();
+                if (new PermissionRequirements("command.money.modify", true, false).coveredBy(userPermissions)) {
+                    if (invocation.getArgs().length == 3) {
+                        try {
+                            user_spend_money = Integer.parseInt(invocation.getArgs()[invocation.getArgs().length - 1]);
+                            if (user_spend_money > 0) {
+                                if ((user2.getMoney() - user_spend_money) >= 0) {
+                                    user2.setMoney(user2_has_money - user_spend_money);
+                                    return message(success("Money has been removed!", "Money of " + invocation.getMessage().getMentionedUsers().get(0).getAsMention() + " has been set to " + (user2_has_money - user_spend_money) + " Ruby's."));
+                                } else {
+                                    return message(error("Money value to big!", "Money value must be smaller than " + ((2147483647 - user2_has_money) + 1) + "!"));
+                                }
+                            } else {
+                                return message(error("Money value to small!", "Money value must be bigger than 0!"));
+                            }
+
+                        } catch (NumberFormatException exception) {
+                            return message(error("NaN or money value is to big!", "The money value is not a number or bigger than 2.147.483.647!"));
+                        }
+                    } else {
+                        return message(error("Wrong count of arguments", "Three arguments are necessary!\n" + getParameterUsage()));
+                    }
+                } else {
+                    return message(no_permissions());
+                }
         }
 
 
