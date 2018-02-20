@@ -32,6 +32,7 @@ public class BotListHandler {
                     .build();
 
 
+
         // post stats to discordbots.org
         discordBotListAPI.setStats(RubiconBot.getSelfUser().getId(), RubiconBot.getShardManager().getGuilds().size());
 

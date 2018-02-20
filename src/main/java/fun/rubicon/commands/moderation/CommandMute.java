@@ -125,23 +125,24 @@ public class CommandMute extends CommandHandler {
 
     public static void loadMutes(){
         MySQL mySQL = RubiconBot.getMySQL();
-        Timer timer = new Timer();
         try {
-            PreparedStatement ps = mySQL.getConnection().prepareStatement("SELECT * FROM members WHERE NOT mute = '' OR NOT mute = 'permanent'");
+            PreparedStatement ps = mySQL.getConnection().prepareStatement("SELECT * FROM members WHERE NOT mute = '' AND NOT mute = 'permanent'");
             ResultSet rs = ps.executeQuery();
-
             while (rs.next()) {
-                Logger.debug(rs.getString("mute"));
-                Date expiry = new Date(Long.parseLong(rs.getString("mute")));
+                Date expiry = new Date(rs.getLong("mute"));
                 if (expiry.after(new Date())) {
-                    Member member = RubiconMember.fromMember(RubiconBot.getShardManager().getGuildById(Long.parseLong(rs.getString("serverid"))).getMemberById(Long.parseLong(rs.getString("userid")))).unmute().getMember();
+                    Guild guild = RubiconBot.getShardManager().getGuildById(rs.getLong("serverid"));
+                    Member member = guild.getMemberById(rs.getLong("userid"));
+                    RubiconMember rMember = RubiconMember.fromMember(member);
+                    rMember.unmute();
                     CommandUnmute.deassignRole(member);
+                    return;
                 }
-                timer.schedule(new TimerTask() {
+                new Timer().schedule(new TimerTask() {
                     @Override
                     public void run() {
                         try {
-                            Member member = RubiconMember.fromMember(RubiconBot.getShardManager().getGuildById(Long.parseLong(rs.getString("serverid"))).getMemberById(Long.parseLong(rs.getString("userid")))).unmute().getMember();
+                            Member member = RubiconMember.fromMember(RubiconBot.getShardManager().getGuildById(rs.getLong("serverid")).getMemberById(rs.getLong("userid"))).unmute().getMember();
                             CommandUnmute.deassignRole(member);
                         } catch (SQLException e) {
                             e.printStackTrace();
