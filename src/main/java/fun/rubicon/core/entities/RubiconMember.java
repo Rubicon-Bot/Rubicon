@@ -13,9 +13,10 @@ import net.dv8tion.jda.core.entities.Member;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 
 /**
- * @author Yannick Seeger / ForYaSee
+ * @author Yannick Seeger / ForYaSee, Michael Rittmeister / Schlaubi
  */
 public class RubiconMember extends RubiconUserImpl {
 
@@ -35,7 +36,7 @@ public class RubiconMember extends RubiconUserImpl {
         return member;
     }
 
-    public void setLevel(int level) {
+    public RubiconMember setLevel(int level) {
         try {
             PreparedStatement ps = mySQL.prepareStatement("UPDATE members SET level=? WHERE userid=? AND serverid=?");
             ps.setInt(1, level);
@@ -45,6 +46,7 @@ public class RubiconMember extends RubiconUserImpl {
         } catch (SQLException e) {
             Logger.error(e);
         }
+        return this;
     }
 
     public String getLevel() {
@@ -60,7 +62,7 @@ public class RubiconMember extends RubiconUserImpl {
         return null;
     }
 
-    public void setPoints(int points) {
+    public RubiconMember setPoints(int points) {
         try {
             PreparedStatement ps = mySQL.prepareStatement("UPDATE members SET points=? WHERE userid=? AND serverid=?");
             ps.setInt(1, points);
@@ -70,6 +72,7 @@ public class RubiconMember extends RubiconUserImpl {
         } catch (SQLException e) {
             Logger.error(e);
         }
+        return this;
     }
 
     public String getPoints() {
@@ -83,6 +86,61 @@ public class RubiconMember extends RubiconUserImpl {
             Logger.error(e);
         }
         return null;
+    }
+
+    public boolean isMuted(){
+        String entry = "";
+        try{
+            PreparedStatement ps = mySQL.prepareStatement("SELECT mute FROM members WHERE userid=? AND serverid=?");
+            ps.setLong(1, user.getIdLong());
+            ps.setLong(2, guild.getIdLong());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next())
+                entry = rs.getString("mute");
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+        if(entry.equals("permanent")) return true;
+        if(entry.equals("")) return false;
+        if(new Date(Long.parseLong(entry)).after(new Date())) return true;
+        return false;
+    }
+
+    public RubiconMember mute(){
+        try{
+            PreparedStatement ps = mySQL.prepareStatement("UPDATE members SET mute = 'permanent' WHERE userid=? AND serverid=?");
+            ps.setLong(1, user.getIdLong());
+            ps.setLong(2, guild.getIdLong());
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+        return this;
+    }
+
+    public RubiconMember mute(Date expiry){
+        try{
+            PreparedStatement ps = mySQL.prepareStatement("UPDATE members SET mute = ? WHERE userid=? AND serverid=?");
+            ps.setLong(1, expiry.getTime());
+            ps.setLong(2, user.getIdLong());
+            ps.setLong(3, guild.getIdLong());
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+        return this;
+    }
+
+    public RubiconMember unmute(){
+        try{
+            PreparedStatement ps = mySQL.prepareStatement("UPDATE members SET mute = '' WHERE userid=? AND serverid=?");
+            ps.setLong(1, user.getIdLong());
+            ps.setLong(2, guild.getIdLong());
+            ps.execute();
+        } catch (SQLException e){
+            Logger.error(e);
+        }
+        return this;
     }
 
     public void delete() {
@@ -109,11 +167,11 @@ public class RubiconMember extends RubiconUserImpl {
         return false;
     }
 
-    private void createIfNotExist() {
+    private RubiconMember createIfNotExist() {
         if (exist())
-            return;
+            return this;
         try {
-            PreparedStatement ps = mySQL.prepareStatement("INSERT INTO members(`userid`, `serverid`, `level`, `points`) VALUES (?, ?, ?, ?)");
+            PreparedStatement ps = mySQL.prepareStatement("INSERT INTO members(`userid`, `serverid`, `level`, `points`, `mute`) VALUES (?, ?, ?, ?, '')");
             ps.setLong(1, user.getIdLong());
             ps.setLong(2, guild.getIdLong());
             ps.setInt(3, 0);
@@ -122,6 +180,7 @@ public class RubiconMember extends RubiconUserImpl {
         } catch (SQLException e) {
             Logger.error(e);
         }
+        return this;
     }
 
     public static RubiconMember fromMember(Member member) {

@@ -7,7 +7,11 @@
 package fun.rubicon;
 
 import fun.rubicon.command.CommandManager;
+import fun.rubicon.commands.moderation.CommandMute;
+import fun.rubicon.commands.moderation.CommandUnmute;
+import fun.rubicon.commands.test.CommandFirstCommandEver;
 import fun.rubicon.listener.BotJoinListener;
+import fun.rubicon.listener.MuteListener;
 import fun.rubicon.mysql.DatabaseGenerator;
 import fun.rubicon.mysql.MySQL;
 import fun.rubicon.permission.PermissionManager;
@@ -80,7 +84,9 @@ public class RubiconBot {
 
     private void registerCommands() {
         commandManager.registerCommandHandlers(
-                new CommandFirstCommandEver()
+                new CommandFirstCommandEver(),
+                new CommandMute(),
+                new CommandUnmute()
         );
     }
 
@@ -112,6 +118,7 @@ public class RubiconBot {
 
         builder.addEventListeners(
                 new BotJoinListener(),
+                new MuteListener(),
                 commandManager
         );
         try {

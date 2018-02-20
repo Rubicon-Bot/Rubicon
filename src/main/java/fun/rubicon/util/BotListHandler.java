@@ -7,6 +7,7 @@
 package fun.rubicon.util;
 
 import fun.rubicon.RubiconBot;
+import fun.rubicon.core.entities.RubiconMember;
 import okhttp3.*;
 import org.discordbots.api.client.DiscordBotListAPI;
 import org.json.JSONObject;
@@ -34,7 +35,6 @@ public class BotListHandler {
 
         // post stats to discordbots.org
         discordBotListAPI.setStats(RubiconBot.getSelfUser().getId(), RubiconBot.getShardManager().getGuilds().size());
-
 
         JSONObject json = new JSONObject();
 

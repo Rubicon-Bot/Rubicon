@@ -8,6 +8,7 @@ package fun.rubicon.command;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.RubiconGuild;
+import fun.rubicon.core.entities.RubiconMember;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
@@ -190,5 +191,7 @@ public class CommandManager extends ListenerAdapter {
         public TextChannel getTextChannel() {
             return message.getTextChannel();
         }
+
+        public RubiconMember getRubiconMember() { return RubiconMember.fromMember(message.getMember());}
     }
 }

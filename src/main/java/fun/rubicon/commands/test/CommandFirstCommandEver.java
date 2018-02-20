@@ -24,7 +24,7 @@ public class CommandFirstCommandEver extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation command, UserPermissions userPermissions) {
-        command.getTextChannel().sendMessage("Yeah! The very first Rubicon Command! :scream:").queue();
+        command.getTextChannel().sendMessage("Yeah! The very first Rubicon Command! :scream: SCHLAUBI IS DEPREACETD").queue();
         return null;
     }
 }
