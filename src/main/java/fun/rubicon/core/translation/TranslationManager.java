@@ -43,6 +43,10 @@ public class TranslationManager {
         translationLocales.add(new TranslationLocale(this, new Locale("pt", "PT"), "Português (Portugal)"));
         translationLocales.add(new TranslationLocale(this, new Locale("pt", "BR"), "Português (Brasileiro)"));
         translationLocales.add(new TranslationLocale(this, new Locale("lol", "LOL"), "Lolcat (lol)"));
+        translationLocales.add(new TranslationLocale(this, new Locale("fi", "FI"), "Suomalainen (Suomi)"));
+        translationLocales.add(new TranslationLocale(this, new Locale("fr", "FR"), "Français (France)"));
+        translationLocales.add(new TranslationLocale(this, new Locale("it", "IT"), "Italiano (Italia)"));
+        translationLocales.add(new TranslationLocale(this, new Locale("no", "NO"), "Norsk (Norge)"));
         translationLocaleList = Collections.unmodifiableList(translationLocales);
 
         RubiconBot.getCommandManager().registerCommandHandler(new LanguageCommandHandler(this));
