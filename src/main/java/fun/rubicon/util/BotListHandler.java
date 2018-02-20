@@ -21,7 +21,7 @@ public class BotListHandler {
     public static void postStats(boolean silent) {
         // check if bot has already been initialized
         if (RubiconBot.getShardManager() == null) {
-            Logger.warning("Could not post discordbots.org stats as the bot has not been initialized yet.");
+            Logger.warning("Could not post discordbots.org stats because the bot has not been initialized yet.");
             return;
         }
 

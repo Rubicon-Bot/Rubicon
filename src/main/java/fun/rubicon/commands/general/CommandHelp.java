@@ -49,7 +49,7 @@ public class CommandHelp extends CommandHandler {
                     // invalid command
                     ? new MessageBuilder().setEmbed(new EmbedBuilder()
                     .setColor(Colors.COLOR_ERROR)
-                    .setTitle(invoke.translate("command.help.warning.title"))
+                    .setTitle(":warning:" + invoke.translate("command.help.warning.title"))
                     .setDescription(invoke.translate("command.help.warning.description").replaceAll("%command%", invoke.getArgs()[0]).replaceAll("%help_command%", invoke.getPrefix() + invoke.getCommandInvocation()))
                     .build()).build()
                     // show command help for a single command
@@ -113,8 +113,8 @@ public class CommandHelp extends CommandHandler {
             }
         }
 
-        builder.setTitle(invocation.translate("command.help.list.title"));
-        builder.setDescription(invocation.translate("command.help.list.description").replaceAll("%help_command%", invocation.getPrefix() + "help <command>"));
+        builder.setTitle(":information_source: " + invocation.translate("command.help.list.title"));
+        builder.setDescription(invocation.translate("command.help.list.description").replaceAll("%help_command%", invocation.getPrefix() + "help <command>").replaceAll("%website%", "[rubicon.fun](https://rubicon.fun)"));
         builder.setColor(Colors.COLOR_SECONDARY);
         builder.setFooter(invocation.translate("command.help.list.footer").replaceAll("%command_amount%", new HashSet<>(RubiconBot.getCommandManager().getCommandAssociations().values()).size() + ""), null);
 

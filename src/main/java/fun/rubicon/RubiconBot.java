@@ -7,11 +7,11 @@
 package fun.rubicon;
 
 import fun.rubicon.command.CommandManager;
+import fun.rubicon.commands.botowner.CommandShardManage;
 import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
-import fun.rubicon.commands.test.CommandFirstCommandEver;
+import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.translation.TranslationManager;
-import fun.rubicon.commands.botowner.CommandBotPlay;
 import fun.rubicon.commands.botowner.CommandEval;
 import fun.rubicon.listener.BotJoinListener;
 import fun.rubicon.mysql.DatabaseGenerator;
@@ -36,10 +36,11 @@ import java.util.Date;
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_database", "mysql_user", "mysql_password","playingStatus","dbl_token","discord_pw_token"};
+    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_database", "mysql_user", "mysql_password", "playingStatus", "dbl_token", "discord_pw_token"};
     private static RubiconBot instance;
     private final Configuration configuration;
     private final MySQL mySQL;
+    private final GameAnimator gameAnimator;
     private final CommandManager commandManager;
     private final PermissionManager permissionManager;
     private final TranslationManager translationManager;
@@ -56,6 +57,7 @@ public class RubiconBot {
 
         new File("rubicon_logs").mkdirs();
         new File("data/").mkdirs();
+        new File("data/bot/settings").mkdirs();
         Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, "rubicon_logs/");
 
         //Init config
@@ -80,8 +82,12 @@ public class RubiconBot {
         registerCommands();
         permissionManager = new PermissionManager();
         translationManager = new TranslationManager();
+        gameAnimator = new GameAnimator();
 
+        //Init Shard
         initShardManager();
+
+        gameAnimator.start();
 
         //Post Guild Stats
         BotListHandler.postStats(false);
@@ -90,9 +96,8 @@ public class RubiconBot {
     private void registerCommands() {
         //Bot Owner
         commandManager.registerCommandHandlers(
-                new CommandFirstCommandEver(),
                 new CommandEval(),
-                new CommandBotPlay()
+                new CommandShardManage()
         );
 
         //General
@@ -103,7 +108,7 @@ public class RubiconBot {
     }
 
     /**
-     * Initializes the bot.
+     * Initialises the bot.
      *
      * @param args command line parameters.
      */
@@ -134,8 +139,6 @@ public class RubiconBot {
         );
         try {
             shardManager = builder.build();
-            shardManager.setGame(Game.playing("rb!help")); //TODO Change this
-            shardManager.setStatus(OnlineStatus.ONLINE);
         } catch (LoginException e) {
             Logger.error(e);
         }
