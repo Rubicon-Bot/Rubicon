@@ -21,13 +21,15 @@ public class UserMentionListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if(event.getChannel().getType() == ChannelType.PRIVATE)
+        if (event.getChannel().getType() == ChannelType.PRIVATE)
             return;
-        if(event.getMessage().getMentionedUsers().size() == 1) {
+        if (event.getAuthor().isFake() || event.getAuthor().isBot())
+            return;
+        if (event.getMessage().getMentionedUsers().size() == 1) {
             RubiconUser rubiconUser = RubiconUser.fromUser(event.getMessage().getMentionedUsers().get(0));
-            if(rubiconUser.getUser() == event.getAuthor())
+            if (rubiconUser.getUser() == event.getAuthor())
                 return;
-            if(rubiconUser.isAFK()) {
+            if (rubiconUser.isAFK()) {
                 SafeMessage.sendMessage(event.getTextChannel(), EmbedUtil.info("**" + rubiconUser.getUser().getName() + "** " + RubiconBot.sGetTranslations().getUserLocale(event.getAuthor()).getResourceBundle().getString("event.afk.title") + "!", rubiconUser.getAFKState()).build());
             }
         }

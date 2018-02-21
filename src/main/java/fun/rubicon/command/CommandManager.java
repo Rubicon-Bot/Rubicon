@@ -157,16 +157,18 @@ public class CommandManager extends ListenerAdapter {
 
         private ResourceBundle language;
         private final ResourceBundle defaultResourceBundle;
-        private final String[] argsNew;
+        private final String[] args;
         private final String commandInvocation;
         private final Message message;
         private final String prefix;
+        private final String argsString;
 
         private ParsedCommandInvocation(Message invocationMessage, String serverPrefix, String invocationCommand, String[] args) {
             this.message = invocationMessage;
             this.prefix = serverPrefix;
             this.commandInvocation = invocationCommand;
-            this.argsNew = args;
+            this.args = args;
+            this.argsString = message.getContentDisplay().replace(prefix + invocationCommand + " ", "");
 
             RubiconGuild.fromGuild(message.getGuild());
             RubiconMember.fromMember(message.getMember());
@@ -189,7 +191,7 @@ public class CommandManager extends ListenerAdapter {
         }
 
         public String[] getArgs() {
-            return argsNew;
+            return args;
         }
 
         public String getCommandInvocation() {
@@ -214,6 +216,10 @@ public class CommandManager extends ListenerAdapter {
 
         public TextChannel getTextChannel() {
             return message.getTextChannel();
+        }
+
+        public String getArgsString() {
+            return argsString;
         }
 
         public String translate(String key) {
