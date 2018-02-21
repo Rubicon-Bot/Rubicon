@@ -8,10 +8,7 @@ package fun.rubicon;
 
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.commands.botowner.CommandShardManage;
-import fun.rubicon.commands.general.CommandAFK;
-import fun.rubicon.commands.general.CommandBio;
-import fun.rubicon.commands.general.CommandHelp;
-import fun.rubicon.commands.general.CommandInfo;
+import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.CommandMute;
 import fun.rubicon.commands.moderation.CommandUnmute;
 import fun.rubicon.commands.tools.CommandPoll;
@@ -111,7 +108,8 @@ public class RubiconBot {
                 new CommandInfo(),
                 new CommandAFK(),
                 new CommandPrefix(),
-                new CommandBio()
+                new CommandBio(),
+                new CommandInvite()
         );
 
         //Moderation
