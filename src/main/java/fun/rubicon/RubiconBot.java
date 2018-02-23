@@ -124,17 +124,6 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(
                 new CommandPoll()
         );
-
-        //Moderation
-        commandManager.registerCommandHandlers(
-                new CommandMute(),
-                new CommandUnmute()
-        );
-
-        //Tools
-        commandManager.registerCommandHandlers(
-                new CommandPoll()
-        );
     }
 
     /**

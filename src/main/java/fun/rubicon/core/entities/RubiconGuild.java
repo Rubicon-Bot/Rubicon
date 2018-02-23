@@ -11,6 +11,7 @@ import fun.rubicon.mysql.MySQL;
 import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -91,6 +92,57 @@ public class RubiconGuild {
         } catch (SQLException e) {
             Logger.error(e);
         }
+    }
+
+    public boolean useMuteSettings(){
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("SELECT * FROM mutesettings WHERE serverid = ?");
+            ps.setLong(1, guild.getIdLong());
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            Logger.error(e);
+            return false;
+        }
+    }
+
+    public RubiconGuild insertMuteTable(){
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("INSERT INTO mutesettings(`serverid`,`mutedmsg`,`unmutemsg`,`channel`) VALUES (?, '', '', '0')");
+            ps.setLong(1, guild.getIdLong());
+            ps.execute();
+        } catch (SQLException e){
+            Logger.error(e);
+        }
+        return this;
+    }
+
+    public TextChannel getMuteChannel(){
+        long channelid = 0;
+        try{
+            PreparedStatement ps = mySQL.prepareStatement("SELECT channel FROM mutesettings WHERE serverid =?");
+            ps.setLong(1, guild.getIdLong());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next())
+                channelid = rs.getLong("channel");
+        } catch (SQLException e){
+            Logger.error(e);
+        }
+        return guild.getTextChannelById(channelid);
+    }
+
+    public boolean isMutedChannel(TextChannel channel){
+        long channelid = 0;
+        try{
+            PreparedStatement ps = mySQL.prepareStatement("SELECT channel FROM mutesettings WHERE serverid =?");
+            ps.setLong(1, guild.getIdLong());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next())
+                return rs.getString("channel").equals(String.valueOf(channel.getIdLong()));
+        } catch (SQLException e){
+            Logger.error(e);
+        }
+        return false;
     }
 
     public static RubiconGuild fromGuild(Guild guild) {

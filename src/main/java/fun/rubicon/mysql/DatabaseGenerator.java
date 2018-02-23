@@ -22,6 +22,7 @@ public class DatabaseGenerator {
             createJoinmessageTable();
             createLeavemessageTable();
             createUserDatabase();
+            createMuteSettingsTable();
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -106,6 +107,22 @@ public class DatabaseGenerator {
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();
         } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void createMuteSettingsTable(){
+        try {
+            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS `mutesettings`" +
+                    "(`id` INT(250)  UNSIGNED NOT NULL AUTO_INCREMENT, " +
+                    "`serverid` BIGINT(25)," +
+                    "`mutedmsg` TEXT," +
+                    "`unmutemsg` TEXT," +
+                    "`channel` BIGINT(25)," +
+                    "PRIMARY KEY (`id`))" +
+                    "ENGINE=InnoDB DEFAULT CHARSET=utf8");
+            ps.execute();
+        } catch (SQLException e){
             e.printStackTrace();
         }
     }
