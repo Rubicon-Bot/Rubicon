@@ -18,11 +18,9 @@ import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 public class CommandUnmute extends CommandHandler {
 
     public CommandUnmute() {
-<<<<<<< HEAD
-        super(new String[] {"unmute"}, CommandCategory.MODERATION, new PermissionRequirements("unmute", false, false), "Unmutes users", "<@User>");
-=======
+
         super(new String[] {"unmute"}, CommandCategory.MODERATION, new PermissionRequirements("unmute", false, false), "Unmutes a muted member.", "<@User>");
->>>>>>> Rework-1.0.0
+
     }
 
     @Override

@@ -8,18 +8,13 @@ package fun.rubicon;
 
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.commands.botowner.CommandShardManage;
-<<<<<<< HEAD
 import fun.rubicon.commands.general.CommandAFK;
 import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.commands.moderation.CommandMute;
 import fun.rubicon.commands.moderation.CommandUnmute;
-=======
 import fun.rubicon.commands.general.*;
-import fun.rubicon.commands.moderation.CommandMute;
-import fun.rubicon.commands.moderation.CommandUnmute;
 import fun.rubicon.commands.tools.CommandPoll;
->>>>>>> Rework-1.0.0
 import fun.rubicon.commands.settings.CommandPrefix;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.translation.TranslationManager;
@@ -99,11 +94,6 @@ public class RubiconBot {
         initShardManager();
 
         gameAnimator.start();
-<<<<<<< HEAD
-
-
-=======
->>>>>>> Rework-1.0.0
     }
 
     private void registerCommands() {
@@ -178,10 +168,6 @@ public class RubiconBot {
                 new MuteListener(),
                 commandManager,
                 new UserMentionListener(),
-<<<<<<< HEAD
-                new UserMentionListener(),
-=======
->>>>>>> Rework-1.0.0
                 new ShardListener(),
                 new SelfMentionListener(),
                 new VoteListener()
