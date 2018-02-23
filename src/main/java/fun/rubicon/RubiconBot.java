@@ -13,7 +13,6 @@ import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.commands.moderation.CommandMute;
 import fun.rubicon.commands.moderation.CommandUnmute;
-import fun.rubicon.commands.tools.CommandPoll;
 import fun.rubicon.commands.settings.CommandPrefix;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.translation.TranslationManager;
