@@ -8,11 +8,18 @@ package fun.rubicon;
 
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.commands.botowner.CommandShardManage;
+<<<<<<< HEAD
 import fun.rubicon.commands.general.CommandAFK;
 import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.commands.moderation.CommandMute;
 import fun.rubicon.commands.moderation.CommandUnmute;
+=======
+import fun.rubicon.commands.general.*;
+import fun.rubicon.commands.moderation.CommandMute;
+import fun.rubicon.commands.moderation.CommandUnmute;
+import fun.rubicon.commands.tools.CommandPoll;
+>>>>>>> Rework-1.0.0
 import fun.rubicon.commands.settings.CommandPrefix;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.translation.TranslationManager;
@@ -49,6 +56,7 @@ public class RubiconBot {
     private final PermissionManager permissionManager;
     private final TranslationManager translationManager;
     private ShardManager shardManager;
+    private boolean allShardsInited;
 
     private static final int SHARD_COUNT = 5;
 
@@ -91,8 +99,11 @@ public class RubiconBot {
         initShardManager();
 
         gameAnimator.start();
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> Rework-1.0.0
     }
 
     private void registerCommands() {
@@ -107,7 +118,21 @@ public class RubiconBot {
                 new CommandHelp(),
                 new CommandInfo(),
                 new CommandAFK(),
-                new CommandPrefix()
+                new CommandPrefix(),
+                new CommandBio(),
+                new CommandInvite(),
+                new CommandSay()
+        );
+
+        //Moderation
+        commandManager.registerCommandHandlers(
+                new CommandMute(),
+                new CommandUnmute()
+        );
+
+        //Tools
+        commandManager.registerCommandHandlers(
+                new CommandPoll()
         );
 
         //Moderation
@@ -153,7 +178,10 @@ public class RubiconBot {
                 new MuteListener(),
                 commandManager,
                 new UserMentionListener(),
+<<<<<<< HEAD
                 new UserMentionListener(),
+=======
+>>>>>>> Rework-1.0.0
                 new ShardListener(),
                 new SelfMentionListener(),
                 new VoteListener()
@@ -241,5 +269,13 @@ public class RubiconBot {
      */
     public static TranslationManager sGetTranslations() {
         return instance == null ? null : instance.translationManager;
+    }
+
+    public static boolean isAllShardsInited() {
+        return instance.allShardsInited;
+    }
+
+    public static void setAllShardsInited(boolean allShardsInited) {
+        instance.allShardsInited = allShardsInited;
     }
 }

@@ -25,7 +25,11 @@ import java.util.*;
 public class CommandMute extends CommandHandler {
 
     public CommandMute() {
+<<<<<<< HEAD
         super(new String[]{"mute"}, CommandCategory.MODERATION, new PermissionRequirements("mute", false, false), "Easily mute a player", "<@User> [time in minutes]");
+=======
+        super(new String[]{"mute"}, CommandCategory.MODERATION, new PermissionRequirements("mute", false, false), "Easily mute a member.", "<@User> [time in minutes]");
+>>>>>>> Rework-1.0.0
 
     }
 

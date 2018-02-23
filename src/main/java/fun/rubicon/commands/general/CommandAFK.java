@@ -43,7 +43,7 @@ public class CommandAFK extends CommandHandler {
         RubiconMember rubiconMember = RubiconMember.fromMember(invocation.getMember());
         if (rubiconMember.isAFK())
             return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.afk.enable.error.title") + "!", invocation.translate("command.afk.enable.error.description") + "."));
-        String afkText = invocation.getMessage().getContentDisplay().replace(invocation.getPrefix() + invocation.getCommandInvocation() + " ", "");
+        String afkText = invocation.getArgsString();
         rubiconMember.setAFKState(afkText);
         return EmbedUtil.message(EmbedUtil.success(invocation.translate("command.afk.enable.success.title") + "!", invocation.translate("command.afk.enable.success.description").replaceAll("%message%", "`" + afkText + "`.")));
     }
