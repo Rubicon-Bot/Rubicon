@@ -91,8 +91,6 @@ public class RubiconBot {
         initShardManager();
 
         gameAnimator.start();
-
-
     }
 
     private void registerCommands() {
@@ -109,7 +107,8 @@ public class RubiconBot {
                 new CommandAFK(),
                 new CommandPrefix(),
                 new CommandBio(),
-                new CommandInvite()
+                new CommandInvite(),
+                new CommandSay()
         );
 
         //Moderation

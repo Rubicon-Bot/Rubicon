@@ -41,7 +41,7 @@ public class CommandPoll extends CommandHandler implements Serializable {
     private List<String> toAddEmojis = new ArrayList<>();
 
     public CommandPoll() {
-        super(new String[]{"vote", "v", "poll"}, CommandCategory.TOOLS, new PermissionRequirements("command.vote", false, true), "Polls", "create <Title>|<Option1>|<Option2>|...\nvote <index of Option>\nstats\nclose");
+        super(new String[]{"vote", "v", "poll"}, CommandCategory.TOOLS, new PermissionRequirements("vote", false, false), "Let your members vote for something.", "create <Title>|<Option1>|<Option2>|...\nvote <index of Option>\nstats\nclose");
     }
 
 
@@ -51,13 +51,13 @@ public class CommandPoll extends CommandHandler implements Serializable {
         String[] args = parsedCommandInvocation.getArgs();
         channel = message.getTextChannel();
         if (args.length < 1) {
-            return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "USAGE: \n`vote create <Title>|<Option1>|<Option2>|...  `  -  create a vote\n`vote vote <index of Option>  `  -  vote for a possibility\n`vote stats  `  -  get stats of a current vote\n`vote close  `  -  close a current vote").build()).build();
+            return createHelpMessage();
         }
         switch (args[0]) {
             case "create":
                 String[] voteargs = message.getContentDisplay().split("\\|");
                 if (voteargs.length < 2) {
-                    return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "USAGE: \n`vote create <Title>|<Option1>|<Option2>|...  `  -  create a vote\n`vote vote <index of Option>  `  -  vote for a possibility\n`vote stats  `  -  get stats of a current vote\n`vote close  `  -  close a current vote").build()).build();
+                    return createHelpMessage();
                 }
                 createPoll(parsedCommandInvocation);
                 break;
@@ -109,7 +109,8 @@ public class CommandPoll extends CommandHandler implements Serializable {
         Member getCreator(Guild guild) {
             return guild.getMemberById(creator);
         }
-        User getCreatorUser(){
+
+        User getCreatorUser() {
             return RubiconBot.getShardManager().getUserById(creator);
         }
 
@@ -321,7 +322,7 @@ public class CommandPoll extends CommandHandler implements Serializable {
 
         poll.pollmsgs.forEach((m, c) -> {
             Message pollmsg = event.getGuild().getTextChannelById(c).getMessageById(m).complete();
-            pollmsg.editMessage(getParsedPoll(poll, event.getGuild(),poll.getCreatorUser()).build()).queue();
+            pollmsg.editMessage(getParsedPoll(poll, event.getGuild(), poll.getCreatorUser()).build()).queue();
         });
 
         new Timer().schedule(new TimerTask() {
