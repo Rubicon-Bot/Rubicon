@@ -11,10 +11,7 @@ import java.net.Socket;
  * @author Yannick Seeger / ForYaSee
  */
 public class RubackReceiver implements Runnable {
-
-    private ServerSocket serverSocket;
     private Thread thread;
-
     private boolean running = false;
 
     public RubackReceiver() {
@@ -32,7 +29,7 @@ public class RubackReceiver implements Runnable {
     @Override
     public void run() {
         try {
-            serverSocket = new ServerSocket(13902);
+            ServerSocket serverSocket = new ServerSocket(13902);
             serverSocket.setSoTimeout(864000);
             while (running) {
                 Socket ruback = serverSocket.accept();

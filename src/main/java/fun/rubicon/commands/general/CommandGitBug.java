@@ -32,40 +32,40 @@ import java.util.concurrent.TimeUnit;
  * @package fun.rubicon.commands.general
  */
 public class CommandGitBug extends CommandHandler {
-    private static HashMap<TextChannel, Titel> channelMsg = new HashMap<>();
-    private static Timer timer = new Timer();
+    private static final HashMap<TextChannel, Titel> CHANNEL_MSG = new HashMap<>();
+    private static final Timer TIMER = new Timer();
+
+    private static final String ISSUE_HEADER = "<p><strong>Bugreport</strong><br><br><strong>Bug report by ";
+    private static final String ISSUE_SUFFIX = " </strong><br><br><strong>Description</strong><br><br></p>";
+
 
     public CommandGitBug() {
         super(new String[]{"bug", "bugreport"}, CommandCategory.GENERAL, new PermissionRequirements("command.gitbug", false, true), "Report an Bug", "<Bug title>");
     }
-
-    private static String Header = "<p><strong>Bugreport</strong><br><br><strong>Bug report by ";
-    private static String Sufix = " </strong><br><br><strong>Description</strong><br><br></p>";
 
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         String title = parsedCommandInvocation.getMessage().getContentDisplay().replace(parsedCommandInvocation.getPrefix() + parsedCommandInvocation.getCommandInvocation(), "");
         Titel tite1 = new Titel(title, parsedCommandInvocation.getAuthor(), parsedCommandInvocation.getTextChannel(), parsedCommandInvocation.getMessage().getContentDisplay());
-        channelMsg.put(parsedCommandInvocation.getTextChannel(), tite1);
+        CHANNEL_MSG.put(parsedCommandInvocation.getTextChannel(), tite1);
         SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), new EmbedBuilder().setTitle("Set Bug Description").setDescription("Please write a short Description about the Bug in this Channel").setFooter("Will abort in 30sec.", null).build(), 30);
-        timer.schedule(new TimerTask() {
+        TIMER.schedule(new TimerTask() {
             @Override
             public void run() {
-                channelMsg.remove(parsedCommandInvocation.getTextChannel());
+                CHANNEL_MSG.remove(parsedCommandInvocation.getTextChannel());
                 parsedCommandInvocation.getTextChannel().sendMessage("Setup abort").queue(message -> {
                     message.delete().queueAfter(7L, TimeUnit.SECONDS);
                 });
-                return;
             }
         }, 30000);
         return null;
     }
 
     public static void handle(MessageReceivedEvent event) {
-        if (!channelMsg.containsKey(event.getTextChannel()))
+        if (!CHANNEL_MSG.containsKey(event.getTextChannel()))
             return;
-        Titel titel = channelMsg.get(event.getTextChannel());
+        Titel titel = CHANNEL_MSG.get(event.getTextChannel());
         if (event.getMessage().getContentDisplay().equals(titel.getMessage()))
             return;
         if (event.getAuthor().equals(RubiconBot.getJDA().getSelfUser()))
@@ -75,11 +75,11 @@ public class CommandGitBug extends CommandHandler {
         try {
             GitHub gitHub = GitHub.connectUsingOAuth(Info.GITHUB_TOKEN);
             GHRepository repository = gitHub.getOrganization("Rubicon-Bot").getRepository("Rubicon");
-            GHIssue Issue = repository.createIssue(titel.getTitle()).body(Header + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + Sufix + event.getMessage().getContentDisplay()).label("Bug").label("Requires Testing").create();
-            channelMsg.remove(event.getTextChannel());
+            GHIssue Issue = repository.createIssue(titel.getTitle()).body(ISSUE_HEADER + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + ISSUE_SUFFIX + event.getMessage().getContentDisplay()).label("Bug").label("Requires Testing").create();
+            CHANNEL_MSG.remove(event.getTextChannel());
             event.getMessage().delete().queue();
             SafeMessage.sendMessage(event.getTextChannel(), new EmbedBuilder().setTitle("Bug successfully send!").setDescription("Bug is available at: " + Issue.getHtmlUrl()).build());
-            timer.cancel();
+            TIMER.cancel();
         } catch (IOException e) {
             e.printStackTrace();
         }

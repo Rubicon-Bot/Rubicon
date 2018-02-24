@@ -25,10 +25,8 @@ import java.util.Locale;
 public class TranslationManager {
     private final List<TranslationLocale> translationLocaleList;
     private final TranslationLocale defaultTranslationLocale;
-    private final LanguageCommandHandler commandHandler;
 
     public TranslationManager() {
-        commandHandler = new LanguageCommandHandler(this);
         defaultTranslationLocale = new TranslationLocale(this, new Locale("en", "US"), "English (United States)") {
             @Override
             public String getTranslationOrDefault(String key) {

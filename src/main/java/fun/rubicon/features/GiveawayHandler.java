@@ -308,44 +308,6 @@ public class GiveawayHandler extends CommandHandler {
     private static final String PARTICIPATION_EMOTE = "\ud83c\udfc6"; // golden trophy emote
     private static final Color EMBED_COLOR = new Color(255, 215, 0);
 
-    /**
-     * Handles user interaction through events.
-     */
-    private final ListenerAdapter listener = new ListenerAdapter() {
-        @Override
-        public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event) {
-            if (!event.getUser().equals(RubiconBot.getJDA().getSelfUser())) {
-                Giveaway giveaway = getGiveawayById(event.getChannel().getIdLong(), event.getMessageIdLong());
-                EmbedBuilder message;
-                if (giveaway != null) {
-                    User author = giveaway.getAuthor();
-                    if (giveaway.isEligible(event.getUser()))
-                        message = info("Giveaway participation", "You are now participating in a giveaway by `"
-                                + author.getName() + '#' + author.getDiscriminator() + "` for `" + giveaway.getPrize() + "`.");
-                    else {
-                        event.getReaction().removeReaction(event.getUser()).queue();
-                        message = error("Not eligible", "Sorry, you can not participate in this giveaway.");
-                    }
-                    event.getUser().openPrivateChannel().queue(ch -> ch.sendMessage(message.build()).queue());
-                }
-            }
-        }
-
-        @Override
-        public void onGuildMessageReactionRemove(GuildMessageReactionRemoveEvent event) {
-            if (!event.getUser().equals(RubiconBot.getJDA().getSelfUser())) {
-                Giveaway giveaway = getGiveawayById(event.getChannel().getIdLong(), event.getMessageIdLong());
-                if (giveaway != null && giveaway.isEligible(event.getUser())) {
-                    User author = giveaway.getAuthor();
-                    event.getUser().openPrivateChannel().queue(ch -> ch.sendMessage(info("Giveaway participation",
-                            "You are not participating any more in a giveaway by `"
-                                    + author.getName() + '#' + author.getDiscriminator() + "` for `"
-                                    + giveaway.getPrize() + "`.").build()).queue());
-                }
-            }
-        }
-    };
-
     private Set<Giveaway> giveaways = new HashSet<>();
 
     /**
@@ -398,7 +360,41 @@ public class GiveawayHandler extends CommandHandler {
 
         // register command and listeners if nothing went wrong
         RubiconBot.getCommandManager().registerCommandHandler(this);
-        RubiconBot.registerEventListener(this.listener);
+        // register listener
+        RubiconBot.registerEventListener(new ListenerAdapter() {
+            @Override
+            public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event) {
+                if (!event.getUser().equals(RubiconBot.getJDA().getSelfUser())) {
+                    Giveaway giveaway = getGiveawayById(event.getChannel().getIdLong(), event.getMessageIdLong());
+                    EmbedBuilder message;
+                    if (giveaway != null) {
+                        User author = giveaway.getAuthor();
+                        if (giveaway.isEligible(event.getUser()))
+                            message = info("Giveaway participation", "You are now participating in a giveaway by `"
+                                    + author.getName() + '#' + author.getDiscriminator() + "` for `" + giveaway.getPrize() + "`.");
+                        else {
+                            event.getReaction().removeReaction(event.getUser()).queue();
+                            message = error("Not eligible", "Sorry, you can not participate in this giveaway.");
+                        }
+                        event.getUser().openPrivateChannel().queue(ch -> ch.sendMessage(message.build()).queue());
+                    }
+                }
+            }
+
+            @Override
+            public void onGuildMessageReactionRemove(GuildMessageReactionRemoveEvent event) {
+                if (!event.getUser().equals(RubiconBot.getJDA().getSelfUser())) {
+                    Giveaway giveaway = getGiveawayById(event.getChannel().getIdLong(), event.getMessageIdLong());
+                    if (giveaway != null && giveaway.isEligible(event.getUser())) {
+                        User author = giveaway.getAuthor();
+                        event.getUser().openPrivateChannel().queue(ch -> ch.sendMessage(info("Giveaway participation",
+                                "You are not participating any more in a giveaway by `"
+                                        + author.getName() + '#' + author.getDiscriminator() + "` for `"
+                                        + giveaway.getPrize() + "`.").build()).queue());
+                    }
+                }
+            }
+        });
     }
 
     /**

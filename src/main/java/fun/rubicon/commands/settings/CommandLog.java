@@ -20,11 +20,8 @@ import java.util.Map;
  * @author Yannick Seeger / ForYaSee
  */
 public class CommandLog extends CommandHandler {
-
     private CommandManager.ParsedCommandInvocation parsedCommandInvocation;
-
     private ServerLogSQL serverLogSQL;
-    private String[] args;
 
     public CommandLog() {
         super(new String[]{"log", "logsettings"}, CommandCategory.SETTINGS, new PermissionRequirements("command.log", false, false), "Enable/Disable log settings", "list\n" +
@@ -40,7 +37,7 @@ public class CommandLog extends CommandHandler {
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         this.parsedCommandInvocation = parsedCommandInvocation;
-        this.args = parsedCommandInvocation.getArgs();
+        String[] args = parsedCommandInvocation.getArgs();
         this.serverLogSQL = new ServerLogSQL(parsedCommandInvocation.getMessage().getGuild());
         if (args.length == 0)
             return createHelpMessage();

@@ -26,9 +26,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class CommandPortal extends CommandHandler {
+    private static final String PORTAL_CHANNEL_NAME = "rubicon-portal";
+    private static final String CLOSED_PORTAL_CHANNEL_NAME = "closed-rubicon-portal";
 
-    private String portalChannelName = "rubicon-portal";
-    private String closedChannelName = "closed-rubicon-portal";
     private File inviteFile = new File(RubiconBot.getDataFolder() + "portal-invites.json");
 
     public CommandPortal() {
@@ -195,19 +195,19 @@ public class CommandPortal extends CommandHandler {
         try {
             TextChannel channelOne;
             TextChannel channelTwo;
-            if (guildOne.getTextChannelsByName(portalChannelName, true).size() == 0) {
+            if (guildOne.getTextChannelsByName(PORTAL_CHANNEL_NAME, true).size() == 0) {
                 if (guildOne.getMemberById(RubiconBot.getJDA().getSelfUser().getId()).getPermissions().contains(Permission.MANAGE_CHANNEL)) {
-                    channelOne = (TextChannel) guildOne.getController().createTextChannel(portalChannelName).complete();
+                    channelOne = (TextChannel) guildOne.getController().createTextChannel(PORTAL_CHANNEL_NAME).complete();
                 } else {
                     messageChannel.sendMessage(EmbedUtil.error("Portal Error!", "I need the `MANAGE_CHANNEL` permissions or you create yourself a channel called `rubicon-portal`.").setFooter(guildOne.getName(), null).build()).queue();
                     return;
                 }
             } else {
-                channelOne = guildOne.getTextChannelsByName(portalChannelName, true).get(0);
+                channelOne = guildOne.getTextChannelsByName(PORTAL_CHANNEL_NAME, true).get(0);
             }
-            if (guildTwo.getTextChannelsByName(portalChannelName, true).size() == 0) {
+            if (guildTwo.getTextChannelsByName(PORTAL_CHANNEL_NAME, true).size() == 0) {
                 if (guildTwo.getMemberById(RubiconBot.getJDA().getSelfUser().getId()).getPermissions().contains(Permission.MANAGE_CHANNEL)) {
-                    channelTwo = (TextChannel) guildTwo.getController().createTextChannel(portalChannelName).complete();
+                    channelTwo = (TextChannel) guildTwo.getController().createTextChannel(PORTAL_CHANNEL_NAME).complete();
                 } else {
                     guildTwo.getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(EmbedUtil.error("Portal Error!", "I need the `MANAGE_CHANNEL` permissions or you create yourself a channel called `rubicon-portal`.").setFooter(guildTwo.getName(), null).build()).queue());
                     RubiconBot.getMySQL().updateGuildValue(guildTwo, "portal", "closed");
@@ -215,7 +215,7 @@ public class CommandPortal extends CommandHandler {
                     return;
                 }
             } else {
-                channelTwo = guildTwo.getTextChannelsByName(portalChannelName, true).get(0);
+                channelTwo = guildTwo.getTextChannelsByName(PORTAL_CHANNEL_NAME, true).get(0);
             }
             //Update Database Values
             RubiconBot.getMySQL().updateGuildValue(guildOne, "portal", "open");
@@ -250,7 +250,7 @@ public class CommandPortal extends CommandHandler {
 
     private void setGuildWaiting(Guild g, TextChannel messageChannel) {
         RubiconBot.getMySQL().updateGuildValue(g, "portal", "waiting");
-        if (g.getTextChannelsByName(portalChannelName, true).size() == 0)
+        if (g.getTextChannelsByName(PORTAL_CHANNEL_NAME, true).size() == 0)
             messageChannel.sendMessage(EmbedUtil.success("Portal opened", "Successfully opened portal.\nA portal-channel will be created as soon as another server opens a portal.").build()).queue();
         else
             messageChannel.sendMessage(EmbedUtil.success("Portal opened", "Successfully opened portal.\nA message will be sent to the portal channel as soon as a partner is found.").build()).queue();
@@ -286,9 +286,9 @@ public class CommandPortal extends CommandHandler {
         }
 
         if (channelOne != null)
-            channelOne.getManager().setName(closedChannelName).queue();
+            channelOne.getManager().setName(CLOSED_PORTAL_CHANNEL_NAME).queue();
         if (channelTwo != null)
-            channelTwo.getManager().setName(closedChannelName).queue();
+            channelTwo.getManager().setName(CLOSED_PORTAL_CHANNEL_NAME).queue();
 
         //Close and delete DB Portal
         RubiconBot.getMySQL().updateGuildValue(messageGuild, "portal", "closed");

@@ -35,8 +35,7 @@ import static fun.rubicon.util.EmbedUtil.*;
  * @author Yannick Seeger / ForYaSee
  */
 public class MusicManager {
-
-    private static List<MusicSearchResult> musicChoose = new ArrayList<>();
+    private static final List<MusicSearchResult> MUSIC_CHOICES = new ArrayList<>();
 
     private final GuildMusicSQL guildMusicSQL;
     private final UserMusicSQL userMusicSQL;
@@ -234,13 +233,13 @@ public class MusicManager {
                         }
                     });
                     musicSearchResult.setMessage(textChannel.sendMessage(musicSearchResult.generateEmbed().build()).complete());
-                    musicChoose.add(musicSearchResult);
+                    MUSIC_CHOICES.add(musicSearchResult);
                     new Timer().schedule(new TimerTask() {
                         @Override
                         public void run() {
-                            if (musicChoose.contains(musicSearchResult)) {
+                            if (MUSIC_CHOICES.contains(musicSearchResult)) {
                                 musicSearchResult.getMessage().delete().queue();
-                                musicChoose.remove(musicSearchResult);
+                                MUSIC_CHOICES.remove(musicSearchResult);
                             }
                         }
                     }, 15000);
@@ -364,7 +363,7 @@ public class MusicManager {
     }
 
     public static void handleTrackChoose(MessageReceivedEvent event) {
-        List<MusicSearchResult> storage = musicChoose.stream().filter(musicSearchResult -> musicSearchResult.getUser() == event.getAuthor()).collect(Collectors.toList());
+        List<MusicSearchResult> storage = MUSIC_CHOICES.stream().filter(musicSearchResult -> musicSearchResult.getUser() == event.getAuthor()).collect(Collectors.toList());
         if (storage.size() == 0) {
             return;
         }
@@ -388,7 +387,7 @@ public class MusicManager {
         embedBuilder.setColor(Colors.COLOR_PRIMARY);
         event.getTextChannel().sendMessage(embedBuilder.build()).queue();
         storage.get(0).getMessage().delete().queue();
-        musicChoose.remove(storage.get(0));
+        MUSIC_CHOICES.remove(storage.get(0));
         event.getMessage().delete().queue();
     }
 

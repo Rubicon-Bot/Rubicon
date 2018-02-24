@@ -33,8 +33,10 @@ import java.util.concurrent.TimeUnit;
  * Handles the 'feedback' command which sends a feedback message to the developer server.
  */
 public class CommandFeedback extends CommandHandler {
-    private static HashMap<TextChannel, FeedbackTitle> channelMsg = new HashMap<>();
-    private static Timer timer = new Timer();
+    private static final HashMap<TextChannel, FeedbackTitle> CHANNEL_MSG = new HashMap<>();
+    private static final Timer TIMER = new Timer();
+    private static final String ISSUE_HEADER = "<p><strong>Feedback</strong><br><br><strong>Feedback report by ";
+    private static final String ISSUE_SUFFIX = " </strong><br><br><strong>Description</strong><br><br></p>";
 
     /**
      * Constructs this CommandHandler.
@@ -45,21 +47,17 @@ public class CommandFeedback extends CommandHandler {
                 "Sends a feedback message to the developers.", "<Feedback title>");
     }
 
-
-    private static String Header = "<p><strong>Feedback</strong><br><br><strong>Feedback report by ";
-    private static String Sufix = " </strong><br><br><strong>Description</strong><br><br></p>";
-
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions permissions) {
         String title = parsedCommandInvocation.getMessage().getContentDisplay().replace(parsedCommandInvocation.getPrefix() + parsedCommandInvocation.getCommandInvocation(), "");
         FeedbackTitle tite1 = new FeedbackTitle(title, parsedCommandInvocation.getAuthor(), parsedCommandInvocation.getTextChannel(), parsedCommandInvocation.getMessage().getContentDisplay());
-        channelMsg.put(parsedCommandInvocation.getTextChannel(), tite1);
+        CHANNEL_MSG.put(parsedCommandInvocation.getTextChannel(), tite1);
         SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), new EmbedBuilder().setTitle("Set Feedback Description").setDescription("Please write a short Description about the Feedback in this Channel").setFooter("Will abort in 30sec.", null).build(), 30);
 
-        timer.schedule(new TimerTask() {
+        TIMER.schedule(new TimerTask() {
             @Override
             public void run() {
-                channelMsg.remove(parsedCommandInvocation.getTextChannel());
+                CHANNEL_MSG.remove(parsedCommandInvocation.getTextChannel());
                 parsedCommandInvocation.getTextChannel().sendMessage("Setup abort").queue(message -> {
                     message.delete().queueAfter(5L, TimeUnit.SECONDS);
                 });
@@ -70,9 +68,9 @@ public class CommandFeedback extends CommandHandler {
     }
 
     public static void handle(MessageReceivedEvent event) {
-        if (!channelMsg.containsKey(event.getTextChannel()))
+        if (!CHANNEL_MSG.containsKey(event.getTextChannel()))
             return;
-        FeedbackTitle titel = channelMsg.get(event.getTextChannel());
+        FeedbackTitle titel = CHANNEL_MSG.get(event.getTextChannel());
         if (event.getMessage().getContentDisplay().equals(titel.getMessage()))
             return;
         if (event.getAuthor().equals(RubiconBot.getJDA().getSelfUser()))
@@ -83,16 +81,15 @@ public class CommandFeedback extends CommandHandler {
         try {
             GitHub gitHub = GitHub.connectUsingOAuth(Info.GITHUB_TOKEN);
             GHRepository repository = gitHub.getOrganization("Rubicon-Bot").getRepository("Rubicon");
-            GHIssue Issue = repository.createIssue(titel.getTitle()).body(Header + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + Sufix + event.getMessage().getContentDisplay()).label("Enhancement").label("Up for grabs").create();
-            channelMsg.remove(event.getTextChannel());
+            GHIssue Issue = repository.createIssue(titel.getTitle()).body(ISSUE_HEADER + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + ISSUE_SUFFIX + event.getMessage().getContentDisplay()).label("Enhancement").label("Up for grabs").create();
+            CHANNEL_MSG.remove(event.getTextChannel());
             event.getMessage().delete().queue();
             SafeMessage.sendMessage(event.getTextChannel(), new EmbedBuilder().setTitle("Feedback successfully send!").setDescription("Feedback is available at: " + Issue.getHtmlUrl()).build(), 20);
-            timer.cancel();
+            TIMER.cancel();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 
     private class FeedbackTitle {
         private final String title;

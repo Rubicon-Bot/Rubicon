@@ -62,7 +62,6 @@ public class RubiconBot {
     private final Timer timer;
     private final Set<EventListener> eventListeners;
     private final PermissionManager permissionManager;
-    private final RubackReceiver rubackReceiver;
     private final DatabaseManager databaseManager;
     private final TranslationManager translationManager;
 
@@ -103,7 +102,7 @@ public class RubiconBot {
         permissionManager = new PermissionManager();
         translationManager = new TranslationManager();
         webpanelManager = new WebpanelManager(getConfiguration().getString("lucsoft_token"));
-        rubackReceiver = new RubackReceiver();
+        RubackReceiver rubackReceiver = new RubackReceiver();
         rubackReceiver.start();
 
         registerWebpanelRequests();
