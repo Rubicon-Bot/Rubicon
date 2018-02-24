@@ -11,6 +11,7 @@ import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.core.entities.RubiconMember;
 import fun.rubicon.core.entities.RubiconUser;
 import fun.rubicon.core.translation.TranslationLocale;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
@@ -221,6 +222,8 @@ public class CommandManager extends ListenerAdapter {
         public String getArgsString() {
             return argsString;
         }
+
+        public UserPermissions getPerms() { return new UserPermissions(getAuthor(), getGuild()); }
 
         public String translate(String key) {
             String entry;

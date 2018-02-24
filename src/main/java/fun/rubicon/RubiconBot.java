@@ -8,6 +8,9 @@ package fun.rubicon;
 
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.commands.botowner.CommandShardManage;
+import fun.rubicon.commands.general.CommandAFK;
+import fun.rubicon.commands.general.CommandHelp;
+import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.commands.fun.CommandRandom;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.CommandMute;

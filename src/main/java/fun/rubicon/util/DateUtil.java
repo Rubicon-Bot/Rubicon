@@ -7,6 +7,8 @@
 package fun.rubicon.util;
 
 import java.time.OffsetDateTime;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * @author Yannick Seeger / ForYaSee
@@ -17,6 +19,15 @@ public class DateUtil {
         String date = langFormat.replaceAll("%dd%", time.getDayOfMonth() + "")
                 .replaceAll("%MM%", time.getMonthValue() + "")
                 .replaceAll("%yyyy%", time.getYear() + "");
+        return date;
+    }
+
+    public static String formatDate(Date time, String langFormat) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(time);
+        String date = langFormat.replaceAll("%dd%", cal.get(Calendar.DAY_OF_MONTH) + "")
+                .replaceAll("%MM%", cal.get(Calendar.MONTH) + "")
+                .replaceAll("%yyyy%", cal.get(Calendar.YEAR) + "");
         return date;
     }
 }

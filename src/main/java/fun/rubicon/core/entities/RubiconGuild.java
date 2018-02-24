@@ -11,6 +11,7 @@ import fun.rubicon.mysql.MySQL;
 import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -91,6 +92,84 @@ public class RubiconGuild {
         } catch (SQLException e) {
             Logger.error(e);
         }
+    }
+
+    public boolean useMuteSettings(){
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("SELECT * FROM mutesettings WHERE serverid = ?");
+            ps.setLong(1, guild.getIdLong());
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            Logger.error(e);
+            return false;
+        }
+    }
+
+    public RubiconGuild insertMuteTable(){
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("INSERT INTO mutesettings(`serverid`,`mutedmsg`,`unmutemsg`,`channel`) VALUES (?, '', '', '0')");
+            ps.setLong(1, guild.getIdLong());
+            ps.execute();
+        } catch (SQLException e){
+            Logger.error(e);
+        }
+        return this;
+    }
+
+    public TextChannel getMuteChannel(){
+        try{
+            PreparedStatement ps = mySQL.prepareStatement("SELECT channel FROM mutesettings WHERE serverid =?");
+            ps.setLong(1, guild.getIdLong());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next())
+                return guild.getTextChannelById(rs.getLong("channel"));
+        } catch (SQLException e){
+            Logger.error(e);
+        }
+        return null;
+    }
+
+    public String getMuteMessage(){
+        try{
+            PreparedStatement ps = mySQL.prepareStatement("SELECT mutedmsg FROM mutesettings WHERE serverid=?");
+            ps.setLong(1, guild.getIdLong());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next())
+                return rs.getString("mutedmsg");
+        } catch (SQLException e) {
+            Logger.error(e);
+            return null;
+        }
+        return null;
+    }
+
+    public String getUnmuteMessage(){
+        try{
+            PreparedStatement ps = mySQL.prepareStatement("SELECT unmutemsg FROM mutesettings WHERE serverid=?");
+            ps.setLong(1, guild.getIdLong());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next())
+                return rs.getString("unmutemsg");
+        } catch (SQLException e) {
+            Logger.error(e);
+            return null;
+        }
+        return null;
+    }
+
+    public boolean isMutedChannel(TextChannel channel){
+        long channelid = 0;
+        try{
+            PreparedStatement ps = mySQL.prepareStatement("SELECT channel FROM mutesettings WHERE serverid =?");
+            ps.setLong(1, guild.getIdLong());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next())
+                return rs.getString("channel").equals(String.valueOf(channel.getIdLong()));
+        } catch (SQLException e){
+            Logger.error(e);
+        }
+        return false;
     }
 
     public static RubiconGuild fromGuild(Guild guild) {
