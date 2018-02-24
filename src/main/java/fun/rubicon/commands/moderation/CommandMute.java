@@ -9,14 +9,12 @@ import fun.rubicon.core.entities.RubiconMember;
 import fun.rubicon.mysql.MySQL;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
-import fun.rubicon.util.EmbedUtil;
-import fun.rubicon.util.Info;
-import fun.rubicon.util.Logger;
-import fun.rubicon.util.SafeMessage;
+import fun.rubicon.util.*;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.channel.text.TextChannelCreateEvent;
+import org.apache.http.client.utils.DateUtils;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -151,11 +149,11 @@ public class CommandMute extends CommandHandler {
             return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.nopermissions.role.title"), command.translate("command.mute.nopermissions.role.description")).build()).build();
         RubiconGuild rGuild = RubiconGuild.fromGuild(guild);
         if (args.length == 1) {
-            if(new PermissionRequirements("mute.permanent", false, false).coveredBy(command.getPerms()))
+            if(!new PermissionRequirements("mute.permanent", false, false).coveredBy(command.getPerms()))
                 return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.nopermissions.user.title"), command.translate("command.mute.permanent.noperms.description")).build()).build();
             victim.mute();
-            if(rGuild.useMuteSettings())
-                rGuild.getMuteChannel().sendMessage(rGuild.getMuteMessage().replace("%moderator%", member.getAsMention()).replace("%mention%", victim.getMember().getAsMention()).replace("%date%", "never"));
+            if(rGuild.useMuteSettings() && !rGuild.getMuteMessage().equals(""))
+                SafeMessage.sendMessage(rGuild.getMuteChannel(), rGuild.getMuteMessage().replace("%moderator%", member.getAsMention()).replace("%mention%", victim.getMember().getAsMention()).replace("%date%", "never"));
             return new MessageBuilder().setEmbed(EmbedUtil.success(command.translate("command.mute.muted.permanent.title"), String.format(command.translate("command.mute.muted.permanent.description"), victimMember.getAsMention())).build()).build();
         } else if (args.length > 1) {
             Integer delay;
@@ -169,6 +167,8 @@ public class CommandMute extends CommandHandler {
             cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE) + delay);
             Date expiry = cal.getTime();
             victim.mute(expiry);
+            if(rGuild.useMuteSettings())
+                SafeMessage.sendMessage(rGuild.getMuteChannel(), rGuild.getMuteMessage().replace("%moderator%", member.getAsMention()).replace("%mention%", victim.getMember().getAsMention()).replace("%date%", DateUtil.formatDate(expiry, command.translate("date.format"))));
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -176,7 +176,7 @@ public class CommandMute extends CommandHandler {
                     CommandUnmute.deassignRole(victim.getMember());
                 }
             }, expiry);
-            return new MessageBuilder().setEmbed(EmbedUtil.success(command.translate("command.mute.muted.temporary.title"), command.translate("command.mute.muted.temporary.permanent").replace("%mention%", victimMember.getAsMention()).replace("%date%", )).build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.success(command.translate("command.mute.muted.temporary.title"), command.translate("command.mute.muted.temporary.permanent").replace("%mention%", victimMember.getAsMention()).replace("%date%", DateUtil.formatDate(expiry, command.translate("date.format")))).build()).build();
         }
         return createHelpMessage();
 

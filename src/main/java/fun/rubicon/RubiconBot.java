@@ -11,9 +11,10 @@ import fun.rubicon.commands.botowner.CommandShardManage;
 import fun.rubicon.commands.general.CommandAFK;
 import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
+import fun.rubicon.commands.fun.CommandRandom;
+import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.CommandMute;
 import fun.rubicon.commands.moderation.CommandUnmute;
-import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.tools.CommandPoll;
 import fun.rubicon.commands.settings.CommandPrefix;
 import fun.rubicon.core.GameAnimator;
@@ -103,6 +104,11 @@ public class RubiconBot {
                 new CommandShardManage()
         );
 
+        // Fun
+        commandManager.registerCommandHandlers(
+                new CommandRandom()
+        );
+
         //General
         commandManager.registerCommandHandlers(
                 new CommandHelp(),
@@ -111,7 +117,8 @@ public class RubiconBot {
                 new CommandPrefix(),
                 new CommandBio(),
                 new CommandInvite(),
-                new CommandSay()
+                new CommandSay(),
+                new CommandUserinfo()
         );
 
         //Moderation
