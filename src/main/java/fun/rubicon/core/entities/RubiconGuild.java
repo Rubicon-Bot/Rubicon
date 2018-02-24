@@ -131,6 +131,34 @@ public class RubiconGuild {
         return guild.getTextChannelById(channelid);
     }
 
+    public String getMuteMessage(){
+        try{
+            PreparedStatement ps = mySQL.prepareStatement("SELECT mutemsg FROM mutesettings WHERE serverid=?");
+            ps.setLong(1, guild.getIdLong());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next())
+                return rs.getString("mutemsg");
+        } catch (SQLException e) {
+            Logger.error(e);
+            return null;
+        }
+        return null;
+    }
+
+    public String getUnmuteMessage(){
+        try{
+            PreparedStatement ps = mySQL.prepareStatement("SELECT unmutemsg FROM mutesettings WHERE serverid=?");
+            ps.setLong(1, guild.getIdLong());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next())
+                return rs.getString("unmutemsg");
+        } catch (SQLException e) {
+            Logger.error(e);
+            return null;
+        }
+        return null;
+    }
+
     public boolean isMutedChannel(TextChannel channel){
         long channelid = 0;
         try{
