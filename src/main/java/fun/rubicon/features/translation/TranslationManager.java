@@ -7,10 +7,16 @@
 package fun.rubicon.features.translation;
 
 import fun.rubicon.RubiconBot;
+import fun.rubicon.sql.MySQL;
+import fun.rubicon.sql.UserSQL;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.User;
 
-import java.util.*;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Manages translation bundles.
@@ -19,11 +25,10 @@ import java.util.*;
 public class TranslationManager {
     private final List<TranslationLocale> translationLocaleList;
     private final TranslationLocale defaultTranslationLocale;
-
-    //TODO replace with database source
-    private final Map<User, TranslationLocale> userLocales = new HashMap<>();
+    private final LanguageCommandHandler commandHandler;
 
     public TranslationManager() {
+        commandHandler = new LanguageCommandHandler(this);
         defaultTranslationLocale = new TranslationLocale(this, new Locale("en", "US"), "English (United States)") {
             @Override
             public String getTranslationOrDefault(String key) {
@@ -40,6 +45,15 @@ public class TranslationManager {
         translationLocales.add(new TranslationLocale(this, new Locale("de", "DE"), "Deutsch (Deutschland)"));
         translationLocaleList = Collections.unmodifiableList(translationLocales);
 
+        // ensure column existence
+        try {
+            MySQL.getConnection().prepareStatement("ALTER TABLE `users` ADD `language` CHAR(5);").execute();
+        } catch (SQLException e) {
+            if(e.getErrorCode() != 1060) { // duplicate column name may happen
+                Logger.error("Could not create language column! Language settings won't load or save!");
+                Logger.error(e);
+            }
+        }
         RubiconBot.getCommandManager().registerCommandHandler(new LanguageCommandHandler(this));
     }
 
@@ -60,14 +74,14 @@ public class TranslationManager {
     }
 
     public TranslationLocale getUserLocale(User user) {
-        return userLocales.getOrDefault(user, defaultTranslationLocale);
+        String languageCode = UserSQL.fromUser(user).get("language");
+        return languageCode == null
+                ? getDefaultTranslationLocale()
+                : getTranslationLocaleByLocaleOrDefault(Locale.forLanguageTag(languageCode));
     }
 
     public void setUserLocale(User user, TranslationLocale translationLocale) {
-        if(translationLocale == null)
-            userLocales.remove(user);
-        else
-            userLocales.put(user, translationLocale);
+        UserSQL.fromUser(user).set("language", translationLocale == null ? "" : translationLocale.getLocaleCode());
     }
 
     public List<TranslationLocale> getLocales() {
