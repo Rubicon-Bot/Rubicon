@@ -108,7 +108,8 @@ public class RubiconBot {
                 new CommandPrefix(),
                 new CommandBio(),
                 new CommandInvite(),
-                new CommandSay()
+                new CommandSay(),
+                new CommandUserinfo()
         );
 
         //Moderation
