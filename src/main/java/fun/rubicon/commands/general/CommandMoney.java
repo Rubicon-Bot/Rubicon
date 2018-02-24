@@ -90,12 +90,12 @@ public class CommandMoney extends CommandHandler {
                     return null;
                 }
             case "set":
-                if (new PermissionRequirements("command.money.modify", true, false).coveredBy(userPermissions)) {
+                if (new PermissionRequirements("money.modify", true, false).coveredBy(userPermissions)) {
                     if (invocation.getArgs().length == 3) {
                         try {
                             user_spend_money = Integer.parseInt(invocation.getArgs()[invocation.getArgs().length - 1]);
                             if (user_spend_money > -1) {
-                                user2.setMoney((user_spend_money));
+                                user2.setMoney(user_spend_money);
                                 SafeMessage.sendMessage(invocation.getTextChannel(), success("Money has been set!", "Money of " + invocation.getMessage().getMentionedUsers().get(0).getAsMention() + " has been set to " + user_spend_money + " Ruby's.").build());
                                 return null;
                             } else {
@@ -118,7 +118,7 @@ public class CommandMoney extends CommandHandler {
             case "add":
                 int max_money = 2147483647;
                 user2_has_money = user2.getMoney();
-                if (new PermissionRequirements("command.money.modify", true, false).coveredBy(userPermissions)) {
+                if (new PermissionRequirements("money.modify", true, false).coveredBy(userPermissions)) {
                     if (invocation.getArgs().length == 3) {
                         try {
                             user_spend_money = Integer.parseInt(invocation.getArgs()[invocation.getArgs().length - 1]);

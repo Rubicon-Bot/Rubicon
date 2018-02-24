@@ -8,6 +8,7 @@ package fun.rubicon;
 
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.commands.botowner.CommandShardManage;
+import fun.rubicon.commands.fun.CommandGiphy;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.CommandMute;
 import fun.rubicon.commands.moderation.CommandUnmute;
@@ -39,7 +40,7 @@ import java.util.Date;
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_database", "mysql_user", "mysql_password", "playingStatus", "dbl_token", "discord_pw_token"};
+    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_database", "mysql_user", "mysql_password", "playingStatus", "dbl_token", "discord_pw_token","gif_token"};
     private static RubiconBot instance;
     private final Configuration configuration;
     private final MySQL mySQL;
@@ -50,7 +51,7 @@ public class RubiconBot {
     private ShardManager shardManager;
     private boolean allShardsInited;
 
-    private static final int SHARD_COUNT = 5;
+    private static final int SHARD_COUNT = 1;
 
     /**
      * Constructs the RubiconBot.
@@ -121,6 +122,11 @@ public class RubiconBot {
         //Tools
         commandManager.registerCommandHandlers(
                 new CommandPoll()
+        );
+
+        //Fun
+        commandManager.registerCommandHandlers(
+                new CommandGiphy()
         );
     }
 
