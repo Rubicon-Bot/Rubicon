@@ -8,9 +8,7 @@ package fun.rubicon;
 
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.commands.botowner.CommandShardManage;
-import fun.rubicon.commands.general.CommandAFK;
-import fun.rubicon.commands.general.CommandHelp;
-import fun.rubicon.commands.general.CommandInfo;
+import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.CommandMute;
 import fun.rubicon.commands.moderation.CommandUnmute;
 import fun.rubicon.commands.tools.CommandPoll;
@@ -50,6 +48,7 @@ public class RubiconBot {
     private final PermissionManager permissionManager;
     private final TranslationManager translationManager;
     private ShardManager shardManager;
+    private boolean allShardsInited;
 
     private static final int SHARD_COUNT = 5;
 
@@ -92,8 +91,6 @@ public class RubiconBot {
         initShardManager();
 
         gameAnimator.start();
-
-
     }
 
     private void registerCommands() {
@@ -108,7 +105,11 @@ public class RubiconBot {
                 new CommandHelp(),
                 new CommandInfo(),
                 new CommandAFK(),
-                new CommandPrefix()
+                new CommandPrefix(),
+                new CommandBio(),
+                new CommandInvite(),
+                new CommandSay(),
+                new CommandUserinfo()
         );
 
         //Moderation
@@ -153,7 +154,6 @@ public class RubiconBot {
                 new BotJoinListener(),
                 new MuteListener(),
                 commandManager,
-                new UserMentionListener(),
                 new UserMentionListener(),
                 new ShardListener(),
                 new SelfMentionListener(),
@@ -242,5 +242,13 @@ public class RubiconBot {
      */
     public static TranslationManager sGetTranslations() {
         return instance == null ? null : instance.translationManager;
+    }
+
+    public static boolean isAllShardsInited() {
+        return instance.allShardsInited;
+    }
+
+    public static void setAllShardsInited(boolean allShardsInited) {
+        instance.allShardsInited = allShardsInited;
     }
 }

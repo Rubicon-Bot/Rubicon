@@ -59,6 +59,8 @@ public class CommandManager extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
+        if(!RubiconBot.isAllShardsInited())
+            return;
         if (event.isFromType(ChannelType.PRIVATE)) return;
         super.onMessageReceived(event);
 
@@ -153,24 +155,31 @@ public class CommandManager extends ListenerAdapter {
 
     public static final class ParsedCommandInvocation {
 
-        private final ResourceBundle language;
+        private ResourceBundle language;
         private final ResourceBundle defaultResourceBundle;
-        private final String[] argsNew;
+        private final String[] args;
         private final String commandInvocation;
         private final Message message;
         private final String prefix;
+        private final String argsString;
 
         private ParsedCommandInvocation(Message invocationMessage, String serverPrefix, String invocationCommand, String[] args) {
             this.message = invocationMessage;
             this.prefix = serverPrefix;
             this.commandInvocation = invocationCommand;
-            this.argsNew = args;
+            this.args = args;
+            this.argsString = message.getContentDisplay().replace(prefix + invocationCommand + " ", "");
 
             RubiconGuild.fromGuild(message.getGuild());
             RubiconMember.fromMember(message.getMember());
 
             this.defaultResourceBundle = RubiconBot.sGetTranslations().getDefaultTranslationLocale().getResourceBundle();
-            this.language = RubiconBot.sGetTranslations().getUserLocale(invocationMessage.getAuthor()).getResourceBundle();
+            try {
+                this.language = RubiconBot.sGetTranslations().getUserLocale(invocationMessage.getAuthor()).getResourceBundle();
+            } catch (NullPointerException | MissingResourceException e) {
+                this.language = defaultResourceBundle;
+                RubiconUser.fromUser(getAuthor()).setLanguage("en-US");
+            }
         }
 
         public Message getMessage() {
@@ -182,7 +191,7 @@ public class CommandManager extends ListenerAdapter {
         }
 
         public String[] getArgs() {
-            return argsNew;
+            return args;
         }
 
         public String getCommandInvocation() {
@@ -207,6 +216,10 @@ public class CommandManager extends ListenerAdapter {
 
         public TextChannel getTextChannel() {
             return message.getTextChannel();
+        }
+
+        public String getArgsString() {
+            return argsString;
         }
 
         public String translate(String key) {
