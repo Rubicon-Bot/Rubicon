@@ -9,6 +9,7 @@ package fun.rubicon;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.commands.botowner.CommandShardManage;
 import fun.rubicon.commands.fun.CommandGiphy;
+import fun.rubicon.commands.fun.CommandLmgtfy;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.CommandMute;
 import fun.rubicon.commands.moderation.CommandUnmute;
@@ -126,7 +127,8 @@ public class RubiconBot {
 
         //Fun
         commandManager.registerCommandHandlers(
-                new CommandGiphy()
+                new CommandGiphy(),
+                new CommandLmgtfy()
         );
     }
 
