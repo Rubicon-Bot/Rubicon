@@ -14,6 +14,7 @@ import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.core.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.core.exceptions.ErrorResponseException;
 
 import java.awt.*;
@@ -396,6 +397,17 @@ public class CommandPoll extends CommandHandler implements Serializable {
             e.printStackTrace();
         } catch (NullPointerException ignored) {
 
+        }
+    }
+
+    public static void handleReactionRemove(MessageReactionRemoveEvent event){
+        try {
+            if (!polls.containsKey(event.getGuild())) return;
+            Poll poll = polls.get(event.getGuild());
+            if (!poll.isPollmsg(event.getMessageId())) return;
+            event.getChannel().getMessageById(event.getMessageId()).complete().addReaction(event.getReactionEmote().getName()).queue();
+        } catch (Exception ignored){
+            ignored.printStackTrace();
         }
     }
 }

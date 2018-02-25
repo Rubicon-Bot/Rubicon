@@ -4,10 +4,12 @@ package fun.rubicon.commands.moderation;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
+import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.core.entities.RubiconMember;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
+import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -18,7 +20,9 @@ import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 public class CommandUnmute extends CommandHandler {
 
     public CommandUnmute() {
+
         super(new String[] {"unmute"}, CommandCategory.MODERATION, new PermissionRequirements("unmute", false, false), "Unmutes a muted member.", "<@User>");
+
     }
 
     @Override
@@ -42,6 +46,9 @@ public class CommandUnmute extends CommandHandler {
         victim.unmute();
         if(!deassignRole(victimMember))
             return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.nopermissions.role.title"), command.translate("command.unmute.nopermissions.role.description")).build()).build();
+        RubiconGuild rGuild = RubiconGuild.fromGuild(guild);
+        if(rGuild.useMuteSettings())
+            SafeMessage.sendMessage(rGuild.getMuteChannel(), rGuild.getUnmuteMessage().replace("%moderator%", member.getAsMention()).replace("%mention%", victim.getMember().getAsMention()));
         return new MessageBuilder().setEmbed(EmbedUtil.success(command.translate("command.unmute.unmuted.title"), String.format(command.translate("command.unmute.unmuted.description"), victimMember.getAsMention())).build()).build();
         }
 

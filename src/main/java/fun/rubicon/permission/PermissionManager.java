@@ -7,7 +7,6 @@
 package fun.rubicon.permission;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.mysql.MySQL;
 import net.dv8tion.jda.core.entities.Guild;
 
 import java.sql.PreparedStatement;
@@ -24,15 +23,12 @@ import java.util.Map;
  * @author tr808axm
  */
 public class PermissionManager {
-
-    private static final String TABLE = "permissions";
-    private MySQL mySQL;
+    private static final String TABLE = "permissions-v1";
 
     public PermissionManager() {
         // ensure table existence
-        mySQL = RubiconBot.getMySQL();
         try {
-            mySQL.prepareStatement(
+            RubiconBot.getMySQL().prepareStatement(
                     "CREATE TABLE IF NOT EXISTS `" + TABLE + "` (" +
                             "`guildid` BIGINT SIGNED, " +
                             "`type` CHAR(1), " +
@@ -59,7 +55,7 @@ public class PermissionManager {
         if (hasPermission(target, permission, true))
             return false;
         try {
-            PreparedStatement insertStatement = mySQL
+            PreparedStatement insertStatement = RubiconBot.getMySQL()
                     .prepareStatement("INSERT INTO `" + TABLE + "` " +
                             "(`guildid`, `type`, `id`, `permission`, `negated`) VALUES (?, ?, ?, ?, ?)");
             insertStatement.setLong(1, target.getGuild().getIdLong());
@@ -85,12 +81,12 @@ public class PermissionManager {
      */
     public boolean hasPermission(PermissionTarget target, Permission permission, boolean ignoreNegation) {
         try {
-            PreparedStatement selectStatement = mySQL
+            PreparedStatement selectStatement = RubiconBot.getMySQL()
                     .prepareStatement("SELECT * FROM `" + TABLE + "` " +
                             "WHERE `guildid` = ? " +
                             "AND `type` = ? " +
                             "AND `id` = ? " +
-                            "AND `permission` = ? " +
+                            "AND `permission` = ?" +
                             (!ignoreNegation ? "AND `negated` = ?;" : ";"));
             selectStatement.setLong(1, target.getGuild().getIdLong());
             selectStatement.setString(2, String.valueOf(target.getType().getIdentifier()));
@@ -113,7 +109,7 @@ public class PermissionManager {
      */
     public Permission getPermission(PermissionTarget target, String permissionString) {
         try {
-            PreparedStatement selectStatement = mySQL
+            PreparedStatement selectStatement = RubiconBot.getMySQL()
                     .prepareStatement("SELECT `negated` FROM `" + TABLE + "` " +
                             "WHERE `guildid` = ? " +
                             "AND `type` = ? " +
@@ -143,7 +139,7 @@ public class PermissionManager {
         if (!hasPermission(target, permission, true))
             return false;
         try {
-            PreparedStatement deleteStatement = mySQL
+            PreparedStatement deleteStatement = RubiconBot.getMySQL()
                     .prepareStatement("DELETE FROM `" + TABLE + "` " +
                             "WHERE `guildid` = ? " +
                             "AND `type` = ? " +
@@ -162,7 +158,7 @@ public class PermissionManager {
 
     public List<Permission> getPermissions(PermissionTarget target) {
         try {
-            PreparedStatement selectStatement = mySQL
+            PreparedStatement selectStatement = RubiconBot.getMySQL()
                     .prepareStatement("SELECT `permission`, `negated` FROM `" + TABLE + "` " +
                             "WHERE `guildid` = ? " +
                             "AND `type` = ? " +
@@ -189,7 +185,7 @@ public class PermissionManager {
      */
     public Map<PermissionTarget, List<Permission>> getGuildPermissions(Guild guild) {
         try {
-            PreparedStatement selectStatement = mySQL
+            PreparedStatement selectStatement = RubiconBot.getMySQL()
                     .prepareStatement("SELECT `type`, `id`, `permission`, `negated` FROM `" + TABLE + "` WHERE `guildid` = ?;");
             selectStatement.setLong(1, guild.getIdLong());
             ResultSet queryResult = selectStatement.executeQuery();

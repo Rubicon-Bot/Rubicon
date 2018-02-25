@@ -7,6 +7,7 @@
 package fun.rubicon.command;
 
 import fun.rubicon.RubiconBot;
+import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
@@ -171,6 +172,14 @@ public abstract class CommandHandler {
     }
 
     /**
+     * Permissions of the command executer
+     *
+     * @return UserPermissions
+     */
+
+
+
+    /**
      * Generates a usage message for this command with the default prefix and alias.
      *
      * @return the generated Message.
@@ -204,4 +213,6 @@ public abstract class CommandHandler {
                 .addField("Aliases", String.join(", ", getInvocationAliases()), false)
                 .addField("Usage", usage.toString(), false));
     }
+
+
 }

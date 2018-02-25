@@ -21,7 +21,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class CommandBio extends CommandHandler {
 
     public CommandBio() {
-        super(new String[]{"bio"}, CommandCategory.GENERAL, new PermissionRequirements("bio", false, true), "Describe yourself in some sentences.", "| Shows your current bio.\nbio set <text> | Updates your bio.");
+        super(new String[]{"bio"}, CommandCategory.GENERAL, new PermissionRequirements("bio", false, true), "Describe yourself in some sentences.", "| Shows your current bio.\nset <text> | Updates your bio.");
     }
 
     @Override
