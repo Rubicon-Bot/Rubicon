@@ -525,4 +525,14 @@ public class MySQL {
     public PreparedStatement prepareStatement(String sql) throws SQLException {
         return connection.prepareStatement(sql);
     }
+
+    /**
+     * @return a connected {@link Connection}.
+     * @throws SQLException if connecting the connection failed.
+     */
+    public Connection getActiveConnection() throws SQLException {
+        if (connection.isClosed())
+            connect().connect();
+        return connection;
+    }
 }

@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2018 Rubicon Bot Development Team
+ * Licensed under the GPL-3.0 license.
+ * The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.sql;
 
 import fun.rubicon.RubiconBot;
@@ -14,164 +20,190 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
+ * Represents a music_users table-row.
  * @author Yannick Seeger / ForYaSee
  */
-public class UserSQL implements DatabaseGenerator {
-
-    private Connection connection;
-    private MySQL mySQL;
-    private User user;
+public class UserSQL implements DatabaseGenerator, DatabaseEntry {
+    private static final SimpleDateFormat PREMIUM_EXPIRY_DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy");
+    private final MySQL mySQL;
+    private final User user;
 
     /**
-     * Uses for database generation
+     * Initializes this database entity and creates it if it does not exist.
+     * @param mySQL the database.
+     * @param user the user.
      */
-    public UserSQL() {
-        this.mySQL = RubiconBot.getMySQL();
-        this.connection = MySQL.getConnection();
+    public UserSQL(MySQL mySQL, User user) {
+        this.mySQL = mySQL;
+        this.user = user;
+
+        if (user != null)
+            create();
     }
 
     /**
-     * User fromUser(User user) or fromMember(Member member) method
-     *
-     * @see UserSQL
+     * @deprecated Use {@link #UserSQL(MySQL, User)} instead.
      */
     @Deprecated
     public UserSQL(User user) {
-        this.user = user;
-        this.mySQL = RubiconBot.getMySQL();
-        this.connection = MySQL.getConnection();
-
-        create();
+        this(RubiconBot.getMySQL(), user);
     }
 
-    private UserSQL(User user, MySQL mySQL, Connection connection) {
-        this.user = user;
-        this.mySQL = mySQL;
-        this.connection = connection;
-    }
-
+    /**
+     * @deprecated Use {@link #UserSQL(MySQL, User)} instead.
+     */
+    @Deprecated
     public static UserSQL fromUser(User user) {
-        return new UserSQL(user, RubiconBot.getMySQL(), MySQL.getConnection());
+        return new UserSQL(RubiconBot.getMySQL(), user);
     }
 
+    /**
+     * @deprecated Use {@link #UserSQL(MySQL, User)} instead.
+     */
+    @Deprecated
     public static UserSQL fromMember(Member member) {
         return fromUser(member.getUser());
     }
 
-
-    //User Stuff
-    public boolean exist() {
-        try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM users WHERE userid = ?");
-            ps.setString(1, user.getId());
-            ResultSet rs = ps.executeQuery();
-            return rs.next();
-        } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public void set(String type, String value) {
-        try {
-            if (!exist())
-                create();
-            PreparedStatement ps = connection.prepareStatement("UPDATE users SET " + type + " = '" + value + "' WHERE userid = ?");
-            ps.setString(1, user.getId());
-            ps.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public String get(String type) {
-        try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM users WHERE `userid` = ?");
-            ps.setString(1, user.getId());
-            ResultSet rs = ps.executeQuery();
-            // Only returning one result
-            if (rs.next()) {
-                return rs.getString(type);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public void create() {
-        if (exist())
-            return;
-        try {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO users(`id`, `userid`, `bio`, `money`, `premium`) VALUES (0, ?, ?, ?, ?)");
-            ps.setString(1, user.getId());
-            ps.setString(2, "No bio set.");
-            ps.setString(3, "1000");
-            ps.setString(4, "false");
-            ps.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
+    /**
+     * @return whether the user currently has premium access.
+     * @see #getPremiumExpiryDate() for the expiration date.
+     */
     public boolean isPremium() {
-        String entry = get("premium");
-        if (entry.equalsIgnoreCase("false")) {
-            return false;
-        }
-        Date expiry = new Date(Long.parseLong(this.get("premium")));
-        Date now = new Date();
-        if (expiry.before(now)) {
-            this.set("premium", "false");
-            return false;
-        }
-        return true;
+        return getPremiumExpiryDate() != null;
     }
 
+    /**
+     * @return the premium expiry date for the user or null if the user does not have premium access.
+     */
     public Date getPremiumExpiryDate() {
-        if (!this.isPremium())
+        String expiryDateEntry = get("premium");
+        if(expiryDateEntry.equalsIgnoreCase("false"))
             return null;
-        return new Date(Long.parseLong(this.get("premium")));
+        Date parsedExpiryDate = new Date(Long.parseLong(expiryDateEntry));
+        if(parsedExpiryDate.before(new Date())) {
+            set("premium", "false");
+            return null;
+        }
+        return parsedExpiryDate;
     }
 
+    /**
+     * @return the formatted expiry date or null if the user currently has no premium access.
+     */
     public String formatExpiryDate() {
-        if (!this.isPremium())
-            return null;
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        return sdf.format(this.getPremiumExpiryDate());
+        Date expiryDate = getPremiumExpiryDate();
+        return expiryDate == null ? null : PREMIUM_EXPIRY_DATE_FORMAT.format(expiryDate);
     }
 
+    /**
+     * @return this entry's user object.
+     */
     public User getUser() {
-        return RubiconBot.getJDA().getUserById(this.get("userid"));
+        return user;
     }
 
+    /**
+     * @param guild the guild.
+     * @return a member object for the specified guild.
+     */
     public Member getMember(Guild guild) {
-        return guild.getMember(this.getUser());
+        return guild.getMember(user);
     }
 
+    /**
+     * @param guild the guild.
+     * @return the members sql entry for the user in the specified guild.
+     * @see #getMember(Guild)
+     */
     public MemberSQL getMemberSQL(Guild guild) {
-        return MemberSQL.fromUser(this.user, guild);
+        return new MemberSQL(mySQL, getMember(guild));
     }
 
     @Override
-    public void createTableIfNotExist() {
+    public String get(String type) {
         try {
-            if (connection.isClosed())
-                mySQL.connect();
-            PreparedStatement ps = connection.prepareStatement("" +
-                    "CREATE TABLE IF NOT EXISTS `users` (" +
-                    "  `id` INT(250) NOT NULL AUTO_INCREMENT," +
-                    "  `userid` VARCHAR(50) NOT NULL," +
-                    "  `bio` TEXT NOT NULL," +
-                    "  `money` VARCHAR(250)," +
-                    "  `premium` VARCHAR(50) NOT NULL," +
-                    "  PRIMARY KEY (`id`)" +
-                    ") ENGINE=InnoDB AUTO_INCREMENT=3918 DEFAULT CHARSET=utf8;");
-            ps.execute();
+            PreparedStatement selectStatement = mySQL.getActiveConnection().prepareStatement(
+                    "SELECT * FROM `users` WHERE `userid` = ?;");
+            selectStatement.setString(1, user.getId());
+            ResultSet selectResult = selectStatement.executeQuery();
+            return selectResult.next() ? selectResult.getString(type) : null;
         } catch (SQLException e) {
+            Logger.error("SQLException while retrieving '" + type + "' value in users entry for user "
+                    + user.getId() + ":");
             Logger.error(e);
+            throw new RuntimeException("Something went wrong in our database.");
         }
     }
 
+    @Override
+    public void set(String type, String value) {
+        try {
+            create();
+            PreparedStatement updateStatement = mySQL.getActiveConnection().prepareStatement(
+                    "UPDATE `users` SET " + type + " = ? WHERE `userid` = ?;");
+            updateStatement.setString(1, value);
+            updateStatement.setString(2, user.getId());
+            updateStatement.execute();
+        } catch (SQLException e) {
+            Logger.error("SQLException while updating '" + type + "' in users entry for user "
+                    + user.getId() + ":");
+            Logger.error(e);
+            throw new RuntimeException("Something went wrong in our database.");
+        }
+    }
 
+    @Override
+    public boolean exists() {
+        try {
+            PreparedStatement selectStatement = mySQL.getActiveConnection().prepareStatement(
+                    "SELECT * FROM `users` WHERE `userid` = ?;");
+            selectStatement.setString(1, user.getId());
+            return selectStatement.executeQuery().next();
+        } catch (SQLException e) {
+            Logger.error("SQLException while checking users entry existence for user " + user.getId() + ":");
+            Logger.error(e);
+            throw new RuntimeException("Something went wrong in our database.");
+        }
+    }
+
+    @Override
+    public void create() {
+        if (!exists()) {
+            try {
+                PreparedStatement insertStatement = mySQL.getActiveConnection().prepareStatement(
+                        "INSERT INTO `users` (`id`, `userid`, `bio`, `money`, `premium`) " +
+                                "VALUES (0, ?, 'No bio set.', '1000', 'false')");
+                insertStatement.setString(1, user.getId());
+                insertStatement.execute();
+            } catch (SQLException e) {
+                Logger.error("SQLException while creating users entry for user " + user.getId() + ":");
+                Logger.error(e);
+                throw new RuntimeException("Something went wrong in our database.");
+            }
+        }
+    }
+
+    @Override
+    public void createTableIfNotExist() throws SQLException {
+        mySQL.getActiveConnection().prepareStatement(
+                "CREATE TABLE IF NOT EXISTS `users` (" +
+                        "  `id` INT(250) NOT NULL AUTO_INCREMENT," +
+                        "  `userid` VARCHAR(50) NOT NULL," +
+                        "  `bio` TEXT NOT NULL," +
+                        "  `money` VARCHAR(250)," +
+                        "  `premium` VARCHAR(50) NOT NULL," +
+                        "  PRIMARY KEY (`id`)" +
+                        ") ENGINE=InnoDB AUTO_INCREMENT=3918 DEFAULT CHARSET=utf8;"
+        ).execute();
+    }
+
+    /**
+     * Creates an instance that should only be used for database creation.
+     * @param mySQL the database.
+     * @return an instance.
+     */
+    public static UserSQL generatorInstance(MySQL mySQL) {
+        return new UserSQL(mySQL, null);
+    }
 }

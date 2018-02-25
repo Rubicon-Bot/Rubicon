@@ -1,121 +1,200 @@
+/*
+ * Copyright (c) 2018 Rubicon Bot Development Team
+ * Licensed under the GPL-3.0 license.
+ * The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.sql;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.TextChannel;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class GuildSQL implements DatabaseGenerator{
+/**
+ * Represents a guilds table-row.
+ */
+public class GuildSQL implements DatabaseGenerator, DatabaseEntry {
+    private final MySQL mySQL;
+    private final Guild guild;
 
-    private Connection connection;
-    private MySQL mySQL;
-    private Guild guild;
-
-    @Override
-    public void createTableIfNotExist() {
-        try {
-            PreparedStatement ps = RubiconBot.getMySQL().getCon().prepareStatement("CREATE TABLE IF NOT EXISTS `guilds`" +
-                    "(`serverid` VARCHAR(100) , " +
-                    "`prefix` VARCHAR (25)," +
-                    "`joinmsg` TEXT," +
-                    "`leavemsg` TEXT," +
-                    "`channel` TEXT," +
-                    "`logchannel` TEXT," +
-                    "`autorole` TEXT," +
-                    "`portal` VARCHAR (250)," +
-                    "`welmsg` TEXT," +
-                    "`autochannels` VARCHAR (250)," +
-                    "`cases` INT (11)," +
-                    "`blacklist` TEXT," +
-                    "`lvlmsg` INT (11)," +
-                    "`whitelist` TEXT)," +
-                    " PRIMARY KEY (`id`)" +
-                    ") ENGINE=InnoDB");
-            ps.execute();
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-    }
-        private GuildSQL(Guild guild, MySQL mySQL) {
-            this.guild = guild;
-            this.mySQL = RubiconBot.getMySQL();
-            this.connection = MySQL.getConnection();
-        }
-
-        public static GuildSQL fromGuild(Guild guild) {
-            return new GuildSQL(guild, RubiconBot.getMySQL());
-        }
-
-
-    public boolean exist() {
-        try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM guilds WHERE serverid = ?");
-            ps.setString(1, guild.getId());
-            ResultSet rs = ps.executeQuery();
-            return rs.next();
-        } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
-        }
-        return false;
+    /**
+     * Initializes this database entity.
+     * @param mySQL the database.
+     * @param guild the guild.
+     */
+    private GuildSQL(MySQL mySQL, Guild guild) {
+        this.mySQL = mySQL;
+        this.guild = guild;
     }
 
-    public void set(String type, String value) {
-        try {
-            if (!exist())
-                create();
-            PreparedStatement ps = connection.prepareStatement("UPDATE guilds SET " + type + " = '" + value + "' WHERE serverid = ?");
-            ps.setString(1, guild.getId());
-            ps.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    /**
+     * @deprecated Use {@link #GuildSQL(MySQL, Guild)} instead.
+     */
+    @Deprecated
+    private GuildSQL(Guild guild, MySQL mySQL) {
+        this(RubiconBot.getMySQL(), guild);
     }
 
-    private void create() {
-        try {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO `guilds`(`serverid`, `channel`, `prefix`, `joinmsg`, `leavemsg`, `logchannel`, `autorole`, `portal`, `welmsg`, `autochannels`, `blacklist`,`lvlmsg`, `whitelist`) VALUES (?, '0', 'rc!', 'Welcome %user% on %guild%', 'Bye %user%', '0', '0', 'closed', '0', '', '','1', '')");
-            ps.setString(1, String.valueOf(guild.getIdLong()));
-            ps.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    /**
+     * @deprecated Use {@link #GuildSQL(MySQL, Guild)} instead.
+     */
+    @Deprecated
+    public static GuildSQL fromGuild(Guild guild) {
+        return new GuildSQL(guild, RubiconBot.getMySQL());
     }
 
-    public String get(String type) {
-        try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM guilds WHERE serverid = ?");
-            ps.setString(1, guild.getId());
-            ResultSet rs = ps.executeQuery();
-            // Only returning one result
-            if (rs.next()) {
-                return rs.getString(type);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public boolean enabledWhitelist(){
+    /**
+     * @return whether the whitelist is enabled on this guild.
+     */
+    public boolean isWhitelistEnabled() {
         return !get("whitelist").equals("");
     }
 
-    public boolean enabledBlacklist(){
+    /**
+     * @deprecated Use {@link #isWhitelistEnabled()} instead.
+     */
+    @Deprecated
+    public boolean enabledWhitelist(){
+        return isWhitelistEnabled();
+    }
+
+    /**
+     * @return whether the blacklist is enabled.
+     */
+    public boolean isBlacklistEnabled() {
         return !get("blacklist").equals("");
     }
 
+    /**
+     * @deprecated Use {@link #isBlacklistEnabled()} instead.
+     */
+    @Deprecated
+    public boolean enabledBlacklist(){
+        return isBlacklistEnabled();
+    }
+
+    /**
+     * Checks whether a {@link TextChannel} is blacklisted.
+     * @param channel the text channel to be checked.
+     * @return whether the channel is blacklisted.
+     */
     public boolean isBlacklisted(TextChannel channel){
         return get("blacklist").contains(channel.getId());
     }
 
+    /**
+     * Checks whether a {@link TextChannel} is blacklisted.
+     * @param channel the text channel to be checked.
+     * @return whether the channel is blacklisted.
+     */
     public boolean isWhitelisted(TextChannel channel){
         return get("whitelist").contains(channel.getId());
     }
 
+    @Override
+    public String get(String type) {
+        try {
+            PreparedStatement selectStatement = mySQL.getActiveConnection().prepareStatement(
+                    "SELECT * FROM `guilds` WHERE `serverid` = ?;");
+            selectStatement.setString(1, guild.getId());
+            ResultSet selectResult = selectStatement.executeQuery();
+            return selectResult.next() ? selectResult.getString(type) : null;
+        } catch (SQLException e) {
+            Logger.error("SQLException while retrieving '" + type + "' value in guilds entry for guild "
+                    + guild.getId() + ":");
+            Logger.error(e);
+            throw new RuntimeException("Something went wrong in our database.");
+        }
+    }
+
+    @Override
+    public void set(String type, String value) {
+        try {
+            create();
+            PreparedStatement updateStatement = mySQL.getActiveConnection().prepareStatement(
+                    "UPDATE `guilds` SET " + type + " = ? WHERE serverid = ?;");
+            updateStatement.setString(1, value);
+            updateStatement.setString(2, guild.getId());
+            updateStatement.execute();
+        } catch (SQLException e) {
+            Logger.error("SQLException while updating '" + type + "' in guilds entry for guild "
+                    + guild.getId() + ":");
+            Logger.error(e);
+            throw new RuntimeException("Something went wrong in our database.");
+        }
+    }
+
+    @Override
+    public boolean exists() {
+        try {
+            PreparedStatement selectStatement = mySQL.getActiveConnection().prepareStatement(
+                    "SELECT * FROM `guilds` WHERE `serverid` = ?;");
+            selectStatement.setString(1, guild.getId());
+            return selectStatement.executeQuery().next();
+        } catch (SQLException e) {
+            Logger.error("SQLException while checking guilds entry existence for guild " + guild.getId() + ":");
+            Logger.error(e);
+            throw new RuntimeException("Something went wrong in our database.");
+        }
+    }
+
+    @Override
+    public void create() {
+        if (!exists()) {
+            try {
+                PreparedStatement insertStatement = mySQL.getActiveConnection().prepareStatement(
+                        "INSERT INTO `guilds`(`serverid`, `channel`, `prefix`, `joinmsg`, `leavemsg`, `logchannel`, " +
+                                "`autorole`, `portal`, `welmsg`, `autochannels`, `blacklist`,`lvlmsg`, `whitelist`) " +
+                                "VALUES (?, '0', 'rc!', 'Welcome %user% on %guild%', 'Bye %user%', '0', '0', 'closed', " +
+                                "'0', '', '','1', '');");
+                insertStatement.setString(1, guild.getId());
+                insertStatement.execute();
+            } catch (SQLException e) {
+                Logger.error("SQLException while creating guilds entry for guild " + guild.getId() + ":");
+                Logger.error(e);
+                throw new RuntimeException("Something went wrong in our database.");
+            }
+        }
+    }
+
+    /**
+     * Table creation script.
+     * @throws SQLException if any sql error occurs.
+     */
+    @Override
+    public void createTableIfNotExist() throws SQLException {
+        mySQL.getActiveConnection().prepareStatement(
+                "CREATE TABLE IF NOT EXISTS `guilds`" +
+                "(`serverid` VARCHAR(100) , " +
+                "`prefix` VARCHAR (25)," +
+                "`joinmsg` TEXT," +
+                "`leavemsg` TEXT," +
+                "`channel` TEXT," +
+                "`logchannel` TEXT," +
+                "`autorole` TEXT," +
+                "`portal` VARCHAR (250)," +
+                "`welmsg` TEXT," +
+                "`autochannels` VARCHAR (250)," +
+                "`cases` INT (11)," +
+                "`blacklist` TEXT," +
+                "`lvlmsg` INT (11)," +
+                "`whitelist` TEXT," +
+                " PRIMARY KEY (`serverid`)" +
+                ") ENGINE=InnoDB;"
+        ).execute();
+    }
+
+    /**
+     * Creates an instance that should only be used for database creation.
+     * @param mySQL the database.
+     * @return an instance.
+     */
+    public static GuildSQL generatorInstance(MySQL mySQL) {
+        return new GuildSQL(mySQL, null);
+    }
 }

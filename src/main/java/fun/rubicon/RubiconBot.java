@@ -38,6 +38,7 @@ import net.dv8tion.jda.core.hooks.EventListener;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
@@ -62,7 +63,6 @@ public class RubiconBot {
     private final Timer timer;
     private final Set<EventListener> eventListeners;
     private final PermissionManager permissionManager;
-    private final DatabaseManager databaseManager;
     private final TranslationManager translationManager;
 
     /**
@@ -76,7 +76,6 @@ public class RubiconBot {
 
         timer = new Timer();
         eventListeners = new HashSet<>();
-        databaseManager = new DatabaseManager();
 
         // load configuration and obtain missing config values
         new File(dataFolder).mkdirs();
@@ -93,7 +92,7 @@ public class RubiconBot {
         mySQL = new MySQL(Info.MYSQL_HOST, Info.MYSQL_PORT, Info.MYSQL_USER, Info.MYSQL_PASSWORD, Info.MYSQL_DATABASE);
         mySQL.connect();
 
-        //Create databases if neccesary
+        // create databases if necessary
         generateDatabases();
 
 
@@ -299,20 +298,30 @@ public class RubiconBot {
         new CommandManager();
     }
 
+    /**
+     * Runs all table-generators to ensure database structure presence.
+     */
     private void generateDatabases() {
-        databaseManager.addGenerators(new ServerLogSQL(),
-                new UserMusicSQL(),
-                new GuildMusicSQL(),
-                new WarnSQL(),
-                new MemberSQL(),
-                new VerificationKickSQL(),
-                new VerificationUserSQL(),
-                new MinecraftSQL(),
-                new UserSQL()
-        );
+        DatabaseGenerator[] generators = new DatabaseGenerator[]{
+                ServerLogSQL.generatorInstance(mySQL),
+                UserMusicSQL.generatorInstance(mySQL),
+                GuildMusicSQL.generatorInstance(mySQL),
+                new WarnSQL(mySQL),
+                MemberSQL.generatorInstance(mySQL),
+                VerificationKickSQL.generatorInstance(mySQL),
+                VerificationUserSQL.generatorInstance(mySQL),
+                new MinecraftSQL(mySQL),
+                UserSQL.generatorInstance(mySQL)
+        };
 
-        databaseManager.generate();
-
+        for (DatabaseGenerator generator : generators) {
+            try {
+                generator.createTableIfNotExist();
+            } catch (SQLException e) {
+                Logger.error("SQLException occurred while creating database tables:");
+                Logger.error(e);
+            }
+        }
     }
 
     private void registerWebpanelRequests() {
