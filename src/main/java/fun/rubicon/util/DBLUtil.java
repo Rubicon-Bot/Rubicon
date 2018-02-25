@@ -22,6 +22,7 @@ import java.io.IOException;
  */
 public class DBLUtil {
     private static DiscordBotListAPI discordBotsOrgAPI;
+    private static boolean disabled;
 
     /**
      * Posts bot statistics to https://discordbots.org/
@@ -42,42 +43,48 @@ public class DBLUtil {
      */
     public static void postStats(boolean silent) {
         // check if bot has already been initialized
-        if (RubiconBot.getJDA() == null) {
+        if (RubiconBot.getJDA() == null)
             Logger.warning("Could not post discordbots.org stats as the bot has not been initialized yet.");
-            return;
-        }
 
-        // init api if necessary
-        if (discordBotsOrgAPI == null)
-            discordBotsOrgAPI = new DiscordBotListAPI.Builder()
-                    .token(Info.DBL_TOKEN)
+        else if(!disabled) {
+            // init api if necessary
+            if (discordBotsOrgAPI == null) {
+                // disable if no dbl token was configured
+                if (Info.DISCORD_PW_TOKEN == null || Info.DISCORD_PW_TOKEN.isEmpty()) {
+                    disabled = true;
+                    Logger.warning("Discord bot list token is not set. Won't post any stats.");
+                    return;
+                } else
+                    discordBotsOrgAPI = new DiscordBotListAPI.Builder()
+                            .token(Info.DBL_TOKEN)
+                            .build();
+            }
+
+            // post stats to discordbots.org
+            discordBotsOrgAPI.setStats(RubiconBot.getJDA().getSelfUser().getId(), RubiconBot.getJDA().getGuilds().size());
+
+            JSONObject json = new JSONObject();
+
+            json.put("server_count", RubiconBot.getJDA().getGuilds().size());
+
+            RequestBody body = RequestBody.create(MediaType.parse("application/json"), json.toString());
+            //Post stats to bots.discord.pw
+            Request req = new Request.Builder()
+                    .url("https://bots.discord.pw/api/bots/" + RubiconBot.getJDA().getSelfUser().getId() + "/stats")
+                    .addHeader("Authorization", Info.DISCORD_PW_TOKEN)
+                    .post(body)
                     .build();
-
-
-        // post stats to discordbots.org
-        discordBotsOrgAPI.setStats(RubiconBot.getJDA().getSelfUser().getId(), RubiconBot.getJDA().getGuilds().size());
-
-
-        JSONObject json = new JSONObject();
-
-        json.put("server_count", RubiconBot.getJDA().getGuilds().size());
-
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json.toString());
-        //Post stats to bots.discord.pw
-        Request req = new Request.Builder()
-                .url("https://bots.discord.pw/api/bots/" + RubiconBot.getJDA().getSelfUser().getId() + "/stats")
-                .addHeader("Authorization", Info.DISCORD_PW_TOKEN)
-                .post(body)
-                .build();
-        Response res = null;
-        try {
-            res = new OkHttpClient().newCall(req).execute();
-        } catch (IOException e) {
-            if(!silent)
-            Logger.error(e);
+            try {
+                new OkHttpClient()
+                        .newCall(req)
+                        .execute()
+                        .close();
+            } catch (IOException e) {
+                if(!silent) {
+                    Logger.error("Failed posting stats to discord bot list:");
+                    Logger.error(e);
+                }
+            }
         }
-        res.close();
-
-
     }
 }
