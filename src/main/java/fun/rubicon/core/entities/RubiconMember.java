@@ -88,9 +88,9 @@ public class RubiconMember extends RubiconUserImpl {
         return null;
     }
 
-    public boolean isMuted(){
+    public boolean isMuted() {
         String entry = "";
-        try{
+        try {
             PreparedStatement ps = mySQL.prepareStatement("SELECT mute FROM members WHERE userid=? AND serverid=?");
             ps.setLong(1, user.getIdLong());
             ps.setLong(2, guild.getIdLong());
@@ -100,10 +100,8 @@ public class RubiconMember extends RubiconUserImpl {
         } catch (SQLException e) {
             Logger.error(e);
         }
-        if(entry.equals("permanent")) return true;
-        if(entry.equals("")) return false;
-        if(new Date(Long.parseLong(entry)).after(new Date())) return true;
-        return false;
+        if (entry.equals("permanent")) return true;
+        return !entry.equals("") && new Date(Long.parseLong(entry)).after(new Date());
     }
 
     public RubiconMember mute(){
@@ -182,6 +180,21 @@ public class RubiconMember extends RubiconUserImpl {
         }
         return this;
     }
+
+    public RubiconMember ban(Date expiry){
+        try{
+            PreparedStatement ps = mySQL.getConnection().prepareStatement("INSERT INTO bans(`serverid`, `userid`, `expiry`) VALUE (?,?,?)");
+            ps.setLong(1, guild.getIdLong());
+            ps.setLong(2, member.getUser().getIdLong());
+            ps.setLong(3, expiry.getTime());
+            ps.execute();
+        } catch (SQLException e){
+            Logger.error(e);
+        }
+        return this;
+    }
+
+
 
     public static RubiconMember fromMember(Member member) {
         return new RubiconMember(member);
