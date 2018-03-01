@@ -100,8 +100,7 @@ public class RubiconMember extends RubiconUserImpl {
         } catch (SQLException e) {
             Logger.error(e);
         }
-        if (entry.equals("permanent")) return true;
-        return !entry.equals("") && new Date(Long.parseLong(entry)).after(new Date());
+        return entry.equals("permanent") || !entry.equals("") && new Date(Long.parseLong(entry)).after(new Date());
     }
 
     public RubiconMember mute(){
