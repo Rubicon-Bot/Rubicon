@@ -14,6 +14,7 @@ import fun.rubicon.features.VerificationKickHandler;
 import fun.rubicon.features.VerificationUserHandler;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
+import fun.rubicon.sql.VerificationSQL;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -63,12 +64,11 @@ public class CommandVerification extends CommandHandler {
 
     private Message disableVerification(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         Message message = parsedCommandInvocation.getMessage();
-        if (!RubiconBot.getMySQL().verificationEnabled(message.getGuild())) {
+        VerificationSQL verificationSQL = new VerificationSQL(RubiconBot.getMySQL(), message.getGuild());
+        if (!verificationSQL.isEnabled()) {
             return new MessageBuilder().setEmbed(EmbedUtil.error("Not enabled", "Verification System is not enabled on this guild").build()).build();
         }
-
-        RubiconBot.getMySQL().deleteGuildVerification(message.getGuild());
-
+        verificationSQL.delete();
         return new MessageBuilder().setEmbed(EmbedUtil.success("Disabled", "Successfully disabled verification system").build()).build();
     }
 
@@ -111,7 +111,7 @@ public class CommandVerification extends CommandHandler {
         public int kicktime;
         public String kicktext;
 
-        VerificationSettings(TextChannel verificationChannel, String verifytext, String verifiedtext, Role verifiedrole, int kicktime, String kicktext, MessageReaction.ReactionEmote emote) {
+        public VerificationSettings(TextChannel verificationChannel, String verifytext, String verifiedtext, Role verifiedrole, int kicktime, String kicktext, MessageReaction.ReactionEmote emote) {
             this.channel = verificationChannel;
             this.verifytext = verifytext;
             this.verifiedtext = verifiedtext;

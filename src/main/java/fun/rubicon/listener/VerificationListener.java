@@ -10,6 +10,8 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.admin.CommandVerification;
 import fun.rubicon.features.VerificationKickHandler;
 import fun.rubicon.features.VerificationUserHandler;
+import fun.rubicon.sql.GuildSQL;
+import fun.rubicon.sql.VerificationSQL;
 import fun.rubicon.util.SafeMessage;
 import fun.rubicon.util.StringUtil;
 import net.dv8tion.jda.core.entities.Message;
@@ -56,11 +58,9 @@ public class VerificationListener extends ListenerAdapter {
      */
     @Override
     public void onTextChannelDelete(TextChannelDeleteEvent event) {
-        if (!RubiconBot.getMySQL().verificationEnabled(event.getGuild())) return;
-        if (!RubiconBot.getMySQL().getVerificationValue(event.getGuild(), "channelid").equals(event.getChannel().getId()))
-            return;
-
-        RubiconBot.getMySQL().deleteGuildVerification(event.getGuild());
+        VerificationSQL verificationSQL = new VerificationSQL(RubiconBot.getMySQL(), event.getGuild());
+        if (verificationSQL.isEnabled() && verificationSQL.getChannelId().equals(event.getChannel().getId()))
+            verificationSQL.delete();
     }
 
     @Override

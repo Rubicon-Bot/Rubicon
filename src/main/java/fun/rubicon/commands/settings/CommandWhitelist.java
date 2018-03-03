@@ -88,9 +88,13 @@ public class CommandWhitelist extends CommandHandler {
     }
 
     private void executeAdd(String[] args, Member member, Guild guild, TextChannel textChannel, Message message) {
+        GuildSQL guildSQL = new GuildSQL(RubiconBot.getMySQL(), guild);
         if(message.getMentionedChannels().isEmpty()){ SafeMessage.sendMessage(textChannel, EmbedUtil.error("Unknown usage", "Please use `rc!whitelist add <#Channel>`").build(), 7); return; }
         TextChannel channel = message.getMentionedChannels().get(0);
-        if(RubiconBot.getMySQL().isChannelWhitelisted(channel)){ SafeMessage.sendMessage(textChannel, EmbedUtil.info("Already whitelisted", "This channel is already whitelisted").build()); return; }
+        if(guildSQL.isWhitelisted(channel)) {
+            SafeMessage.sendMessage(textChannel, EmbedUtil.info("Already whitelisted", "This channel is already whitelisted").build());
+            return;
+        }
         String oldEntry = RubiconBot.getMySQL().getGuildValue(guild, "whitelist");
         String newEntry;
         if(oldEntry.equals(""))

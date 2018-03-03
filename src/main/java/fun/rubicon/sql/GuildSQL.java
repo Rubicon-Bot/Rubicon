@@ -8,12 +8,15 @@ package fun.rubicon.sql;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.util.Logger;
+import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a guilds table-row.
@@ -27,7 +30,7 @@ public class GuildSQL implements DatabaseGenerator, DatabaseEntry {
      * @param mySQL the database.
      * @param guild the guild.
      */
-    private GuildSQL(MySQL mySQL, Guild guild) {
+    public GuildSQL(MySQL mySQL, Guild guild) {
         this.mySQL = mySQL;
         this.guild = guild;
     }
@@ -96,6 +99,31 @@ public class GuildSQL implements DatabaseGenerator, DatabaseEntry {
         return get("whitelist").contains(channel.getId());
     }
 
+    /**
+     * Queries the guilds table for guilds with a specified value.
+     * @param database
+     * @param jda
+     * @param columnName
+     * @param value
+     * @return
+     */
+    public static List<Guild> getByValue(MySQL database, JDA jda, String columnName, String value) {
+        try {
+            PreparedStatement selectStatement = database.getActiveConnection().prepareStatement(
+                    "SELECT * FROM `guilds` WHERE `" + columnName + "` = ?;");
+            selectStatement.setString(1, value);
+            List<Guild> guilds = new ArrayList<>();
+            ResultSet selectResult = selectStatement.executeQuery();
+            while (selectResult.next())
+                guilds.add(jda.getGuildById(selectResult.getString("serverid")));
+            return guilds;
+        } catch (SQLException e) {
+            Logger.error("SQLException while retrieving guilds entries with '" + columnName + "' = '" + value + "':");
+            Logger.error(e);
+            throw new RuntimeException("Something went wrong in our database.");
+        }
+    }
+
     @Override
     public String get(String type) {
         try {
@@ -159,6 +187,37 @@ public class GuildSQL implements DatabaseGenerator, DatabaseEntry {
                 Logger.error(e);
                 throw new RuntimeException("Something went wrong in our database.");
             }
+        }
+    }
+
+    public void deleteIncludingMembers() {
+        delete();
+        try {
+            PreparedStatement deleteStatement = mySQL.getActiveConnection().prepareStatement(
+                    "DELETE FROM `members` WHERE `serverid` = ?;");
+            deleteStatement.setString(1, guild.getId());
+            deleteStatement.execute();
+        } catch (SQLException e) {
+            Logger.error("SQLException while deleting all members entries for guild " + guild.getId() + ":");
+            Logger.error(e);
+            throw new RuntimeException("Something went wrong in our database.");
+        }
+    }
+
+    /**
+     * Deletes this entry and removes all guild data by thus. Member data is still stored in the members table, use
+     * {@link #deleteIncludingMembers()} to wipe out members data as well.
+     */
+    private void delete() {
+        try {
+            PreparedStatement deleteStatement = mySQL.getActiveConnection().prepareStatement(
+                    "DELETE FROM `guilds` WHERE `serverid` = ?;");
+            deleteStatement.setString(1, guild.getId());
+            deleteStatement.execute();
+        } catch (SQLException e) {
+            Logger.error("SQLException while deleting a guilds entry for guild " + guild.getId() + ":");
+            Logger.error(e);
+            throw new RuntimeException("Something went wrong in our database.");
         }
     }
 
