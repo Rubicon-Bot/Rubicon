@@ -19,6 +19,7 @@ import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
+import org.apache.commons.lang.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,21 +39,6 @@ public abstract class CommandHandler {
     private String description;
     private final String parameterUsage;
     private boolean disabled = false;
-
-    /**
-     * Constructs a new CommandHandler.
-     *
-     * @param invocationAliases      the invocation commands (aliases). First entry is the 'main' alias.
-     * @param category               the {@link CommandCategory} this command belongs to.
-     * @param permissionRequirements all permission requirements a user needs to meet to execute a command.
-     * @deprecated Use CommandHandler(String[], CommandCategory, PermissionRequirements, String, String) instead to
-     * prevent empty data.
-     */
-    @Deprecated
-    protected CommandHandler(String[] invocationAliases, CommandCategory category,
-                             PermissionRequirements permissionRequirements) {
-        this(invocationAliases, category, permissionRequirements, "", "");
-    }
 
     /**
      * Constructs a new CommandHandler.
@@ -85,29 +71,37 @@ public abstract class CommandHandler {
     /**
      * Checks permission, safely calls the execute method and ensures response.
      *
-     * @param parsedCommandInvocation the parsed command invocation.
+     * @param commandInvocationContext the parsed command invocation.
      * @return a response that will be sent and deleted by the caller.
      */
-    public Message call(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
+    public Message call(CommandInvocationContext commandInvocationContext) {
         if (disabled) {
             return new MessageBuilder().setEmbed(EmbedUtil.info("Command disabled", "Command is currently disabled.").setFooter("RubiconBot Dev Team", null).build()).build();
         }
         if (CommandMaintenance.maintenance) {
             ArrayList<Long> authors = new ArrayList<>(Arrays.asList(Info.BOT_AUTHOR_IDS));
-            if (!authors.contains(parsedCommandInvocation.getAuthor().getIdLong())) {
+            if (!authors.contains(commandInvocationContext.getAuthor().getIdLong())) {
                 return EmbedUtil.message(EmbedUtil.info("Maintenance!", "Bots maintenance is enabled. Please be patient."));
             }
         }
-        UserPermissions userPermissions = new UserPermissions(parsedCommandInvocation.getMessage().getAuthor(),
-                parsedCommandInvocation.getMessage().getGuild());
         // check permission
-        if (permissionRequirements.coveredBy(userPermissions)) {
+        if (permissionRequirements.coveredBy(commandInvocationContext.getUserPermissions())) {
             // execute command
             try {
-                ServerLogHandler.logCommand(parsedCommandInvocation);
-                return execute(parsedCommandInvocation, userPermissions);
+                ServerLogHandler.logCommand(CommandManager.ParsedCommandInvocation.fromNewType(commandInvocationContext));
+                try {
+                    return execute(commandInvocationContext);
+                } catch (UnsupportedOperationException e) {
+                    try {
+                        return execute(CommandManager.ParsedCommandInvocation.fromNewType(commandInvocationContext),
+                                commandInvocationContext.getUserPermissions());
+                    } catch (UnsupportedOperationException e2) {
+                        throw new NotImplementedException("CommandHandler for command "
+                                + commandInvocationContext.getCommandInvocation() + " not found.");
+                    }
+                }
             } catch (Exception e) { // catch exceptions in command and provide an answer
-                Logger.error("Unknown error during the execution of the '" + parsedCommandInvocation.getCommandInvocation() + "' command. ");
+                Logger.error("Unknown error during the execution of the '" + commandInvocationContext.getCommandInvocation() + "' command. ");
                 Logger.error(e);
                 return new MessageBuilder().setEmbed(new EmbedBuilder()
                         .setAuthor("Error", null, RubiconBot.getJDA().getSelfUser().getEffectiveAvatarUrl())
@@ -127,13 +121,22 @@ public abstract class CommandHandler {
     }
 
     /**
+     * @deprecated Implement {@link #execute(CommandInvocationContext)} instead.
+     */
+    @Deprecated
+    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * Method to be implemented by actual command handlers.
      *
-     * @param parsedCommandInvocation the command arguments with prefix and command head removed.
-     * @param userPermissions         an object to query the invoker's permissions.
+     * @param commandInvocationContext object containing invocation details and contextual methods.
      * @return a response that will be sent and deleted by the caller.
      */
-    protected abstract Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions);
+    protected Message execute(CommandInvocationContext commandInvocationContext) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * @return all aliases this CommandHandler wants to listen to.
@@ -211,11 +214,11 @@ public abstract class CommandHandler {
     /**
      * Generates a usage message for this command.
      *
-     * @param invocation data source for prefix and alias to use in the Message.
+     * @param context data source for prefix and alias to use in the Message.
      * @return the generated Message.
      */
-    public Message createHelpMessage(CommandManager.ParsedCommandInvocation invocation) {
-        return createHelpMessage(invocation.getPrefix(), invocation.getCommandInvocation());
+    public Message createHelpMessage(CommandInvocationContext context) {
+        return createHelpMessage(context.getPrefix(), context.getCommandInvocation());
     }
 
     /**
@@ -226,9 +229,9 @@ public abstract class CommandHandler {
      */
     public Message createHelpMessage(String serverPrefix, String aliasToUse) {
         StringBuilder usage = new StringBuilder();
-        for (String part : getParameterUsage().split("\n")) {
-            usage.append(serverPrefix + aliasToUse + " " + part + "\n");
-        }
+        for (String part : getParameterUsage().split("\n"))
+            usage.append(serverPrefix).append(aliasToUse).append(" ").append(part).append("\n");
+
         if (this instanceof CommandVerification) {
             if (CommandVerification.showInspired) {
                 setDescription("Let you members accept rules before posting messages.");

@@ -24,8 +24,8 @@ import fun.rubicon.core.RubackReceiver;
 import fun.rubicon.core.webpanel.WebpanelManager;
 import fun.rubicon.core.webpanel.impl.*;
 import fun.rubicon.features.GiveawayHandler;
-import fun.rubicon.features.translation.TranslationManager;
 import fun.rubicon.features.RemindHandler;
+import fun.rubicon.features.translation.TranslationManager;
 import fun.rubicon.permission.PermissionManager;
 import fun.rubicon.sql.*;
 import fun.rubicon.util.*;
@@ -96,7 +96,7 @@ public class RubiconBot {
         generateDatabases();
 
 
-        commandManager = new CommandManager();
+        commandManager = new CommandManager(this);
         registerCommandHandlers();
         permissionManager = new PermissionManager();
         translationManager = new TranslationManager();
@@ -292,10 +292,6 @@ public class RubiconBot {
                 new CommandMoveAll(),
                 new CommandNick()
         );
-
-        // also register commands from the old framework
-        //noinspection deprecation
-        new CommandManager();
     }
 
     /**
