@@ -8,6 +8,7 @@ package fun.rubicon.listener.bot;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.moderation.CommandMute;
+import fun.rubicon.features.PunishmentManager;
 import fun.rubicon.util.BotListHandler;
 import net.dv8tion.jda.core.entities.Game;
 
@@ -23,7 +24,8 @@ public class AllShardsLoadedEvent {
     private void call() {
         RubiconBot.getShardManager().setGame(Game.playing("rc!help"));
         RubiconBot.setAllShardsInited(true);
-        CommandMute.loadMutes();
+        //Load all punishments (bans & mutes)
+        RubiconBot.getPunishmentManager().loadPunishments();
         //Post Guild Stats
         BotListHandler.postStats(false);
     }

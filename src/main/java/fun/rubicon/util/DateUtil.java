@@ -18,7 +18,9 @@ public class DateUtil {
     public static String formatDate(OffsetDateTime time, String langFormat) {
         String date = langFormat.replaceAll("%dd%", time.getDayOfMonth() + "")
                 .replaceAll("%MM%", time.getMonthValue() + "")
-                .replaceAll("%yyyy%", time.getYear() + "");
+                .replaceAll("%yyyy%", time.getYear() + "")
+                .replaceAll("%hh%", time.getHour() + "")
+                .replaceAll("%mm%", time.getMinute() + "");
         return date;
     }
 
@@ -26,8 +28,10 @@ public class DateUtil {
         Calendar cal = Calendar.getInstance();
         cal.setTime(time);
         String date = langFormat.replaceAll("%dd%", cal.get(Calendar.DAY_OF_MONTH) + "")
-                .replaceAll("%MM%", cal.get(Calendar.MONTH) + "")
-                .replaceAll("%yyyy%", cal.get(Calendar.YEAR) + "");
+                .replaceAll("%MM%", cal.get(Calendar.MONTH)+1 + "")
+                .replaceAll("%yyyy%", cal.get(Calendar.YEAR) + "")
+                .replaceAll("%hh%", cal.get(Calendar.HOUR_OF_DAY) + "")
+                .replaceAll("%mm%", cal.get(Calendar.MINUTE) + "");
         return date;
     }
 }

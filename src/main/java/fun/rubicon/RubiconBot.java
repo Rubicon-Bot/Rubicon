@@ -13,7 +13,9 @@ import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.commands.fun.CommandRandom;
 import fun.rubicon.commands.general.*;
+import fun.rubicon.commands.moderation.CommandBan;
 import fun.rubicon.commands.moderation.CommandMute;
+import fun.rubicon.commands.moderation.CommandUnban;
 import fun.rubicon.commands.moderation.CommandUnmute;
 import fun.rubicon.commands.settings.CommandJoinMessage;
 import fun.rubicon.commands.tools.CommandPoll;
@@ -21,6 +23,7 @@ import fun.rubicon.commands.settings.CommandPrefix;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.translation.TranslationManager;
 import fun.rubicon.commands.botowner.CommandEval;
+import fun.rubicon.features.PunishmentManager;
 import fun.rubicon.listener.*;
 import fun.rubicon.listener.bot.BotJoinListener;
 import fun.rubicon.listener.bot.SelfMentionListener;
@@ -57,6 +60,7 @@ public class RubiconBot {
     private final CommandManager commandManager;
     private final PermissionManager permissionManager;
     private final TranslationManager translationManager;
+    private PunishmentManager punishmentManager;
     private ShardManager shardManager;
     private boolean allShardsInited;
 
@@ -101,6 +105,11 @@ public class RubiconBot {
         initShardManager();
 
         gameAnimator.start();
+
+        //Init punishments
+        instance.punishmentManager = new PunishmentManager();
+        punishmentManager.registerPunishmentHandlers(new CommandMute(), new CommandBan());
+
     }
 
     private void registerCommands() {
@@ -135,7 +144,9 @@ public class RubiconBot {
         //Moderation
         commandManager.registerCommandHandlers(
                 new CommandMute(),
-                new CommandUnmute()
+                new CommandUnmute(),
+                new CommandBan(),
+                new CommandUnban()
         );
 
         //Tools
@@ -179,7 +190,8 @@ public class RubiconBot {
                 new SelfMentionListener(),
                 new VoteListener(),
                 new MemberJoinListener(),
-                new TextChannelDeleteListener()
+                new TextChannelDeleteListener(),
+                new BanListener()
         );
         try {
             shardManager = builder.build();
@@ -264,6 +276,11 @@ public class RubiconBot {
     }
 
     /**
+     * @return the punishment manager
+     */
+    public static PunishmentManager getPunishmentManager() { return instance.punishmentManager; }
+
+    /**
      * @return the translation manager via a static reference.
      */
     public static TranslationManager sGetTranslations() {
@@ -277,4 +294,5 @@ public class RubiconBot {
     public static void setAllShardsInited(boolean allShardsInited) {
         instance.allShardsInited = allShardsInited;
     }
+
 }
