@@ -307,7 +307,8 @@ public class RubiconBot {
                 VerificationKickSQL.generatorInstance(mySQL),
                 VerificationUserSQL.generatorInstance(mySQL),
                 new MinecraftSQL(mySQL),
-                UserSQL.generatorInstance(mySQL)
+                UserSQL.generatorInstance(mySQL),
+                GuildSQL.generatorInstance(mySQL)
         };
 
         for (DatabaseGenerator generator : generators) {

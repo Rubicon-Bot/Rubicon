@@ -33,6 +33,9 @@ public class GuildSQL implements DatabaseGenerator, DatabaseEntry {
     public GuildSQL(MySQL mySQL, Guild guild) {
         this.mySQL = mySQL;
         this.guild = guild;
+
+        if(guild != null)
+            create();
     }
 
     /**
@@ -55,7 +58,8 @@ public class GuildSQL implements DatabaseGenerator, DatabaseEntry {
      * @return whether the whitelist is enabled on this guild.
      */
     public boolean isWhitelistEnabled() {
-        return !get("whitelist").equals("");
+        String value = get("whitelist");
+        return value != null && !value.isEmpty();
     }
 
     /**
@@ -70,7 +74,8 @@ public class GuildSQL implements DatabaseGenerator, DatabaseEntry {
      * @return whether the blacklist is enabled.
      */
     public boolean isBlacklistEnabled() {
-        return !get("blacklist").equals("");
+        String value = get("blacklist");
+        return value != null && !value.isEmpty();
     }
 
     /**
