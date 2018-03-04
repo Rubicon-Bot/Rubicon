@@ -38,8 +38,6 @@ public class MySQL {
         } catch (SQLException e) {
             Logger.error(e);
             Logger.error("MySQL connection failed");
-            Logger.info("Shutdown application...");
-            System.exit(1);
         }
         return this;
     }

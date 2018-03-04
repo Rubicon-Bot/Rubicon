@@ -23,6 +23,7 @@ public class DatabaseGenerator {
             createLeavemessageTable();
             createUserDatabase();
             createMuteSettingsTable();
+            createBansTable();
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -85,6 +86,7 @@ public class DatabaseGenerator {
                     "`level` INT(50)," +
                     "`points` INT(50)," +
                     "`mute` VARCHAR (50), " +
+                    "`banned` BIGINT(50)," +
                     " PRIMARY KEY (`id`)" +
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();
@@ -121,6 +123,20 @@ public class DatabaseGenerator {
                     "`channel` BIGINT(25)," +
                     "PRIMARY KEY (`id`))" +
                     "ENGINE=InnoDB DEFAULT CHARSET=utf8");
+            ps.execute();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    private static void createBansTable(){
+        try{
+            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS bans" +
+                    "(`id` INT PRIMARY KEY AUTO_INCREMENT," +
+                    "`serverid` BIGINT(25)," +
+                    "`userid` BIGINT(25)," +
+                    "`expiry` BIGINT(25)" +
+                    ")ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();
         } catch (SQLException e){
             e.printStackTrace();

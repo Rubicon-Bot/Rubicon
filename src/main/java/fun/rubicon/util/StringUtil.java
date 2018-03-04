@@ -6,6 +6,9 @@
 
 package fun.rubicon.util;
 
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * @author Yannick Seeger / ForYaSee
  */
@@ -17,6 +20,34 @@ public class StringUtil {
             return true;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    public static Date parseDate(String date){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        int amount = parseInt(date);
+        if(amount == 0) return null;
+        if(date.contains("d"))
+            cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH) + amount);
+        else if(date.contains("m"))
+            cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE) + amount);
+        else if (date.contains("y"))
+            cal.set(Calendar.YEAR, cal.get(Calendar.YEAR) + amount);
+        else if(date.contains("M"))
+            cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) + amount);
+        else if (date.contains("h"))
+            cal.set(Calendar.HOUR_OF_DAY, cal.get(Calendar.HOUR_OF_DAY) + amount);
+        else
+            return null;
+        return cal.getTime();
+    }
+
+    private static int parseInt(String integer){
+        try{
+            return Integer.parseInt(integer.replace("d", "").replace("m", "").replace("y", "").replace("M", "").replace("h", ""));
+        } catch (NumberFormatException e){
+            return 0;
         }
     }
 }

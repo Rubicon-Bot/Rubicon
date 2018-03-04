@@ -15,15 +15,24 @@ import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.commands.fun.CommandRandom;
 import fun.rubicon.commands.general.*;
+import fun.rubicon.commands.moderation.CommandBan;
 import fun.rubicon.commands.moderation.CommandMute;
+import fun.rubicon.commands.moderation.CommandUnban;
 import fun.rubicon.commands.moderation.CommandUnmute;
+import fun.rubicon.commands.settings.CommandJoinMessage;
 import fun.rubicon.commands.tools.CommandPoll;
 import fun.rubicon.commands.settings.CommandPrefix;
 import fun.rubicon.commands.tools.CommandRandomColor;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.translation.TranslationManager;
 import fun.rubicon.commands.botowner.CommandEval;
+import fun.rubicon.features.PunishmentManager;
 import fun.rubicon.listener.*;
+import fun.rubicon.listener.bot.BotJoinListener;
+import fun.rubicon.listener.bot.SelfMentionListener;
+import fun.rubicon.listener.bot.ShardListener;
+import fun.rubicon.listener.channel.TextChannelDeleteListener;
+import fun.rubicon.listener.member.MemberJoinListener;
 import fun.rubicon.mysql.DatabaseGenerator;
 import fun.rubicon.mysql.MySQL;
 import fun.rubicon.permission.PermissionManager;
@@ -42,7 +51,7 @@ import java.util.Date;
 /**
  * Rubicon-bot's main class. Initializes all components.
  *
- * @author tr808axm
+ * @author tr808axm, ForYaSee
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
@@ -54,10 +63,12 @@ public class RubiconBot {
     private final CommandManager commandManager;
     private final PermissionManager permissionManager;
     private final TranslationManager translationManager;
+    private PunishmentManager punishmentManager;
     private ShardManager shardManager;
     private boolean allShardsInited;
 
-    private static final int SHARD_COUNT = 1;
+
+    private static final int SHARD_COUNT = 3;
 
     /**
      * Constructs the RubiconBot.
@@ -98,6 +109,11 @@ public class RubiconBot {
         initShardManager();
 
         gameAnimator.start();
+
+        //Init punishments
+        instance.punishmentManager = new PunishmentManager();
+        punishmentManager.registerPunishmentHandlers(new CommandMute(), new CommandBan());
+
     }
 
     private void registerCommands() {
@@ -105,6 +121,11 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(
                 new CommandEval(),
                 new CommandShardManage()
+        );
+
+        // Settings
+        commandManager.registerCommandHandlers(
+                new CommandJoinMessage()
         );
 
         // Fun
@@ -127,7 +148,9 @@ public class RubiconBot {
         //Moderation
         commandManager.registerCommandHandlers(
                 new CommandMute(),
-                new CommandUnmute()
+                new CommandUnmute(),
+                new CommandBan(),
+                new CommandUnban()
         );
 
         //Tools
@@ -176,13 +199,20 @@ public class RubiconBot {
                 new UserMentionListener(),
                 new ShardListener(),
                 new SelfMentionListener(),
-                new VoteListener()
+                new VoteListener(),
+                new MemberJoinListener(),
+                new TextChannelDeleteListener(),
+                new BanListener()
         );
         try {
             shardManager = builder.build();
         } catch (LoginException e) {
             Logger.error(e);
         }
+    }
+
+    public static void shutdown() {
+
     }
 
     /**
@@ -257,6 +287,11 @@ public class RubiconBot {
     }
 
     /**
+     * @return the punishment manager
+     */
+    public static PunishmentManager getPunishmentManager() { return instance.punishmentManager; }
+
+    /**
      * @return the translation manager via a static reference.
      */
     public static TranslationManager sGetTranslations() {
@@ -270,4 +305,5 @@ public class RubiconBot {
     public static void setAllShardsInited(boolean allShardsInited) {
         instance.allShardsInited = allShardsInited;
     }
+
 }
