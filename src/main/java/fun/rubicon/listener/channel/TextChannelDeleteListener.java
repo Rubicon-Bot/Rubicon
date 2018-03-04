@@ -24,5 +24,10 @@ public class TextChannelDeleteListener extends ListenerAdapter {
                 rubiconGuild.deleteJoinMessage();
             }
         }
+        if(rubiconGuild.hasLeaveMessagesEnabled()) {
+            if(event.getChannel().getIdLong() == rubiconGuild.getLeaveMessage().getChannelId()) {
+                rubiconGuild.deleteLeaveMessage();
+            }
+        }
     }
 }

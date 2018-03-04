@@ -21,7 +21,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-public class CommandMute extends CommandHandler implements PunishmentHandler{
+public class CommandMute extends CommandHandler implements PunishmentHandler {
 
     public CommandMute() {
         super(new String[]{"mute"}, CommandCategory.MODERATION, new PermissionRequirements("mute", false, false), "Easily mute a member.", "<@User> [time in minutes]");
@@ -77,16 +77,16 @@ public class CommandMute extends CommandHandler implements PunishmentHandler{
 
         if (args.length == 0)
             return createHelpMessage();
-        if(args[0].equals("settings")){
+        if (args[0].equals("settings")) {
             PermissionRequirements settingsPerms = new PermissionRequirements("mute.settings", false, false);
             UserPermissions user = new UserPermissions(member.getUser(), guild);
-            if(settingsPerms.coveredBy(userPermissions)){
+            if (settingsPerms.coveredBy(userPermissions)) {
                 RubiconGuild rGuild = RubiconGuild.fromGuild(guild);
-                if(!rGuild.useMuteSettings())
+                if (!rGuild.useMuteSettings())
                     rGuild.insertMuteTable();
-                switch (args[1]){
+                switch (args[1]) {
                     case "channel":
-                        if(message.getMentionedChannels().isEmpty()) {
+                        if (message.getMentionedChannels().isEmpty()) {
                             return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.settings.nochannelmentioned.title"), command.translate("command.mute.settings.nochannelmentioned.description")).build()).build();
                         }
                         TextChannel channel = message.getMentionedChannels().get(0);
@@ -94,33 +94,33 @@ public class CommandMute extends CommandHandler implements PunishmentHandler{
                         SafeMessage.sendMessage(command.getTextChannel(), EmbedUtil.success(command.translate("command.mute.settings.channelset.title"), String.format(command.translate("command.mute.settings.channelset.description"), channel.getName())).build(), 5);
                         break;
                     case "mute":
-                        if(args.length == 2){
+                        if (args.length == 2) {
                             return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.settings.mutemessage.nomsg.title"), command.translate("command.mute.settings.mutemessage.nomsg.description")).build()).build();
                         }
 
                         StringBuilder muteBuilder = new StringBuilder();
-                        for(int i = 2; i < args.length; i++){
+                        for (int i = 2; i < args.length; i++) {
                             muteBuilder.append(args[i]).append(" ");
                         }
                         String mutedMessage = muteBuilder.replace(muteBuilder.lastIndexOf(" "), muteBuilder.lastIndexOf(" ") + 1, "").toString();
                         setMutedMessage(mutedMessage, guild);
-                        if(mutedMessage.equals("disable")){
+                        if (mutedMessage.equals("disable")) {
                             return new MessageBuilder().setEmbed(EmbedUtil.success(command.translate("command.mute.settings.mutemessage.disabled.title"), command.translate("command.mute.settings.mutemessage.disabled.description")).build()).build();
                         }
                         SafeMessage.sendMessage(command.getTextChannel(), EmbedUtil.success(command.translate("command.mute.settings.messages.success.title"), String.format(command.translate("command.mute.settings.mutemessaage.success.description"), mutedMessage)).build(), 5);
                         break;
                     case "unmute":
-                        if(args.length == 2){
+                        if (args.length == 2) {
                             return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.settings.mutemessage.nomsg.title"), command.translate("command.mute.settings.mutemessage.nomsg.description")).build()).build();
                         }
 
                         StringBuilder unmuteBuilder = new StringBuilder();
-                        for(int i = 2; i < args.length; i++){
+                        for (int i = 2; i < args.length; i++) {
                             unmuteBuilder.append(args[i]).append(" ");
                         }
                         String unmutedMessage = unmuteBuilder.replace(unmuteBuilder.lastIndexOf(" "), unmuteBuilder.lastIndexOf(" ") + 1, "").toString();
                         setUnmutedMessage(unmutedMessage, guild);
-                        if(unmutedMessage.equals("disable")){
+                        if (unmutedMessage.equals("disable")) {
                             return new MessageBuilder().setEmbed(EmbedUtil.success(command.translate("command.mute.settings.unmutemessage.disabled.title"), command.translate("command.mute.settings.mutemessage.undisabled.description")).build()).build();
                         }
                         SafeMessage.sendMessage(command.getTextChannel(), EmbedUtil.success(command.translate("command.mute.settings.messages.success.title"), String.format(command.translate("command.mute.settings.mutemessaage.success.description"), unmutedMessage)).build(), 5);
@@ -139,7 +139,7 @@ public class CommandMute extends CommandHandler implements PunishmentHandler{
         RubiconMember victim = RubiconMember.fromMember(victimMember);
         if (victim.isMuted())
             return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.muted.permanent.title"), command.translate("command.mute.muted.permanent.description")).build()).build();
-        if(victimMember.equals(guild.getSelfMember()) || Arrays.asList(Info.BOT_AUTHOR_IDS).contains(victimMember.getUser().getIdLong()))
+        if (victimMember.equals(guild.getSelfMember()) || Arrays.asList(Info.BOT_AUTHOR_IDS).contains(victimMember.getUser().getIdLong()))
             return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.donotmuterubicon.title"), command.translate("command.mute.donotmuterubicon.description")).build()).build();
         if (!member.canInteract(victimMember) && !Arrays.asList(Info.BOT_AUTHOR_IDS).contains(member.getUser().getIdLong()))
             return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.nopermissions.user.title"), String.format(command.translate("command.mute.nopermissions.user.description"), victimMember.getAsMention())).build()).build();
@@ -149,18 +149,18 @@ public class CommandMute extends CommandHandler implements PunishmentHandler{
             return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.nopermissions.role.title"), command.translate("command.mute.nopermissions.role.description")).build()).build();
         RubiconGuild rGuild = RubiconGuild.fromGuild(guild);
         if (args.length == 1) {
-            if(!new PermissionRequirements("mute.permanent", false, false).coveredBy(command.getPerms()))
+            if (!new PermissionRequirements("mute.permanent", false, false).coveredBy(command.getPerms()))
                 return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.nopermissions.user.title"), command.translate("command.mute.permanent.noperms.description")).build()).build();
             victim.mute();
-            if(rGuild.useMuteSettings() && !rGuild.getMuteMessage().equals(""))
+            if (rGuild.useMuteSettings() && !rGuild.getMuteMessage().equals(""))
                 SafeMessage.sendMessage(rGuild.getMuteChannel(), rGuild.getMuteMessage().replace("%moderator%", member.getAsMention()).replace("%mention%", victim.getMember().getAsMention()).replace("%date%", "never"));
             return new MessageBuilder().setEmbed(EmbedUtil.success(command.translate("command.mute.muted.permanent.title"), String.format(command.translate("command.mute.muted.permanent.description"), victimMember.getAsMention())).build()).build();
         } else if (args.length > 1) {
             Date expiry = StringUtil.parseDate(args[1]);
-            if(expiry == null)
+            if (expiry == null)
                 return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.ban.invalidnumber.title"), command.translate("command.ban.invalidnumber.description")).build()).build();
             victim.mute(expiry);
-            if(rGuild.useMuteSettings())
+            if (rGuild.useMuteSettings())
                 SafeMessage.sendMessage(rGuild.getMuteChannel(), rGuild.getMuteMessage().replace("%moderator%", member.getAsMention()).replace("%mention%", victim.getMember().getAsMention()).replace("%date%", DateUtil.formatDate(expiry, command.translate("date.format"))));
             new Timer().schedule(new TimerTask() {
                 @Override
@@ -181,7 +181,7 @@ public class CommandMute extends CommandHandler implements PunishmentHandler{
             ps.setString(1, unmutedMessage);
             ps.setLong(2, guild.getIdLong());
             ps.execute();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             Logger.error(e);
         }
     }
@@ -192,18 +192,18 @@ public class CommandMute extends CommandHandler implements PunishmentHandler{
             ps.setString(1, mutedMessage);
             ps.setLong(2, guild.getIdLong());
             ps.execute();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             Logger.error(e);
         }
     }
 
     private void setMuteLogChannel(TextChannel textChannel) {
-        try{
+        try {
             PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("UPDATE `mutesettings` SET channel = ? WHERE serverid = ?");
             ps.setLong(1, textChannel.getIdLong());
             ps.setLong(2, textChannel.getGuild().getIdLong());
             ps.execute();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             Logger.error(e);
         }
     }

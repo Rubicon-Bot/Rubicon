@@ -18,6 +18,7 @@ import fun.rubicon.commands.moderation.CommandMute;
 import fun.rubicon.commands.moderation.CommandUnban;
 import fun.rubicon.commands.moderation.CommandUnmute;
 import fun.rubicon.commands.settings.CommandJoinMessage;
+import fun.rubicon.commands.settings.CommandLeaveMessage;
 import fun.rubicon.commands.tools.CommandPoll;
 import fun.rubicon.commands.settings.CommandPrefix;
 import fun.rubicon.core.GameAnimator;
@@ -30,6 +31,7 @@ import fun.rubicon.listener.bot.SelfMentionListener;
 import fun.rubicon.listener.bot.ShardListener;
 import fun.rubicon.listener.channel.TextChannelDeleteListener;
 import fun.rubicon.listener.member.MemberJoinListener;
+import fun.rubicon.listener.member.MemberLeaveListener;
 import fun.rubicon.mysql.DatabaseGenerator;
 import fun.rubicon.mysql.MySQL;
 import fun.rubicon.permission.PermissionManager;
@@ -121,7 +123,8 @@ public class RubiconBot {
 
         // Settings
         commandManager.registerCommandHandlers(
-                new CommandJoinMessage()
+                new CommandJoinMessage(),
+                new CommandLeaveMessage()
         );
 
         // Fun
@@ -190,6 +193,7 @@ public class RubiconBot {
                 new SelfMentionListener(),
                 new VoteListener(),
                 new MemberJoinListener(),
+                new MemberLeaveListener(),
                 new TextChannelDeleteListener(),
                 new BanListener()
         );

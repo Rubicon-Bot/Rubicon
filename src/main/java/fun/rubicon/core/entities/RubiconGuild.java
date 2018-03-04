@@ -8,6 +8,7 @@ package fun.rubicon.core.entities;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.settings.CommandJoinMessage;
+import fun.rubicon.commands.settings.CommandLeaveMessage;
 import fun.rubicon.mysql.MySQL;
 import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
@@ -235,6 +236,76 @@ public class RubiconGuild {
     public void deleteJoinMessage() {
         try {
             PreparedStatement ps = mySQL.prepareStatement("DELETE FROM joinmessages WHERE serverid=?");
+            ps.setLong(1, guild.getIdLong());
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+    }
+
+    // Leavemessages
+    public boolean hasLeaveMessagesEnabled() {
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("SELECT * FROM leavemessages WHERE serverid=?");
+            ps.setLong(1, guild.getIdLong());
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+        return false;
+    }
+
+    public void setLeaveMessage(String text, long channelId) {
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("INSERT INTO leavemessages (serverid, message, channel) VALUES (?, ?, ?)");
+            ps.setLong(1, guild.getIdLong());
+            ps.setString(2, text);
+            ps.setLong(3, channelId);
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public CommandLeaveMessage.LeaveMessage getLeaveMessage() {
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("SELECT channel, message FROM leavemessages WHERE serverid=?");
+            ps.setLong(1, guild.getIdLong());
+            ResultSet resultSet = ps.executeQuery();
+            if (resultSet.next())
+                return new CommandLeaveMessage.LeaveMessage(resultSet.getLong("channel"), resultSet.getString("message"));
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+        return null;
+    }
+
+    public void setLeaveMessage(String text) {
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("UPDATE leavemessages SET message=? WHERE serverid=?");
+            ps.setString(1, text);
+            ps.setLong(2, guild.getIdLong());
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setLeaveMessage(long channel) {
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("UPDATE leavemessages SET channel=? WHERE serverid=?");
+            ps.setLong(1, channel);
+            ps.setLong(2, guild.getIdLong());
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteLeaveMessage() {
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("DELETE FROM leavemessages WHERE serverid=?");
             ps.setLong(1, guild.getIdLong());
             ps.execute();
         } catch (SQLException e) {
