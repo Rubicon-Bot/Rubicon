@@ -142,7 +142,8 @@ public class RubiconBot {
                 new CommandBio(),
                 new CommandInvite(),
                 new CommandSay(),
-                new CommandUserinfo()
+                new CommandUserinfo(),
+                new CommandUptime()
         );
 
         //Moderation
@@ -209,6 +210,8 @@ public class RubiconBot {
         } catch (LoginException e) {
             Logger.error(e);
         }
+
+        Info.lastRestart = new Date();
     }
 
     public static void shutdown() {
@@ -289,7 +292,9 @@ public class RubiconBot {
     /**
      * @return the punishment manager
      */
-    public static PunishmentManager getPunishmentManager() { return instance.punishmentManager; }
+    public static PunishmentManager getPunishmentManager() {
+        return instance == null ? null : instance.punishmentManager;
+    }
 
     /**
      * @return the translation manager via a static reference.
