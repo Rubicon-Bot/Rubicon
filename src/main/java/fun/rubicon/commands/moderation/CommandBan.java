@@ -23,7 +23,7 @@ import java.util.*;
 
 public class CommandBan extends CommandHandler implements PunishmentHandler{
     public CommandBan() {
-        super(new String[] {"ban", "tempban"}, CommandCategory.MODERATION, new PermissionRequirements("ban", false, false), "Easily ban or teamban members", "<@User> [Time in minutes]");
+        super(new String[] {"ban", "tempban"}, CommandCategory.MODERATION, new PermissionRequirements("ban", false, false), "Easily ban or tempban members.", "<@User> [Time in minutes]");
     }
 
     @Override
