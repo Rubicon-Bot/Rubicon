@@ -9,15 +9,11 @@ package fun.rubicon.commands.general;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandInvocationContext;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.permission.PermissionRequirements;
-import fun.rubicon.permission.UserPermissions;
-import fun.rubicon.features.translation.TranslationLocale;
 import fun.rubicon.util.Colors;
-import fun.rubicon.util.EmbedUtil;
-import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.util.ArrayList;
@@ -43,38 +39,30 @@ public class CommandHelp extends CommandHandler {
     }
 
     @Override
-    protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
-        TranslationLocale locale = RubiconBot.sGetTranslations()
-                .getUserLocale(invocation.getAuthor());
-        if (invocation.getArgs().length == 0) {
+    protected Message execute(CommandInvocationContext context) {
+        if (context.getArgs().length == 0) {
             // show complete command manual
-            return message(info(locale.getResourceBundle().getString("command.help.title"),
-                            commandFormat(invocation, locale, "command.help.description"))
-                    .addField(commandFormat(invocation, locale, "command.help.field.documentation.title"),
-                            commandFormat(invocation, locale, "command.help.field.documentation.content"),
+            return message(info(context.translate("command.help.title"),
+                    context.translate("command.help.description"))
+                    .addField(context.translate("command.help.field.documentation.title"),
+                            context.translate("command.help.field.documentation.content"),
                             false)
-                    .setFooter(locale.getResourceBundle().getString("command.help.footer").replaceAll("%count%",
+                    .setFooter(context.translate("command.help.footer").replaceAll("%count%",
                             String.valueOf(new HashSet<>(RubiconBot.getCommandManager().getCommandAssociations().values()).size())),
                             null));
         } else {
-            CommandHandler handler = RubiconBot.getCommandManager().getCommandHandler(invocation.getArgs()[0]);
+            CommandHandler handler = RubiconBot.getCommandManager().getCommandHandler(context.getArgs()[0]);
             return handler == null
                     // invalid command
-                    ? message(error(locale.getResourceBundle().getString("command.help.error.invalidcommand.title"),
-                        commandFormat(invocation, locale, "command.help.error.invalidcommand.description")
-                                .replaceAll("%othercommand%", invocation.getArgs()[0])))
+                    ? message(error(context.translate("command.help.error.invalidcommand.title"),
+                    context.translate("command.help.error.invalidcommand.description")
+                            .replaceAll("%othercommand%", context.getArgs()[0])))
                     // show command help for a single command
-                    : handler.createHelpMessage(invocation.getPrefix(), invocation.getArgs()[0]);
+                    : handler.createHelpMessage(context.getPrefix(), context.getArgs()[0]);
         }
     }
 
-    private String commandFormat(CommandManager.ParsedCommandInvocation invocation, TranslationLocale locale, String key) {
-        return locale.getResourceBundle().getString(key)
-                .replaceAll("%prefix%", invocation.getPrefix())
-                .replaceAll("%command%", invocation.getCommandInvocation());
-    }
-
-    private EmbedBuilder generateFullHelp(CommandManager.ParsedCommandInvocation invocation) {
+    private EmbedBuilder generateFullHelp(CommandManager.ParsedCommandInvocation context) {
         EmbedBuilder builder = new EmbedBuilder();
         List<CommandHandler> filteredCommandList = RubiconBot.getCommandManager().getCommandAssociations().values().stream().filter(commandHandler -> commandHandler.getCategory() != CommandCategory.BOT_OWNER).collect(Collectors.toList());
 
@@ -131,7 +119,7 @@ public class CommandHelp extends CommandHandler {
         }
 
         builder.setTitle(":information_source: Rubicon Bot command manual");
-        builder.setDescription("Use `" + invocation.getPrefix() + "help <command>` to get a more information about a command.\n" +
+        builder.setDescription("Use `" + context.getPrefix() + "help <command>` to get a more information about a command.\n" +
                 "A detailed command list is available at [rubicon.fun](https://rubicon.fun)");
         builder.setColor(Colors.COLOR_SECONDARY);
         builder.setFooter("Loaded a total of "

@@ -7,6 +7,7 @@
 package fun.rubicon.command;
 
 import fun.rubicon.RubiconBot;
+import fun.rubicon.features.translation.TranslationLocale;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.sql.GuildSQL;
 import fun.rubicon.util.Info;
@@ -17,19 +18,25 @@ import net.dv8tion.jda.core.entities.*;
  * @author tr808axm
  */
 public class CommandInvocationContext {
+    private final RubiconBot rubiconBot;
     private final Message message;
     private final String[] argsNew;
     private final String mainCommand;
     private final String usedPrefix;
 
+    // Objects only retrieved when needed
+    private TranslationLocale translationLocale;
+
     /**
      * Initializes this data container.
+     * @param rubiconBot the bot instance that should handle this command execution.
      * @param invocationMessage the message that invoked this command execution.
      * @param usedPrefix the prefix used in the message.
      * @param mainCommand the used main command alias.
      * @param args array of command arguments
      */
-    CommandInvocationContext(Message invocationMessage, String usedPrefix, String mainCommand, String[] args) {
+    CommandInvocationContext(RubiconBot rubiconBot, Message invocationMessage, String usedPrefix, String mainCommand, String[] args) {
+        this.rubiconBot = rubiconBot;
         this.message = invocationMessage;
         this.usedPrefix = usedPrefix;
         this.mainCommand = mainCommand;
@@ -95,6 +102,13 @@ public class CommandInvocationContext {
     }
 
     /**
+     * @return the user who invoked the command execution.
+     */
+    public User getInvoker() {
+        return message.getAuthor();
+    }
+
+    /**
      * @return the member who invoked the command execution. null if the command was invoked in a private channel.
      * @see #getAuthor() for the channel-type-independent {@link User} object.
      */
@@ -125,13 +139,42 @@ public class CommandInvocationContext {
     }
 
     /**
+     * @return the locale that applies to the invoker.
+     */
+    public TranslationLocale getTranslationLocale() {
+        if(translationLocale == null)
+            translationLocale = rubiconBot.getTranslationManager().getUserLocale(getAuthor());
+        return translationLocale;
+    }
+
+    /**
+     * Gets the translation value for a key in the user's language and automatically replaces %prefix% with the used
+     * prefix and %command% with the used command alias.
+     * @param key the identifier for the message to translate.
+     * @return the translation for the specified key.
+     */
+    public String translate(String key) {
+        return getTranslationLocale().getResourceBundle().getString(key)
+                .replaceAll("%prefix%", getPrefix())
+                .replaceAll("%command%", getMainCommand());
+    }
+
+    /**
+     * @return the bot instance that should handle this command execution.
+     */
+    public RubiconBot getRubiconBot() {
+        return rubiconBot;
+    }
+
+    /**
      * Parses a raw message into command components.
      *
+     * @param rubiconBot the bot instance that should handle this command execution.
      * @param message the discord message to parse.
      * @return an object with the parsed arguments or null if the message could not be
      * resolved to a command.
      */
-    static CommandInvocationContext parse(Message message) {
+    static CommandInvocationContext parse(RubiconBot rubiconBot, Message message) {
         String prefix = null;
         // react to mention: '@botmention<majorcommand> [arguments]'
         if (message.getContentRaw().startsWith(message.getJDA().getSelfUser().getAsMention())) {
@@ -155,7 +198,7 @@ public class CommandInvocationContext {
             // create an array of the actual command arguments (exclude invocation arg)
             String[] args = new String[allArgs.length - 1];
             System.arraycopy(allArgs, 1, args, 0, args.length);
-            return new CommandInvocationContext(message, prefix, allArgs[0], args);
+            return new CommandInvocationContext(rubiconBot, message, prefix, allArgs[0], args);
         }
         // else
         return null; // = message is not a command

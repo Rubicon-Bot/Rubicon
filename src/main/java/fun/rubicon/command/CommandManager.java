@@ -85,7 +85,7 @@ public class CommandManager extends ListenerAdapter {
         // pass event to music manager TODO move this to a new listener
         MusicManager.handleTrackChoose(event);
 
-        CommandInvocationContext commandInvocationContext = CommandInvocationContext.parse(event.getMessage());
+        CommandInvocationContext commandInvocationContext = CommandInvocationContext.parse(rubiconBot, event.getMessage());
 
         if (commandInvocationContext != null && !event.getAuthor().isBot() && !event.getAuthor().isFake() && !event.isWebhookMessage()) {
             if (GlobalBlacklist.isOnBlacklist(event.getAuthor())) {
@@ -146,12 +146,12 @@ public class CommandManager extends ListenerAdapter {
      */
     @Deprecated
     public static final class ParsedCommandInvocation extends CommandInvocationContext {
-        private ParsedCommandInvocation(Message invocationMessage, String serverPrefix, String invocationCommand, String[] args) {
-            super(invocationMessage, serverPrefix, invocationCommand, args);
+        private ParsedCommandInvocation(RubiconBot rubiconBot, Message invocationMessage, String serverPrefix, String invocationCommand, String[] args) {
+            super(rubiconBot, invocationMessage, serverPrefix, invocationCommand, args);
         }
 
         static ParsedCommandInvocation fromNewType(CommandInvocationContext newObj) {
-            return new ParsedCommandInvocation(newObj.getMessage(), newObj.getPrefix(), newObj.getCommandInvocation(),
+            return new ParsedCommandInvocation(newObj.getRubiconBot(), newObj.getMessage(), newObj.getPrefix(), newObj.getCommandInvocation(),
                     newObj.getArgs());
         }
     }
