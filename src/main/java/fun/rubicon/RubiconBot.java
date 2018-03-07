@@ -13,11 +13,14 @@ import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.commands.fun.CommandRandom;
 import fun.rubicon.commands.general.*;
+<<<<<<< HEAD
 import fun.rubicon.commands.moderation.CommandBan;
 import fun.rubicon.commands.moderation.CommandMute;
 import fun.rubicon.commands.moderation.CommandUnban;
 import fun.rubicon.commands.moderation.CommandUnmute;
 import fun.rubicon.commands.settings.CommandAutochannel;
+=======
+>>>>>>> Rework-1.0.0
 import fun.rubicon.commands.settings.CommandJoinMessage;
 import fun.rubicon.commands.settings.CommandLeaveMessage;
 import fun.rubicon.commands.tools.CommandPoll;
@@ -67,7 +70,6 @@ public class RubiconBot {
     private PunishmentManager punishmentManager;
     private ShardManager shardManager;
     private boolean allShardsInited;
-
     private static final int SHARD_COUNT = 3;
 
     /**
@@ -112,7 +114,6 @@ public class RubiconBot {
 
         //Init punishments
         instance.punishmentManager = new PunishmentManager();
-        punishmentManager.registerPunishmentHandlers(new CommandMute(), new CommandBan());
 
     }
 
@@ -149,10 +150,7 @@ public class RubiconBot {
 
         //Moderation
         commandManager.registerCommandHandlers(
-                new CommandMute(),
-                new CommandUnmute(),
-                new CommandBan(),
-                new CommandUnban()
+
         );
 
         //Tools
@@ -189,7 +187,6 @@ public class RubiconBot {
         //Register Event Listeners
         builder.addEventListeners(
                 new BotJoinListener(),
-                new MuteListener(),
                 commandManager,
                 new UserMentionListener(),
                 new ShardListener(),
@@ -199,7 +196,6 @@ public class RubiconBot {
                 new MemberLeaveListener(),
                 new TextChannelDeleteListener(),
                 new VoiceChannelDeleteListener(),
-                new BanListener(),
                 new GeneralReactionListener(),
                 new AutochannelListener()
         );

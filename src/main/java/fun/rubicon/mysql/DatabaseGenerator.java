@@ -23,9 +23,6 @@ public class DatabaseGenerator {
             createJoinmessageTable();
             createLeavemessageTable();
             createUserDatabase();
-            createMuteSettingsTable();
-            createBansTable();
-            createAutochannelTable();
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -109,36 +106,6 @@ public class DatabaseGenerator {
                     "`afk` TEXT," +
                     " PRIMARY KEY (`id`)" +
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
-            ps.execute();
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-    }
-
-    private static void createMuteSettingsTable() {
-        try {
-            PreparedStatement ps = RubiconBot.getMySQL().prepareStatement("CREATE TABLE IF NOT EXISTS `mutesettings`" +
-                    "(`id` INT(250)  UNSIGNED NOT NULL AUTO_INCREMENT, " +
-                    "`serverid` BIGINT(25)," +
-                    "`mutedmsg` TEXT," +
-                    "`unmutemsg` TEXT," +
-                    "`channel` BIGINT(25)," +
-                    "PRIMARY KEY (`id`))" +
-                    "ENGINE=InnoDB DEFAULT CHARSET=utf8");
-            ps.execute();
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-    }
-
-    private static void createBansTable() {
-        try {
-            PreparedStatement ps = RubiconBot.getMySQL().prepareStatement("CREATE TABLE IF NOT EXISTS bans" +
-                    "(`id` INT PRIMARY KEY AUTO_INCREMENT," +
-                    "`serverid` BIGINT(25)," +
-                    "`userid` BIGINT(25)," +
-                    "`expiry` BIGINT(25)" +
-                    ")ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();
         } catch (SQLException e) {
             Logger.error(e);

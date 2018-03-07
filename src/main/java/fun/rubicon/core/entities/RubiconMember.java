@@ -88,57 +88,6 @@ public class RubiconMember extends RubiconUserImpl {
         return null;
     }
 
-    public boolean isMuted() {
-        String entry = "";
-        try {
-            PreparedStatement ps = mySQL.prepareStatement("SELECT mute FROM members WHERE userid=? AND serverid=?");
-            ps.setLong(1, user.getIdLong());
-            ps.setLong(2, guild.getIdLong());
-            ResultSet rs = ps.executeQuery();
-            while (rs.next())
-                entry = rs.getString("mute");
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-        return entry.equals("permanent") || !entry.equals("") && new Date(Long.parseLong(entry)).after(new Date());
-    }
-
-    public RubiconMember mute(){
-        try{
-            PreparedStatement ps = mySQL.prepareStatement("UPDATE members SET mute = 'permanent' WHERE userid=? AND serverid=?");
-            ps.setLong(1, user.getIdLong());
-            ps.setLong(2, guild.getIdLong());
-            ps.execute();
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-        return this;
-    }
-
-    public RubiconMember mute(Date expiry){
-        try{
-            PreparedStatement ps = mySQL.prepareStatement("UPDATE members SET mute = ? WHERE userid=? AND serverid=?");
-            ps.setLong(1, expiry.getTime());
-            ps.setLong(2, user.getIdLong());
-            ps.setLong(3, guild.getIdLong());
-            ps.execute();
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-        return this;
-    }
-
-    public RubiconMember unmute(){
-        try{
-            PreparedStatement ps = mySQL.prepareStatement("UPDATE members SET mute = '' WHERE userid=? AND serverid=?");
-            ps.setLong(1, user.getIdLong());
-            ps.setLong(2, guild.getIdLong());
-            ps.execute();
-        } catch (SQLException e){
-            Logger.error(e);
-        }
-        return this;
-    }
 
     public void delete() {
         try {
@@ -182,7 +131,7 @@ public class RubiconMember extends RubiconUserImpl {
 
     public RubiconMember ban(Date expiry){
         try{
-            PreparedStatement ps = mySQL.getConnection().prepareStatement("INSERT INTO bans(`serverid`, `userid`, `expiry`) VALUE (?,?,?)");
+            PreparedStatement ps = mySQL.getConnection().prepareStatement("INSERT INTO punishments(`serverid`, `userid`, `expiry`, `type`) VALUE (?,?,?, 'ban')");
             ps.setLong(1, guild.getIdLong());
             ps.setLong(2, member.getUser().getIdLong());
             ps.setLong(3, expiry.getTime());

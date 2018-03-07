@@ -26,15 +26,5 @@ public class RubiconUser extends RubiconUserImpl {
         super(user);
     }
 
-    public RubiconUser unban(Guild guild){
-        try{
-            PreparedStatement ps = mySQL.getConnection().prepareStatement("DELETE FROM bans WHERE serverid =? AND serverid=?");
-            ps.setLong(1, guild.getIdLong());
-            ps.setLong(2, user.getIdLong());
-            ps.execute();
-        } catch (SQLException e){
-            Logger.error(e);
-        }
-        return this;
-    }
+
 }
