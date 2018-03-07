@@ -86,6 +86,7 @@ public class DatabaseGenerator {
                     "`level` INT(50)," +
                     "`points` INT(50)," +
                     "`mute` VARCHAR (50), " +
+                    "`banned` BIGINT(50)," +
                     " PRIMARY KEY (`id`)" +
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();
@@ -130,6 +131,7 @@ public class DatabaseGenerator {
 
     private static void createPunishmentTable(){
         try{
+<<<<<<< HEAD
             PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS punishments" +
                     "(\n" +
                     "    id INT PRIMARY KEY AUTO_INCREMENT," +
@@ -138,6 +140,14 @@ public class DatabaseGenerator {
                     "    expiry BIGINT(25)," +
                     "    type VARCHAR(25)" +
                     ");");
+=======
+            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS bans" +
+                    "(`id` INT PRIMARY KEY AUTO_INCREMENT," +
+                    "`serverid` BIGINT(25)," +
+                    "`userid` BIGINT(25)," +
+                    "`expiry` BIGINT(25)" +
+                    ")ENGINE=InnoDB DEFAULT CHARSET=utf8");
+>>>>>>> Rework-1.0.0
             ps.execute();
         } catch (SQLException e){
             e.printStackTrace();

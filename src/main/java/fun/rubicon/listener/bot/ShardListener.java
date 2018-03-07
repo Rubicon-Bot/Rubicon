@@ -4,9 +4,10 @@
  * The full license text is available in the LICENSE file provided with this project.
  */
 
-package fun.rubicon.listener;
+package fun.rubicon.listener.bot;
 
 import fun.rubicon.RubiconBot;
+import fun.rubicon.listener.bot.AllShardsLoadedEvent;
 import net.dv8tion.jda.core.events.*;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 

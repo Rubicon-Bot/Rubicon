@@ -39,7 +39,7 @@ public class CommandRandom extends CommandHandler {
         }
         int iArgs[] = {Integer.parseInt(invocation.getArgs()[0]), Integer.parseInt(invocation.getArgs()[1])};
         int rand = generateRandom(iArgs[0], iArgs[1]);
-        return EmbedUtil.message(EmbedUtil.info("Generated random!", "").setDescription(String.format("Your random digit: %d", rand)));
+        return EmbedUtil.message(EmbedUtil.info(invocation.translate("command.random.success.title"), "").setDescription(invocation.translate("command.random.success.description").replace("%digit%", rand + "")));
     }
 
     public static int generateRandom(int min, int max) {

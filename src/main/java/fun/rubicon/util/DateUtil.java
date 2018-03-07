@@ -20,7 +20,7 @@ public class DateUtil {
                 .replaceAll("%MM%", time.getMonthValue() + "")
                 .replaceAll("%yyyy%", time.getYear() + "")
                 .replaceAll("%hh%", time.getHour() + "")
-                .replaceAll("%mm%", time.getMinute() + "");
+                .replaceAll("%mm%", String.valueOf(time.getMinute()).length() == 1 ? "0" + time.getMinute() : time.getMinute() + "");
         return date;
     }
 
@@ -28,10 +28,10 @@ public class DateUtil {
         Calendar cal = Calendar.getInstance();
         cal.setTime(time);
         String date = langFormat.replaceAll("%dd%", cal.get(Calendar.DAY_OF_MONTH) + "")
-                .replaceAll("%MM%", cal.get(Calendar.MONTH)+1 + "")
+                .replaceAll("%MM%", cal.get(Calendar.MONTH) + 1 + "")
                 .replaceAll("%yyyy%", cal.get(Calendar.YEAR) + "")
                 .replaceAll("%hh%", cal.get(Calendar.HOUR_OF_DAY) + "")
-                .replaceAll("%mm%", cal.get(Calendar.MINUTE) + "");
+                .replaceAll("%mm%", String.valueOf(cal.get(Calendar.MINUTE)).length() == 1 ? "0" + cal.get(Calendar.MINUTE) : cal.get(Calendar.MINUTE) + "");
         return date;
     }
 }
