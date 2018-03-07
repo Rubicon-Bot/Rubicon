@@ -210,10 +210,6 @@ public class RubiconBot {
         }
     }
 
-    public static void shutdown() {
-
-    }
-
     /**
      * @return the {@link ShardManager} that is used in the Rubicon project
      */
