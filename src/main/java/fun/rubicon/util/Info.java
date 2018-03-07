@@ -51,7 +51,7 @@ public class Info {
             362270177712275491L, //Skidder
             333220752117596160L, //BaseChip
             240797338430341120L, //Pilz
-            235395943619493888L //ls13game
+            235395943619493888L //ls13game®
     };
 
     /* MySQL login */
