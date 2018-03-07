@@ -6,6 +6,7 @@
 [![Discord Bots](https://discordbots.org/api/widget/status/380713705073147915.png)](https://discordbots.org/bot/rubicon)
 [![Travis-CI](https://travis-ci.org/Rubicon-Bot/Rubicon.svg?branch=master)](https://travis-ci.org/Rubicon-Bot/Rubicon)
 <a href="https://discord.gg/tnZW6mt"><img src="https://discordapp.com/api/guilds/381419503164325900/embed.png"/></a> 
+https://discordbots.org/api/widget/owner/380713705073147915.svg
  
 ## Commands
 <br>Command Documantion can be found [here](http://rubicon.fun)
