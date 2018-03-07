@@ -16,13 +16,18 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 public class BotLeaveListener extends ListenerAdapter{
 
     public void onGuildLeave(GuildLeaveEvent event) {
+        RubiconGuild rubiconGuild = RubiconGuild.fromGuild(event.getGuild());
         //Database Deletes
-        RubiconGuild.fromGuild(event.getGuild()).delete();
-        RubiconGuild.fromGuild(event.getGuild()).deleteJoinMessage();
+        rubiconGuild.delete();
+        rubiconGuild.deleteJoinMessage();
+        rubiconGuild.deleteLeaveMessage();
+        rubiconGuild.deleteMuteSettings();
+        for(long id : rubiconGuild.getAutochannels()) {
+            rubiconGuild.deleteAutochannel(id);
+        }
         for (Member member: event.getGuild().getMembers()) {
             RubiconMember.fromMember(member).delete();
         }
-
         BotListHandler.postStats(false);
     }
 }

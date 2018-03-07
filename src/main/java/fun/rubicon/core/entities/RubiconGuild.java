@@ -18,6 +18,8 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Yannick Seeger / ForYaSee
@@ -160,18 +162,27 @@ public class RubiconGuild {
         return null;
     }
 
-    public boolean isMutedChannel(TextChannel channel) {
-        long channelid = 0;
+    public boolean isMutedChannel(long channelId) {
         try {
-            PreparedStatement ps = mySQL.prepareStatement("SELECT channel FROM mutesettings WHERE serverid =?");
+            PreparedStatement ps = mySQL.prepareStatement("SELECT channel FROM mutesettings WHERE serverid=?");
             ps.setLong(1, guild.getIdLong());
             ResultSet rs = ps.executeQuery();
             if (rs.next())
-                return rs.getString("channel").equals(String.valueOf(channel.getIdLong()));
+                return rs.getString("channel").equals(String.valueOf(channelId));
         } catch (SQLException e) {
             Logger.error(e);
         }
         return false;
+    }
+
+    public void deleteMuteSettings() {
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("DELETE FROM mutesettings WHERE serverid=?");
+            ps.setLong(1, guild.getIdLong());
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
     }
 
     public boolean hasJoinMessagesEnabled() {
@@ -311,6 +322,54 @@ public class RubiconGuild {
         } catch (SQLException e) {
             Logger.error(e);
         }
+    }
+
+    public boolean isAutochannel(long channelId) {
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("SELECT id FROM autochannels WHERE channelId=?");
+            ps.setLong(1, channelId);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+        return false;
+    }
+
+    public void addAutochannel(long channelId) {
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("INSERT INTO autochannels (serverId, channelId) VALUES (?, ?)");
+            ps.setLong(1, guild.getIdLong());
+            ps.setLong(2, channelId);
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+    }
+
+    public void deleteAutochannel(long channelId) {
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("DELETE FROM autochannels WHERE channelId=?");
+            ps.setLong(1, channelId);
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+    }
+
+    public List<Long> getAutochannels() {
+        List<Long> channelIds = new ArrayList<>();
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("SELECT channelId FROM autochannels WHERE serverId=?");
+            ps.setLong(1, guild.getIdLong());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                channelIds.add(rs.getLong("channelId"));
+            }
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+        return channelIds;
     }
 
     public static RubiconGuild fromGuild(Guild guild) {

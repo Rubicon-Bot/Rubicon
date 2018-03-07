@@ -27,7 +27,6 @@ public class MySQL {
         this.database = dbname;
     }
 
-
     /**
      * @return MySQL connection
      */
@@ -44,6 +43,7 @@ public class MySQL {
 
     /**
      * Close connection
+     *
      * @return MySQL connection
      */
 
@@ -52,21 +52,22 @@ public class MySQL {
             connection.close();
             System.out.println("disconnected from MYSQL");
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         return this;
     }
 
     /**
      * Get connection
+     *
      * @return MySQL connection
      */
 
-    public Connection getConnection(){
-        return this.connection;
+    public Connection getConnection() {
+        return connection;
     }
 
     public PreparedStatement prepareStatement(String sql) throws SQLException {
-        return this.connection.prepareStatement(sql);
+        return connection.prepareStatement(sql) != null ? connect().prepareStatement(sql) : connect().prepareStatement(sql);
     }
 }
