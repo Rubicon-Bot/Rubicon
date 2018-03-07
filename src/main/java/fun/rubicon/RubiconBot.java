@@ -13,14 +13,7 @@ import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.commands.fun.CommandRandom;
 import fun.rubicon.commands.general.*;
-<<<<<<< HEAD
-=======
-import fun.rubicon.commands.moderation.CommandBan;
-import fun.rubicon.commands.moderation.CommandMute;
-import fun.rubicon.commands.moderation.CommandUnban;
-import fun.rubicon.commands.moderation.CommandUnmute;
 import fun.rubicon.commands.settings.CommandJoinMessage;
->>>>>>> Rework-1.0.0
 import fun.rubicon.commands.tools.CommandPoll;
 import fun.rubicon.commands.settings.CommandPrefix;
 import fun.rubicon.core.GameAnimator;
@@ -66,12 +59,7 @@ public class RubiconBot {
     private PunishmentManager punishmentManager;
     private ShardManager shardManager;
     private boolean allShardsInited;
-
-<<<<<<< HEAD
-    private static final int SHARD_COUNT = 1;
-=======
     private static final int SHARD_COUNT = 3;
->>>>>>> Rework-1.0.0
 
     /**
      * Constructs the RubiconBot.
@@ -190,14 +178,9 @@ public class RubiconBot {
                 new UserMentionListener(),
                 new ShardListener(),
                 new SelfMentionListener(),
-<<<<<<< HEAD
-                new VoteListener()
-=======
                 new VoteListener(),
                 new MemberJoinListener(),
-                new TextChannelDeleteListener(),
-                new BanListener()
->>>>>>> Rework-1.0.0
+                new TextChannelDeleteListener()
         );
         try {
             shardManager = builder.build();
