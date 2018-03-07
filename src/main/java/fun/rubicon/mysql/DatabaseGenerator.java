@@ -23,7 +23,7 @@ public class DatabaseGenerator {
             createLeavemessageTable();
             createUserDatabase();
             createMuteSettingsTable();
-            createBansTable();
+            createPunishmentTable();
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -128,14 +128,15 @@ public class DatabaseGenerator {
         }
     }
 
-    private static void createBansTable(){
+    private static void createPunishmentTable(){
         try{
-            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS bans" +
+            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS punishments" +
                     "(\n" +
                     "    id INT PRIMARY KEY AUTO_INCREMENT," +
                     "    serverid BIGINT(25)," +
                     "    userid BIGINT(25)," +
-                    "    expiry BIGINT(25)" +
+                    "    expiry BIGINT(25)," +
+                    "    type VARCHAR(25)" +
                     ");");
             ps.execute();
         } catch (SQLException e){

@@ -28,7 +28,7 @@ public class RubiconUser extends RubiconUserImpl {
 
     public RubiconUser unban(Guild guild){
         try{
-            PreparedStatement ps = mySQL.getConnection().prepareStatement("DELETE FROM bans WHERE serverid =? AND serverid=?");
+            PreparedStatement ps = mySQL.getConnection().prepareStatement("DELETE FROM punishments WHERE serverid =? AND serverid=? AND type ='ban'");
             ps.setLong(1, guild.getIdLong());
             ps.setLong(2, user.getIdLong());
             ps.execute();

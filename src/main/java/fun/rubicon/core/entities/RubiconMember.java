@@ -89,25 +89,34 @@ public class RubiconMember extends RubiconUserImpl {
     }
 
     public boolean isMuted() {
-        String entry = "";
         try {
-            PreparedStatement ps = mySQL.prepareStatement("SELECT mute FROM members WHERE userid=? AND serverid=?");
-            ps.setLong(1, user.getIdLong());
-            ps.setLong(2, guild.getIdLong());
+            PreparedStatement ps = mySQL.prepareStatement("SELECT * FROM punishments WHERE serverid=? AND userid=? AND type = 'mute'");
+            ps.setLong(1, guild.getIdLong());
+            ps.setLong(2, user.getIdLong());
             ResultSet rs = ps.executeQuery();
-            while (rs.next())
-                entry = rs.getString("mute");
+            if (rs.next()) {
+                Logger.debug(String.valueOf(rs.getFetchSize()));
+                Long entry = rs.getLong("expiry");
+                System.out.println(rs.getLong("expiry"));
+                if(entry.toString().equals("")) return false;
+                else
+                    return entry.equals(Long.parseLong("0")) || new Date(entry).after(new Date());
+            } else {
+                Logger.debug("FRESSE");
+                return false;
+            }
         } catch (SQLException e) {
             Logger.error(e);
+            return false;
         }
-        return entry.equals("permanent") || !entry.equals("") && new Date(Long.parseLong(entry)).after(new Date());
     }
 
     public RubiconMember mute(){
         try{
-            PreparedStatement ps = mySQL.prepareStatement("UPDATE members SET mute = 'permanent' WHERE userid=? AND serverid=?");
+            PreparedStatement ps = mySQL.prepareStatement("INSERT INTO punishments(`serverid`, `userid`, `expiry`, `type`) VALUE (?,?,?, 'mute')");
             ps.setLong(1, user.getIdLong());
             ps.setLong(2, guild.getIdLong());
+            ps.setLong(3, Long.parseLong("0"));
             ps.execute();
         } catch (SQLException e) {
             Logger.error(e);
@@ -117,10 +126,10 @@ public class RubiconMember extends RubiconUserImpl {
 
     public RubiconMember mute(Date expiry){
         try{
-            PreparedStatement ps = mySQL.prepareStatement("UPDATE members SET mute = ? WHERE userid=? AND serverid=?");
-            ps.setLong(1, expiry.getTime());
-            ps.setLong(2, user.getIdLong());
-            ps.setLong(3, guild.getIdLong());
+            PreparedStatement ps = mySQL.prepareStatement("INSERT INTO punishments(`serverid`, `userid`, `expiry`, `type`) VALUE (?,?,?, 'mute'");
+            ps.setLong(1, user.getIdLong());
+            ps.setLong(2, guild.getIdLong());
+            ps.setLong(3, expiry.getTime());
             ps.execute();
         } catch (SQLException e) {
             Logger.error(e);
@@ -130,10 +139,11 @@ public class RubiconMember extends RubiconUserImpl {
 
     public RubiconMember unmute(){
         try{
-            PreparedStatement ps = mySQL.prepareStatement("UPDATE members SET mute = '' WHERE userid=? AND serverid=?");
-            ps.setLong(1, user.getIdLong());
+            PreparedStatement ps = mySQL.getConnection().prepareStatement("DELETE FROM punishments WHERE serverid=? AND userid=? AND type = 'mute'");
+            ps.setLong(1, guild.getIdLong());
             ps.setLong(2, guild.getIdLong());
             ps.execute();
+            Logger.debug("Unmuted");
         } catch (SQLException e){
             Logger.error(e);
         }
@@ -182,7 +192,7 @@ public class RubiconMember extends RubiconUserImpl {
 
     public RubiconMember ban(Date expiry){
         try{
-            PreparedStatement ps = mySQL.getConnection().prepareStatement("INSERT INTO bans(`serverid`, `userid`, `expiry`) VALUE (?,?,?)");
+            PreparedStatement ps = mySQL.getConnection().prepareStatement("INSERT INTO punishments(`serverid`, `userid`, `expiry`, `type`) VALUE (?,?,?, 'ban')");
             ps.setLong(1, guild.getIdLong());
             ps.setLong(2, member.getUser().getIdLong());
             ps.setLong(3, expiry.getTime());

@@ -13,10 +13,6 @@ import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.commands.fun.CommandRandom;
 import fun.rubicon.commands.general.*;
-import fun.rubicon.commands.moderation.CommandBan;
-import fun.rubicon.commands.moderation.CommandMute;
-import fun.rubicon.commands.moderation.CommandUnban;
-import fun.rubicon.commands.moderation.CommandUnmute;
 import fun.rubicon.commands.tools.CommandPoll;
 import fun.rubicon.commands.settings.CommandPrefix;
 import fun.rubicon.core.GameAnimator;
@@ -58,7 +54,7 @@ public class RubiconBot {
     private ShardManager shardManager;
     private boolean allShardsInited;
 
-    private static final int SHARD_COUNT = 5;
+    private static final int SHARD_COUNT = 1;
 
     /**
      * Constructs the RubiconBot.
@@ -102,7 +98,6 @@ public class RubiconBot {
 
         //Init punishments
         instance.punishmentManager = new PunishmentManager();
-        punishmentManager.registerPunishmentHandlers(new CommandMute(), new CommandBan());
 
     }
 
@@ -132,10 +127,7 @@ public class RubiconBot {
 
         //Moderation
         commandManager.registerCommandHandlers(
-                new CommandMute(),
-                new CommandUnmute(),
-                new CommandBan(),
-                new CommandUnban()
+
         );
 
         //Tools
@@ -172,13 +164,11 @@ public class RubiconBot {
         //Register Event Listeners
         builder.addEventListeners(
                 new BotJoinListener(),
-                new MuteListener(),
                 commandManager,
                 new UserMentionListener(),
                 new ShardListener(),
                 new SelfMentionListener(),
-                new VoteListener(),
-                new BanListener()
+                new VoteListener()
         );
         try {
             shardManager = builder.build();
