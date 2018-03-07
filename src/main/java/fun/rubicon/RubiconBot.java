@@ -17,6 +17,7 @@ import fun.rubicon.commands.moderation.CommandBan;
 import fun.rubicon.commands.moderation.CommandMute;
 import fun.rubicon.commands.moderation.CommandUnban;
 import fun.rubicon.commands.moderation.CommandUnmute;
+import fun.rubicon.commands.settings.CommandAutochannel;
 import fun.rubicon.commands.settings.CommandJoinMessage;
 import fun.rubicon.commands.settings.CommandLeaveMessage;
 import fun.rubicon.commands.tools.CommandPoll;
@@ -30,6 +31,7 @@ import fun.rubicon.listener.bot.BotJoinListener;
 import fun.rubicon.listener.bot.SelfMentionListener;
 import fun.rubicon.listener.bot.ShardListener;
 import fun.rubicon.listener.channel.TextChannelDeleteListener;
+import fun.rubicon.listener.channel.VoiceChannelDeleteListener;
 import fun.rubicon.listener.member.MemberJoinListener;
 import fun.rubicon.listener.member.MemberLeaveListener;
 import fun.rubicon.mysql.DatabaseGenerator;
@@ -124,7 +126,8 @@ public class RubiconBot {
         // Settings
         commandManager.registerCommandHandlers(
                 new CommandJoinMessage(),
-                new CommandLeaveMessage()
+                new CommandLeaveMessage(),
+                new CommandAutochannel()
         );
 
         // Fun
@@ -195,7 +198,10 @@ public class RubiconBot {
                 new MemberJoinListener(),
                 new MemberLeaveListener(),
                 new TextChannelDeleteListener(),
-                new BanListener()
+                new VoiceChannelDeleteListener(),
+                new BanListener(),
+                new GeneralReactionListener(),
+                new AutochannelListener()
         );
         try {
             shardManager = builder.build();

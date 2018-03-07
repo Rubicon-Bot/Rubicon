@@ -68,6 +68,6 @@ public class MySQL {
     }
 
     public PreparedStatement prepareStatement(String sql) throws SQLException {
-        return connection.prepareStatement(sql) != null ? connect().prepareStatement(sql) : connect().prepareStatement(sql);
+        return connection.prepareStatement(sql);
     }
 }

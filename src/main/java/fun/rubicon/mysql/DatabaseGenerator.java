@@ -25,6 +25,7 @@ public class DatabaseGenerator {
             createUserDatabase();
             createMuteSettingsTable();
             createBansTable();
+            createAutochannelTable();
         } catch (Exception e) {
             e.printStackTrace();
             return false;
