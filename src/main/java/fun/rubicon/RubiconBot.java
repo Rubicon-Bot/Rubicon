@@ -13,14 +13,7 @@ import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.commands.fun.CommandRandom;
 import fun.rubicon.commands.general.*;
-<<<<<<< HEAD
-import fun.rubicon.commands.moderation.CommandBan;
-import fun.rubicon.commands.moderation.CommandMute;
-import fun.rubicon.commands.moderation.CommandUnban;
-import fun.rubicon.commands.moderation.CommandUnmute;
 import fun.rubicon.commands.settings.CommandAutochannel;
-=======
->>>>>>> Rework-1.0.0
 import fun.rubicon.commands.settings.CommandJoinMessage;
 import fun.rubicon.commands.settings.CommandLeaveMessage;
 import fun.rubicon.commands.tools.CommandPoll;
