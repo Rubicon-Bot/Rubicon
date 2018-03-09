@@ -23,8 +23,9 @@ public class DatabaseGenerator {
             createLeavemessageTable();
             createUserDatabase();
             createMuteSettingsTable();
+            createPunishmentsTable();
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
             return false;
         }
         return true;
@@ -90,7 +91,7 @@ public class DatabaseGenerator {
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
     }
 
@@ -108,7 +109,7 @@ public class DatabaseGenerator {
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
     }
 
@@ -124,7 +125,22 @@ public class DatabaseGenerator {
                     "ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();
         } catch (SQLException e){
-            e.printStackTrace();
+            Logger.error(e);
+        }
+    }
+
+    private static void createPunishmentsTable() {
+        try{
+            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS punishments\n" +
+                    "(\n" +
+                    "    id INT PRIMARY KEY AUTO_INCREMENT,\n" +
+                    "    type VARCHAR(10),\n" +
+                    "    serverid BIGINT(25),\n" +
+                    "    userid BIGINT(25)\n" +
+                    ");");
+            ps.execute();
+        } catch (SQLException e){
+            Logger.error(e);
         }
     }
 

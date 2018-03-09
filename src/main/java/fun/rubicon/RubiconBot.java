@@ -13,6 +13,7 @@ import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.commands.fun.CommandRandom;
 import fun.rubicon.commands.general.*;
+import fun.rubicon.commands.moderation.CommandMute;
 import fun.rubicon.commands.settings.CommandJoinMessage;
 import fun.rubicon.commands.tools.CommandPoll;
 import fun.rubicon.commands.settings.CommandPrefix;
@@ -91,6 +92,7 @@ public class RubiconBot {
         DatabaseGenerator.createAllDatabasesIfNecessary();
 
         commandManager = new CommandManager();
+        punishmentManager = new PunishmentManager();
         registerCommands();
         permissionManager = new PermissionManager();
         translationManager = new TranslationManager();
@@ -140,8 +142,13 @@ public class RubiconBot {
 
         );
 
+        //Punishments
+        punishmentManager.registerPunishmentHandlers(
+            new CommandMute()
+        );
+
         //Tools
-        commandManager.registerCommandHandlers(
+        commandManager.registerCommandHandler(
                 new CommandPoll()
         );
     }
