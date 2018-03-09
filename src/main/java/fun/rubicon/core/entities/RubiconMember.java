@@ -88,6 +88,7 @@ public class RubiconMember extends RubiconUserImpl {
         return null;
     }
 
+<<<<<<< HEAD
    
 
     public RubiconMember unmute(){
@@ -102,6 +103,8 @@ public class RubiconMember extends RubiconUserImpl {
         }
         return this;
     }
+=======
+>>>>>>> Rework-1.0.0
 
     public void delete() {
         try {

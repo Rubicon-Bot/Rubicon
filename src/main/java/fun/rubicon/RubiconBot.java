@@ -13,8 +13,13 @@ import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.commands.fun.CommandRandom;
 import fun.rubicon.commands.general.*;
+<<<<<<< HEAD
 import fun.rubicon.commands.moderation.CommandMute;
+=======
+import fun.rubicon.commands.settings.CommandAutochannel;
+>>>>>>> Rework-1.0.0
 import fun.rubicon.commands.settings.CommandJoinMessage;
+import fun.rubicon.commands.settings.CommandLeaveMessage;
 import fun.rubicon.commands.tools.CommandPoll;
 import fun.rubicon.commands.settings.CommandPrefix;
 import fun.rubicon.core.GameAnimator;
@@ -26,7 +31,9 @@ import fun.rubicon.listener.bot.BotJoinListener;
 import fun.rubicon.listener.bot.SelfMentionListener;
 import fun.rubicon.listener.bot.ShardListener;
 import fun.rubicon.listener.channel.TextChannelDeleteListener;
+import fun.rubicon.listener.channel.VoiceChannelDeleteListener;
 import fun.rubicon.listener.member.MemberJoinListener;
+import fun.rubicon.listener.member.MemberLeaveListener;
 import fun.rubicon.mysql.DatabaseGenerator;
 import fun.rubicon.mysql.MySQL;
 import fun.rubicon.permission.PermissionManager;
@@ -117,7 +124,9 @@ public class RubiconBot {
 
         // Settings
         commandManager.registerCommandHandlers(
-                new CommandJoinMessage()
+                new CommandJoinMessage(),
+                new CommandLeaveMessage(),
+                new CommandAutochannel()
         );
 
         // Fun
@@ -187,17 +196,17 @@ public class RubiconBot {
                 new SelfMentionListener(),
                 new VoteListener(),
                 new MemberJoinListener(),
-                new TextChannelDeleteListener()
+                new MemberLeaveListener(),
+                new TextChannelDeleteListener(),
+                new VoiceChannelDeleteListener(),
+                new GeneralReactionListener(),
+                new AutochannelListener()
         );
         try {
             shardManager = builder.build();
         } catch (LoginException e) {
             Logger.error(e);
         }
-    }
-
-    public static void shutdown() {
-
     }
 
     /**
