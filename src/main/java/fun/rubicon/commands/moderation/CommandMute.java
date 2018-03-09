@@ -59,7 +59,7 @@ public class CommandMute extends CommandHandler implements PunishmentHandler{
             if(expiry == null)
                 return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.ban.invalidnumber.title"), invocation.translate("command.ban.invalidnumber.description")).build()).build();
             victim.mute(expiry);
-            return new MessageBuilder().setEmbed(EmbedUtil.success("command.mute.muted.temporary.title", invocation.translate("command.mute.muted.temporary.description").replace("%mention%", victimMember.getAsMention()).replace("%date%", DateUtil.formatDate(expiry, invocation.translate("date.format")))).build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.success(invocation.translate("command.mute.muted.temporary.title"), invocation.translate("command.mute.muted.temporary.description").replace("%mention%", victimMember.getAsMention()).replace("%date%", DateUtil.formatDate(expiry, invocation.translate("date.format")))).build()).build();
         }
         return createHelpMessage();
     }

@@ -14,6 +14,7 @@ import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.commands.fun.CommandRandom;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.CommandMute;
+import fun.rubicon.commands.moderation.CommandUnmute;
 import fun.rubicon.commands.settings.CommandAutochannel;
 import fun.rubicon.commands.settings.CommandJoinMessage;
 import fun.rubicon.commands.settings.CommandLeaveMessage;
@@ -97,8 +98,10 @@ public class RubiconBot {
 
         DatabaseGenerator.createAllDatabasesIfNecessary();
 
-        commandManager = new CommandManager();
+        //Init punishments
         punishmentManager = new PunishmentManager();
+
+        commandManager = new CommandManager();
         registerCommands();
         permissionManager = new PermissionManager();
         translationManager = new TranslationManager();
@@ -109,8 +112,6 @@ public class RubiconBot {
 
         gameAnimator.start();
 
-        //Init punishments
-        instance.punishmentManager = new PunishmentManager();
 
     }
 
@@ -147,7 +148,7 @@ public class RubiconBot {
 
         //Moderation
         commandManager.registerCommandHandlers(
-
+            new CommandUnmute()
         );
 
         //Punishments
