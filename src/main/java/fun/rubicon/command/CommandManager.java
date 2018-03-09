@@ -245,7 +245,11 @@ public class CommandManager extends ListenerAdapter {
             try {
                 entry = language.getString(key);
             } catch (MissingResourceException e) {
-                entry = defaultResourceBundle.getString(key);
+                try {
+                    entry = defaultResourceBundle.getString(key);
+                } catch (MissingResourceException e2){
+                    entry = "Unable to find language string for \"" + key + "\"";
+                }
             }
             return entry;
         }

@@ -1,4 +1,4 @@
-package fun.rubicon.listener;
+package fun.rubicon.listener.feature;
 
 import net.dv8tion.jda.core.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;

@@ -23,8 +23,9 @@ public class DatabaseGenerator {
             createJoinmessageTable();
             createLeavemessageTable();
             createUserDatabase();
+            createPunishmentsTable();
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
             return false;
         }
         return true;
@@ -119,6 +120,22 @@ public class DatabaseGenerator {
                     "`serverId` BIGINT(25)," +
                     "`channelId` BIGINT(25)" +
                     ")ENGINE=InnoDB DEFAULT CHARSET=utf8");
+            ps.execute();
+        } catch (SQLException e){
+            Logger.error(e);
+        }
+    }
+
+    private static void createPunishmentsTable() {
+        try{
+            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS punishments\n" +
+                    "(\n" +
+                    "    id INT PRIMARY KEY AUTO_INCREMENT,\n" +
+                    "    type VARCHAR(10),\n" +
+                    "    serverid BIGINT(25),\n" +
+                    "    userid BIGINT(25),\n" +
+                    "    expiry BIGINT(25)\n"+
+                    ");");
             ps.execute();
         } catch (SQLException e) {
             Logger.error(e);
