@@ -13,11 +13,8 @@ import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.commands.fun.CommandRandom;
 import fun.rubicon.commands.general.*;
-<<<<<<< HEAD
 import fun.rubicon.commands.moderation.CommandMute;
-=======
 import fun.rubicon.commands.settings.CommandAutochannel;
->>>>>>> Rework-1.0.0
 import fun.rubicon.commands.settings.CommandJoinMessage;
 import fun.rubicon.commands.settings.CommandLeaveMessage;
 import fun.rubicon.commands.tools.CommandPoll;
@@ -32,6 +29,8 @@ import fun.rubicon.listener.bot.SelfMentionListener;
 import fun.rubicon.listener.bot.ShardListener;
 import fun.rubicon.listener.channel.TextChannelDeleteListener;
 import fun.rubicon.listener.channel.VoiceChannelDeleteListener;
+import fun.rubicon.listener.feature.PunishmentListener;
+import fun.rubicon.listener.feature.VoteListener;
 import fun.rubicon.listener.member.MemberJoinListener;
 import fun.rubicon.listener.member.MemberLeaveListener;
 import fun.rubicon.mysql.DatabaseGenerator;
@@ -200,7 +199,8 @@ public class RubiconBot {
                 new TextChannelDeleteListener(),
                 new VoiceChannelDeleteListener(),
                 new GeneralReactionListener(),
-                new AutochannelListener()
+                new AutochannelListener(),
+                new PunishmentListener()
         );
         try {
             shardManager = builder.build();

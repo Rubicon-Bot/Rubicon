@@ -6,6 +6,7 @@ import net.dv8tion.jda.core.entities.Member;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class PunishmentManager {
@@ -14,7 +15,7 @@ public class PunishmentManager {
 
 
 
-    private List<Member> muteCache = new ArrayList<>();
+    private HashMap<Member, Long> muteCache = new HashMap<>();
 
     public void registerPunishmentHandler(PunishmentHandler handler){
         RubiconBot.getCommandManager().registerCommandHandler((CommandHandler) handler);
@@ -32,7 +33,7 @@ public class PunishmentManager {
         punishmentHandlers.forEach(PunishmentHandler::loadPunishments);
     }
 
-    public List<Member> getMuteCache() {
+    public HashMap<Member, Long> getMuteCache() {
         return muteCache;
     }
 

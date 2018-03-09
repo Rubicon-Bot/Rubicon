@@ -23,11 +23,7 @@ public class DatabaseGenerator {
             createJoinmessageTable();
             createLeavemessageTable();
             createUserDatabase();
-<<<<<<< HEAD
-            createMuteSettingsTable();
             createPunishmentsTable();
-=======
->>>>>>> Rework-1.0.0
         } catch (Exception e) {
             Logger.error(e);
             return false;
@@ -125,7 +121,6 @@ public class DatabaseGenerator {
                     "`channelId` BIGINT(25)" +
                     ")ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();
-<<<<<<< HEAD
         } catch (SQLException e){
             Logger.error(e);
         }
@@ -138,13 +133,11 @@ public class DatabaseGenerator {
                     "    id INT PRIMARY KEY AUTO_INCREMENT,\n" +
                     "    type VARCHAR(10),\n" +
                     "    serverid BIGINT(25),\n" +
-                    "    userid BIGINT(25)\n" +
+                    "    userid BIGINT(25),\n" +
+                    "    expiry BIGINT(25)\n"+
                     ");");
             ps.execute();
-        } catch (SQLException e){
-=======
         } catch (SQLException e) {
->>>>>>> Rework-1.0.0
             Logger.error(e);
         }
     }
