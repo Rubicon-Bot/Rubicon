@@ -15,11 +15,11 @@ import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.commands.fun.CommandRandom;
 import fun.rubicon.commands.general.*;
-import fun.rubicon.commands.moderation.CommandBan;
 import fun.rubicon.commands.moderation.CommandMute;
-import fun.rubicon.commands.moderation.CommandUnban;
 import fun.rubicon.commands.moderation.CommandUnmute;
+import fun.rubicon.commands.settings.CommandAutochannel;
 import fun.rubicon.commands.settings.CommandJoinMessage;
+import fun.rubicon.commands.settings.CommandLeaveMessage;
 import fun.rubicon.commands.tools.CommandPoll;
 import fun.rubicon.commands.settings.CommandPrefix;
 import fun.rubicon.commands.tools.CommandRandomColor;
@@ -32,7 +32,11 @@ import fun.rubicon.listener.bot.BotJoinListener;
 import fun.rubicon.listener.bot.SelfMentionListener;
 import fun.rubicon.listener.bot.ShardListener;
 import fun.rubicon.listener.channel.TextChannelDeleteListener;
+import fun.rubicon.listener.channel.VoiceChannelDeleteListener;
+import fun.rubicon.listener.feature.PunishmentListener;
+import fun.rubicon.listener.feature.VoteListener;
 import fun.rubicon.listener.member.MemberJoinListener;
+import fun.rubicon.listener.member.MemberLeaveListener;
 import fun.rubicon.mysql.DatabaseGenerator;
 import fun.rubicon.mysql.MySQL;
 import fun.rubicon.permission.PermissionManager;
@@ -66,8 +70,6 @@ public class RubiconBot {
     private PunishmentManager punishmentManager;
     private ShardManager shardManager;
     private boolean allShardsInited;
-
-
     private static final int SHARD_COUNT = 3;
 
     /**
@@ -99,6 +101,9 @@ public class RubiconBot {
 
         DatabaseGenerator.createAllDatabasesIfNecessary();
 
+        //Init punishments
+        punishmentManager = new PunishmentManager();
+
         commandManager = new CommandManager();
         registerCommands();
         permissionManager = new PermissionManager();
@@ -110,9 +115,6 @@ public class RubiconBot {
 
         gameAnimator.start();
 
-        //Init punishments
-        instance.punishmentManager = new PunishmentManager();
-        punishmentManager.registerPunishmentHandlers(new CommandMute(), new CommandBan());
 
     }
 
@@ -125,7 +127,9 @@ public class RubiconBot {
 
         // Settings
         commandManager.registerCommandHandlers(
-                new CommandJoinMessage()
+                new CommandJoinMessage(),
+                new CommandLeaveMessage(),
+                new CommandAutochannel()
         );
 
         // Fun
@@ -148,16 +152,17 @@ public class RubiconBot {
 
         //Moderation
         commandManager.registerCommandHandlers(
-                new CommandMute(),
-                new CommandUnmute(),
-                new CommandBan(),
-                new CommandUnban()
+            new CommandUnmute()
+        );
+
+        //Punishments
+        punishmentManager.registerPunishmentHandlers(
+            new CommandMute()
         );
 
         //Tools
         commandManager.registerCommandHandlers(
-                new CommandPoll(),
-                new CommandRandomColor()
+                new CommandPoll()
         );
 
         //Fun
@@ -195,15 +200,18 @@ public class RubiconBot {
         //Register Event Listeners
         builder.addEventListeners(
                 new BotJoinListener(),
-                new MuteListener(),
                 commandManager,
                 new UserMentionListener(),
                 new ShardListener(),
                 new SelfMentionListener(),
                 new VoteListener(),
                 new MemberJoinListener(),
+                new MemberLeaveListener(),
                 new TextChannelDeleteListener(),
-                new BanListener()
+                new VoiceChannelDeleteListener(),
+                new GeneralReactionListener(),
+                new AutochannelListener(),
+                new PunishmentListener()
         );
         try {
             shardManager = builder.build();
@@ -212,10 +220,6 @@ public class RubiconBot {
         }
 
         Info.lastRestart = new Date();
-    }
-
-    public static void shutdown() {
-
     }
 
     /**

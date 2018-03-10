@@ -4,17 +4,15 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.core.entities.RubiconMember;
 import fun.rubicon.features.PunishmentHandler;
-import fun.rubicon.mysql.MySQL;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.channel.text.TextChannelCreateEvent;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,222 +20,68 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class CommandMute extends CommandHandler implements PunishmentHandler{
-
     public CommandMute() {
-        super(new String[]{"mute"}, CommandCategory.MODERATION, new PermissionRequirements("mute", false, false), "Easily mute a member.", "<@User> [time in minutes]");
-    }
-
-
-    public static Role createMutedRole(Guild guild) {
-        if (!guild.getRolesByName("rubicon-muted", false).isEmpty())
-            return guild.getRolesByName("rubicon-muted", false).get(0);
-        Member selfMember = guild.getSelfMember();
-        if (!selfMember.getPermissions().contains(Permission.MANAGE_ROLES) || !selfMember.getPermissions().contains(Permission.MANAGE_CHANNEL)) {
-            guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: Please give me `MANAGE_CHANNEL` and the `MANAGE_CHANNEL`permission in order to use the mute command").queue();
-            return null;
-        }
-
-        Role muted = guild.getController().createRole().setName("rubicon-muted").complete();
-        guild.getTextChannels().forEach(tc -> {
-            PermissionOverride override = tc.createPermissionOverride(muted).complete();
-            override.getManager().deny(Permission.MESSAGE_WRITE).complete();
-        });
-        return muted;
-    }
-
-    public static void handleChannelCreation(TextChannelCreateEvent event) {
-        Guild guild = event.getGuild();
-        Member selfMember = guild.getSelfMember();
-        Role muted = createMutedRole(guild);
-
-        if (!selfMember.getPermissions().contains(Permission.MANAGE_ROLES) || !selfMember.getPermissions().contains(Permission.MANAGE_CHANNEL)) {
-            guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: Please give me `MANAGE_CHANNEL` and the `MANAGE_CHANNEL`permission in order to use the mute command").queue();
-            return;
-        }
-
-        PermissionOverride override = event.getChannel().createPermissionOverride(muted).complete();
-        override.getManager().deny(Permission.MESSAGE_WRITE).complete();
-    }
-
-    public static boolean assignRole(Member member) {
-        Guild guild = member.getGuild();
-        Role muted = createMutedRole(guild);
-        if (muted == null) return false;
-        if (!guild.getSelfMember().canInteract(muted)) return false;
-        guild.getController().addSingleRoleToMember(member, muted).queue();
-        return true;
+        super(new String[] {"mute", "tempmute"}, CommandCategory.MODERATION, new PermissionRequirements("mute", false, false), "Mute members temporary or permanent", "<@User> [time]");
     }
 
     @Override
-    protected Message execute(CommandManager.ParsedCommandInvocation command, UserPermissions userPermissions) {
-        String[] args = command.getArgs();
-        Message message = command.getMessage();
-        Member member = command.getMember();
-        Guild guild = command.getGuild();
+    protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
+        String[] args = invocation.getArgs();
+        Message message = invocation.getMessage();
+        Member member = invocation.getMember();
+        Guild guild = invocation.getGuild();
 
-        if (args.length == 0)
+        if(args.length == 0)
             return createHelpMessage();
-        if(args[0].equals("settings")){
-            PermissionRequirements settingsPerms = new PermissionRequirements("mute.settings", false, false);
-            UserPermissions user = new UserPermissions(member.getUser(), guild);
-            if(settingsPerms.coveredBy(userPermissions)){
-                RubiconGuild rGuild = RubiconGuild.fromGuild(guild);
-                if(!rGuild.useMuteSettings())
-                    rGuild.insertMuteTable();
-                switch (args[1]){
-                    case "channel":
-                        if(message.getMentionedChannels().isEmpty()) {
-                            return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.settings.nochannelmentioned.title"), command.translate("command.mute.settings.nochannelmentioned.description")).build()).build();
-                        }
-                        TextChannel channel = message.getMentionedChannels().get(0);
-                        setMuteLogChannel(channel);
-                        SafeMessage.sendMessage(command.getTextChannel(), EmbedUtil.success(command.translate("command.mute.settings.channelset.title"), String.format(command.translate("command.mute.settings.channelset.description"), channel.getName())).build(), 5);
-                        break;
-                    case "mute":
-                        if(args.length == 2){
-                            return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.settings.mutemessage.nomsg.title"), command.translate("command.mute.settings.mutemessage.nomsg.description")).build()).build();
-                        }
-
-                        StringBuilder muteBuilder = new StringBuilder();
-                        for(int i = 2; i < args.length; i++){
-                            muteBuilder.append(args[i]).append(" ");
-                        }
-                        String mutedMessage = muteBuilder.replace(muteBuilder.lastIndexOf(" "), muteBuilder.lastIndexOf(" ") + 1, "").toString();
-                        setMutedMessage(mutedMessage, guild);
-                        if(mutedMessage.equals("disable")){
-                            return new MessageBuilder().setEmbed(EmbedUtil.success(command.translate("command.mute.settings.mutemessage.disabled.title"), command.translate("command.mute.settings.mutemessage.disabled.description")).build()).build();
-                        }
-                        SafeMessage.sendMessage(command.getTextChannel(), EmbedUtil.success(command.translate("command.mute.settings.messages.success.title"), String.format(command.translate("command.mute.settings.mutemessaage.success.description"), mutedMessage)).build(), 5);
-                        break;
-                    case "unmute":
-                        if(args.length == 2){
-                            return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.settings.mutemessage.nomsg.title"), command.translate("command.mute.settings.mutemessage.nomsg.description")).build()).build();
-                        }
-
-                        StringBuilder unmuteBuilder = new StringBuilder();
-                        for(int i = 2; i < args.length; i++){
-                            unmuteBuilder.append(args[i]).append(" ");
-                        }
-                        String unmutedMessage = unmuteBuilder.replace(unmuteBuilder.lastIndexOf(" "), unmuteBuilder.lastIndexOf(" ") + 1, "").toString();
-                        setUnmutedMessage(unmutedMessage, guild);
-                        if(unmutedMessage.equals("disable")){
-                            return new MessageBuilder().setEmbed(EmbedUtil.success(command.translate("command.mute.settings.unmutemessage.disabled.title"), command.translate("command.mute.settings.mutemessage.undisabled.description")).build()).build();
-                        }
-                        SafeMessage.sendMessage(command.getTextChannel(), EmbedUtil.success(command.translate("command.mute.settings.messages.success.title"), String.format(command.translate("command.mute.settings.mutemessaage.success.description"), unmutedMessage)).build(), 5);
-                        break;
-                    default:
-                        SafeMessage.sendMessage(command.getTextChannel(), EmbedUtil.info("USAGE", "mute settings channel <#Channel>\nmute settings <mute/unmute> <message/disable>").build(), 10);
-                        break;
-                }
-            } else
-                return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.settings.nopermission.title"), command.translate("command.mute.settings.nopermission.description")).build()).build();
-            return null;
-        }
-        if (message.getMentionedUsers().isEmpty())
-            return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.unknownuser.title"), command.translate("command.mute.unknownuser.description")).build()).build();
-        Member victimMember = guild.getMember(message.getMentionedUsers().get(0));
+        if(args[0].equals("settings"))
+            return new MessageBuilder().setEmbed(EmbedUtil.info("Work in progress", "This feature is still work in progress").build()).build();
+        if(message.getMentionedUsers().isEmpty())
+            return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.mute.unknownuser.titlecommand.mute.unknownuser.title"), invocation.translate("command.mute.unknownuser.description")).build()).build();
+        Member victimMember = message.getMentionedMembers().get(0);
         RubiconMember victim = RubiconMember.fromMember(victimMember);
-        if (victim.isMuted())
-            return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.muted.permanent.title"), command.translate("command.mute.muted.permanent.description")).build()).build();
+        String rawArgs = String.join(" ", new ArrayList<>(Arrays.asList(args))).replace("@", "x").replace(victimMember.getEffectiveName(), "");
+        args = rawArgs.split(" ");
+        if(victim.isMuted())
+            return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.mute.muted.permanent.title"), invocation.translate("command.mute.ismuted.description")).build()).build();
         if(victimMember.equals(guild.getSelfMember()) || Arrays.asList(Info.BOT_AUTHOR_IDS).contains(victimMember.getUser().getIdLong()))
-            return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.donotmuterubicon.title"), command.translate("command.mute.donotmuterubicon.description")).build()).build();
-        if (!member.canInteract(victimMember) && !Arrays.asList(Info.BOT_AUTHOR_IDS).contains(member.getUser().getIdLong()))
-            return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.nopermissions.user.title"), String.format(command.translate("command.mute.nopermissions.user.description"), victimMember.getAsMention())).build()).build();
-        if (!command.getSelfMember().canInteract(victimMember))
-            return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.nopermissions.bot.title"), String.format(command.translate("command.mute.nopermissions.bot.description"), victimMember.getAsMention())).build()).build();
-        if (!assignRole(victimMember))
-            return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.nopermissions.role.title"), command.translate("command.mute.nopermissions.role.description")).build()).build();
-        RubiconGuild rGuild = RubiconGuild.fromGuild(guild);
-        if (args.length == 1) {
-            if(!new PermissionRequirements("mute.permanent", false, false).coveredBy(command.getPerms()))
-                return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.mute.nopermissions.user.title"), command.translate("command.mute.permanent.noperms.description")).build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.mute.donotmuterubicon.title"), invocation.translate("command.mute.donotmuterubicon.description")).build()).build();
+        if(!member.canInteract(victimMember) && !Arrays.asList(Info.BOT_AUTHOR_IDS).contains(victimMember.getUser().getIdLong()))
+            return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.mute.nopermissions.user.title"), String.format(invocation.translate("command.mute.nopermissions.user.description"), victimMember.getAsMention())).build()).build();
+        if(!invocation.getSelfMember().canInteract(victimMember))
+            return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.mute.nopermissions.bot.title"), String.format(invocation.translate("command.mute.nopermissions.bot.description"), victimMember.getAsMention())).build()).build();
+        if(args.length == 1){
+            if(!new PermissionRequirements("mute.permanent", false, false).coveredBy(invocation.getPerms()))
+                return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.mute.nopermissions.user.title"), invocation.translate("command.mute.nopermissions.user.description")).build()).build();
             victim.mute();
-            if(rGuild.useMuteSettings() && !rGuild.getMuteMessage().equals(""))
-                SafeMessage.sendMessage(rGuild.getMuteChannel(), rGuild.getMuteMessage().replace("%moderator%", member.getAsMention()).replace("%mention%", victim.getMember().getAsMention()).replace("%date%", "never"));
-            return new MessageBuilder().setEmbed(EmbedUtil.success(command.translate("command.mute.muted.permanent.title"), String.format(command.translate("command.mute.muted.permanent.description"), victimMember.getAsMention())).build()).build();
-        } else if (args.length > 1) {
+            return new MessageBuilder().setEmbed(EmbedUtil.success(invocation.translate("command.mute.muted.permanent.title"), String.format(invocation.translate("command.mute.muted.permanent.description"), victimMember.getAsMention())).build()).build();
+        } else if (args.length > 1){
             Date expiry = StringUtil.parseDate(args[1]);
             if(expiry == null)
-                return new MessageBuilder().setEmbed(EmbedUtil.error(command.translate("command.ban.invalidnumber.title"), command.translate("command.ban.invalidnumber.description")).build()).build();
+                return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.ban.invalidnumber.title"), invocation.translate("command.ban.invalidnumber.description")).build()).build();
             victim.mute(expiry);
-            if(rGuild.useMuteSettings())
-                SafeMessage.sendMessage(rGuild.getMuteChannel(), rGuild.getMuteMessage().replace("%moderator%", member.getAsMention()).replace("%mention%", victim.getMember().getAsMention()).replace("%date%", DateUtil.formatDate(expiry, command.translate("date.format"))));
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    victim.unmute();
-                    CommandUnmute.deassignRole(victim.getMember());
-                }
-            }, expiry);
-            return new MessageBuilder().setEmbed(EmbedUtil.success(command.translate("command.mute.muted.temporary.title"), command.translate("command.mute.muted.temporary.permanent").replace("%mention%", victimMember.getAsMention()).replace("%date%", DateUtil.formatDate(expiry, command.translate("date.format")))).build()).build();
+            return new MessageBuilder().setEmbed(EmbedUtil.success(invocation.translate("command.mute.muted.temporary.title"), invocation.translate("command.mute.muted.temporary.description").replace("%mention%", victimMember.getAsMention()).replace("%date%", DateUtil.formatDate(expiry, invocation.translate("date.format")))).build()).build();
         }
         return createHelpMessage();
-
-    }
-
-    private void setUnmutedMessage(String unmutedMessage, Guild guild) {
-        try {
-            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("UPDATE `mutesettings` SET `unmutemsg` = ? WHERE serverid = ?");
-            ps.setString(1, unmutedMessage);
-            ps.setLong(2, guild.getIdLong());
-            ps.execute();
-        } catch (SQLException e){
-            Logger.error(e);
-        }
-    }
-
-    private void setMutedMessage(String mutedMessage, Guild guild) {
-        try {
-            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("UPDATE `mutesettings` SET `mutedmsg` = ? WHERE serverid = ?");
-            ps.setString(1, mutedMessage);
-            ps.setLong(2, guild.getIdLong());
-            ps.execute();
-        } catch (SQLException e){
-            Logger.error(e);
-        }
-    }
-
-    private void setMuteLogChannel(TextChannel textChannel) {
-        try{
-            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("UPDATE `mutesettings` SET channel = ? WHERE serverid = ?");
-            ps.setLong(1, textChannel.getIdLong());
-            ps.setLong(2, textChannel.getGuild().getIdLong());
-            ps.execute();
-        } catch (SQLException e){
-            Logger.error(e);
-        }
     }
 
     @Override
     public void loadPunishments() {
-        MySQL mySQL = RubiconBot.getMySQL();
-        try {
-            PreparedStatement ps = mySQL.getConnection().prepareStatement("SELECT * FROM members WHERE NOT mute = '' AND NOT mute = 'permanent'");
+        try{
+            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("SELECT serverid, userid, expiry FROM punishments WHERE type = 'mute' AND NOT expiry = ?");
+            ps.setLong(1, 0L);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Date expiry = new Date(rs.getLong("mute"));
-                Long guildid = rs.getLong("serverid");
-                Long memberid = rs.getLong("userid");
-                System.out.println(rs.getLong("userid"));
-                Guild guild = RubiconBot.getShardManager().getGuildById(rs.getLong("serverid"));
-
-                Member member = guild.getMemberById(rs.getLong("userid"));
-                RubiconMember rMember = RubiconMember.fromMember(member);
-                if (expiry.after(new Date())) {
-                    rMember.unmute();
-                    CommandUnmute.deassignRole(member);
-                    return;
-                }
+            while (rs.next()){
+                RubiconMember member = RubiconMember.fromMember(RubiconBot.getShardManager().getGuildById(rs.getLong("serverid")).getMemberById(rs.getLong("userid")));
+                if(new Date(rs.getLong("expiry")).before(new Date())) member.unmute(true);
                 new Timer().schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        rMember.unmute();
-                        CommandUnmute.deassignRole(member);
+                        member.unmute(true);
                     }
-                }, expiry);
+                }, new Date(rs.getLong("expiry")));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException e){
+            Logger.error(e);
         }
     }
 }

@@ -13,6 +13,7 @@ import fun.rubicon.core.entities.RubiconUser;
 import fun.rubicon.core.translation.TranslationLocale;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.*;
+import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -163,12 +164,14 @@ public class CommandManager extends ListenerAdapter {
         private final Message message;
         private final String prefix;
         private final String argsString;
+        private final JDA jda;
 
         private ParsedCommandInvocation(Message invocationMessage, String serverPrefix, String invocationCommand, String[] args) {
             this.message = invocationMessage;
             this.prefix = serverPrefix;
             this.commandInvocation = invocationCommand;
             this.args = args;
+            this.jda = message.getJDA();
             this.argsString = message.getContentDisplay().replace(prefix + invocationCommand + " ", "");
 
             RubiconGuild.fromGuild(message.getGuild());
@@ -223,6 +226,18 @@ public class CommandManager extends ListenerAdapter {
             return argsString;
         }
 
+        public JDA getJDA() {
+            return jda;
+        }
+
+        public ResourceBundle getLanguage() {
+            return language;
+        }
+
+        public ResourceBundle getDefaultLanguage() {
+            return defaultResourceBundle;
+        }
+
         public UserPermissions getPerms() { return new UserPermissions(getAuthor(), getGuild()); }
 
         public String translate(String key) {
@@ -230,7 +245,11 @@ public class CommandManager extends ListenerAdapter {
             try {
                 entry = language.getString(key);
             } catch (MissingResourceException e) {
-                entry = defaultResourceBundle.getString(key);
+                try {
+                    entry = defaultResourceBundle.getString(key);
+                } catch (MissingResourceException e2){
+                    entry = "Unable to find language string for \"" + key + "\"";
+                }
             }
             return entry;
         }
