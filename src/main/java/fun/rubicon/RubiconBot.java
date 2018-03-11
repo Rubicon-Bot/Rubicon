@@ -14,9 +14,13 @@ import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.commands.fun.CommandRandom;
 import fun.rubicon.commands.general.*;
+<<<<<<< HEAD
 import fun.rubicon.commands.moderation.CommandBan;
 import fun.rubicon.commands.moderation.CommandMute;
 import fun.rubicon.commands.moderation.CommandUnban;
+=======
+import fun.rubicon.commands.moderation.CommandMute;
+>>>>>>> Rework-1.0.0
 import fun.rubicon.commands.moderation.CommandUnmute;
 import fun.rubicon.commands.settings.CommandAutochannel;
 import fun.rubicon.commands.settings.CommandJoinMessage;
@@ -155,14 +159,22 @@ public class RubiconBot {
 
         //Moderation
         commandManager.registerCommandHandlers(
+<<<<<<< HEAD
             new CommandUnmute(),
             new CommandUnban()
+=======
+            new CommandUnmute()
+>>>>>>> Rework-1.0.0
         );
 
         //Punishments
         punishmentManager.registerPunishmentHandlers(
+<<<<<<< HEAD
             new CommandMute(),
             new CommandBan()
+=======
+            new CommandMute()
+>>>>>>> Rework-1.0.0
         );
 
         //Tools
