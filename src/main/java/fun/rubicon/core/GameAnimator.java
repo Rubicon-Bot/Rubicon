@@ -43,6 +43,7 @@ public class GameAnimator {
     }
 
     public void start() {
+        if(RubiconBot.getCommandManager().isMaintenanceEnabled()) return;
         Logger.info("Starting Game Animator....");
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -57,5 +58,10 @@ public class GameAnimator {
                 }
             }
         }, 0, 1000 * 60);
+    }
+
+    public void stop(){
+        Logger.info("Stopping Game Animator ....");
+        timer.cancel();
     }
 }
