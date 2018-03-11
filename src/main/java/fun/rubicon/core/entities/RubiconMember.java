@@ -8,6 +8,7 @@ package fun.rubicon.core.entities;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.util.Logger;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
@@ -210,9 +211,47 @@ public class RubiconMember extends RubiconUserImpl {
         }
     }
 
+    public RubiconMember ban(Date expiry) {
+        try {
+            PreparedStatement ps = mySQL.getConnection().prepareStatement("INSERT INTO punishments(type, serverid, userid, expiry) VALUES ('ban', ?,?,?)");
+            ps.setLong(1, guild.getIdLong());
+            ps.setLong(2, user.getIdLong());
+            ps.setLong(3, expiry.getTime());
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
 
+        }
+        if (guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
+            guild.getController().ban(user, 7).queue();
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    RubiconUser.fromUser(user).unban(guild);
+                }
+            }, expiry);
+        } else
+            guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: Unable to ban user `" + user.getName() + "`! Please give Rubicon `BAN_MEMBERS` permission in order to use ban command").queue();
+        return this;
+    }
 
+    public RubiconMember ban() {
+        try {
+            PreparedStatement ps = mySQL.getConnection().prepareStatement("INSERT INTO punishments(type, serverid, userid, expiry) VALUES ('ban', ?,?,?)");
+            ps.setLong(1, guild.getIdLong());
+            ps.setLong(2, user.getIdLong());
+            ps.setLong(3, 0L);
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+        if (guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
+            guild.getController().ban(user, 7).queue();
+        } else
+            guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: Unable to ban user `" + user.getName() + "`! Please give Rubicon `BAN_MEMBERS` permission in order to use ban command").queue();
 
+        return this;
+    }
 
 
     public static RubiconMember fromMember(Member member) {
