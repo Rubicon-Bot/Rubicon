@@ -2,10 +2,6 @@ package fun.rubicon.features;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandHandler;
-<<<<<<< HEAD
-=======
-import fun.rubicon.util.Logger;
->>>>>>> Rework-1.0.0
 import net.dv8tion.jda.core.entities.Member;
 
 import java.util.ArrayList;
@@ -39,9 +35,4 @@ public class PunishmentManager {
         return muteCache;
     }
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> Rework-1.0.0
 }

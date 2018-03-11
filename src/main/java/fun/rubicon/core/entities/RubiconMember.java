@@ -136,8 +136,6 @@ public class RubiconMember extends RubiconUserImpl {
     }
 
     public RubiconMember mute(){
-<<<<<<< HEAD
-=======
         try{
             PreparedStatement ps = mySQL.getConnection().prepareStatement("INSERT INTO punishments(type, serverid, userid, expiry) VALUES('mute',?,?,?)");
             ps.setLong(1, guild.getIdLong());
@@ -153,23 +151,6 @@ public class RubiconMember extends RubiconUserImpl {
         return this;
     }
 
-    public RubiconMember mute(Date date){
->>>>>>> Rework-1.0.0
-        try{
-            PreparedStatement ps = mySQL.getConnection().prepareStatement("INSERT INTO punishments(type, serverid, userid, expiry) VALUES('mute',?,?,?)");
-            ps.setLong(1, guild.getIdLong());
-            ps.setLong(2, user.getIdLong());
-<<<<<<< HEAD
-            ps.setLong(3, 0L);
-            ps.execute();
-        } catch (SQLException e){
-            Logger.error(e);
-        }
-        Role muted = RubiconGuild.fromGuild(guild).getMutedRole();
-        guild.getController().addSingleRoleToMember(member, muted).queue();
-        RubiconBot.getPunishmentManager().getMuteCache().put(member, 0L);
-        return this;
-    }
 
     public RubiconMember mute(Date date){
         try{
@@ -193,39 +174,7 @@ public class RubiconMember extends RubiconUserImpl {
         return this;
     }
 
-    public RubiconMember unmute(boolean removeRole){
-        try{
-            PreparedStatement ps = mySQL.getConnection().prepareStatement("DELETE FROM punishments WHERE type='mute' AND serverid=? AND userid=?");
-            ps.setLong(1, guild.getIdLong());
-            ps.setLong(2, user.getIdLong());
-=======
-            ps.setLong(3, date.getTime());
->>>>>>> Rework-1.0.0
-            ps.execute();
-        } catch (SQLException e){
-            Logger.error(e);
-        }
-<<<<<<< HEAD
-        if(removeRole) {
-            Role muted = RubiconGuild.fromGuild(guild).getMutedRole();
-            guild.getController().removeSingleRoleFromMember(member, muted).queue();
-        }
-        RubiconBot.getPunishmentManager().getMuteCache().remove(member);
-        return this;
-    }
 
-=======
-        Role muted = RubiconGuild.fromGuild(guild).getMutedRole();
-        guild.getController().addSingleRoleToMember(member, muted).queue();
-        RubiconBot.getPunishmentManager().getMuteCache().put(member, date.getTime());
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-               RubiconMember.fromMember(member).unmute(true);
-            }
-        }, date);
-        return this;
-    }
 
     public RubiconMember unmute(boolean removeRole){
         try{
@@ -244,7 +193,6 @@ public class RubiconMember extends RubiconUserImpl {
         return this;
     }
 
->>>>>>> Rework-1.0.0
     public boolean isMuted(){
         try{
             PreparedStatement ps = mySQL.getConnection().prepareStatement("SELECT expiry FROM punishments WHERE serverid=? AND userid=? AND type='mute'");
@@ -265,8 +213,6 @@ public class RubiconMember extends RubiconUserImpl {
             return false;
         }
     }
-
-<<<<<<< HEAD
     public RubiconMember ban(Date expiry) {
         try {
             PreparedStatement ps = mySQL.getConnection().prepareStatement("INSERT INTO punishments(type, serverid, userid, expiry) VALUES ('ban', ?,?,?)");
@@ -308,11 +254,8 @@ public class RubiconMember extends RubiconUserImpl {
 
         return this;
     }
-=======
 
 
-
->>>>>>> Rework-1.0.0
 
 
     public static RubiconMember fromMember(Member member) {
