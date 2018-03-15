@@ -7,6 +7,7 @@
 package fun.rubicon;
 
 import fun.rubicon.command.CommandManager;
+import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.botowner.CommandShardManage;
 import fun.rubicon.commands.general.CommandAFK;
 import fun.rubicon.commands.general.CommandHelp;
@@ -115,6 +116,11 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(
                 new CommandEval(),
                 new CommandShardManage()
+        );
+
+        //Admin
+        commandManager.registerCommandHandlers(
+                new CommandPortal()
         );
 
         // Settings
@@ -273,7 +279,9 @@ public class RubiconBot {
     /**
      * @return the punishment manager
      */
-    public static PunishmentManager getPunishmentManager() { return instance.punishmentManager; }
+    public static PunishmentManager getPunishmentManager() {
+        return instance.punishmentManager;
+    }
 
     /**
      * @return the translation manager via a static reference.
