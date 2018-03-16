@@ -2,7 +2,6 @@ package fun.rubicon.features;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandHandler;
-import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.Member;
 
 import java.util.ArrayList;
@@ -35,7 +34,5 @@ public class PunishmentManager {
     public HashMap<Member, Long> getMuteCache() {
         return muteCache;
     }
-
-
 
 }

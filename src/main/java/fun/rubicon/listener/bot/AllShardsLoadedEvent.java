@@ -20,7 +20,8 @@ public class AllShardsLoadedEvent {
     }
 
     private void call() {
-        RubiconBot.getShardManager().setGame(Game.playing("rc!help"));
+        if(!RubiconBot.getCommandManager().isMaintenanceEnabled())
+            RubiconBot.getShardManager().setGame(Game.playing("rc!help"));
         RubiconBot.setAllShardsInited(true);
         //Load all punishments (bans & mutes)
         RubiconBot.getPunishmentManager().loadPunishments();

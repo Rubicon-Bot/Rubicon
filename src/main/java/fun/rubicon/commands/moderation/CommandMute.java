@@ -51,13 +51,14 @@ public class CommandMute extends CommandHandler implements PunishmentHandler{
             return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.mute.nopermissions.bot.title"), String.format(invocation.translate("command.mute.nopermissions.bot.description"), victimMember.getAsMention())).build()).build();
         if(args.length == 1){
             if(!new PermissionRequirements("mute.permanent", false, false).coveredBy(invocation.getPerms()))
-                return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.mute.nopermissions.user.title"), invocation.translate("command.mute.nopermissions.user.description")).build()).build();
+                return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.mute.nopermissions.user.title"), invocation.translate("command.mute.permanent.noperms.description")).build()).build();
+
             victim.mute();
             return new MessageBuilder().setEmbed(EmbedUtil.success(invocation.translate("command.mute.muted.permanent.title"), String.format(invocation.translate("command.mute.muted.permanent.description"), victimMember.getAsMention())).build()).build();
         } else if (args.length > 1){
             Date expiry = StringUtil.parseDate(args[1]);
             if(expiry == null)
-                return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.ban.invalidnumber.title"), invocation.translate("command.ban.invalidnumber.description")).build()).build();
+                return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("general.punishment.invalidnumber.title"), invocation.translate("general.punishment.invalidnumber.description")).build()).build();
             victim.mute(expiry);
             return new MessageBuilder().setEmbed(EmbedUtil.success(invocation.translate("command.mute.muted.temporary.title"), invocation.translate("command.mute.muted.temporary.description").replace("%mention%", victimMember.getAsMention()).replace("%date%", DateUtil.formatDate(expiry, invocation.translate("date.format")))).build()).build();
         }
@@ -67,11 +68,12 @@ public class CommandMute extends CommandHandler implements PunishmentHandler{
     @Override
     public void loadPunishments() {
         try{
-            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("SELECT serverid, userid, expiry FROM punishments WHERE type = 'mute' AND NOT expiry = ?");
-            ps.setLong(1, 0L);
+            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("SELECT serverid, userid, expiry FROM punishments WHERE type = 'mute'");
             ResultSet rs = ps.executeQuery();
             while (rs.next()){
                 RubiconMember member = RubiconMember.fromMember(RubiconBot.getShardManager().getGuildById(rs.getLong("serverid")).getMemberById(rs.getLong("userid")));
+                RubiconBot.getPunishmentManager().getMuteCache().put(member.getMember(), rs.getLong("expiry"));
+                if(rs.getLong("expiry") == 0L) return;
                 if(new Date(rs.getLong("expiry")).before(new Date())) member.unmute(true);
                 new Timer().schedule(new TimerTask() {
                     @Override

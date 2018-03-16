@@ -9,6 +9,8 @@ package fun.rubicon.core.entities;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.mysql.MySQL;
 import fun.rubicon.util.Logger;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
 
 import java.sql.PreparedStatement;
@@ -212,6 +214,23 @@ public abstract class RubiconUserImpl {
         } catch (SQLException e) {
             Logger.error(e);
         }
+    }
+
+    public RubiconUser unban(Guild guild) {
+        try {
+            PreparedStatement ps = mySQL.getConnection().prepareStatement("DELETE FROM punishments WHERE serverid=? AND userid=? AND type='ban'");
+            ps.setLong(1, guild.getIdLong());
+            ps.setLong(2, user.getIdLong());
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+        if (guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
+            guild.getController().unban(user).queue();
+        } else
+            guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: Unable to ban user `" + user.getName() + "`! Please give Rubicon `BAN_MEMBERS` permission in order to use ban command").queue();
+
+        return ((RubiconUser) this);
     }
 
     public static RubiconUser fromUser(User user) {

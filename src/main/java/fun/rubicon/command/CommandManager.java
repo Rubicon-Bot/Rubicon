@@ -10,7 +10,6 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.core.entities.RubiconMember;
 import fun.rubicon.core.entities.RubiconUser;
-import fun.rubicon.core.translation.TranslationLocale;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.core.JDA;
@@ -19,10 +18,7 @@ import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Maintains command invocation associations.
@@ -31,6 +27,8 @@ import java.util.ResourceBundle;
  */
 public class CommandManager extends ListenerAdapter {
     private final Map<String, CommandHandler> commandAssociations = new HashMap<>();
+
+    private boolean maintenance = false;
 
     /**
      * Registers multiple CommandHandlers with their invocation aliases.
@@ -64,6 +62,7 @@ public class CommandManager extends ListenerAdapter {
         if(!RubiconBot.isAllShardsInited())
             return;
         if (event.isFromType(ChannelType.PRIVATE)) return;
+
         super.onMessageReceived(event);
 
         //Check Database Entries
@@ -72,6 +71,10 @@ public class CommandManager extends ListenerAdapter {
 
         ParsedCommandInvocation commandInvocation = parse(event.getMessage());
         if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake() && !event.isWebhookMessage()) {
+            if(maintenance && !(Arrays.asList(Info.BOT_AUTHOR_IDS).contains(event.getAuthor().getIdLong()) || Arrays.asList(Info.COMMUNITY_STAFF_TEAM).contains(event.getAuthor().getIdLong()))) {
+                SafeMessage.sendMessage(event.getTextChannel(), EmbedUtil.info("Maintenance", "Bot is currently in maintenance mode.").build(), 5);
+                return;
+            }
             call(commandInvocation);
         }
     }
@@ -253,5 +256,13 @@ public class CommandManager extends ListenerAdapter {
             }
             return entry;
         }
+    }
+
+    public boolean isMaintenanceEnabled(){
+        return maintenance;
+    }
+
+    public void setMaintenance(boolean maintenance) {
+        this.maintenance = maintenance;
     }
 }
