@@ -37,6 +37,7 @@ public class DatabaseGenerator {
                     "(`id` INT(25) UNSIGNED NOT NULL AUTO_INCREMENT," +
                     "`serverid` BIGINT(25) NOT NULL ," +
                     "`prefix` VARCHAR(5) NOT NULL ," +
+                    "`youmsg` TEXT ," +
                     " PRIMARY KEY (`id`)" +
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();

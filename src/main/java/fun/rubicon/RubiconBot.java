@@ -53,6 +53,8 @@ import net.dv8tion.jda.core.entities.User;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -62,7 +64,7 @@ import java.util.Date;
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_database", "mysql_user", "mysql_password", "playingStatus", "dbl_token", "discord_pw_token","gif_token"};
+    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_database", "mysql_user", "mysql_password", "playingStatus", "dbl_token", "discord_pw_token","gif_token","google_token"};
     private static RubiconBot instance;
     private final Configuration configuration;
     private final MySQL mySQL;
@@ -73,7 +75,7 @@ public class RubiconBot {
     private PunishmentManager punishmentManager;
     private ShardManager shardManager;
     private boolean allShardsInited;
-    private static final int SHARD_COUNT = 3;
+    private static final int SHARD_COUNT = 1;
 
 
     /**
@@ -154,7 +156,8 @@ public class RubiconBot {
                 new CommandInvite(),
                 new CommandSay(),
                 new CommandUserinfo(),
-                new CommandUptime()
+                new CommandUptime(),
+                new CommandYouTube()
         );
 
         //Moderation
@@ -290,7 +293,13 @@ public class RubiconBot {
     public static String getNewTimestamp() {
         return timeStampFormatter.format(new Date());
     }
-
+    /**
+     * @param date A Date object
+     * @return a generated timestamp in the 'dd.MM.yyyy HH:mm:ss' format.
+     */
+    public static String getTimestamp(Date date){
+        return timeStampFormatter.format(date);
+    }
     /**
      * @return the {@link MySQL} instance
      */
