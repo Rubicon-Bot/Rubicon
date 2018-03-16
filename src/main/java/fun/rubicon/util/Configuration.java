@@ -116,9 +116,8 @@ public class Configuration {
         try {
             return json.get(key).getAsString();
         } catch (NullPointerException e) {
-            Logger.error(e);
+            return null;
         }
-        return "";
     }
 
     /**

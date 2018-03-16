@@ -8,12 +8,17 @@ package fun.rubicon;
 
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.commands.admin.CommandPortal;
+import fun.rubicon.commands.botowner.CommandMaintenance;
 import fun.rubicon.commands.botowner.CommandShardManage;
 import fun.rubicon.commands.general.CommandAFK;
 import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.commands.fun.CommandRandom;
 import fun.rubicon.commands.general.*;
+import fun.rubicon.commands.moderation.CommandBan;
+import fun.rubicon.commands.moderation.CommandMute;
+import fun.rubicon.commands.moderation.CommandUnban;
+import fun.rubicon.commands.moderation.CommandUnmute;
 import fun.rubicon.commands.settings.CommandAutochannel;
 import fun.rubicon.commands.settings.CommandJoinMessage;
 import fun.rubicon.commands.settings.CommandLeaveMessage;
@@ -29,6 +34,8 @@ import fun.rubicon.listener.bot.SelfMentionListener;
 import fun.rubicon.listener.bot.ShardListener;
 import fun.rubicon.listener.channel.TextChannelDeleteListener;
 import fun.rubicon.listener.channel.VoiceChannelDeleteListener;
+import fun.rubicon.listener.feature.PunishmentListener;
+import fun.rubicon.listener.feature.VoteListener;
 import fun.rubicon.listener.member.MemberJoinListener;
 import fun.rubicon.listener.member.MemberLeaveListener;
 import fun.rubicon.mysql.DatabaseGenerator;
@@ -66,6 +73,7 @@ public class RubiconBot {
     private boolean allShardsInited;
     private static final int SHARD_COUNT = 3;
 
+
     /**
      * Constructs the RubiconBot.
      */
@@ -95,7 +103,12 @@ public class RubiconBot {
 
         DatabaseGenerator.createAllDatabasesIfNecessary();
 
+        //Init punishments
+        punishmentManager = new PunishmentManager();
+
         commandManager = new CommandManager();
+        if(configuration.getString("maintenance") != null)
+            if(Boolean.valueOf(configuration.getString("maintenance"))) commandManager.setMaintenance(true);
         registerCommands();
         permissionManager = new PermissionManager();
         translationManager = new TranslationManager();
@@ -106,8 +119,6 @@ public class RubiconBot {
 
         gameAnimator.start();
 
-        //Init punishments
-        instance.punishmentManager = new PunishmentManager();
 
     }
 
@@ -115,7 +126,8 @@ public class RubiconBot {
         //Bot Owner
         commandManager.registerCommandHandlers(
                 new CommandEval(),
-                new CommandShardManage()
+                new CommandShardManage(),
+                new CommandMaintenance()
         );
 
         //Admin
@@ -149,11 +161,18 @@ public class RubiconBot {
 
         //Moderation
         commandManager.registerCommandHandlers(
+            new CommandUnmute(),
+            new CommandUnban()
+        );
 
+        //Punishments
+        punishmentManager.registerPunishmentHandlers(
+            new CommandMute(),
+            new CommandBan()
         );
 
         //Tools
-        commandManager.registerCommandHandlers(
+        commandManager.registerCommandHandler(
                 new CommandPoll()
         );
     }
@@ -178,7 +197,10 @@ public class RubiconBot {
 
         DefaultShardManagerBuilder builder = new DefaultShardManagerBuilder();
         builder.setToken(instance.configuration.getString("token"));
-        builder.setGame(Game.playing("Starting..."));
+        if(commandManager.isMaintenanceEnabled())
+            builder.setGame(Game.watching(configuration.getString("playingStatus")));
+        else
+            builder.setGame(Game.playing("Starting..."));
         builder.setStatus(OnlineStatus.DO_NOT_DISTURB);
         builder.setShardsTotal(SHARD_COUNT);
 
@@ -196,7 +218,8 @@ public class RubiconBot {
                 new TextChannelDeleteListener(),
                 new VoiceChannelDeleteListener(),
                 new GeneralReactionListener(),
-                new AutochannelListener()
+                new AutochannelListener(),
+                new PunishmentListener()
         );
         try {
             shardManager = builder.build();
@@ -297,5 +320,7 @@ public class RubiconBot {
     public static void setAllShardsInited(boolean allShardsInited) {
         instance.allShardsInited = allShardsInited;
     }
+
+    public static GameAnimator getGameAnimator(){ return instance.gameAnimator; }
 
 }
