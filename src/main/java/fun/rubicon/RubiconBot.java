@@ -157,7 +157,8 @@ public class RubiconBot {
                 new CommandSay(),
                 new CommandUserinfo(),
                 new CommandUptime(),
-                new CommandYouTube()
+                new CommandYouTube(),
+                new CommandSearch()
         );
 
         //Moderation
