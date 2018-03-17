@@ -32,13 +32,13 @@ import static fun.rubicon.util.EmbedUtil.message;
 public class CommandSearch extends CommandHandler {
 
     public CommandSearch() {
-        super(new String[]{"search"}, CommandCategory.GENERAL, new PermissionRequirements("", false, true), "", "");
+        super(new String[]{"search"}, CommandCategory.GENERAL, new PermissionRequirements("search", false, true), "Search something", "search <Search-Term>");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
-        if(invocation.getArgs().length<1)
-            return message(EmbedUtil.error("Invalid parameters","Use `rc!help youtube` for more info!"));
+        if (invocation.getArgs().length < 1)
+            return message(EmbedUtil.error("Invalid parameters", "Use `rc!help youtube` for more info!"));
         switch (invocation.getArgs()[0]) {
             case "youtube":
                 String query = invocation.getArgsString().replace(invocation.getArgs()[0], "");
@@ -73,6 +73,6 @@ public class CommandSearch extends CommandHandler {
                     return message(EmbedUtil.error("Video not found!", "Found no Video matching search Term"));
                 }
         }
-        return message(EmbedUtil.error("Invalid parameters","Use `rc!help search` for more info!"));
+        return message(EmbedUtil.error("Invalid parameters", "Use `rc!help search` for more info!"));
     }
 }

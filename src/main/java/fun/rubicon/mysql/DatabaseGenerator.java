@@ -24,6 +24,7 @@ public class DatabaseGenerator {
             createLeavemessageTable();
             createUserDatabase();
             createPunishmentsTable();
+            createYouTubeTable();
         } catch (Exception e) {
             Logger.error(e);
             return false;
@@ -37,7 +38,6 @@ public class DatabaseGenerator {
                     "(`id` INT(25) UNSIGNED NOT NULL AUTO_INCREMENT," +
                     "`serverid` BIGINT(25) NOT NULL ," +
                     "`prefix` VARCHAR(5) NOT NULL ," +
-                    "`youmsg` TEXT ," +
                     " PRIMARY KEY (`id`)" +
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();
@@ -137,6 +137,21 @@ public class DatabaseGenerator {
                     "    userid BIGINT(25),\n" +
                     "    expiry BIGINT(25)\n"+
                     ");");
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+    }
+
+    private static void createYouTubeTable() {
+        try{
+            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS `youtube`" +
+                    "(" +
+                    "`serverid` BIGINT(25)," +
+                    "`youmsg` TEXT ," +
+                    "`youchannel` BIGINT(25),"+
+                    "`youcreator` VARCHAR(50)"+
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();
         } catch (SQLException e) {
             Logger.error(e);

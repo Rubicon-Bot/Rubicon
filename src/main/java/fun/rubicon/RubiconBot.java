@@ -9,6 +9,7 @@ package fun.rubicon;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.commands.botowner.CommandMaintenance;
 import fun.rubicon.commands.botowner.CommandShardManage;
+import fun.rubicon.commands.fun.CommandAscii;
 import fun.rubicon.commands.fun.CommandGiphy;
 import fun.rubicon.commands.fun.CommandLmgtfy;
 import fun.rubicon.commands.general.CommandAFK;
@@ -143,7 +144,8 @@ public class RubiconBot {
 
         // Fun
         commandManager.registerCommandHandlers(
-                new CommandRandom()
+                new CommandRandom(),
+                new CommandAscii()
         );
 
         //General
@@ -227,7 +229,8 @@ public class RubiconBot {
                 new VoiceChannelDeleteListener(),
                 new GeneralReactionListener(),
                 new AutochannelListener(),
-                new PunishmentListener()
+                new PunishmentListener(),
+                new GeneralMessageListener()
         );
         try {
             shardManager = builder.build();
