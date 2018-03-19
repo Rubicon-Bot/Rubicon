@@ -23,6 +23,7 @@ import fun.rubicon.commands.settings.CommandJoinMessage;
 import fun.rubicon.commands.settings.CommandLeaveMessage;
 import fun.rubicon.commands.tools.CommandPoll;
 import fun.rubicon.commands.settings.CommandPrefix;
+import fun.rubicon.commands.tools.CommandShort;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.translation.TranslationManager;
 import fun.rubicon.commands.botowner.CommandEval;
@@ -71,6 +72,7 @@ public class RubiconBot {
     private PunishmentManager punishmentManager;
     private PollManager pollManager;
     private ShardManager shardManager;
+    private BitlyAPI bitlyAPI;
     private boolean allShardsInited;
     private static final int SHARD_COUNT = 3;
 
@@ -116,6 +118,9 @@ public class RubiconBot {
         permissionManager = new PermissionManager();
         translationManager = new TranslationManager();
         gameAnimator = new GameAnimator();
+        //Init url shorter API
+        bitlyAPI = new BitlyAPI(configuration.getString("bitly_token"));
+
 
         //Init Shard
         initShardManager();
@@ -170,8 +175,9 @@ public class RubiconBot {
         );
 
         //Tools
-        commandManager.registerCommandHandler(
-                new CommandPoll()
+        commandManager.registerCommandHandlers(
+                new CommandPoll(),
+                new CommandShort()
         );
     }
 
@@ -319,8 +325,14 @@ public class RubiconBot {
 
     public static GameAnimator getGameAnimator(){ return instance.gameAnimator; }
 
+<<<<<<< HEAD
     public static PollManager getPollManager(){ return instance.pollManager; }
 
 
+=======
+    public static BitlyAPI getBitlyAPI(){
+        return instance.bitlyAPI;
+    }
+>>>>>>> fad8b783043c6443dcfccdad82dfaa31745c1643
 
 }
