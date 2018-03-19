@@ -325,14 +325,12 @@ public class RubiconBot {
 
     public static GameAnimator getGameAnimator(){ return instance.gameAnimator; }
 
-<<<<<<< HEAD
+
     public static PollManager getPollManager(){ return instance.pollManager; }
 
-
-=======
     public static BitlyAPI getBitlyAPI(){
         return instance.bitlyAPI;
     }
->>>>>>> fad8b783043c6443dcfccdad82dfaa31745c1643
+
 
 }
