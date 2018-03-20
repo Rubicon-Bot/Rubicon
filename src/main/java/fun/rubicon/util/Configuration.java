@@ -24,7 +24,7 @@ public class Configuration {
 
     private File file;
     private JsonObject json;
-    public JsonParser jsonParser;
+    private JsonParser jsonParser;
 
     public Configuration(final File file) {
 
@@ -46,8 +46,8 @@ public class Configuration {
     }
 
     /**
-     * @param key
-     * @param val
+     * @param key The key of the config value you want to set
+     * @param val The value of the key you want to set
      * @description Sets tha value of a key in config
      */
     public Configuration set(final String key, final String val) {
@@ -61,8 +61,8 @@ public class Configuration {
     }
 
     /**
-     * @param key
-     * @param val
+     * @param key The key of the config value you want to set
+     * @param val The value of the key you want to set
      * @description Sets tha value of a key in config
      */
     public Configuration set(final String key, final int val) {
@@ -74,7 +74,7 @@ public class Configuration {
     }
 
     /**
-     * @param key
+     * @param key The key you want to delete
      * @description Removes key from config
      */
     public Configuration unset(final String key) {
@@ -109,7 +109,7 @@ public class Configuration {
     }
 
     /**
-     * @param key
+     * @param key The key you want to get
      * @return Value of key in config as string
      */
     public String getString(final String key) {
@@ -121,7 +121,7 @@ public class Configuration {
     }
 
     /**
-     * @param key
+     * @param key The key you want to get
      * @return Value of key in config as integer
      */
     public int getInt(final String key) {
@@ -132,7 +132,7 @@ public class Configuration {
     }
 
     /**
-     * @param key
+     * @param key The key you want to check if exists
      * @return If key exists
      */
     public boolean has(final String key) {

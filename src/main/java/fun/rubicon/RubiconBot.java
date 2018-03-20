@@ -23,9 +23,11 @@ import fun.rubicon.commands.settings.CommandJoinMessage;
 import fun.rubicon.commands.settings.CommandLeaveMessage;
 import fun.rubicon.commands.tools.CommandPoll;
 import fun.rubicon.commands.settings.CommandPrefix;
+import fun.rubicon.commands.tools.CommandShort;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.translation.TranslationManager;
 import fun.rubicon.commands.botowner.CommandEval;
+import fun.rubicon.features.PollManager;
 import fun.rubicon.features.PunishmentManager;
 import fun.rubicon.listener.*;
 import fun.rubicon.listener.bot.BotJoinListener;
@@ -68,7 +70,9 @@ public class RubiconBot {
     private final PermissionManager permissionManager;
     private final TranslationManager translationManager;
     private PunishmentManager punishmentManager;
+    private PollManager pollManager;
     private ShardManager shardManager;
+    private BitlyAPI bitlyAPI;
     private boolean allShardsInited;
     private static final int SHARD_COUNT = 3;
 
@@ -108,10 +112,15 @@ public class RubiconBot {
         commandManager = new CommandManager();
         if(configuration.getString("maintenance") != null)
             if(Boolean.valueOf(configuration.getString("maintenance"))) commandManager.setMaintenance(true);
+
+        pollManager = new PollManager();
         registerCommands();
         permissionManager = new PermissionManager();
         translationManager = new TranslationManager();
         gameAnimator = new GameAnimator();
+        //Init url shorter API
+        bitlyAPI = new BitlyAPI(configuration.getString("bitly_token"));
+
 
         //Init Shard
         initShardManager();
@@ -166,8 +175,9 @@ public class RubiconBot {
         );
 
         //Tools
-        commandManager.registerCommandHandler(
-                new CommandPoll()
+        commandManager.registerCommandHandlers(
+                new CommandPoll(),
+                new CommandShort()
         );
     }
 
@@ -314,5 +324,13 @@ public class RubiconBot {
     }
 
     public static GameAnimator getGameAnimator(){ return instance.gameAnimator; }
+
+
+    public static PollManager getPollManager(){ return instance.pollManager; }
+
+    public static BitlyAPI getBitlyAPI(){
+        return instance.bitlyAPI;
+    }
+
 
 }
