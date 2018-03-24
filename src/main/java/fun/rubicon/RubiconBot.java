@@ -175,7 +175,7 @@ public class RubiconBot {
         GameAnimator.start();
         botlistSpaceClient = new BotlistSpaceClient(getConfiguration().getString("botlist_space"), getJDA().getSelfUser().getId());
         try {
-            botlistSpaceClient.postStats(getJDA().getUsers().size());
+            botlistSpaceClient.postStats(getJDA().getGuilds().size());
         } catch (IOException e) {
             e.printStackTrace();
         }

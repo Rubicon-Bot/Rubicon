@@ -34,7 +34,7 @@ public class BotJoinListener extends ListenerAdapter {
     public void onGuildJoin(GuildJoinEvent event) {
         CommandMute.createMutedRoleIfNotExists(event.getGuild());
         try {
-            RubiconBot.getBotlistSpaceClient().postStats(event.getJDA().getUsers().size());
+            RubiconBot.getBotlistSpaceClient().postStats(event.getJDA().getGuilds().size());
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -32,7 +32,7 @@ public class BotLeaveListener extends ListenerAdapter {
         //post statistics to discordbots.org
         DBLUtil.postStats(e.getJDA());
         try {
-            RubiconBot.getBotlistSpaceClient().postStats(e.getJDA().getUsers().size());
+            RubiconBot.getBotlistSpaceClient().postStats(e.getJDA().getGuilds().size());
         } catch (IOException ex) {
             ex.printStackTrace();
         }
