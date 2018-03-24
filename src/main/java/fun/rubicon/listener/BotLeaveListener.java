@@ -6,6 +6,8 @@ import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
+import java.io.IOException;
+
 /**
  * Rubicon Discord bot
  *
@@ -29,6 +31,11 @@ public class BotLeaveListener extends ListenerAdapter {
     public void onGuildLeave(GuildLeaveEvent e) {
         //post statistics to discordbots.org
         DBLUtil.postStats(e.getJDA());
+        try {
+            RubiconBot.getBotlistSpaceClient().postStats(e.getJDA().getUsers().size());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
         try {
             if (RubiconBot.getMySQL().ifGuildExits(e.getGuild())) {
                 RubiconBot.getMySQL().deleteGuild(e.getGuild());

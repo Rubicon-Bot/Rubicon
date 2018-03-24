@@ -9,6 +9,8 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
+import java.io.IOException;
+
 /**
  * Rubicon Discord bot
  *
@@ -31,6 +33,11 @@ public class BotJoinListener extends ListenerAdapter {
     @Override
     public void onGuildJoin(GuildJoinEvent event) {
         CommandMute.createMutedRoleIfNotExists(event.getGuild());
+        try {
+            RubiconBot.getBotlistSpaceClient().postStats(event.getJDA().getUsers().size());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         //post statistics to discordbots.org
         DBLUtil.postStats(false);
         try {

@@ -1,7 +1,8 @@
 package fun.rubicon.core.coinhive;
 
-import de.foryasee.httprequest.HttpRequest;
+import de.foryasee.httprequest.HttpRequestBuilder;
 import de.foryasee.httprequest.RequestResponse;
+import de.foryasee.httprequest.RequestType;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.User;
@@ -17,10 +18,10 @@ public class CoinhiveManager {
 
     public static CoinhiveUser getCoinhiveUser(User user) {
         try {
-            HttpRequest balanceRequest = prepareCoinhiveRequest("/user/balance");
+            HttpRequestBuilder balanceRequest = prepareCoinhiveRequest("/user/balance");
             balanceRequest.addParameter("name", user.getId());
-            RequestResponse balanceResponse = balanceRequest.sendGETRequest();
-            JSONObject balanceObj = (JSONObject) new JSONParser().parse(balanceResponse.getResponse());
+            RequestResponse balanceResponse = balanceRequest.sendRequest();
+            JSONObject balanceObj = (JSONObject) new JSONParser().parse(balanceResponse.getResponseMessage());
             if (balanceObj.get("success").equals("false") || balanceObj.get("balance") == null) {
                 return new CoinhiveUser() {
                     @Override
@@ -73,11 +74,11 @@ public class CoinhiveManager {
 
     public static void withdrawUser(CoinhiveUser coinhiveUser, int amount) {
         try {
-            HttpRequest balanceRequest = prepareCoinhiveRequest("/user/withdraw");
+            HttpRequestBuilder balanceRequest = prepareCoinhiveRequest("/user/withdraw");
             balanceRequest.addParameter("name", coinhiveUser.getName());
-            balanceRequest.addParameter("amount", amount);
-            RequestResponse balanceResponse = balanceRequest.sendPOSTRequest();
-            JSONObject balanceObj = (JSONObject) new JSONParser().parse(balanceResponse.getResponse());
+            balanceRequest.addParameter("amount", amount + "");
+            RequestResponse balanceResponse = balanceRequest.sendRequest();
+            JSONObject balanceObj = (JSONObject) new JSONParser().parse(balanceResponse.getResponseMessage());
             if (balanceObj.get("success").equals("false")) {
                 Logger.error((String) balanceObj.get("error"));
             }
@@ -86,8 +87,8 @@ public class CoinhiveManager {
         }
     }
 
-    private static HttpRequest prepareCoinhiveRequest(String endpoint) {
-        HttpRequest request = new HttpRequest(BASE_URL + endpoint);
+    private static HttpRequestBuilder prepareCoinhiveRequest(String endpoint) {
+        HttpRequestBuilder request = new HttpRequestBuilder(BASE_URL + endpoint, RequestType.GET);
         request.addParameter("secret", RubiconBot.getConfiguration().getString("coinhive_secret"));
         return request;
     }

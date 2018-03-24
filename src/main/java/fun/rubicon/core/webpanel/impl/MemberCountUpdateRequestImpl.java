@@ -1,6 +1,7 @@
 package fun.rubicon.core.webpanel.impl;
 
-import de.foryasee.httprequest.HttpRequest;
+import de.foryasee.httprequest.HttpRequestBuilder;
+import de.foryasee.httprequest.RequestType;
 import fun.rubicon.core.webpanel.MemberCountUpdateRequest;
 import fun.rubicon.core.webpanel.WebpanelData;
 import fun.rubicon.core.webpanel.WebpanelRequest;
@@ -19,8 +20,8 @@ public class MemberCountUpdateRequestImpl implements MemberCountUpdateRequest, W
     }
 
     @Override
-    public HttpRequest build() {
-        HttpRequest request = new HttpRequest(WebpanelData.BASE_URL);
+    public HttpRequestBuilder build() {
+        HttpRequestBuilder request = new HttpRequestBuilder(WebpanelData.BASE_URL, RequestType.GET);
         request.addParameter("type", WebpanelData.MEMBER_COUNT_UPDATE.getKey());
         request.addParameter("guildid", guild.getId());
         request.addParameter("guildname", guild.getName());

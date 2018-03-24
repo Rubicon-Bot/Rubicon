@@ -1,7 +1,8 @@
 package fun.rubicon.commands.fun;
 
-import de.foryasee.httprequest.HttpRequest;
+import de.foryasee.httprequest.HttpRequestBuilder;
 import de.foryasee.httprequest.RequestResponse;
+import de.foryasee.httprequest.RequestType;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
@@ -35,12 +36,12 @@ public class CommandGiphy extends CommandHandler {
             return createHelpMessage();
         }
         String query = parsedCommandInvocation.getMessage().getContentDisplay().replace(parsedCommandInvocation.getPrefix() + parsedCommandInvocation.getCommandInvocation(), "");
-        HttpRequest request = new HttpRequest("https://api.giphy.com/v1/gifs/search");
+        HttpRequestBuilder request = new HttpRequestBuilder("https://api.giphy.com/v1/gifs/search", RequestType.GET);
         request.addParameter("api_key", Info.GIPHY_TOKEN);
         request.addParameter("q", query);
         try {
-            RequestResponse response = request.sendGETRequest();
-            JSONObject json = (JSONObject) new JSONParser().parse(response.getResponse());
+            RequestResponse response = request.sendRequest();
+            JSONObject json = (JSONObject) new JSONParser().parse(response.getResponseMessage());
             JSONArray data = (JSONArray) json.get("data");
             parsedCommandInvocation.getTextChannel().sendMessage((String) ((JSONObject) data.get(0)).get("url")).queue();
         } catch (Exception e) {
