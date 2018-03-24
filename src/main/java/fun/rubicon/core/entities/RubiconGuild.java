@@ -9,15 +9,18 @@ package fun.rubicon.core.entities;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.settings.CommandJoinMessage;
 import fun.rubicon.commands.settings.CommandLeaveMessage;
+import fun.rubicon.mysql.DatabaseGenerator;
 import fun.rubicon.mysql.MySQL;
 import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
+import fun.rubicon.util.PortalMessageType;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.PermissionOverride;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
 
+import javax.sound.sampled.Port;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,6 +40,7 @@ public class RubiconGuild {
         this.mySQL = RubiconBot.getMySQL();
 
         createIfNotExist();
+        createPortalSettingsEntry();
     }
 
     public Guild getGuild() {
@@ -391,6 +395,125 @@ public class RubiconGuild {
             Logger.error(e);
         }
         return channelIds;
+    }
+
+    public void createPortalSettingsEntry() {
+        if(portalSettingsEntryExist())
+            return;
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("INSERT INTO portal_settings (`serverId`, `receive_invites`, `max_servers`, `message_type`) VALUES(?, ?, ?, ?)");
+            ps.setLong(1, guild.getIdLong());
+            ps.setString(2, "true");
+            ps.setInt(3, 0);
+            ps.setString(4, PortalMessageType.WEBHOOk.getKey());
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+    }
+
+    private boolean portalSettingsEntryExist() {
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("SELECT id FROM portal_settings WHERE serverId=?");
+            ps.setLong(1, guild.getIdLong());
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+        return false;
+    }
+
+    public void setPortalSettingsInvites(boolean value) {
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("UPDATE portal_settings SET receive_invites=? WHERE serverId=?");
+            ps.setString(1, String.valueOf(value));
+            ps.setLong(2, guild.getIdLong());
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+    }
+
+    public void setPortalSettingsMessageType(PortalMessageType type) {
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("UPDATE portal_settings SET message_type=? WHERE serverId=?");
+            ps.setString(1, type.getKey());
+            ps.setLong(2, guild.getIdLong());
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+    }
+
+    public void deletePortalSettings() {
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("DELETE * FROM portal_settings WHERE serverId=?");
+            ps.setLong(1, guild.getIdLong());
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+    }
+
+    public void createPortal(long partnerServer, long partnerChannel) {
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("INSERT INTO portal_opened (`serverId`, `partnerServer`, `partnerChannel`) VALUES (?, ?, ?, ?)");
+            ps.setLong(1, guild.getIdLong());
+            ps.setLong(2, partnerServer);
+            ps.setLong(3, partnerChannel);
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+    }
+
+    public boolean portalCreated() {
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("SELECT * FROM portal_opened WHERE serverId=?");
+            ps.setLong(1, guild.getIdLong());
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+        return false;
+    }
+
+    public long getPortalPartner() {
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("SELECT partnerServer FROM portal_opened WHERE serverId=?");
+            ps.setLong(1, guild.getIdLong());
+            ResultSet rs = ps.executeQuery();
+            if(rs.next())
+                return rs.getLong("partnerServer");
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+        return 0;
+    }
+
+    public long getPortalPartnerChannel() {
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("SELECT partnerChannel FROM portal_opened WHERE serverId=?");
+            ps.setLong(1, guild.getIdLong());
+            ResultSet rs = ps.executeQuery();
+            if(rs.next())
+                return rs.getLong("partnerChannel");
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+        return 0;
+    }
+
+    public void deletePortal() {
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("DELETE FROM portal_opened WHERE serverId=?");
+            ps.setLong(1, guild.getIdLong());
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
     }
 
     public static RubiconGuild fromGuild(Guild guild) {
