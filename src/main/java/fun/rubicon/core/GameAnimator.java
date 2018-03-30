@@ -18,7 +18,8 @@ public class GameAnimator {
 
     private static final String[] gameAnimations = {
             Info.BOT_VERSION,
-            "rubicon.fun"
+            "rubicon.fun",
+            "twitter.com/rubicondevteam"
 
     };
 

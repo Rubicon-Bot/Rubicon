@@ -1,7 +1,8 @@
 package fun.rubicon.commands.fun;
 
-import de.foryasee.httprequest.HttpRequest;
+import de.foryasee.httprequest.HttpRequestBuilder;
 import de.foryasee.httprequest.RequestResponse;
+import de.foryasee.httprequest.RequestType;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
@@ -39,14 +40,14 @@ public class CommandVideo extends CommandHandler {
             createHelpMessage(invocation);
 
         String query = invocation.getMessage().getContentDisplay().replace(invocation.getPrefix() + invocation.getCommandInvocation(), "");
-        HttpRequest request = new HttpRequest("https://www.googleapis.com/youtube/v3/search");
+        HttpRequestBuilder request = new HttpRequestBuilder("https://www.googleapis.com/youtube/v3/search", RequestType.GET);
         request.addParameter("type", "video");
         request.addParameter("q", query);
         request.addParameter("part", "snippet");
         request.addParameter("key", Info.GOOGLE_TOKEN);
         try {
-            RequestResponse response = request.sendGETRequest();
-            JSONObject json = (JSONObject) new JSONParser().parse(response.getResponse());
+            RequestResponse response = request.sendRequest();
+            JSONObject json = (JSONObject) new JSONParser().parse(response.getResponseMessage());
             JSONArray data = (JSONArray) json.get("items");
             JSONObject snippet = (JSONObject) ((JSONObject) data.get(0)).get("snippet");
             JSONObject id = (JSONObject) ((JSONObject) data.get(0)).get("id");

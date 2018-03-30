@@ -1,7 +1,8 @@
 package fun.rubicon.commands.fun;
 
-import de.foryasee.httprequest.HttpRequest;
+import de.foryasee.httprequest.HttpRequestBuilder;
 import de.foryasee.httprequest.RequestResponse;
+import de.foryasee.httprequest.RequestType;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
@@ -55,12 +56,12 @@ public class CommandUrban extends CommandHandler {
         public void run() {
             String[] args = parsedCommandInvocation.getArgs();
 
-            HttpRequest request = new HttpRequest("http://api.urbandictionary.com/v0/define");
+            HttpRequestBuilder request = new HttpRequestBuilder("http://api.urbandictionary.com/v0/define", RequestType.GET);
             request.addParameter("term", args[0]);
             try {
-                RequestResponse response = request.sendGETRequest();
+                RequestResponse response = request.sendRequest();
 
-                JSONObject json = (JSONObject) new JSONParser().parse(response.getResponse());
+                JSONObject json = (JSONObject) new JSONParser().parse(response.getResponseMessage());
                 JSONArray data = (JSONArray) json.get("list");
                 String likes = String.valueOf(((JSONObject) data.get(0)).get("thumbs_up"));
                 String down = String.valueOf(((JSONObject) data.get(0)).get("thumbs_down"));
