@@ -50,6 +50,7 @@ public class TranslationManager {
         translationLocales.add(new TranslationLocale(this, new Locale("fi", "FI"), "Finnish (Finland)"));
         translationLocales.add(new TranslationLocale(this, new Locale("fr", "FR"), "French (France)"));
         translationLocales.add(new TranslationLocale(this, new Locale("it", "IT"), "Italian (Italy)"));
+        translationLocales.add(new TranslationLocale(this, new Locale("hu", "HU"), "Hungarian (Hungary)"));
         translationLocales.add(new TranslationLocale(this, new Locale("no", "NO"), "Norwegian (Norway)"));
         //translationLocales.add(new TranslationLocale(this, new Locale("sv", "SE"), "Swedish (Sweden)"));
         translationLocaleList = Collections.unmodifiableList(translationLocales);
