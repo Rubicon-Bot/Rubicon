@@ -25,6 +25,7 @@ public class DatabaseGenerator {
             createUserDatabase();
             createPunishmentsTable();
             createAutochannelTable();
+            createAutoroleTable();
         } catch (Exception e) {
             Logger.error(e);
             return false;
@@ -120,7 +121,7 @@ public class DatabaseGenerator {
                     "(`id` INT PRIMARY KEY AUTO_INCREMENT," +
                     "`serverId` BIGINT(25)," +
                     "`channelId` BIGINT(25)" +
-                    ")ENGINE=InnoDB DEFAULT CHARSET=utf8");
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();
         } catch (SQLException e) {
             Logger.error(e);
@@ -131,12 +132,26 @@ public class DatabaseGenerator {
         try {
             PreparedStatement ps = RubiconBot.getMySQL().prepareStatement("CREATE TABLE IF NOT EXISTS punishments" +
                     "(" +
-                    "    `id` INT PRIMARY KEY AUTO_INCREMENT," +
-                    "    `type` VARCHAR(10)," +
-                    "    `serverid` BIGINT(25)," +
-                    "    `userid` BIGINT(25)," +
-                    "    `expiry` BIGINT(25)" +
-                    ");");
+                    "`id` INT PRIMARY KEY AUTO_INCREMENT," +
+                    "`type` VARCHAR(10)," +
+                    "`serverid` BIGINT(25)," +
+                    "`userid` BIGINT(25)," +
+                    "`expiry` BIGINT(25)" +
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+    }
+
+    private static void createAutoroleTable() {
+        try {
+            PreparedStatement ps = RubiconBot.getMySQL().prepareStatement("CREATE TABLE IF NOT EXISTS autoroles" +
+                    "(" +
+                    "`id` INT PRIMARY KEY AUTO_INCREMENT," +
+                    "`serverId` BIGINT(25)," +
+                    "`roleId` BIGINT(25)" +
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();
         } catch (SQLException e) {
             Logger.error(e);

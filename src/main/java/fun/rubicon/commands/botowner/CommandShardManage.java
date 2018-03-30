@@ -10,6 +10,7 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
+import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
@@ -18,7 +19,16 @@ import fun.rubicon.util.SafeMessage;
 import fun.rubicon.util.StringUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.OnlineStatus;
+import net.dv8tion.jda.core.entities.Channel;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Yannick Seeger / ForYaSee
@@ -30,10 +40,10 @@ public class CommandShardManage extends CommandHandler {
      */
 
     public CommandShardManage() {
-        super(new String[]{"shardmanage", "smanage"}, CommandCategory.BOT_OWNER, new PermissionRequirements("shardmanage", true, false), "Shows information or options to start/stop/restart about a specific shard or.",
+        super(new String[]{"shardmanage", "smanage", "shardinfo", "sinfo"}, CommandCategory.BOT_OWNER, new PermissionRequirements("shardmanage", true, false), "Shows information or options to start/stop/restart about a specific shard or.",
                 "| Info about current shard.\n" +
                         "[shardid] | Shows info about a specific shard.\n" +
-                        "[shardid] start/s | Starts a shard.\n" +
+                        "[shardId] stop | Stops a shard.\n" +
                         "[shardid] restart/rs | Restarts a shard.");
     }
 
@@ -43,11 +53,11 @@ public class CommandShardManage extends CommandHandler {
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setTitle("Shardinfo - Overview");
             embedBuilder.setColor(Colors.COLOR_SECONDARY);
-            embedBuilder.setDescription("Loaded " + RubiconBot.getMaximumShardCount() + " Shards.\nAverage Ping: " + RubiconBot.getShardManager().getAveragePing() + "ms.\nCurrent Shard: " + invocation.getMessage().getJDA().getShardInfo().getShardId());
+            embedBuilder.setDescription("Total Shards: " + RubiconBot.getShardManager().getShardsTotal() + "\nRunning Shards: " + RubiconBot.getShardManager().getShardsRunning() + "\nAverage Ping: " + ((int) RubiconBot.getShardManager().getAveragePing()) + "ms.");
             for (JDA jda : RubiconBot.getShardManager().getShards()) {
                 embedBuilder.addField("ShardId " + jda.getShardInfo().getShardId() + "/" + RubiconBot.getMaximumShardCount(),
                         "Status: " + jda.getStatus() + "\n" +
-                                "Ping: " + jda.getPing() + "ms", false);
+                                "Ping: " + ((int) jda.getPing()) + "ms", false);
             }
             SafeMessage.sendMessage(invocation.getTextChannel(), embedBuilder.build(), 300);
 
@@ -57,17 +67,20 @@ public class CommandShardManage extends CommandHandler {
             }
             int shardId = Integer.parseInt(invocation.getArgs()[0]);
             if (shardId == RubiconBot.getMaximumShardCount()) {
-                return EmbedUtil.message(EmbedUtil.error("Wrong shardId!", "There are only " + RubiconBot.getMaximumShardCount() + " shards.").setFooter("ShardId is 0-index-based", null));
+                return EmbedUtil.message(EmbedUtil.error("Invalid shardId!", "There are only " + RubiconBot.getMaximumShardCount() + " shards.").setFooter("ShardId is 0-index-based", null));
             }
             JDA shard = RubiconBot.getShardManager().getShardById(shardId);
+            Map userStatusCount = getStatusMembers(shard);
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setColor(Colors.COLOR_SECONDARY);
             embedBuilder.setTitle("Shardinfo - " + shard.getShardInfo().getShardId() + "/" + RubiconBot.getMaximumShardCount());
             embedBuilder.setDescription("ID: " + shard.getShardInfo().getShardId() + "\nStatus: " + shard.getStatus());
-            embedBuilder.addField("Ping", shard.getPing() + "ms", false);
+            embedBuilder.addField("Ping", ((int) shard.getPing()) + "ms", true);
             embedBuilder.addField("Guilds", shard.getGuilds().size() + " Guilds", true);
-            embedBuilder.addField("Users", shard.getUsers().size() + " Users", true);
-            embedBuilder.addField("Channels", (shard.getTextChannels().size() + shard.getVoiceChannels().size()) + " Channels", true);
+            embedBuilder.addBlankField(true);
+            embedBuilder.addField("Users", String.format("Online: %d\nIdle: %d\nDnD: %d\nOffline: %d\nTotal: %d", userStatusCount.get("online"), userStatusCount.get("idle"), userStatusCount.get("dnd"), userStatusCount.get("offline"), userStatusCount.get("total")), true);
+            embedBuilder.addField("Channels", String.format("Categories: %d\nTextchannels: %d\nVoicechannels: %d", shard.getCategories().size(), shard.getTextChannels().size(), shard.getVoiceChannels().size()), true);
+            embedBuilder.addBlankField(true);
             SafeMessage.sendMessage(invocation.getTextChannel(), embedBuilder.build(), 300);
         } else if (invocation.getArgs().length == 2) {
             if (!StringUtil.isNumeric(invocation.getArgs()[0])) {
@@ -77,25 +90,59 @@ public class CommandShardManage extends CommandHandler {
             if (shardId == RubiconBot.getMaximumShardCount()) {
                 return EmbedUtil.message(EmbedUtil.error("Wrong shardId!", "There are only " + RubiconBot.getMaximumShardCount() + " shards.").setFooter("ShardId is 0-index-based", null));
             }
-            JDA shard = RubiconBot.getShardManager().getShardById(shardId);
 
+            JDA shard = RubiconBot.getShardManager().getShardById(shardId);
+            if(shard == null) {
+                return EmbedUtil.message(EmbedUtil.error("Invalid shardId!", "Please use a correct shardId."));
+            }
             switch (invocation.getArgs()[1]) {
-                case "s":
-                case "start":
-                    if (shard.getStatus() != JDA.Status.SHUTDOWN)
-                        return EmbedUtil.message(EmbedUtil.error("Can't start shard!", "Shard is already starting/started."));
-                    RubiconBot.getShardManager().start(shardId);
-                    return EmbedUtil.message(EmbedUtil.success("Starting shard!", "Shard will be started soon."));
                 case "rs":
                 case "restart":
                     if (shard.getStatus() != JDA.Status.SHUTDOWN && shard.getStatus() != JDA.Status.CONNECTED)
                         return EmbedUtil.message(EmbedUtil.error("Can't restart shard!", "Shard is already starting/started."));
+                    SafeMessage.sendMessageBlocking(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.success("Restarting shard!", "Shard will be restarted soon.")));
                     RubiconBot.getShardManager().restart(shardId);
-                    return EmbedUtil.message(EmbedUtil.success("Restarting shard!", "Shard will be restarted soon."));
+                    return null;
+                case "stop":
+                    if (shard.getStatus() != JDA.Status.CONNECTED)
+                        return EmbedUtil.message(EmbedUtil.error("Can't stop shard!", "Shard is not running."));
+                    SafeMessage.sendMessageBlocking(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.success("Stopping shard!", "Shard will be stopped soon.")));
+                    shard.shutdown();
+                    return null;
                 default:
                     return createHelpMessage();
             }
         }
         return null;
+    }
+
+    private Map getStatusMembers(JDA jda) {
+        List<Long> filtered = new ArrayList<>();
+        int onlineCount = 0;
+        int idleCount = 0;
+        int dndCount = 0;
+        int other = 0;
+
+        for (Guild guild : jda.getGuilds()) {
+            for (Member member : guild.getMembers()) {
+                if (filtered.contains(member.getUser().getIdLong())) continue;
+                if (member.getOnlineStatus().equals(OnlineStatus.ONLINE))
+                    onlineCount++;
+                else if (member.getOnlineStatus().equals(OnlineStatus.IDLE))
+                    idleCount++;
+                else if (member.getOnlineStatus().equals(OnlineStatus.DO_NOT_DISTURB))
+                    dndCount++;
+                else
+                    other++;
+                filtered.add(member.getUser().getIdLong());
+            }
+        }
+        Map<String, Integer> counts = new HashMap<>();
+        counts.put("online", onlineCount);
+        counts.put("idle", idleCount);
+        counts.put("dnd", dndCount);
+        counts.put("offline", jda.getUsers().size() - other);
+        counts.put("total", jda.getUsers().size());
+        return counts;
     }
 }

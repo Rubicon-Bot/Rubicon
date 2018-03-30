@@ -7,6 +7,7 @@
 package fun.rubicon;
 
 import fun.rubicon.command.CommandManager;
+import fun.rubicon.commands.admin.CommandAutorole;
 import fun.rubicon.commands.botowner.CommandMaintenance;
 import fun.rubicon.commands.botowner.CommandShardManage;
 import fun.rubicon.commands.general.CommandAFK;
@@ -31,6 +32,7 @@ import fun.rubicon.features.PollManager;
 import fun.rubicon.features.PunishmentManager;
 import fun.rubicon.listener.*;
 import fun.rubicon.listener.bot.BotJoinListener;
+import fun.rubicon.listener.bot.BotLeaveListener;
 import fun.rubicon.listener.bot.SelfMentionListener;
 import fun.rubicon.listener.bot.ShardListener;
 import fun.rubicon.listener.channel.TextChannelDeleteListener;
@@ -39,6 +41,7 @@ import fun.rubicon.listener.feature.PunishmentListener;
 import fun.rubicon.listener.feature.VoteListener;
 import fun.rubicon.listener.member.MemberJoinListener;
 import fun.rubicon.listener.member.MemberLeaveListener;
+import fun.rubicon.listener.role.RoleDeleteListener;
 import fun.rubicon.mysql.DatabaseGenerator;
 import fun.rubicon.mysql.MySQL;
 import fun.rubicon.permission.PermissionManager;
@@ -72,12 +75,8 @@ public class RubiconBot {
     private PunishmentManager punishmentManager;
     private PollManager pollManager;
     private ShardManager shardManager;
-<<<<<<< HEAD
     private boolean allShardsInitialised;
-=======
     private BitlyAPI bitlyAPI;
-    private boolean allShardsInited;
->>>>>>> Rework-1.0.0
     private static final int SHARD_COUNT = 3;
 
 
@@ -144,7 +143,7 @@ public class RubiconBot {
 
         //Admin
         commandManager.registerCommandHandlers(
-
+            new CommandAutorole()
         );
 
         // Settings
@@ -221,6 +220,7 @@ public class RubiconBot {
         //Register Event Listeners
         builder.addEventListeners(
                 new BotJoinListener(),
+                new BotLeaveListener(),
                 commandManager,
                 new UserMentionListener(),
                 new ShardListener(),
@@ -232,7 +232,8 @@ public class RubiconBot {
                 new VoiceChannelDeleteListener(),
                 new GeneralReactionListener(),
                 new AutochannelListener(),
-                new PunishmentListener()
+                new PunishmentListener(),
+                new RoleDeleteListener()
         );
         try {
             shardManager = builder.build();
