@@ -23,9 +23,9 @@ import java.sql.SQLException;
 public abstract class RubiconUserImpl {
 
     protected User user;
-    protected MySQL mySQL;
+    MySQL mySQL;
 
-    public RubiconUserImpl(User user) {
+    RubiconUserImpl(User user) {
         this.user = user;
         this.mySQL = RubiconBot.getMySQL();
 
@@ -36,7 +36,7 @@ public abstract class RubiconUserImpl {
         return user;
     }
 
-    public RubiconUserImpl setBio(String bio) {
+    public void setBio(String bio) {
         try {
             PreparedStatement ps = mySQL.prepareStatement("UPDATE users SET bio=? WHERE userid=?");
             ps.setString(1, bio);
@@ -45,7 +45,6 @@ public abstract class RubiconUserImpl {
         } catch (SQLException e) {
             Logger.error(e);
         }
-        return this;
     }
 
     public String getBio() {

@@ -24,6 +24,8 @@ public class DatabaseGenerator {
             createLeavemessageTable();
             createUserDatabase();
             createPunishmentsTable();
+            createAutochannelTable();
+            createAutoroleTable();
         } catch (Exception e) {
             Logger.error(e);
             return false;
@@ -119,23 +121,37 @@ public class DatabaseGenerator {
                     "(`id` INT PRIMARY KEY AUTO_INCREMENT," +
                     "`serverId` BIGINT(25)," +
                     "`channelId` BIGINT(25)" +
-                    ")ENGINE=InnoDB DEFAULT CHARSET=utf8");
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             Logger.error(e);
         }
     }
 
     private static void createPunishmentsTable() {
-        try{
-            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS punishments\n" +
-                    "(\n" +
-                    "    id INT PRIMARY KEY AUTO_INCREMENT,\n" +
-                    "    type VARCHAR(10),\n" +
-                    "    serverid BIGINT(25),\n" +
-                    "    userid BIGINT(25),\n" +
-                    "    expiry BIGINT(25)\n"+
-                    ");");
+        try {
+            PreparedStatement ps = RubiconBot.getMySQL().prepareStatement("CREATE TABLE IF NOT EXISTS punishments" +
+                    "(" +
+                    "`id` INT PRIMARY KEY AUTO_INCREMENT," +
+                    "`type` VARCHAR(10)," +
+                    "`serverid` BIGINT(25)," +
+                    "`userid` BIGINT(25)," +
+                    "`expiry` BIGINT(25)" +
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+    }
+
+    private static void createAutoroleTable() {
+        try {
+            PreparedStatement ps = RubiconBot.getMySQL().prepareStatement("CREATE TABLE IF NOT EXISTS autoroles" +
+                    "(" +
+                    "`id` INT PRIMARY KEY AUTO_INCREMENT," +
+                    "`serverId` BIGINT(25)," +
+                    "`roleId` BIGINT(25)" +
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();
         } catch (SQLException e) {
             Logger.error(e);
