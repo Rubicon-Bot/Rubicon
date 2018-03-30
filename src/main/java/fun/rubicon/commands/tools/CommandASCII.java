@@ -20,7 +20,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class CommandASCII extends CommandHandler {
 
     public CommandASCII() {
-        super(new String[]{"ascii"}, CommandCategory.TOOLS, new PermissionRequirements("command.ascii", false, true), "Convert an Text to ASCII-Code", "<string>");
+        super(new String[]{"asciiconvert"}, CommandCategory.TOOLS, new PermissionRequirements("command.ascii", false, true), "Convert an Text to ASCII-Code", "<string>");
     }
 
     @Override

@@ -60,31 +60,32 @@ public class DBLUtil {
                             .build();
             }
 
-            // post stats to discordbots.org
-            discordBotsOrgAPI.setStats(RubiconBot.getJDA().getSelfUser().getId(), RubiconBot.getJDA().getGuilds().size());
+        // post stats to discordbots.org
+        discordBotsOrgAPI.setStats(RubiconBot.getJDA().getSelfUser().getId(), RubiconBot.getJDA().getGuilds().size());
 
-            JSONObject json = new JSONObject();
 
-            json.put("server_count", RubiconBot.getJDA().getGuilds().size());
+        JSONObject json = new JSONObject();
 
-            RequestBody body = RequestBody.create(MediaType.parse("application/json"), json.toString());
-            //Post stats to bots.discord.pw
-            Request req = new Request.Builder()
-                    .url("https://bots.discord.pw/api/bots/" + RubiconBot.getJDA().getSelfUser().getId() + "/stats")
-                    .addHeader("Authorization", Info.DISCORD_PW_TOKEN)
-                    .post(body)
-                    .build();
-            try {
-                new OkHttpClient()
-                        .newCall(req)
-                        .execute()
-                        .close();
-            } catch (IOException e) {
-                if(!silent) {
-                    Logger.error("Failed posting stats to discord bot list:");
-                    Logger.error(e);
-                }
-            }
+
+
+        json.put("server_count", RubiconBot.getJDA().getGuilds().size());
+
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json.toString());
+        //Post stats to bots.discord.pw
+        Request req = new Request.Builder()
+                .url("https://bots.discord.pw/api/bots/" + RubiconBot.getJDA().getSelfUser().getId() + "/stats")
+                .addHeader("Authorization", Info.DISCORD_PW_TOKEN)
+                .post(body)
+                .build();
+        Response res = null;
+        try {
+            res = new OkHttpClient().newCall(req).execute();
+        } catch (IOException e) {
+            if(!silent)
+            Logger.error(e);
         }
+
+        res.close();
+
     }
-}
+}}

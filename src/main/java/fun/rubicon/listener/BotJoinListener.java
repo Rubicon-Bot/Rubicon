@@ -32,12 +32,7 @@ public class BotJoinListener extends ListenerAdapter {
      */
     @Override
     public void onGuildJoin(GuildJoinEvent event) {
-        CommandMute.createMutedRoleIfNotExists(event.getGuild());
-        try {
-            RubiconBot.getBotlistSpaceClient().postStats(event.getJDA().getGuilds().size());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        CommandMute.createMutedRoleIfNotExists(event.getGuild(), null);
         //post statistics to discordbots.org
         DBLUtil.postStats(false);
         try {
