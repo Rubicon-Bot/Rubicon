@@ -5,6 +5,7 @@ import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
+import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.entities.Message;
 import okhttp3.OkHttpClient;
@@ -12,6 +13,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import java.io.IOException;
+
+import static fun.rubicon.util.EmbedUtil.message;
 
 /**
  * Rubicon Discord bot
@@ -38,7 +41,10 @@ public class CommandAsciiText extends CommandHandler {
         Response response = null;
         try {
             response = new OkHttpClient().newCall(req).execute();
-            SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), "```fix\n" + response.body().string() + "```");
+            String formatedResponse = "```fix\n" + response.body().string() + "```";
+            if(formatedResponse.length()>=1990)
+                return message(EmbedUtil.error("Too long!","Your text was too Long. Please take a shorter one"));
+            SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), formatedResponse);
         } catch (IOException e) {
             e.printStackTrace();
         }

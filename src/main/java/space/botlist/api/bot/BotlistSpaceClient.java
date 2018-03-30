@@ -34,7 +34,7 @@ public class BotlistSpaceClient {
                 .build();
 
 
-        new OkHttpClient().newCall(request).execute();
+        new OkHttpClient().newCall(request).execute().close();
     }
 
     public void postStats(List<Integer> shards) throws IOException {
@@ -46,7 +46,7 @@ public class BotlistSpaceClient {
                 .build();
 
 
-        new OkHttpClient().newCall(request).execute();
+        new OkHttpClient().newCall(request).execute().close();
     }
 
     public List<Bot> getBots() throws IOException {
@@ -55,7 +55,9 @@ public class BotlistSpaceClient {
                 .url("https://botlist.space/api/bots")
                 .build();
         Response response = client.newCall(request).execute();
-        return new Gson().fromJson(response.body().string(), new TypeToken<List<Bot>>(){}.getType());
+        List<Bot>  gson = new Gson().fromJson(response.body().string(), new TypeToken<List<Bot>>(){}.getType());
+        response.close();
+        return gson;
     }
 
     public Bot getBot(String id) throws IOException {
@@ -64,7 +66,9 @@ public class BotlistSpaceClient {
                 .url("https://botlist.space/api/bots/" + id)
                 .build();
         Response response = client.newCall(request).execute();
-        return new Gson().fromJson(response.body().string(), Bot.class);
+        Bot gson = new Gson().fromJson(response.body().string(), Bot.class);
+        response.close();
+        return gson;
     }
 
 

@@ -63,6 +63,7 @@ public class RubiconBot {
     private final Set<EventListener> eventListeners;
     private final PermissionManager permissionManager;
     private final DatabaseManager databaseManager;
+
     /**
      * Constructs the RubiconBot.
      */
@@ -267,7 +268,7 @@ public class RubiconBot {
                 new CommandPrefix(),
                 new CommandWelcomeChannel(),
                 new CommandWhitelist(),
-                new CommandBlacklist(),
+                //new CommandBlacklist(),             Sorry but is buggy as hell
                 new CommandLeaveMessage(),
                 new CommandLog(),
                 new CommandLevelMessage()
