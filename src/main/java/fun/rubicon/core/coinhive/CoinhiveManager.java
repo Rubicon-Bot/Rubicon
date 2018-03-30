@@ -18,7 +18,7 @@ public class CoinhiveManager {
 
     public static CoinhiveUser getCoinhiveUser(User user) {
         try {
-            HttpRequestBuilder balanceRequest = prepareCoinhiveRequest("/user/balance");
+            HttpRequestBuilder balanceRequest = new HttpRequestBuilder(BASE_URL + "/user/balance", RequestType.GET);
             balanceRequest.addParameter("name", user.getId());
             RequestResponse balanceResponse = balanceRequest.sendRequest();
             JSONObject balanceObj = (JSONObject) new JSONParser().parse(balanceResponse.getResponseMessage());
@@ -74,9 +74,9 @@ public class CoinhiveManager {
 
     public static void withdrawUser(CoinhiveUser coinhiveUser, int amount) {
         try {
-            HttpRequestBuilder balanceRequest = prepareCoinhiveRequest("/user/withdraw");
+            HttpRequestBuilder balanceRequest = new HttpRequestBuilder(BASE_URL + "/user/withdraw", RequestType.POST);
             balanceRequest.addParameter("name", coinhiveUser.getName());
-            balanceRequest.addParameter("amount", amount + "");
+            balanceRequest.addParameter("amount", String.valueOf(amount));
             RequestResponse balanceResponse = balanceRequest.sendRequest();
             JSONObject balanceObj = (JSONObject) new JSONParser().parse(balanceResponse.getResponseMessage());
             if (balanceObj.get("success").equals("false")) {
@@ -87,9 +87,9 @@ public class CoinhiveManager {
         }
     }
 
-    private static HttpRequestBuilder prepareCoinhiveRequest(String endpoint) {
-        HttpRequestBuilder request = new HttpRequestBuilder(BASE_URL + endpoint, RequestType.GET);
-        request.addParameter("secret", RubiconBot.getConfiguration().getString("coinhive_secret"));
-        return request;
+
+    private static HttpRequestBuilder appendToken(HttpRequestBuilder requestBuilder) {
+        requestBuilder.addParameter("secret", RubiconBot.getConfiguration().getString("coinhive_secret"));
+        return requestBuilder;
     }
 }

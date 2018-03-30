@@ -3,6 +3,7 @@ package fun.rubicon.core.webpanel;
 import de.foryasee.httprequest.HttpRequestBuilder;
 import de.foryasee.httprequest.RequestResponse;
 import fun.rubicon.RubiconBot;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
@@ -121,7 +122,8 @@ public class WebpanelManager extends ListenerAdapter implements Runnable {
             request.addParameter("token", requestToken);
             RequestResponse response = request.sendRequest();
             if (response.getResponseCode() != 200) {
-                throw new Exception("Error while sending webpanel request");
+                Logger.debug(response.getResponseMessage());
+                throw new Exception("Error while sending request to " + response.getEndpointUrl());
             }
         } catch (Exception e) {
             e.printStackTrace();

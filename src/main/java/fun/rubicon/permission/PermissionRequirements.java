@@ -48,6 +48,11 @@ public class PermissionRequirements {
         if (userPermissions.isServerOwner())
             return true;
 
+        //MASTER permissions
+        if (userPermissions.getEffectivePermissionEntry(null, "command.*") != null) {
+            return true;
+        }
+
         Permission effectiveEntry = userPermissions.getEffectivePermissionEntry(null, requiredPermissionNode);
         if (effectiveEntry == null) {
             // defaults
