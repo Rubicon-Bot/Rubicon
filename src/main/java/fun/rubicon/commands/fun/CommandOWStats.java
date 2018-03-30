@@ -1,8 +1,10 @@
 package fun.rubicon.commands.fun;
 
-import de.foryasee.httprequest.HttpRequest;
+
+import de.foryasee.httprequest.HttpRequestBuilder;
 import de.foryasee.httprequest.RequestHeader;
 import de.foryasee.httprequest.RequestResponse;
+import de.foryasee.httprequest.RequestType;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
@@ -53,10 +55,10 @@ public class CommandOWStats extends CommandHandler {
         @Override
         public void run() {
             try {
-                HttpRequest request = new HttpRequest("https://owapi.net/api/v3/u/" + parsedCommandInvocation.getArgs()[1].replace("#", "-") + "/stats");
-                request.setRequestHeader(new RequestHeader().addField("User-Agent", "RubiconBot"));
-                RequestResponse response = request.sendGETRequest();
-                JSONObject reg = (JSONObject) new JSONParser().parse(response.getResponse());
+                HttpRequestBuilder request = new HttpRequestBuilder("https://owapi.net/api/v3/u/"+ parsedCommandInvocation.getArgs()[1].replace("#","-")+"/stats", RequestType.GET);
+                request.setRequestHeader(new RequestHeader().addField("User-Agent","RubiconBot"));
+                RequestResponse response = request.sendRequest();
+                JSONObject reg = (JSONObject) new JSONParser().parse(response.getResponseMessage());
                 JSONObject plat = (JSONObject) reg.get(parsedCommandInvocation.getArgs()[0]);
                 JSONObject root = (JSONObject) plat.get("stats");
                 JSONObject quick = (JSONObject) root.get("quickplay");

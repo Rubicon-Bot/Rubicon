@@ -50,8 +50,10 @@ public class CommandMute extends CommandHandler {
             return new MessageBuilder().setEmbed(EmbedUtil.error("Already muted", "This user is already muted").build()).build();
         try {
             guild.getController().addSingleRoleToMember(victim, muted).queue();
+
         } catch (HierarchyException e) {
             SafeMessage.sendMessage(guild.getDefaultChannel(), "ERROR: Please give me `MANAGE_ROLE` permission to use mute command and move the Rubicon Role to the top", 5);
+
         }
         return new MessageBuilder().setEmbed(EmbedUtil.success("Muted", "Successfully muted " + victim.getAsMention()).build()).build();
     }
@@ -74,6 +76,7 @@ public class CommandMute extends CommandHandler {
                 if (override.getDenied().contains(Permission.MESSAGE_WRITE)) return;
                 override.getManager().deny(Permission.MESSAGE_WRITE).queue();
                 override.getManager().deny(Permission.MESSAGE_ADD_REACTION).queue();
+
             } catch (InsufficientPermissionException | HierarchyException e) {
                 Logger.error(e);
                 guild.getDefaultChannel().sendMessage("ERROR: Please give me `MANAGE_ROLE` permission to use mute command and move the Rubicon Role to the top");

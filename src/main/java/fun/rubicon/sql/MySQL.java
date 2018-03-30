@@ -77,7 +77,7 @@ public class MySQL {
     }
 
     public Connection getCon() {
-        return this.connection;
+        return connection;
     }
 
     /**

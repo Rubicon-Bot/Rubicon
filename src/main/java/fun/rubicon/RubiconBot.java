@@ -20,9 +20,7 @@ import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.ListenerManager;
-import fun.rubicon.core.RubackReceiver;
 import fun.rubicon.core.webpanel.WebpanelManager;
-import fun.rubicon.core.webpanel.impl.*;
 import fun.rubicon.features.GiveawayHandler;
 import fun.rubicon.features.RemindHandler;
 import fun.rubicon.permission.PermissionManager;
@@ -34,9 +32,11 @@ import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.hooks.EventListener;
+import space.botlist.api.bot.BotlistSpaceClient;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
@@ -50,10 +50,11 @@ import java.util.Timer;
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token", "gip_token", "lucsoft_token", "twitterConsumerKey", "twitterConsumerSecret", "twitterAccessToken", "twitterAccessTokenSecret", "google_token", "musixmatch_key", "git_token", "maintenance", "discord_pw_token"};
+    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_port", "mysql_database", "mysql_password", "mysql_user", "bitlytoken", "dbl_token", "gip_token", "lucsoft_token", "twitterConsumerKey", "twitterConsumerSecret", "twitterAccessToken", "twitterAccessTokenSecret", "google_token", "musixmatch_key", "git_token", "maintenance", "discord_pw_token", "botlist_space"};
     private static final String dataFolder = "data/";
     private static WebpanelManager webpanelManager;
     private static RubiconBot instance;
+    private static BotlistSpaceClient botlistSpaceClient;
     private final MySQL mySQL;
     private final Configuration configuration;
     private final CommandManager commandManager;
@@ -61,9 +62,7 @@ public class RubiconBot {
     private final Timer timer;
     private final Set<EventListener> eventListeners;
     private final PermissionManager permissionManager;
-    private final RubackReceiver rubackReceiver;
     private final DatabaseManager databaseManager;
-
     /**
      * Constructs the RubiconBot.
      */
@@ -100,9 +99,6 @@ public class RubiconBot {
         registerCommandHandlers();
         permissionManager = new PermissionManager();
         webpanelManager = new WebpanelManager(getConfiguration().getString("lucsoft_token"));
-        rubackReceiver = new RubackReceiver();
-        rubackReceiver.start();
-
         registerWebpanelRequests();
         // init JDA
         initJDA();
@@ -138,12 +134,9 @@ public class RubiconBot {
      * @param args command line parameters.
      */
     public static void main(String[] args) {
-
         if (instance != null)
             throw new RuntimeException("RubiconBot has already been initialized in this VM.");
         new RubiconBot();
-
-
     }
 
     /**
@@ -177,6 +170,12 @@ public class RubiconBot {
         Info.lastRestart = new Date();
         getJDA().getPresence().setGame(Game.playing("Started."));
         GameAnimator.start();
+        botlistSpaceClient = new BotlistSpaceClient(getConfiguration().getString("botlist_space"), getJDA().getSelfUser().getId());
+        try {
+            botlistSpaceClient.postStats(getJDA().getGuilds().size());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -203,7 +202,6 @@ public class RubiconBot {
         );
         // botowner commands package
         commandManager.registerCommandHandlers(
-                new CommandBroadcast(),
                 new CommandDBGuild(),
                 new CommandPlay(),
                 new CommandRestart(),
@@ -240,7 +238,6 @@ public class RubiconBot {
                 new CommandGiphy(),
                 new CommandVideo(),
                 new CommandUrban(),
-                new CommandJoke(),
                 new CommandMinecraft(),
                 new CommandOWStats(),
                 new CommandAsciiText()
@@ -313,11 +310,11 @@ public class RubiconBot {
     }
 
     private void registerWebpanelRequests() {
-        webpanelManager.addRequest(new MessageStatisticsRequestImpl());
+        /* webpanelManager.addRequest(new MessageStatisticsRequestImpl());
         webpanelManager.addRequest(new MemberJoinRequestImpl());
         webpanelManager.addRequest(new MemberLeaveRequestImpl());
         webpanelManager.addRequest(new MemberCountUpdateRequestImpl());
-        webpanelManager.addRequest(new GuildNameUpdateRequestImpl());
+        webpanelManager.addRequest(new GuildNameUpdateRequestImpl());*/
     }
 
     /**
@@ -401,5 +398,9 @@ public class RubiconBot {
 
     public static WebpanelManager getWebpanelManager() {
         return webpanelManager;
+    }
+
+    public static BotlistSpaceClient getBotlistSpaceClient() {
+        return botlistSpaceClient;
     }
 }

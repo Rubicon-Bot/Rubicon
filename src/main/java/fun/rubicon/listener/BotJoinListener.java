@@ -9,6 +9,8 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
+import java.io.IOException;
+
 /**
  * Rubicon Discord bot
  *

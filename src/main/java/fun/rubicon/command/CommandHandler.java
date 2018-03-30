@@ -238,6 +238,7 @@ public abstract class CommandHandler {
         }
         return message(info('\'' + aliasToUse + "' command help", getDescription())
                 .addField("Aliases", String.join(", ", getInvocationAliases()), false)
-                .addField("Usage", usage.toString(), false));
+                .addField("Usage", usage.toString(), false)
+                .addField("Permission", permissionRequirements.getRequiredPermissionNode(), false));
     }
 }

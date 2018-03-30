@@ -1,6 +1,6 @@
 package fun.rubicon.core.webpanel;
 
-import de.foryasee.httprequest.HttpRequest;
+import de.foryasee.httprequest.HttpRequestBuilder;
 import de.foryasee.httprequest.RequestResponse;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.util.Logger;
@@ -117,13 +117,13 @@ public class WebpanelManager extends ListenerAdapter implements Runnable {
         }
     }
 
-    public void sendRequest(HttpRequest request) {
+    public void sendRequest(HttpRequestBuilder request) {
         try {
             request.addParameter("token", requestToken);
-            RequestResponse response = request.sendGETRequest();
+            RequestResponse response = request.sendRequest();
             if (response.getResponseCode() != 200) {
-                Logger.debug(response.getResponse());
-                throw new Exception("Error while sending request to " + request.getRequestURL());
+                Logger.debug(response.getResponseMessage());
+                throw new Exception("Error while sending request to " + response.getEndpointUrl());
             }
         } catch (Exception e) {
             e.printStackTrace();
