@@ -7,7 +7,6 @@
 package fun.rubicon;
 
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.botowner.CommandMaintenance;
 import fun.rubicon.commands.botowner.CommandShardManage;
 import fun.rubicon.commands.general.CommandAFK;
@@ -70,7 +69,7 @@ public class RubiconBot {
     private final TranslationManager translationManager;
     private PunishmentManager punishmentManager;
     private ShardManager shardManager;
-    private boolean allShardsInited;
+    private boolean allShardsInitialised;
     private static final int SHARD_COUNT = 3;
 
 
@@ -132,7 +131,7 @@ public class RubiconBot {
 
         //Admin
         commandManager.registerCommandHandlers(
-                new CommandPortal()
+
         );
 
         // Settings
@@ -313,12 +312,12 @@ public class RubiconBot {
         return instance == null ? null : instance.translationManager;
     }
 
-    public static boolean isAllShardsInited() {
-        return instance.allShardsInited;
+    public static boolean allShardsInitialised() {
+        return instance.allShardsInitialised;
     }
 
-    public static void setAllShardsInited(boolean allShardsInited) {
-        instance.allShardsInited = allShardsInited;
+    public static void setAllShardsInitialised(boolean allShardsInitialised) {
+        instance.allShardsInitialised = allShardsInitialised;
     }
 
     public static GameAnimator getGameAnimator(){ return instance.gameAnimator; }

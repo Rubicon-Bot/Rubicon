@@ -22,9 +22,7 @@ public class BotLeaveListener extends ListenerAdapter{
         rubiconGuild.deleteJoinMessage();
         rubiconGuild.deleteLeaveMessage();
         rubiconGuild.deleteMuteSettings();
-        rubiconGuild.deletePortalSettings();
 
-        //TODO Close portal
         for(long id : rubiconGuild.getAutochannels()) {
             rubiconGuild.deleteAutochannel(id);
         }

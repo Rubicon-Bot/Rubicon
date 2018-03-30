@@ -25,9 +25,6 @@ public class DatabaseGenerator {
             createUserDatabase();
             createPunishmentsTable();
             createAutochannelTable();
-            createPortalSettingsTable();
-            createPortalsTable();
-            createPortalOpenedTable();
         } catch (Exception e) {
             Logger.error(e);
             return false;
@@ -139,48 +136,6 @@ public class DatabaseGenerator {
                     "    `serverid` BIGINT(25)," +
                     "    `userid` BIGINT(25)," +
                     "    `expiry` BIGINT(25)" +
-                    ");");
-            ps.execute();
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-    }
-
-    private static void createPortalSettingsTable() {
-        try {
-            PreparedStatement ps = RubiconBot.getMySQL().prepareStatement("CREATE TABLE IF NOT EXISTS portal_settings" +
-                    "(" +
-                    "`id` INT PRIMARY KEY AUTO_INCREMENT," +
-                    "`serverId` BIGINT(50)," +
-                    "`receive_invites` VARCHAR(5)," +
-                    "`message_type` VARCHAR(20)" +
-                    ");");
-            ps.execute();
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-    }
-
-    private static void createPortalsTable() {
-        try {
-            PreparedStatement ps = RubiconBot.getMySQL().prepareStatement("CREATE TABLE IF NOT EXIST portals" +
-                    "(" +
-                    "`id` INT PRIMARY KEY AUTO_INCREMENT," +
-                    "`connected` TEXT" +
-                    ");");
-            ps.execute();
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-    }
-
-    private static void createPortalOpenedTable() {
-        try {
-            PreparedStatement ps = RubiconBot.getMySQL().prepareStatement("CREATE TABLE IF NOT EXIST portal_opened" +
-                    "(" +
-                    "`id` INT PRIMARY KEY AUTO_INCREMENT," +
-                    "`serverId` BIGINT(50)," +
-                    "`channelId` BIGINT(50)," +
                     ");");
             ps.execute();
         } catch (SQLException e) {

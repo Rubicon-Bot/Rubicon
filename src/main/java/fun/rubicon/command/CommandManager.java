@@ -59,7 +59,7 @@ public class CommandManager extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if(!RubiconBot.isAllShardsInited())
+        if(!RubiconBot.allShardsInitialised())
             return;
         if (event.isFromType(ChannelType.PRIVATE)) return;
 

@@ -22,7 +22,7 @@ public class AllShardsLoadedEvent {
     private void call() {
         if(!RubiconBot.getCommandManager().isMaintenanceEnabled())
             RubiconBot.getShardManager().setGame(Game.playing("rc!help"));
-        RubiconBot.setAllShardsInited(true);
+        RubiconBot.setAllShardsInitialised(true);
         //Load all punishments (bans & mutes)
         RubiconBot.getPunishmentManager().loadPunishments();
         //Post Guild Stats
