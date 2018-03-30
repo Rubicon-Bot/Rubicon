@@ -23,49 +23,49 @@ public class CommandAutorole extends CommandHandler {
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
         RubiconGuild rubiconGuild = RubiconGuild.fromGuild(invocation.getGuild());
 
-        if(invocation.getArgs().length == 0 || invocation.getArgs().length == 1 && invocation.getArgs()[0].equalsIgnoreCase("info")) {
-            if(!rubiconGuild.hasAutoroleEnabled()) {
-                return EmbedUtil.message(EmbedUtil.info("Not enabled.", "Autorole is not enabled."));
+        if (invocation.getArgs().length == 0 || invocation.getArgs().length == 1 && invocation.getArgs()[0].equalsIgnoreCase("info")) {
+            if (!rubiconGuild.hasAutoroleEnabled()) {
+                return EmbedUtil.message(EmbedUtil.info(invocation.translate("command.autorole.info.not.title"), invocation.translate("command.autorole.info.not.description")));
             }
             long roleId = rubiconGuild.getAutorole();
             Role role = invocation.getGuild().getRoleById(roleId);
-            if(role == null) {
+            if (role == null) {
                 rubiconGuild.disableAutorole();
             }
-            return EmbedUtil.message(EmbedUtil.info("Autorole", "Current autorole is " + (role != null ? role.getAsMention() : "Invalid")));
-        } else if(invocation.getArgs().length == 1 && invocation.getArgs()[0].equalsIgnoreCase("disable")) {
-            if(!rubiconGuild.hasAutoroleEnabled()) {
-                return EmbedUtil.message(EmbedUtil.error("Can't disable autorole!", "Autorole is not enabled."));
+            return EmbedUtil.message(EmbedUtil.info(invocation.translate("command.autorole.info.title"), invocation.translate("command.autorole.info.description").replace("%role%", role != null ? role.getAsMention() : "Invalid")));
+        } else if (invocation.getArgs().length == 1 && invocation.getArgs()[0].equalsIgnoreCase("disable")) {
+            if (!rubiconGuild.hasAutoroleEnabled()) {
+                return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.autorole.disable.error.title"), invocation.translate("command.autorole.disable.error.description")));
             }
             rubiconGuild.disableAutorole();
-            return EmbedUtil.message(EmbedUtil.success("Disabled Autorole!", "Successfully disabled autorole."));
+            return EmbedUtil.message(EmbedUtil.success(invocation.translate("command.autorole.disable.title"), invocation.translate("command.autorole.disable.description")));
         }
 
-        if(invocation.getArgs()[0].equalsIgnoreCase("set")) {
-            if(invocation.getMessage().getMentionedRoles().size() == 1) {
+        if (invocation.getArgs()[0].equalsIgnoreCase("set")) {
+            if (invocation.getMessage().getMentionedRoles().size() == 1) {
                 Role role = invocation.getMessage().getMentionedRoles().get(0);
-                if(!invocation.getMember().canInteract(role)) {
-                    return EmbedUtil.message(EmbedUtil.error("No permissions!", "The role is higher than your highest role."));
+                if (!invocation.getMember().canInteract(role)) {
+                    return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.autorole.set.error.interact.title"), invocation.translate("command.autorole.set.error.interact.description")));
                 }
-                if(!invocation.getGuild().getSelfMember().canInteract(role)) {
-                    return EmbedUtil.message(EmbedUtil.error("No permissions!", "I have no permissions to add this role to a member."));
+                if (!invocation.getGuild().getSelfMember().canInteract(role)) {
+                    return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.autorole.set.error.rc.title"), invocation.translate("command.autorole.set.error.rc.description")));
                 }
                 rubiconGuild.setAutorole(role.getIdLong());
-                return EmbedUtil.message(EmbedUtil.success("Enabled Autorole!", String.format("Autorole is now %s", role.getAsMention())));
+                return EmbedUtil.message(EmbedUtil.success(invocation.translate("command.autorole.set.title"), invocation.translate("command.autorole.set.description").replace("%role%", role.getAsMention())));
             }
-            if(invocation.getArgs().length == 2) {
-                if(invocation.getGuild().getRolesByName(invocation.getArgs()[1], true).size() == 1) {
+            if (invocation.getArgs().length == 2) {
+                if (invocation.getGuild().getRolesByName(invocation.getArgs()[1], true).size() == 1) {
                     Role role = invocation.getGuild().getRolesByName(invocation.getArgs()[1], true).get(0);
-                    if(!invocation.getMember().canInteract(role)) {
-                        return EmbedUtil.message(EmbedUtil.error("No permissions!", "The role is higher than your highest role."));
+                    if (!invocation.getMember().canInteract(role)) {
+                        return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.autorole.set.error.interact.title"), invocation.translate("command.autorole.set.error.interact.description")));
                     }
-                    if(!invocation.getGuild().getSelfMember().canInteract(role)) {
-                        return EmbedUtil.message(EmbedUtil.error("No permissions!", "I have no permissions to add this role to a member."));
+                    if (!invocation.getGuild().getSelfMember().canInteract(role)) {
+                        return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.autorole.set.error.rc.title"), invocation.translate("command.autorole.set.error.rc.description")));
                     }
                     rubiconGuild.setAutorole(role.getIdLong());
-                    return EmbedUtil.message(EmbedUtil.success("Enabled Autorole!", String.format("Autorole is now %s", role.getAsMention())));
+                    return EmbedUtil.message(EmbedUtil.success(invocation.translate("command.autorole.set.title"), invocation.translate("command.autorole.set.description").replace("%role%", role.getAsMention())));
                 } else
-                    return EmbedUtil.message(EmbedUtil.error("Role not found!", "There are either too many or no role with that name."));
+                    return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.autorole.set.nf.title"), invocation.translate("command.autorole.set.nf.description")));
             }
         }
         return createHelpMessage();
