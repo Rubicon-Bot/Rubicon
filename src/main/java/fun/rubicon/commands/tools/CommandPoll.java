@@ -73,64 +73,6 @@ public class CommandPoll extends CommandHandler implements Serializable {
         return null;
     }
 
-    private static class Poll implements Serializable {
-        private String creator;
-        private String heading;
-        private List<String> answers;
-        private HashMap<String, String> pollmsgs;
-        private HashMap<String, Integer> votes;
-        private String channel;
-        private HashMap<String, Integer> reacts;
-
-        private Poll(Member creator, String heading, List<String> answers, Message pollmsg, TextChannel channel) {
-            this.creator = creator.getUser().getId();
-            this.heading = heading;
-            this.answers = answers;
-            this.pollmsgs = new HashMap<>();
-            this.votes = new HashMap<>();
-            this.channel = channel.getId();
-            this.reacts = new HashMap<>();
-
-            this.pollmsgs.put(pollmsg.getId(), pollmsg.getTextChannel().getId());
-        }
-
-        Member getCreator(Guild guild) {
-            return guild.getMemberById(creator);
-        }
-
-        User getCreatorUser() {
-            return RubiconBot.getShardManager().getUserById(creator);
-        }
-
-        public String getHeading() {
-            return heading;
-        }
-
-        public List<String> getAnswers() {
-            return answers;
-        }
-
-        public boolean isPollmsg(String messageid) {
-            return pollmsgs.containsKey(messageid);
-        }
-
-        public HashMap<String, Integer> getVotes() {
-            return votes;
-        }
-
-        public List<Message> getPollMessages(Guild guild) {
-            List<Message> messages = new ArrayList<>();
-            Poll poll = this;
-            poll.pollmsgs.forEach((m, c) -> messages.add(guild.getTextChannelById(c).getMessageById(m).complete()));
-            return messages;
-        }
-
-        HashMap<String, Integer> getReacts() {
-            return reacts;
-        }
-    }
-
-
     private EmbedBuilder getParsedPoll(RubiconPoll poll, Guild guild, CommandManager.ParsedCommandInvocation command) {
 
         StringBuilder ansSTR = new StringBuilder();
@@ -169,25 +111,6 @@ public class CommandPoll extends CommandHandler implements Serializable {
 
     }
 
-    private static EmbedBuilder getParsedPoll(Poll poll, Guild guild, User user) {
-        ResourceBundle locale = RubiconBot.sGetTranslations().getUserLocale(user).getResourceBundle();
-        StringBuilder ansSTR = new StringBuilder();
-        final AtomicInteger count = new AtomicInteger();
-
-        poll.answers.forEach(s -> {
-            long votescount = poll.votes.keySet().stream().filter(k -> poll.votes.get(k).equals(count.get() + 1)).count();
-            ansSTR.append(EMOTI[count.get()]).append(" - ").append(count.get() + 1).append("  -  ").append(s).append("  -  Votes: `").append(votescount).append("` \n");
-            count.addAndGet(1);
-        });
-
-        return new EmbedBuilder()
-                .setAuthor(String.format(locale.getString("pollembed.heading"), poll.getCreator(guild).getEffectiveName()), null, poll.getCreator(guild).getUser().getAvatarUrl())
-                .setDescription(":pencil:   " + poll.heading + "\n\n" + ansSTR.toString())
-                .setFooter(locale.getString("pollembed.footer"), null)
-                .setColor(Color.CYAN);
-
-    }
-
     private void voteStats(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         Message message = parsedCommandInvocation.getMessage();
         if (!pollManager.pollExists(message.getGuild())) {
@@ -211,7 +134,7 @@ public class CommandPoll extends CommandHandler implements Serializable {
 
         RubiconPoll poll = pollManager.getPollByGuild(message.getGuild());
 
-        if (message.getAuthor().equals(poll.getCreator(message.getGuild()))) {
+        if (message.getAuthor().equals(poll.getCreator(message.getGuild()).getUser())) {
             message.getTextChannel().sendMessage(EmbedUtil.error(parsedCommandInvocation.translate("command.poll.close.noperms.title"), parsedCommandInvocation.translate("command.poll.close.noperms.description")).build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
             return;
         }

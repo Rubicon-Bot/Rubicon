@@ -34,7 +34,7 @@ public class VoteListener extends ListenerAdapter{
         }
         String emoji = event.getReactionEmote().getName();
         event.getReaction().removeReaction(event.getUser()).queue();
-        poll.getVotes().put(event.getReactionEmote().getId(), poll.getReacts().get(emoji));
+        poll.getVotes().put(event.getUser().getId(), poll.getReacts().get(emoji));
         poll.updateMessages(event.getGuild(), CommandPoll.getParsedPoll(poll, event.getGuild()));
         pollManager.replacePoll(poll, guild);
     }
