@@ -24,15 +24,15 @@ public class CommandStatistics extends CommandHandler {
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setColor(Colors.COLOR_SECONDARY);
-        embedBuilder.setAuthor("Rubicon Statistics", null, invocation.getSelfMember().getUser().getAvatarUrl());
-        embedBuilder.addField("Shards", RubiconBot.getMaximumShardCount() + " Total", true);
-        embedBuilder.addField("Guilds", String.valueOf(RubiconBot.getShardManager().getGuilds().size()), true);
-        embedBuilder.addField("Users", String.valueOf(RubiconBot.getShardManager().getUsers().size()), true);
-        embedBuilder.addField("Roles", String.valueOf(RubiconBot.getShardManager().getRoles().size()), true);
-        embedBuilder.addField("Textchannels", String.valueOf(RubiconBot.getShardManager().getTextChannels().size()), true);
-        embedBuilder.addField("Voicechannels", String.valueOf(RubiconBot.getShardManager().getVoiceChannels().size()), true);
-        embedBuilder.addField("Categories", String.valueOf(RubiconBot.getShardManager().getCategories().size()), true);
-        embedBuilder.addField("Emotes", String.valueOf(RubiconBot.getShardManager().getEmotes().size()), true);
+        embedBuilder.setAuthor(invocation.translate("command.stats.title"), null, invocation.getSelfMember().getUser().getAvatarUrl());
+        embedBuilder.addField(invocation.translate("command.stats.shards"), RubiconBot.getMaximumShardCount() + " Total", true);
+        embedBuilder.addField(invocation.translate("command.stats.guilds"), String.valueOf(RubiconBot.getShardManager().getGuilds().size()), true);
+        embedBuilder.addField(invocation.translate("command.stats.users"), String.valueOf(RubiconBot.getShardManager().getUsers().size()), true);
+        embedBuilder.addField(invocation.translate("command.stats.roles"), String.valueOf(RubiconBot.getShardManager().getRoles().size()), true);
+        embedBuilder.addField(invocation.translate("command.stats.textchannels"), String.valueOf(RubiconBot.getShardManager().getTextChannels().size()), true);
+        embedBuilder.addField(invocation.translate("command.stats.voicechannels"), String.valueOf(RubiconBot.getShardManager().getVoiceChannels().size()), true);
+        embedBuilder.addField(invocation.translate("command.stats.categories"), String.valueOf(RubiconBot.getShardManager().getCategories().size()), true);
+        embedBuilder.addField(invocation.translate("command.stats.emotes"), String.valueOf(RubiconBot.getShardManager().getEmotes().size()), true);
         embedBuilder.addBlankField(true);
         return EmbedUtil.message(embedBuilder);
     }
