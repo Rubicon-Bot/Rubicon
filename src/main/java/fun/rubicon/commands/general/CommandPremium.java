@@ -1,6 +1,7 @@
 package fun.rubicon.commands.general;
 
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
@@ -10,8 +11,11 @@ import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
+import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.Role;
 
 import java.util.Date;
 
@@ -58,13 +62,22 @@ public class CommandPremium extends CommandHandler {
             if (userMoney - PriceList.PREMIUM.getPrice() >= 0) {
                 author.setPremium(PREMIUM_TIME);
                 author.setMoney(userMoney-PriceList.PREMIUM.getPrice());
-                //assignPremiumRole(userSQL);
+                assignPremiumRole(author);
                 return EmbedUtil.message(EmbedUtil.success("Success!", "Successfully bought premium."));
             } else {
                 return EmbedUtil.message(EmbedUtil.error("Not enough money!", "Premium costs `" + PriceList.PREMIUM.getPrice() + "` rubys but you only have `" + userMoney + "` rubys"));
             }
         }
         return null;
+    }
+
+
+    private void assignPremiumRole(RubiconUser user) {
+        if (!user.isPremium()) return;
+        Guild guild = RubiconBot.getShardManager().getGuildById(Info.RUBICON_SERVER);
+        if (guild.getMember(user.getUser()) == null) return;
+        Role role = guild.getRoleById(382160159339970560L);
+        guild.getController().addSingleRoleToMember(guild.getMember(user.getUser()), role).queue();
     }
 
 }
