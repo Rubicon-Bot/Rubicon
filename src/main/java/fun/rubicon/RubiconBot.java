@@ -77,7 +77,6 @@ public class RubiconBot {
     private BitlyAPI bitlyAPI;
     private static final int SHARD_COUNT = 3;
 
-
     /**
      * Constructs the RubiconBot.
      */
@@ -167,7 +166,8 @@ public class RubiconBot {
                 new CommandInvite(),
                 new CommandSay(),
                 new CommandUserinfo(),
-                new CommandMoney()
+                new CommandMoney(),
+                new CommandStatistics()
         );
 
         //Moderation
