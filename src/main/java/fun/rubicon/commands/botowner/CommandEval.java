@@ -7,6 +7,7 @@ import fun.rubicon.command.CommandManager;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Message;
 
 import javax.script.ScriptEngine;
@@ -48,7 +49,7 @@ public class CommandEval extends CommandHandler {
         } catch (ScriptException er) {
             er.printStackTrace();
         }
-        se.put("jda", RubiconBot.getShardManager().getApplicationInfo().getJDA());
+        se.put("jda", RubiconBot.getShardManager().getApplicationInfo().getJDA())
         se.put("guild", parsedCommandInvocation.getMessage().getGuild());
         se.put("channel", parsedCommandInvocation.getMessage().getChannel());
         se.put("message", parsedCommandInvocation.getMessage());

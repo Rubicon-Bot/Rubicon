@@ -7,6 +7,7 @@
 package fun.rubicon;
 
 import fun.rubicon.command.CommandManager;
+import fun.rubicon.commands.admin.CommandAutorole;
 import fun.rubicon.commands.botowner.CommandMaintenance;
 import fun.rubicon.commands.botowner.CommandShardManage;
 import fun.rubicon.commands.fun.*;
@@ -23,13 +24,15 @@ import fun.rubicon.commands.settings.CommandJoinMessage;
 import fun.rubicon.commands.settings.CommandLeaveMessage;
 import fun.rubicon.commands.tools.CommandPoll;
 import fun.rubicon.commands.settings.CommandPrefix;
-import fun.rubicon.commands.tools.CommandRandomColor;
+import fun.rubicon.commands.tools.CommandShort;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.translation.TranslationManager;
 import fun.rubicon.commands.botowner.CommandEval;
+import fun.rubicon.features.PollManager;
 import fun.rubicon.features.PunishmentManager;
 import fun.rubicon.listener.*;
 import fun.rubicon.listener.bot.BotJoinListener;
+import fun.rubicon.listener.bot.BotLeaveListener;
 import fun.rubicon.listener.bot.SelfMentionListener;
 import fun.rubicon.listener.bot.ShardListener;
 import fun.rubicon.listener.channel.TextChannelDeleteListener;
@@ -38,6 +41,7 @@ import fun.rubicon.listener.feature.PunishmentListener;
 import fun.rubicon.listener.feature.VoteListener;
 import fun.rubicon.listener.member.MemberJoinListener;
 import fun.rubicon.listener.member.MemberLeaveListener;
+import fun.rubicon.listener.role.RoleDeleteListener;
 import fun.rubicon.mysql.DatabaseGenerator;
 import fun.rubicon.mysql.MySQL;
 import fun.rubicon.permission.PermissionManager;
@@ -51,8 +55,6 @@ import net.dv8tion.jda.core.entities.User;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -71,9 +73,12 @@ public class RubiconBot {
     private final PermissionManager permissionManager;
     private final TranslationManager translationManager;
     private PunishmentManager punishmentManager;
+    private PollManager pollManager;
     private ShardManager shardManager;
-    private boolean allShardsInited;
-    private static final int SHARD_COUNT = 1;
+    private boolean allShardsInitialised;
+    private BitlyAPI bitlyAPI;
+    private static final int SHARD_COUNT = 3;
+
 
 
     /**
@@ -111,10 +116,15 @@ public class RubiconBot {
         commandManager = new CommandManager();
         if(configuration.getString("maintenance") != null)
             if(Boolean.valueOf(configuration.getString("maintenance"))) commandManager.setMaintenance(true);
+
+        pollManager = new PollManager();
         registerCommands();
         permissionManager = new PermissionManager();
         translationManager = new TranslationManager();
         gameAnimator = new GameAnimator();
+        //Init url shorter API
+        bitlyAPI = new BitlyAPI(configuration.getString("bitly_token"));
+
 
         //Init Shard
         initShardManager();
@@ -130,6 +140,11 @@ public class RubiconBot {
                 new CommandEval(),
                 new CommandShardManage(),
                 new CommandMaintenance()
+        );
+
+        //Admin
+        commandManager.registerCommandHandlers(
+            new CommandAutorole()
         );
 
         // Settings
@@ -174,7 +189,8 @@ public class RubiconBot {
 
         //Tools
         commandManager.registerCommandHandlers(
-                new CommandPoll()
+                new CommandPoll(),
+                new CommandShort()
         );
 
         //Fun
@@ -215,6 +231,7 @@ public class RubiconBot {
         //Register Event Listeners
         builder.addEventListeners(
                 new BotJoinListener(),
+                new BotLeaveListener(),
                 commandManager,
                 new UserMentionListener(),
                 new ShardListener(),
@@ -227,7 +244,9 @@ public class RubiconBot {
                 new GeneralReactionListener(),
                 new AutochannelListener(),
                 new PunishmentListener(),
-                new GeneralMessageListener()
+                new GeneralMessageListener(),
+                new RoleDeleteListener()
+
         );
         try {
             shardManager = builder.build();
@@ -329,14 +348,22 @@ public class RubiconBot {
         return instance == null ? null : instance.translationManager;
     }
 
-    public static boolean isAllShardsInited() {
-        return instance.allShardsInited;
+    public static boolean allShardsInitialised() {
+        return instance.allShardsInitialised;
     }
 
-    public static void setAllShardsInited(boolean allShardsInited) {
-        instance.allShardsInited = allShardsInited;
+    public static void setAllShardsInitialised(boolean allShardsInitialised) {
+        instance.allShardsInitialised = allShardsInitialised;
     }
 
     public static GameAnimator getGameAnimator(){ return instance.gameAnimator; }
+
+
+    public static PollManager getPollManager(){ return instance.pollManager; }
+
+    public static BitlyAPI getBitlyAPI(){
+        return instance.bitlyAPI;
+    }
+
 
 }

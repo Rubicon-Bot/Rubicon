@@ -4,17 +4,14 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
+import fun.rubicon.core.entities.RubiconPoll;
+import fun.rubicon.features.PollManager;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.message.MessageDeleteEvent;
-import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
-import net.dv8tion.jda.core.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.core.exceptions.ErrorResponseException;
 
 import java.awt.*;
@@ -30,7 +27,7 @@ public class CommandPoll extends CommandHandler implements Serializable {
 
     private static TextChannel channel;
 
-    private static HashMap<Guild, Poll> polls = new HashMap<>();
+    private PollManager pollManager = RubiconBot.getPollManager();
 
     private static final String[] EMOTI = ("\uD83C\uDF4F \uD83C\uDF4E \uD83C\uDF50 \uD83C\uDF4A \uD83C\uDF4B \uD83C\uDF4C \uD83C\uDF49 \uD83C\uDF47 \uD83C\uDF53 \uD83C\uDF48 \uD83C\uDF52 \uD83C\uDF51 \uD83C\uDF4D \uD83E\uDD5D " +
             "\uD83E\uDD51 \uD83C\uDF45 \uD83C\uDF46 \uD83E\uDD52 \uD83E\uDD55 \uD83C\uDF3D \uD83C\uDF36 \uD83E\uDD54 \uD83C\uDF60 \uD83C\uDF30 \uD83E\uDD5C \uD83C\uDF6F \uD83E\uDD50 \uD83C\uDF5E " +
@@ -73,16 +70,6 @@ public class CommandPoll extends CommandHandler implements Serializable {
                 break;
         }
 
-        polls.forEach((guild, poll) -> {
-            File path = new File("data/votes");
-            if (!path.exists())
-                path.mkdirs();
-            try {
-                savePoll(message.getGuild());
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        });
         return null;
     }
 
@@ -144,21 +131,40 @@ public class CommandPoll extends CommandHandler implements Serializable {
     }
 
 
-    private static EmbedBuilder getParsedPoll(Poll poll, Guild guild, CommandManager.ParsedCommandInvocation command) {
+    private EmbedBuilder getParsedPoll(RubiconPoll poll, Guild guild, CommandManager.ParsedCommandInvocation command) {
 
         StringBuilder ansSTR = new StringBuilder();
         final AtomicInteger count = new AtomicInteger();
 
-        poll.answers.forEach(s -> {
-            long votescount = poll.votes.keySet().stream().filter(k -> poll.votes.get(k).equals(count.get() + 1)).count();
+        poll.getAnswers().forEach(s -> {
+            long votescount = poll.getVotes().keySet().stream().filter(k -> poll.getVotes().get(k).equals(count.get() + 1)).count();
             ansSTR.append(EMOTI[count.get()]).append(" - ").append(count.get() + 1).append("  -  ").append(s).append("  -  Votes: `").append(votescount).append("` \n");
             count.addAndGet(1);
         });
 
         return new EmbedBuilder()
                 .setAuthor(String.format(command.translate("pollembed.heading"), poll.getCreator(guild).getEffectiveName()), null, poll.getCreator(guild).getUser().getAvatarUrl())
-                .setDescription(":pencil:   " + poll.heading + "\n\n" + ansSTR.toString())
+                .setDescription(":pencil:   " + poll.getHeading() + "\n\n" + ansSTR.toString())
                 .setFooter(command.translate("pollembed.footer"), null)
+                .setColor(Color.CYAN);
+
+    }
+
+    public static EmbedBuilder getParsedPoll(RubiconPoll poll, Guild guild) {
+
+        StringBuilder ansSTR = new StringBuilder();
+        final AtomicInteger count = new AtomicInteger();
+
+        poll.getAnswers().forEach(s -> {
+            long votescount = poll.getVotes().keySet().stream().filter(k -> poll.getVotes().get(k).equals(count.get() + 1)).count();
+            ansSTR.append(EMOTI[count.get()]).append(" - ").append(count.get() + 1).append("  -  ").append(s).append("  -  Votes: `").append(votescount).append("` \n");
+            count.addAndGet(1);
+        });
+
+        return new EmbedBuilder()
+                .setAuthor(String.format(RubiconBot.sGetTranslations().getDefaultTranslationLocale().getResourceBundle().getString("pollembed.heading"), poll.getCreator(guild).getEffectiveName()), null, poll.getCreator(guild).getUser().getAvatarUrl())
+                .setDescription(":pencil:   " + poll.getHeading() + "\n\n" + ansSTR.toString())
+                .setFooter(RubiconBot.sGetTranslations().getDefaultTranslationLocale().getResourceBundle().getString("pollembed.footer"), null)
                 .setColor(Color.CYAN);
 
     }
@@ -184,37 +190,36 @@ public class CommandPoll extends CommandHandler implements Serializable {
 
     private void voteStats(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         Message message = parsedCommandInvocation.getMessage();
-        if (!polls.containsKey(message.getGuild())) {
+        if (!pollManager.pollExists(message.getGuild())) {
             message.getTextChannel().sendMessage(EmbedUtil.error(parsedCommandInvocation.translate("command.poll.nopoll.title"), parsedCommandInvocation.translate("command.poll.nopoll.description")).build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
             return;
         }
-        Poll poll = polls.get(message.getGuild());
-        Message pollmsg = channel.sendMessage(getParsedPoll(polls.get(message.getGuild()), message.getGuild(), parsedCommandInvocation).build()).complete();
-        poll.pollmsgs.put(pollmsg.getId(), pollmsg.getTextChannel().getId());
-        poll.reacts.keySet().forEach(r -> pollmsg.addReaction(r).queue());
-        polls.replace(message.getGuild(), poll);
+        RubiconPoll poll = pollManager.getPollByGuild(message.getGuild());
+        Message pollmsg = channel.sendMessage(getParsedPoll(pollManager.getPollByGuild(message.getGuild()), message.getGuild(), parsedCommandInvocation).build()).complete();
+        poll.getPollmsgs().put(pollmsg.getId(), pollmsg.getTextChannel().getId());
+        poll.getReacts().keySet().forEach(r -> pollmsg.addReaction(r).queue());
+        pollManager.replacePoll(poll, message.getGuild());
     }
 
     private void closeVote(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         Message message = parsedCommandInvocation.getMessage();
         User author = message.getAuthor();
-        if (!polls.containsKey(message.getGuild())) {
+        if (!pollManager.pollExists(message.getGuild())) {
             message.getTextChannel().sendMessage(EmbedUtil.error(parsedCommandInvocation.translate("command.poll.nopoll.title"), parsedCommandInvocation.translate("command.poll.nopoll.description")).build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
             return;
         }
 
-        Poll poll = polls.get(message.getGuild());
+        RubiconPoll poll = pollManager.getPollByGuild(message.getGuild());
 
         if (message.getAuthor().equals(poll.getCreator(message.getGuild()))) {
             message.getTextChannel().sendMessage(EmbedUtil.error(parsedCommandInvocation.translate("command.poll.close.noperms.title"), parsedCommandInvocation.translate("command.poll.close.noperms.description")).build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
             return;
         }
 
-        polls.remove(message.getGuild());
         channel.sendMessage(getParsedPoll(poll, message.getGuild(), parsedCommandInvocation).build()).queue();
         message.getTextChannel().sendMessage(EmbedUtil.success(parsedCommandInvocation.translate("command.poll.close.closed.title"), String.format(parsedCommandInvocation.translate("command.poll.close.closed.description"), author.getAsMention())).build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
         try {
-            poll.pollmsgs.forEach((m, c) -> {
+            poll.getPollmsgs().forEach((m, c) -> {
                 Message pollmsg = message.getGuild().getTextChannelById(c).getMessageById(m).complete();
                 pollmsg.editMessage(getParsedPoll(poll, message.getGuild(), parsedCommandInvocation).build()).queue();
             });
@@ -226,15 +231,13 @@ public class CommandPoll extends CommandHandler implements Serializable {
         } catch (Exception ignored) {
 
         }
-        File file = new File("data/votes/" + message.getGuild().getId() + ".dat");
-        if (file.exists())
-            file.delete();
+        poll.delete();
     }
 
     private void createPoll(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         Message message = parsedCommandInvocation.getMessage();
         String[] args = parsedCommandInvocation.getArgs();
-        if (polls.containsKey(message.getGuild())) {
+        if (pollManager.pollExists(message.getGuild())) {
             message.getTextChannel().sendMessage(EmbedUtil.error(parsedCommandInvocation.translate("command.poll.create.alreadyrunning.title"), parsedCommandInvocation.translate("command.poll.create.alreadyrunning.description")).build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
             return;
         }
@@ -255,15 +258,13 @@ public class CommandPoll extends CommandHandler implements Serializable {
             toAddEmojis.remove(0);
             count.addAndGet(1);
         });
-        Poll poll = new Poll(message.getMember(), heading, answers, pollmessage, message.getTextChannel());
-        polls.put(message.getGuild(), poll);
-        poll.getReacts().putAll(reactions);
+        RubiconPoll poll = RubiconPoll.createPoll(heading, answers, pollmessage, reactions).savePoll();
 
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
                 pollmessage.editMessage(getParsedPoll(poll, message.getGuild(), parsedCommandInvocation).build()).complete();
-                poll.reacts.keySet().forEach(r -> pollmessage.addReaction(r).queue());
+                poll.getReacts().keySet().forEach(r -> pollmessage.addReaction(r).queue());
             }
         }, 500);
     }
@@ -271,17 +272,17 @@ public class CommandPoll extends CommandHandler implements Serializable {
     private void votePoll(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         Message message = parsedCommandInvocation.getMessage();
         String[] args = parsedCommandInvocation.getArgs();
-        if (!polls.containsKey(message.getGuild())) {
+        if (!pollManager.pollExists(message.getGuild())) {
             message.getTextChannel().sendMessage(EmbedUtil.error(parsedCommandInvocation.translate("command.poll.nopoll.title"), parsedCommandInvocation.translate("command.poll.nopoll.description")).build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
             return;
         }
 
-        Poll poll = polls.get(message.getGuild());
+        RubiconPoll poll = pollManager.getPollByGuild(message.getGuild());
 
         int vote;
         try {
             vote = Integer.parseInt(args[1]);
-            if (vote > poll.answers.size()) {
+            if (vote > poll.getAnswers().size()) {
                 throw new Exception();
             }
         } catch (Exception e) {
@@ -289,125 +290,21 @@ public class CommandPoll extends CommandHandler implements Serializable {
             return;
         }
 
-        if (poll.votes.containsKey(message.getAuthor().getId())) {
+        if (poll.getVotes().containsKey(message.getAuthor().getId())) {
             return;
         }
 
-        poll.votes.put(message.getAuthor().getId(), vote);
-        polls.replace(message.getGuild(), poll);
+        poll.getVotes().put(message.getAuthor().getId(), vote);
+        pollManager.replacePoll(poll, message.getGuild());
         SafeMessage.sendMessage((TextChannel) message.getAuthor().openPrivateChannel().complete(), String.format(parsedCommandInvocation.translate("command.poll.vote.voted"), vote));
-        poll.pollmsgs.forEach((m, c) -> {
-            Message pollmsg = message.getGuild().getTextChannelById(c).getMessageById(m).complete();
-            pollmsg.editMessage(getParsedPoll(poll, message.getGuild(), parsedCommandInvocation).build()).queue();
-        });
+        EmbedBuilder messageText = getParsedPoll(poll, message.getGuild(), parsedCommandInvocation);
+        poll.updateMessages(message.getGuild(), messageText);
     }
 
-    public static void reactVote(MessageReactionAddEvent event) {
-        if (event.getUser().isBot() || !polls.containsKey(event.getGuild()))
-            return;
-        Poll poll = polls.get(event.getGuild());
-        if (!poll.isPollmsg(event.getMessageId())) return;
-        if (poll.votes.containsKey(event.getUser().getId())) {
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    event.getReaction().removeReaction(event.getUser()).queue();
-                }
-            }, 1000);
-            return;
-        }
-        String emoji = event.getReaction().getReactionEmote().getName();
 
-        poll.votes.put(event.getUser().getId(), poll.reacts.get(emoji));
-        polls.replace(event.getGuild(), poll);
 
-        poll.pollmsgs.forEach((m, c) -> {
-            Message pollmsg = event.getGuild().getTextChannelById(c).getMessageById(m).complete();
-            pollmsg.editMessage(getParsedPoll(poll, event.getGuild(), poll.getCreatorUser()).build()).queue();
-        });
 
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                event.getReaction().removeReaction(event.getUser()).queue();
-            }
-        }, 1000);
 
-        CommandPoll.polls.keySet().forEach((guild) -> {
-            File path = new File("data/votes");
-            if (!path.exists())
-                path.mkdirs();
-            try {
-                CommandPoll.savePoll(event.getGuild());
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        });
-    }
 
-    private static void savePoll(Guild guild) throws IOException {
-        if (!polls.containsKey(guild)) {
-            return;
-        }
 
-        String saveFile = "data/votes/" + guild.getId() + ".dat";
-        Poll poll = polls.get(guild);
-
-        FileOutputStream fos = new FileOutputStream(saveFile);
-        ObjectOutputStream oos = new ObjectOutputStream(fos);
-        oos.writeObject(poll);
-        oos.close();
-    }
-
-    private static Poll getPoll(Guild guild) throws IOException, ClassNotFoundException {
-        if (polls.containsKey(guild))
-            return null;
-
-        String saveFile = "data/votes/" + guild.getId() + ".dat";
-        FileInputStream fis = new FileInputStream(saveFile);
-        ObjectInputStream ois = new ObjectInputStream(fis);
-        Poll out = (Poll) ois.readObject();
-        ois.close();
-        return out;
-    }
-
-    public static void loadPolls(JDA jda) {
-        jda.getGuilds().forEach(g -> {
-
-            String saveFile = "data/votes/" + g.getId() + ".dat";
-            File f = new File(saveFile);
-            if (f.exists())
-                try {
-                    polls.put(g, getPoll(g));
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-        });
-    }
-
-    public static void handleMessageDeletion(MessageDeleteEvent event) {
-        try {
-            if (!polls.containsKey(event.getGuild())) return;
-            Poll poll = getPoll(event.getGuild());
-            if (!poll.isPollmsg(event.getMessageId())) return;
-            poll.pollmsgs.remove(event.getMessageId());
-            polls.replace(event.getGuild(), poll);
-            savePoll(event.getGuild());
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (NullPointerException ignored) {
-
-        }
-    }
-
-    public static void handleReactionRemove(MessageReactionRemoveEvent event){
-        try {
-            if (!polls.containsKey(event.getGuild())) return;
-            Poll poll = polls.get(event.getGuild());
-            if (!poll.isPollmsg(event.getMessageId())) return;
-            event.getChannel().getMessageById(event.getMessageId()).complete().addReaction(event.getReactionEmote().getName()).queue();
-        } catch (Exception ignored){
-            ignored.printStackTrace();
-        }
-    }
 }

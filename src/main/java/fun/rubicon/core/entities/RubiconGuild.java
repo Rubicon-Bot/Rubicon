@@ -9,15 +9,18 @@ package fun.rubicon.core.entities;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.settings.CommandJoinMessage;
 import fun.rubicon.commands.settings.CommandLeaveMessage;
+import fun.rubicon.mysql.DatabaseGenerator;
 import fun.rubicon.mysql.MySQL;
 import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
+import fun.rubicon.util.PortalMessageType;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.PermissionOverride;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
 
+import javax.sound.sampled.Port;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -256,6 +259,7 @@ public class RubiconGuild {
             Logger.error(e);
         }
     }
+
     public Role getMutedRole() {
         if (!guild.getRolesByName("rubicon-muted", false).isEmpty())
             return guild.getRolesByName("rubicon-muted", false).get(0);
@@ -275,6 +279,7 @@ public class RubiconGuild {
         });
         return mute;
     }
+
     // Leavemessages
     public boolean hasLeaveMessagesEnabled() {
         try {
@@ -391,6 +396,55 @@ public class RubiconGuild {
             Logger.error(e);
         }
         return channelIds;
+    }
+
+    // Autoroles
+    public void setAutorole(long roleId) {
+        if(hasAutoroleEnabled())
+            disableAutorole();
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("INSERT INTO autoroles (serverId, roleId) VALUES (?, ?)");
+            ps.setLong(1, guild.getIdLong());
+            ps.setLong(2, roleId);
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+    }
+
+    public long getAutorole() {
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("SELECT roleId FROM autoroles WHERE serverId = ?");
+            ps.setLong(1, guild.getIdLong());
+            ResultSet rs = ps.executeQuery();
+            if (rs.next())
+                return rs.getLong("roleId");
+        } catch (Exception e) {
+            Logger.error(e);
+        }
+        return 0;
+    }
+
+    public boolean hasAutoroleEnabled() {
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("SELECT id FROM autoroles WHERE serverId = ?");
+            ps.setLong(1, guild.getIdLong());
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+        return false;
+    }
+
+    public void disableAutorole() {
+        try {
+            PreparedStatement ps = mySQL.prepareStatement("DELETE FROM autoroles WHERE serverId = ?");
+            ps.setLong(1, guild.getIdLong());
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
     }
 
     public static RubiconGuild fromGuild(Guild guild) {
