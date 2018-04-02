@@ -34,7 +34,11 @@ public class VoteListener extends ListenerAdapter{
         }
         String emoji = event.getReactionEmote().getName();
         event.getReaction().removeReaction(event.getUser()).queue();
+<<<<<<< HEAD
         poll.getVotes().put(event.getUser().getId(), poll.getReacts().get(emoji));
+=======
+        poll.getVotes().put(event.getReactionEmote().getId(), poll.getReacts().get(emoji));
+>>>>>>> origin/Rework-1.0.0
         poll.updateMessages(event.getGuild(), CommandPoll.getParsedPoll(poll, event.getGuild()));
         pollManager.replacePoll(poll, guild);
     }

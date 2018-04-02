@@ -59,7 +59,7 @@ public class CommandManager extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if(!RubiconBot.isAllShardsInited())
+        if (!RubiconBot.allShardsInitialised())
             return;
         if (event.isFromType(ChannelType.PRIVATE)) return;
 
@@ -67,11 +67,13 @@ public class CommandManager extends ListenerAdapter {
 
         //Check Database Entries
         RubiconGuild rubiconGuild = RubiconGuild.fromGuild(event.getGuild());
-        RubiconMember rubiconMember = RubiconMember.fromMember(event.getMember());
+        if(event.getChannelType().isGuild()) {
+            RubiconMember rubiconMember = RubiconMember.fromMember(event.getMember());
+        }
 
         ParsedCommandInvocation commandInvocation = parse(event.getMessage());
         if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake() && !event.isWebhookMessage()) {
-            if(maintenance && !(Arrays.asList(Info.BOT_AUTHOR_IDS).contains(event.getAuthor().getIdLong()) || Arrays.asList(Info.COMMUNITY_STAFF_TEAM).contains(event.getAuthor().getIdLong()))) {
+            if (maintenance && !(Arrays.asList(Info.BOT_AUTHOR_IDS).contains(event.getAuthor().getIdLong()) || Arrays.asList(Info.COMMUNITY_STAFF_TEAM).contains(event.getAuthor().getIdLong()))) {
                 SafeMessage.sendMessage(event.getTextChannel(), EmbedUtil.info("Maintenance", "Bot is currently in maintenance mode.").build(), 5);
                 return;
             }
@@ -101,8 +103,12 @@ public class CommandManager extends ListenerAdapter {
         if (parsedCommandInvocation.getGuild() != null) {
             if (!parsedCommandInvocation.getGuild().getSelfMember().getPermissions(parsedCommandInvocation.getTextChannel()).contains(Permission.MESSAGE_MANAGE))
                 return; // Do not try to delete message when bot is not allowed to
-            parsedCommandInvocation.getMessage().delete().queue(null, msg -> {
-            }); // suppress failure
+            try {
+                parsedCommandInvocation.getMessage().delete().queue(null, msg -> {
+                }); // suppress failure
+            } catch (Exception e) {
+                // Ignored
+            }
         }
     }
 
@@ -241,7 +247,9 @@ public class CommandManager extends ListenerAdapter {
             return defaultResourceBundle;
         }
 
-        public UserPermissions getPerms() { return new UserPermissions(getAuthor(), getGuild()); }
+        public UserPermissions getPerms() {
+            return new UserPermissions(getAuthor(), getGuild());
+        }
 
         public String translate(String key) {
             String entry;
@@ -250,7 +258,7 @@ public class CommandManager extends ListenerAdapter {
             } catch (MissingResourceException e) {
                 try {
                     entry = defaultResourceBundle.getString(key);
-                } catch (MissingResourceException e2){
+                } catch (MissingResourceException e2) {
                     entry = "Unable to find language string for \"" + key + "\"";
                 }
             }
@@ -258,7 +266,7 @@ public class CommandManager extends ListenerAdapter {
         }
     }
 
-    public boolean isMaintenanceEnabled(){
+    public boolean isMaintenanceEnabled() {
         return maintenance;
     }
 

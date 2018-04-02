@@ -23,7 +23,7 @@ import java.util.Map;
  * @author tr808axm
  */
 public class PermissionManager {
-    private static final String TABLE = "permissions-v1";
+    private static final String TABLE = "permissions";
 
     public PermissionManager() {
         // ensure table existence

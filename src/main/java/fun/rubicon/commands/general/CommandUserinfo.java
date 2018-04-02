@@ -38,7 +38,7 @@ public class CommandUserinfo extends CommandHandler {
         if (!infoMember.getRoles().isEmpty())
             roles.replace(rawRoles.lastIndexOf(","), roles.lastIndexOf(",") + 1, "");
         String resRoles = roles.toString();
-        if(resRoles.length() > 400) {
+        if (resRoles.length() > 400) {
             resRoles = resRoles.substring(0, 400) + "., more ....";
         }
 

@@ -16,6 +16,8 @@ import net.dv8tion.jda.core.entities.User;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @author Yannick Seeger / ForYaSee
@@ -23,9 +25,9 @@ import java.sql.SQLException;
 public abstract class RubiconUserImpl {
 
     protected User user;
-    protected MySQL mySQL;
+    MySQL mySQL;
 
-    public RubiconUserImpl(User user) {
+    RubiconUserImpl(User user) {
         this.user = user;
         this.mySQL = RubiconBot.getMySQL();
 
@@ -36,7 +38,7 @@ public abstract class RubiconUserImpl {
         return user;
     }
 
-    public RubiconUserImpl setBio(String bio) {
+    public void setBio(String bio) {
         try {
             PreparedStatement ps = mySQL.prepareStatement("UPDATE users SET bio=? WHERE userid=?");
             ps.setString(1, bio);
@@ -45,7 +47,6 @@ public abstract class RubiconUserImpl {
         } catch (SQLException e) {
             Logger.error(e);
         }
-        return this;
     }
 
     public String getBio() {
@@ -84,14 +85,12 @@ public abstract class RubiconUserImpl {
         return 0;
     }
 
-    public RubiconUserImpl addMoney(int amount) {
+    public void addMoney(int amount) {
         setMoney(getMoney() + amount);
-        return this;
     }
 
-    public RubiconUserImpl removeMoney(int amount) {
+    public void removeMoney(int amount) {
         setMoney(getMoney() - amount);
-        return this;
     }
 
     public RubiconUserImpl setPremium(long time) {
@@ -119,9 +118,8 @@ public abstract class RubiconUserImpl {
     }
 
     public boolean isPremium() {
-        if (getPremiumRaw() == 0)
-            return false;
-        return true;
+        if (getPremiumRaw() != 0) return true;
+        else return false;
     }
 
     public RubiconUserImpl setLanguage(String languageKey) {
@@ -199,6 +197,19 @@ public abstract class RubiconUserImpl {
         return false;
     }
 
+    public Date getPremiumExpiryDate() {
+        if (!this.isPremium())
+            return null;
+        return new Date(this.getPremiumRaw());
+    }
+
+    public String formatExpiryDate() {
+        if (!this.isPremium())
+            return null;
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        return sdf.format(this.getPremiumExpiryDate());
+    }
+
     private void createIfNotExist() {
         if (exist())
             return;
@@ -232,6 +243,8 @@ public abstract class RubiconUserImpl {
 
         return ((RubiconUser) this);
     }
+
+
 
     public static RubiconUser fromUser(User user) {
         return new RubiconUser(user);

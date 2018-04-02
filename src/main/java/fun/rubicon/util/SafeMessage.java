@@ -20,8 +20,12 @@ public class SafeMessage {
     }
 
     public static void sendMessage(TextChannel textChannel, Message message, int deleteTime) {
-        if (hasPermissions(textChannel))
-            textChannel.sendMessage(message).queue(msg -> msg.delete().queueAfter(deleteTime, TimeUnit.SECONDS));
+        try {
+            if (hasPermissions(textChannel))
+                textChannel.sendMessage(message).queue(msg -> msg.delete().queueAfter(deleteTime, TimeUnit.SECONDS));
+        } catch (Exception e) {
+            // Ignored
+        }
     }
 
     public static Message sendMessageBlocking(TextChannel textChannel, Message message) {

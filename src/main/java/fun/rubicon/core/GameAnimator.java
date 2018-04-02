@@ -27,7 +27,7 @@ public class GameAnimator {
     private final Game[] games = {
             Game.listening("rc!help"),
             Game.playing("rubicon.fun"),
-            Game.watching("twitter.com/rubicondevteam"),
+            Game.watching("twitter.com/realRubicon"),
             Game.playing("Version: " + Info.BOT_VERSION),
             Game.watching("Rubiteam <3"),
             Game.watching("New Translations"),
