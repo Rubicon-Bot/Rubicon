@@ -8,6 +8,8 @@ package fun.rubicon.util;
 
 import net.dv8tion.jda.core.Permission;
 
+import java.util.Date;
+
 
 /**
  * General data object.
@@ -47,6 +49,9 @@ public class Info {
             240797338430341120L, //Pilz
             235395943619493888L //ls13game
     };
+
+    public static Date lastRestart;
+
 
     public final static long ROLE_TRANSLATOR = 415237125299109889L;
     public final static long ROLE_STAFF = 387228153753632768L;

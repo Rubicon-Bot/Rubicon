@@ -11,9 +11,7 @@ import net.dv8tion.jda.core.entities.Message;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-/**
- * @author ForYaSee / Yannick Seeger
- */
+
 public class CommandLmgtfy extends CommandHandler {
 
     public CommandLmgtfy() {
@@ -25,3 +23,4 @@ public class CommandLmgtfy extends CommandHandler {
         return new MessageBuilder("http://lmgtfy.com/?iie=1&q=" + URLEncoder.encode(invocation.getArgsString(), "UTF-8")).build();
     }
 }
+
