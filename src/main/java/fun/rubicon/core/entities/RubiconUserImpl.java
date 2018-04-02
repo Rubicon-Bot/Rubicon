@@ -16,6 +16,8 @@ import net.dv8tion.jda.core.entities.User;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @author Yannick Seeger / ForYaSee
@@ -198,6 +200,19 @@ public abstract class RubiconUserImpl {
         return false;
     }
 
+    public Date getPremiumExpiryDate() {
+        if (!this.isPremium())
+            return null;
+        return new Date(this.getPremiumRaw());
+    }
+
+    public String formatExpiryDate() {
+        if (!this.isPremium())
+            return null;
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        return sdf.format(this.getPremiumExpiryDate());
+    }
+
     private void createIfNotExist() {
         if (exist())
             return;
@@ -231,6 +246,8 @@ public abstract class RubiconUserImpl {
 
         return ((RubiconUser) this);
     }
+
+
 
     public static RubiconUser fromUser(User user) {
         return new RubiconUser(user);
