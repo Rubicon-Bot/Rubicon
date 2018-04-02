@@ -14,9 +14,9 @@ import java.net.URLEncoder;
 /**
  * @author ForYaSee / Yannick Seeger
  */
-public class LmgtfyCommand extends CommandHandler {
+public class CommandLmgtfy extends CommandHandler {
 
-    public LmgtfyCommand() {
+    public CommandLmgtfy() {
         super(new String[]{"lmgtfy"}, CommandCategory.FUN, new PermissionRequirements("lmgtfy", false, true), "Generates a lmgtfy link.", "<searcg>");
     }
 
