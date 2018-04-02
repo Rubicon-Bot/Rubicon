@@ -120,9 +120,8 @@ public abstract class RubiconUserImpl {
     }
 
     public boolean isPremium() {
-        if (getPremiumRaw() == 0)
-            return false;
-        return true;
+        if (getPremiumRaw() != 0) return true;
+        else return false;
     }
 
     public RubiconUserImpl setLanguage(String languageKey) {
