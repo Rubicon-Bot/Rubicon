@@ -167,7 +167,8 @@ public class RubiconBot {
                 new CommandBio(),
                 new CommandInvite(),
                 new CommandSay(),
-                new CommandUserinfo()
+                new CommandUserinfo(),
+                new CommandMoney()
         );
 
         //Moderation
