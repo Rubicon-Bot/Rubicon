@@ -43,12 +43,8 @@ public class CommandPremium extends CommandHandler {
         RubiconUser author = new RubiconUser(invocation.getAuthor());
         if(args.length == 0) {
             EmbedBuilder em = new EmbedBuilder();
-        em.setAuthor(
-                invocation.getAuthor().getName(), null, invocation.getAuthor().getAvatarUrl()
-        );
-        em.setColor(
-                Colors.COLOR_SECONDARY
-        );
+        em.setAuthor(invocation.getAuthor().getName(), null, invocation.getAuthor().getAvatarUrl());
+        em.setColor(Colors.COLOR_SECONDARY);
         if ((author.isPremium())) {
             em.setDescription(invocation.translate("command.premium.until")+" " + author.formatExpiryDate());
         } else {

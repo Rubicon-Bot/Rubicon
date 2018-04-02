@@ -83,12 +83,12 @@ public abstract class CommandHandler {
             } catch (Exception e) { // catch exceptions in command and provide an answer
                 Logger.error("Unknown error during the execution of the '" + parsedCommandInvocation.getCommandInvocation() + "' command. ");
                 Logger.error(e);
-                return new MessageBuilder().setEmbed(new EmbedBuilder()
+                return message(new EmbedBuilder()
                         .setAuthor("Error", null, RubiconBot.getSelfUser().getEffectiveAvatarUrl())
-                        .setDescription("An unknown error occurred while executing your command.")
+                        .setDescription("An unknown error occurred while executing your comasdasdsadmand.")
                         .setColor(Colors.COLOR_ERROR)
                         .setFooter(RubiconBot.getNewTimestamp(), null)
-                        .build()).build();
+                        );
             }
         } else
             // respond with 'no-permission'-message
