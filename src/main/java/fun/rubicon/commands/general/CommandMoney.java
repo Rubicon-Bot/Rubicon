@@ -18,7 +18,7 @@ import fun.rubicon.util.StringUtil;
 import net.dv8tion.jda.core.entities.Message;
 
 /**
- * @author Leon Kappes / Lee
+ * @author Yannick Seeger / ForYaSee
  */
 public class CommandMoney extends CommandHandler {
 

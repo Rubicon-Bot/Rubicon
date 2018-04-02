@@ -18,6 +18,8 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
+import java.io.UnsupportedEncodingException;
+
 import static fun.rubicon.util.EmbedUtil.*;
 
 /**
@@ -105,7 +107,7 @@ public abstract class CommandHandler {
      * @param userPermissions         an object to query the invoker's permissions.
      * @return a response that will be sent and deleted by the caller.
      */
-    protected abstract Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions);
+    protected abstract Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) throws UnsupportedEncodingException;
 
     /**
      * @return all aliases this CommandHandler wants to listen to.
