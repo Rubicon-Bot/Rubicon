@@ -67,7 +67,9 @@ public class CommandManager extends ListenerAdapter {
 
         //Check Database Entries
         RubiconGuild rubiconGuild = RubiconGuild.fromGuild(event.getGuild());
-        RubiconMember rubiconMember = RubiconMember.fromMember(event.getMember());
+        if(event.getChannelType().isGuild()) {
+            RubiconMember rubiconMember = RubiconMember.fromMember(event.getMember());
+        }
 
         ParsedCommandInvocation commandInvocation = parse(event.getMessage());
         if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake() && !event.isWebhookMessage()) {

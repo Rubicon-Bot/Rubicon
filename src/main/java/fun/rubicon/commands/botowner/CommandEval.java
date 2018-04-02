@@ -7,11 +7,13 @@ import fun.rubicon.command.CommandManager;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Message;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import java.text.MessageFormat;
 
 /**
  * Rubicon Discord bot
@@ -77,7 +79,7 @@ public class CommandEval extends CommandHandler {
             new MessageBuilder().appendCodeBlock(out.toString(), "Java").buildAll(MessageBuilder.SplitPolicy.NEWLINE, MessageBuilder.SplitPolicy.SPACE, MessageBuilder.SplitPolicy.ANYWHERE).forEach(message -> parsedCommandInvocation.getTextChannel().sendMessage(message).queue());
         } catch (ScriptException er) {
             parsedCommandInvocation.getMessage().getTextChannel().sendMessage(new StringBuilder().append("```Java\n").append(modified_msg)
-                    .append("``` ```Java\nAn exception was thrown:" + er.toString() + "```").toString()).queue();
+                    .append(MessageFormat.format("``` ```Java\nAn exception was thrown:{0}```", er.toString())).toString()).queue();
         }
         return null;
     }

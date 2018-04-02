@@ -24,6 +24,10 @@ public class BotListHandler {
             Logger.warning("Could not post discordbots.org stats because the bot has not been initialized yet.");
             return;
         }
+        if (RubiconBot.getConfiguration().getString("discord_pw_token").isEmpty()){
+            Logger.warning("In Dev mode. No Discord PW token set!");
+            return;
+        }
 
         // init api if necessary
         if (discordBotListAPI == null)

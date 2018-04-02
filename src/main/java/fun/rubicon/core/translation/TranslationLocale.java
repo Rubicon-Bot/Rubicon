@@ -22,7 +22,7 @@ public class TranslationLocale {
         this.manager = manager;
         this.locale = locale;
         this.languageName = languageName;
-        this.resourceBundle = ResourceBundle.getBundle("lang.translation_" + locale.getLanguage() + '_' + locale.getCountry(), locale);
+        this.resourceBundle = ResourceBundle.getBundle("translation_" + locale.getLanguage() + '_' + locale.getCountry(), locale);
     }
 
     public String getLocaleCode() {
