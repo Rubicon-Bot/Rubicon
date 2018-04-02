@@ -10,6 +10,7 @@ import fun.rubicon.command.CommandManager;
 import fun.rubicon.commands.admin.CommandAutorole;
 import fun.rubicon.commands.botowner.CommandMaintenance;
 import fun.rubicon.commands.botowner.CommandShardManage;
+import fun.rubicon.commands.fun.LmgtfyCommand;
 import fun.rubicon.commands.general.CommandAFK;
 import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
@@ -155,7 +156,8 @@ public class RubiconBot {
 
         // Fun
         commandManager.registerCommandHandlers(
-                new CommandRandom()
+                new CommandRandom(),
+                new LmgtfyCommand()
         );
 
         //General

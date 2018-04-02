@@ -83,14 +83,12 @@ public abstract class RubiconUserImpl {
         return 0;
     }
 
-    public RubiconUserImpl addMoney(int amount) {
+    public void addMoney(int amount) {
         setMoney(getMoney() + amount);
-        return this;
     }
 
-    public RubiconUserImpl removeMoney(int amount) {
+    public void removeMoney(int amount) {
         setMoney(getMoney() - amount);
-        return this;
     }
 
     public RubiconUserImpl setPremium(long time) {
