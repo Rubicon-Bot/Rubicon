@@ -4,6 +4,7 @@ package fun.rubicon.commands.general;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
+import fun.rubicon.core.PriceList;
 import fun.rubicon.core.entities.RubiconUser;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
@@ -11,6 +12,8 @@ import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
+
+import java.util.Date;
 
 import static fun.rubicon.util.EmbedUtil.message;
 
@@ -20,6 +23,8 @@ import static fun.rubicon.util.EmbedUtil.message;
  * The full license text is available in the LICENSE file provided with this project.
  */
 public class CommandPremium extends CommandHandler {
+
+    private final long PREMIUM_TIME = new Date().getTime() + 15638400000L;
 
     public CommandPremium() {
         super(new String[]{"premium"}, CommandCategory.GENERAL, new PermissionRequirements("premium", false, true), "See your premium state or buy premium.","| Shows current premium state\n"+
@@ -50,7 +55,16 @@ public class CommandPremium extends CommandHandler {
                 return message(EmbedUtil.info("Already activated!", "You already have premium until " + author.getPremiumExpiryDate()));
             }
             int userMoney = author.getMoney();
+            if (userMoney - PriceList.PREMIUM.getPrice() >= 0) {
+                author.setPremium(PREMIUM_TIME);
+                author.setMoney(userMoney-PriceList.PREMIUM.getPrice());
+                //assignPremiumRole(userSQL);
+                return EmbedUtil.message(EmbedUtil.success("Success!", "Successfully bought premium."));
+            } else {
+                return EmbedUtil.message(EmbedUtil.error("Not enough money!", "Premium costs `" + PriceList.PREMIUM.getPrice() + "` rubys but you only have `" + userMoney + "` rubys"));
+            }
         }
+        return null;
     }
 
 }

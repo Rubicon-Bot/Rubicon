@@ -50,7 +50,7 @@ public class CommandEval extends CommandHandler {
         } catch (ScriptException er) {
             er.printStackTrace();
         }
-        se.put("jda", RubiconBot.getShardManager().getApplicationInfo().getJDA())
+        se.put("jda", RubiconBot.getShardManager().getApplicationInfo().getJDA());
         se.put("guild", parsedCommandInvocation.getMessage().getGuild());
         se.put("channel", parsedCommandInvocation.getMessage().getChannel());
         se.put("message", parsedCommandInvocation.getMessage());

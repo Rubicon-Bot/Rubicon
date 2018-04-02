@@ -6,6 +6,10 @@
 
 package fun.rubicon;
 
+import de.foryasee.httprequest.HttpRequestBuilder;
+import de.foryasee.httprequest.RequestHeader;
+import de.foryasee.httprequest.RequestResponse;
+import de.foryasee.httprequest.RequestType;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.commands.admin.CommandAutorole;
 import fun.rubicon.commands.botowner.CommandMaintenance;
@@ -51,9 +55,12 @@ import net.dv8tion.jda.bot.sharding.ShardManager;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.User;
+import org.json.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -77,8 +84,20 @@ public class RubiconBot {
     private ShardManager shardManager;
     private boolean allShardsInitialised;
     private BitlyAPI bitlyAPI;
-    private static final int SHARD_COUNT = 3;
+    private static int SHARD_COUNT;
 
+    private static int generateShardCount() {
+
+        HttpRequestBuilder builder = new HttpRequestBuilder("https://discordapp.com/api/gateway/bot",RequestType.GET)
+                .setRequestHeader(new RequestHeader().addField("Authorization",getConfiguration().getString("token")).addField("User-Agent","Rubicon"));
+        try {
+            RequestResponse response = builder.sendRequest();
+            return (int) (new JSONObject(response.getResponseMessage())).get("shards");
+        } catch (IOException e) {
+            e.printStackTrace();
+                throw new RuntimeException("The Discord API did not Respond with a Shard count!");
+        }
+    }
 
 
     /**
@@ -112,6 +131,8 @@ public class RubiconBot {
 
         //Init punishments
         punishmentManager = new PunishmentManager();
+
+        SHARD_COUNT = generateShardCount();
 
         commandManager = new CommandManager();
         if(configuration.getString("maintenance") != null)
