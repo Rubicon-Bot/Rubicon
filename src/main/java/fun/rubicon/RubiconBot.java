@@ -214,7 +214,8 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(
                 new CommandGiphy(),
                 new CommandLmgtfy(),
-                new CommandAscii()
+                new CommandAscii(),
+                new CommandSpeedtest()
         );
     }
 
