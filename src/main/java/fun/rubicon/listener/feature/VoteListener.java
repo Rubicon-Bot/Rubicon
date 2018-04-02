@@ -1,5 +1,6 @@
 package fun.rubicon.listener.feature;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.tools.CommandPoll;
 import fun.rubicon.core.entities.RubiconPoll;
 import fun.rubicon.features.PollManager;

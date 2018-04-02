@@ -6,6 +6,7 @@
 
 package fun.rubicon.permission;
 
+import fun.rubicon.RubiconBot;
 import net.dv8tion.jda.core.entities.Guild;
 
 import java.sql.PreparedStatement;

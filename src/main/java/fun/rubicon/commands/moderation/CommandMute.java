@@ -1,5 +1,6 @@
 package fun.rubicon.commands.moderation;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;

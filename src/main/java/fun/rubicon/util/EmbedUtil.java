@@ -6,6 +6,7 @@
 
 package fun.rubicon.util;
 
+import fun.rubicon.RubiconBot;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.ChannelType;
@@ -90,11 +91,6 @@ public class EmbedUtil {
     public static EmbedBuilder no_permissions(String node) {
         return embed(":warning: " + "No permissions", "You don't have the permission to execute this command! You need the `" + node + "` Permission").setColor(Colors.COLOR_NO_PERMISSION);
     }
-
-    public static EmbedBuilder no_permissions(String node) {
-        return embed(":warning: " + "No permissions", "You don't have the permission to execute this command! You need the `" + node + "` Permission").setColor(Colors.COLOR_NO_PERMISSION);
-    }
-
 
 
     /**

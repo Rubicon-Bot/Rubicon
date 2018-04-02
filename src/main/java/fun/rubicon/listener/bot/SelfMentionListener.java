@@ -6,6 +6,7 @@
 
 package fun.rubicon.listener.bot;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.util.Colors;
 import net.dv8tion.jda.core.EmbedBuilder;

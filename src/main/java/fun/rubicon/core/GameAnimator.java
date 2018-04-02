@@ -6,6 +6,7 @@
 
 package fun.rubicon.core;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.util.FileUtil;
 import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;

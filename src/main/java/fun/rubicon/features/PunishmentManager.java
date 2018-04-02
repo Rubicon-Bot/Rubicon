@@ -1,5 +1,6 @@
 package fun.rubicon.features;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandHandler;
 import net.dv8tion.jda.core.entities.Member;
 

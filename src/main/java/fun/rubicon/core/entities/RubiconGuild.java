@@ -6,6 +6,7 @@
 
 package fun.rubicon.core.entities;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.settings.CommandJoinMessage;
 import fun.rubicon.commands.settings.CommandLeaveMessage;
 import fun.rubicon.mysql.MySQL;

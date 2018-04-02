@@ -4,6 +4,7 @@ import de.foryasee.httprequest.HttpRequestBuilder;
 import de.foryasee.httprequest.RequestHeader;
 import de.foryasee.httprequest.RequestResponse;
 import de.foryasee.httprequest.RequestType;
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;

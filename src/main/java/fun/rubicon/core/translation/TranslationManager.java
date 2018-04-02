@@ -6,6 +6,7 @@
 
 package fun.rubicon.core.translation;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.RubiconUser;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.User;
