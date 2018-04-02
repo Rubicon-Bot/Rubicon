@@ -193,7 +193,8 @@ public class RubiconBot {
                 new CommandUserinfo(),
                 new CommandUptime(),
                 new CommandYouTube(),
-                new CommandSearch()
+                new CommandSearch(),
+                new CommandPremium()
         );
 
         //Moderation
