@@ -15,14 +15,12 @@ import fun.rubicon.commands.admin.CommandAutorole;
 import fun.rubicon.commands.botowner.CommandMaintenance;
 import fun.rubicon.commands.botowner.CommandShardManage;
 import fun.rubicon.commands.fun.*;
+import fun.rubicon.commands.fun.CommandLmgtfy;
 import fun.rubicon.commands.general.CommandAFK;
 import fun.rubicon.commands.general.CommandHelp;
 import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.commands.general.*;
-import fun.rubicon.commands.moderation.CommandBan;
-import fun.rubicon.commands.moderation.CommandMute;
-import fun.rubicon.commands.moderation.CommandUnban;
-import fun.rubicon.commands.moderation.CommandUnmute;
+import fun.rubicon.commands.moderation.*;
 import fun.rubicon.commands.settings.CommandAutochannel;
 import fun.rubicon.commands.settings.CommandJoinMessage;
 import fun.rubicon.commands.settings.CommandLeaveMessage;
@@ -56,7 +54,6 @@ import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.User;
 import org.json.JSONObject;
-import org.json.simple.parser.ParseException;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
@@ -99,7 +96,6 @@ public class RubiconBot {
         }
     }
 
-
     /**
      * Constructs the RubiconBot.
      */
@@ -135,8 +131,8 @@ public class RubiconBot {
         SHARD_COUNT = generateShardCount();
 
         commandManager = new CommandManager();
-        if(configuration.getString("maintenance") != null)
-            if(Boolean.valueOf(configuration.getString("maintenance"))) commandManager.setMaintenance(true);
+        if (configuration.getString("maintenance") != null)
+            if (Boolean.valueOf(configuration.getString("maintenance"))) commandManager.setMaintenance(true);
 
         pollManager = new PollManager();
         registerCommands();
@@ -165,7 +161,7 @@ public class RubiconBot {
 
         //Admin
         commandManager.registerCommandHandlers(
-            new CommandAutorole()
+                new CommandAutorole()
         );
 
         // Settings
@@ -175,11 +171,7 @@ public class RubiconBot {
                 new CommandAutochannel()
         );
 
-        // Fun
-        commandManager.registerCommandHandlers(
-                new CommandRandom(),
-                new CommandAscii()
-        );
+
 
         //General
         commandManager.registerCommandHandlers(
@@ -191,6 +183,8 @@ public class RubiconBot {
                 new CommandInvite(),
                 new CommandSay(),
                 new CommandUserinfo(),
+                new CommandMoney(),
+                new CommandStatistics(),
                 new CommandUptime(),
                 new CommandYouTube(),
                 new CommandSearch(),
@@ -199,14 +193,15 @@ public class RubiconBot {
 
         //Moderation
         commandManager.registerCommandHandlers(
-            new CommandUnmute(),
-            new CommandUnban()
+                new CommandUnmute(),
+                new CommandUnban(),
+                new CommandMoveall()
         );
 
         //Punishments
         punishmentManager.registerPunishmentHandlers(
-            new CommandMute(),
-            new CommandBan()
+                new CommandMute(),
+                new CommandBan()
         );
 
         //Tools
@@ -218,7 +213,8 @@ public class RubiconBot {
         //Fun
         commandManager.registerCommandHandlers(
                 new CommandGiphy(),
-                new CommandLmgtfy()
+                new CommandLmgtfy(),
+                new CommandAscii()
         );
     }
 
@@ -242,7 +238,7 @@ public class RubiconBot {
 
         DefaultShardManagerBuilder builder = new DefaultShardManagerBuilder();
         builder.setToken(instance.configuration.getString("token"));
-        if(commandManager.isMaintenanceEnabled())
+        if (commandManager.isMaintenanceEnabled())
             builder.setGame(Game.watching(configuration.getString("playingStatus")));
         else
             builder.setGame(Game.playing("Starting..."));
@@ -378,12 +374,16 @@ public class RubiconBot {
         instance.allShardsInitialised = allShardsInitialised;
     }
 
-    public static GameAnimator getGameAnimator(){ return instance.gameAnimator; }
+    public static GameAnimator getGameAnimator() {
+        return instance.gameAnimator;
+    }
 
 
-    public static PollManager getPollManager(){ return instance.pollManager; }
+    public static PollManager getPollManager() {
+        return instance.pollManager;
+    }
 
-    public static BitlyAPI getBitlyAPI(){
+    public static BitlyAPI getBitlyAPI() {
         return instance.bitlyAPI;
     }
 
