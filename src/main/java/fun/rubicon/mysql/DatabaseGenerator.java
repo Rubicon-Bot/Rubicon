@@ -6,8 +6,6 @@
 
 package fun.rubicon.mysql;
 
-import fun.rubicon.RubiconBot;
-import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.util.Logger;
 
 import java.sql.PreparedStatement;

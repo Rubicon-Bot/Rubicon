@@ -6,7 +6,6 @@
 
 package fun.rubicon.util;
 
-import fun.rubicon.RubiconBot;
 import okhttp3.*;
 import org.discordbots.api.client.DiscordBotListAPI;
 import org.json.JSONObject;

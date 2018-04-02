@@ -1,7 +1,5 @@
 package fun.rubicon.core.entities;
 
-import fun.rubicon.RubiconBot;
-import fun.rubicon.commands.tools.CommandPoll;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;

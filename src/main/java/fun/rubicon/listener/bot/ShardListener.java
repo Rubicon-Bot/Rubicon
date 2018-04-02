@@ -6,8 +6,6 @@
 
 package fun.rubicon.listener.bot;
 
-import fun.rubicon.RubiconBot;
-import fun.rubicon.listener.bot.AllShardsLoadedEvent;
 import net.dv8tion.jda.core.events.*;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 

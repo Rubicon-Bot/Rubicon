@@ -6,8 +6,6 @@
 
 package fun.rubicon.command;
 
-import fun.rubicon.RubiconBot;
-import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;

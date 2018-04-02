@@ -6,13 +6,8 @@
 
 package fun.rubicon.listener.bot;
 
-import fun.rubicon.RubiconBot;
 import fun.rubicon.util.BotListHandler;
 import net.dv8tion.jda.core.entities.Game;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * @author Yannick Seeger / ForYaSee

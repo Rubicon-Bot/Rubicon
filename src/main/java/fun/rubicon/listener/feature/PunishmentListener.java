@@ -1,7 +1,6 @@
 package fun.rubicon.listener.feature;
 
 
-import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.core.entities.RubiconMember;
 import fun.rubicon.core.entities.RubiconUser;
