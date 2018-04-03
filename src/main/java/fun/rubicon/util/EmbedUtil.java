@@ -87,6 +87,12 @@ public class EmbedUtil {
         return embed(":warning: " + "No permissions!", "You don't have the permission to execute this command!").setColor(Colors.COLOR_NO_PERMISSION);
     }
 
+
+    public static EmbedBuilder no_permissions(String node) {
+        return embed(":warning: " + "No permissions", "You don't have the permission to execute this command! You need the `" + node + "` Permission").setColor(Colors.COLOR_NO_PERMISSION);
+    }
+
+
     /**
      * Creates an embedded message.
      *
