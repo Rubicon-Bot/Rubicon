@@ -12,23 +12,15 @@ import de.foryasee.httprequest.RequestHeader;
 import de.foryasee.httprequest.RequestResponse;
 import de.foryasee.httprequest.RequestType;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.commands.admin.CommandAutorole;
-import fun.rubicon.commands.botowner.CommandMaintenance;
-import fun.rubicon.commands.botowner.CommandShardManage;
-import fun.rubicon.commands.fun.CommandAscii;
-import fun.rubicon.commands.fun.CommandGiphy;
-import fun.rubicon.commands.fun.CommandLmgtfy;
-import fun.rubicon.commands.fun.CommandRandom;
+import fun.rubicon.commands.admin.*;
+import fun.rubicon.commands.botowner.*;
+import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.*;
 import fun.rubicon.commands.music.CommandJoin;
 import fun.rubicon.commands.music.CommandLeave;
-import fun.rubicon.commands.settings.CommandAutochannel;
-import fun.rubicon.commands.settings.CommandJoinMessage;
-import fun.rubicon.commands.settings.CommandLeaveMessage;
-import fun.rubicon.commands.settings.CommandPrefix;
-import fun.rubicon.commands.tools.CommandPoll;
-import fun.rubicon.commands.tools.CommandShort;
+import fun.rubicon.commands.settings.*;
+import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.music.LavalinkManager;
 import fun.rubicon.core.translation.TranslationManager;
@@ -139,9 +131,6 @@ public class RubiconBot {
         punishmentManager = new PunishmentManager();
 
         commandManager = new CommandManager();
-        if (configuration.getString("maintenance") != null)
-            if (Boolean.valueOf(configuration.getString("maintenance"))) commandManager.setMaintenance(true);
-
         lavalinkManager = new LavalinkManager();
         pollManager = new PollManager();
         registerCommands();
@@ -164,8 +153,7 @@ public class RubiconBot {
         //Bot Owner
         commandManager.registerCommandHandlers(
                 new CommandEval(),
-                new CommandShardManage(),
-                new CommandMaintenance()
+                new CommandShardManage()
         );
 
         //Admin
@@ -253,10 +241,7 @@ public class RubiconBot {
 
         DefaultShardManagerBuilder builder = new DefaultShardManagerBuilder();
         builder.setToken(instance.configuration.getString("token"));
-        if (commandManager.isMaintenanceEnabled())
-            builder.setGame(Game.watching(configuration.getString("playingStatus")));
-        else
-            builder.setGame(Game.playing("Starting..."));
+        builder.setGame(Game.playing("Starting..."));
         builder.setStatus(OnlineStatus.DO_NOT_DISTURB);
         builder.setShardsTotal(SHARD_COUNT);
 
