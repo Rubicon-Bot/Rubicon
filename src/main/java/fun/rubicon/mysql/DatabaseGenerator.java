@@ -27,6 +27,7 @@ public class DatabaseGenerator {
             createYouTubeTable();
             createAutochannelTable();
             createAutoroleTable();
+            createLavalinkNodeTable();
 
         } catch (Exception e) {
             Logger.error(e);
@@ -161,13 +162,27 @@ public class DatabaseGenerator {
     }
 
     private static void createYouTubeTable() {
-        try{
-            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS `youtube`" +
+        try {
+            PreparedStatement ps = RubiconBot.getMySQL().prepareStatement("CREATE TABLE IF NOT EXISTS `youtube`" +
                     "(" +
                     "`serverid` BIGINT(25)," +
                     "`youmsg` TEXT ," +
-                    "`youchannel` BIGINT(25),"+
-                    "`youcreator` VARCHAR(50)"+
+                    "`youchannel` BIGINT(25)," +
+                    "`youcreator` VARCHAR(50)" +
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+    }
+
+    private static void createLavalinkNodeTable() {
+        try {
+            PreparedStatement ps = RubiconBot.getMySQL().prepareStatement("CREATE TABLE IF NOT EXISTS `lavanodes`" +
+                    "(" +
+                    "`name` VARCHAR(50)," +
+                    "`uri` VARCHAR(50)," +
+                    "`password` VARCHAR(50)" +
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();
         } catch (SQLException e) {
