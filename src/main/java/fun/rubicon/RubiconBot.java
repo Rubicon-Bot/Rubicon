@@ -131,9 +131,6 @@ public class RubiconBot {
         punishmentManager = new PunishmentManager();
 
         commandManager = new CommandManager();
-        if (configuration.getString("maintenance") != null)
-            if (Boolean.valueOf(configuration.getString("maintenance"))) commandManager.setMaintenance(true);
-
         lavalinkManager = new LavalinkManager();
         pollManager = new PollManager();
         registerCommands();
@@ -156,8 +153,7 @@ public class RubiconBot {
         //Bot Owner
         commandManager.registerCommandHandlers(
                 new CommandEval(),
-                new CommandShardManage(),
-                new CommandMaintenance()
+                new CommandShardManage()
         );
 
         //Admin
@@ -245,10 +241,7 @@ public class RubiconBot {
 
         DefaultShardManagerBuilder builder = new DefaultShardManagerBuilder();
         builder.setToken(instance.configuration.getString("token"));
-        if (commandManager.isMaintenanceEnabled())
-            builder.setGame(Game.watching(configuration.getString("playingStatus")));
-        else
-            builder.setGame(Game.playing("Starting..."));
+        builder.setGame(Game.playing("Starting..."));
         builder.setStatus(OnlineStatus.DO_NOT_DISTURB);
         builder.setShardsTotal(SHARD_COUNT);
 

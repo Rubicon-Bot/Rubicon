@@ -24,8 +24,6 @@ public class AllShardsLoadedEvent {
     }
 
     private void call() {
-        if(!RubiconBot.getCommandManager().isMaintenanceEnabled())
-            RubiconBot.getShardManager().setGame(Game.playing("rc!help"));
         RubiconBot.setAllShardsInitialised(true);
         //Load all punishments (bans & mutes)
         RubiconBot.getPunishmentManager().loadPunishments();
@@ -33,11 +31,5 @@ public class AllShardsLoadedEvent {
         BotListHandler.postStats(false);
         //Load all polls
         RubiconBot.getPollManager().loadPolls();
-
-        /*List<String> answers = new ArrayList<>();
-        answers.add("ewew");
-        HashMap<String, Integer> reacts = new HashMap<>();
-        reacts.put("dsada", 2);
-        RubiconPoll.createPoll("lala", answers, RubiconBot.getShardManager().getTextChannelById("404689263498887171").getPinnedMessages().complete().get((0)), reacts).savePoll();*/
     }
 }
