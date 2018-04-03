@@ -16,16 +16,16 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 public class SelfMentionListener extends ListenerAdapter {
 
-    private final String[] RUBICON_EMOJIS = {"\uD83D\uDEE0","\uD83C\uDDF7", "\uD83C\uDDFA", "\uD83C\uDDE7", "\uD83C\uDDEE", "\uD83C\uDDE8", "\uD83C\uDDF4", "\uD83C\uDDF3"};
+    private final String[] RUBICON_EMOJIS = {"\uD83D\uDEE0", "\uD83C\uDDF7", "\uD83C\uDDFA", "\uD83C\uDDE7", "\uD83C\uDDEE", "\uD83C\uDDE8", "\uD83C\uDDF4", "\uD83C\uDDF3"};
 
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         Message message = event.getMessage();
-        if(!message.getMentionedUsers().isEmpty()){
-            if(message.getMentionedUsers().contains(RubiconBot.getSelfUser()))
-                if(message.getContentDisplay().replaceFirst("@", "").equals(event.getGuild().getSelfMember().getEffectiveName())){
-                RubiconGuild guild = RubiconGuild.fromGuild(event.getGuild());
+        if (!message.getMentionedUsers().isEmpty()) {
+            if (message.getMentionedUsers().contains(RubiconBot.getSelfUser()))
+                if (message.getContentDisplay().replaceFirst("@", "").equals(event.getGuild().getSelfMember().getEffectiveName())) {
+                    RubiconGuild guild = RubiconGuild.fromGuild(event.getGuild());
                     Message mymsg = event.getChannel().sendMessage(
                             new EmbedBuilder()
                                     .setColor(Colors.COLOR_SECONDARY)
@@ -35,8 +35,6 @@ public class SelfMentionListener extends ListenerAdapter {
                                     .addField("**Documentation**", "[rubicon.fun](https://rubicon.fun)", false)
                                     .build()
                     ).complete();
-
-                    //Warning: Useless code!!
                     //Inspired by Lukass27s's (Lukass27s#6595) NerdBot
                     for (String emoji : RUBICON_EMOJIS) {
                         mymsg.addReaction(emoji).queue();
