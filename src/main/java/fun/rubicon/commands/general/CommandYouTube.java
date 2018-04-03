@@ -51,9 +51,7 @@ public class CommandYouTube extends CommandHandler {
             @Override
             public void run() {
                 announceHashMap.remove(invocation.getTextChannel());
-                invocation.getTextChannel().sendMessage("Setup abort").queue(message -> {
-                    message.delete().queueAfter(7L, TimeUnit.SECONDS);
-                });
+                invocation.getTextChannel().sendMessage("Setup abort").queue(message -> message.delete().queueAfter(7L, TimeUnit.SECONDS));
             }
         }, 30000);
         return null;
