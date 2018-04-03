@@ -59,16 +59,14 @@ public class CommandManager extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if (!RubiconBot.allShardsInitialised())
+        if (!RubiconBot.allShardsInitialised() || event.isFromType(ChannelType.PRIVATE) || event.getAuthor().isBot() || event.getAuthor().isFake())
             return;
-        if (event.isFromType(ChannelType.PRIVATE)) return;
-
         super.onMessageReceived(event);
 
         //Check Database Entries
-        RubiconGuild rubiconGuild = RubiconGuild.fromGuild(event.getGuild());
+        RubiconGuild.fromGuild(event.getGuild());
         if(event.getChannelType().isGuild()) {
-            RubiconMember rubiconMember = RubiconMember.fromMember(event.getMember());
+            RubiconMember.fromMember(event.getMember());
         }
 
         ParsedCommandInvocation commandInvocation = parse(event.getMessage());
