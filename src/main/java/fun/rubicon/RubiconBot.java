@@ -6,31 +6,23 @@
 
 package fun.rubicon;
 
+import com.sedmelluq.discord.lavaplayer.tools.PlayerLibrary;
 import de.foryasee.httprequest.HttpRequestBuilder;
 import de.foryasee.httprequest.RequestHeader;
 import de.foryasee.httprequest.RequestResponse;
 import de.foryasee.httprequest.RequestType;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.commands.admin.CommandAutorole;
-import fun.rubicon.commands.botowner.CommandMaintenance;
-import fun.rubicon.commands.botowner.CommandShardManage;
-<<<<<<< HEAD
-import fun.rubicon.commands.fun.CommandLmgtfy;
-=======
+import fun.rubicon.commands.admin.*;
+import fun.rubicon.commands.botowner.*;
 import fun.rubicon.commands.fun.*;
->>>>>>> lee-rewok
-import fun.rubicon.commands.general.CommandAFK;
-import fun.rubicon.commands.general.CommandHelp;
-import fun.rubicon.commands.general.CommandInfo;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.*;
-import fun.rubicon.commands.settings.CommandAutochannel;
-import fun.rubicon.commands.settings.CommandJoinMessage;
-import fun.rubicon.commands.settings.CommandLeaveMessage;
-import fun.rubicon.commands.tools.CommandPoll;
-import fun.rubicon.commands.settings.CommandPrefix;
-import fun.rubicon.commands.tools.CommandShort;
+import fun.rubicon.commands.music.CommandJoin;
+import fun.rubicon.commands.music.CommandLeave;
+import fun.rubicon.commands.settings.*;
+import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.GameAnimator;
+import fun.rubicon.core.music.LavalinkManager;
 import fun.rubicon.core.translation.TranslationManager;
 import fun.rubicon.commands.botowner.CommandEval;
 import fun.rubicon.features.PollManager;
@@ -53,12 +45,11 @@ import fun.rubicon.permission.PermissionManager;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.bot.sharding.ShardManager;
+import net.dv8tion.jda.core.JDAInfo;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.User;
 import org.json.JSONObject;
-import org.json.simple.parser.ParseException;
-
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
@@ -72,7 +63,7 @@ import java.util.Date;
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_database", "mysql_user", "mysql_password", "playingStatus", "dbl_token", "discord_pw_token","gif_token","google_token"};
+    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_database", "mysql_user", "mysql_password", "playingStatus", "dbl_token", "discord_pw_token", "gif_token", "google_token"};
     private static RubiconBot instance;
     private final Configuration configuration;
     private final MySQL mySQL;
@@ -86,26 +77,29 @@ public class RubiconBot {
     private boolean allShardsInitialised;
     private BitlyAPI bitlyAPI;
     private static int SHARD_COUNT;
-
-    private static int generateShardCount() {
-
-        HttpRequestBuilder builder = new HttpRequestBuilder("https://discordapp.com/api/gateway/bot",RequestType.GET)
-                .setRequestHeader(new RequestHeader().addField("Authorization",getConfiguration().getString("token")).addField("User-Agent","Rubicon"));
-        try {
-            RequestResponse response = builder.sendRequest();
-            return (int) (new JSONObject(response.getResponseMessage())).get("shards");
-        } catch (IOException e) {
-            e.printStackTrace();
-                throw new RuntimeException("The Discord API did not Respond with a Shard count!");
-        }
-    }
+    private static LavalinkManager lavalinkManager;
 
     /**
      * Constructs the RubiconBot.
      */
     private RubiconBot() {
         instance = this;
-
+        System.out.println(
+                " ______        _     _                  \n" +
+                        "(_____ \\      | |   (_)                 \n" +
+                        " _____) )_   _| |__  _  ____ ___  ____  \n" +
+                        "|  __  /| | | |  _ \\| |/ ___) _ \\|  _ \\ \n" +
+                        "| |  \\ \\| |_| | |_) ) ( (__| |_| | | | |\n" +
+                        "|_|   |_|____/|____/|_|\\____)___/|_| |_|\n" +
+                        "                                        \n"
+        );
+        System.out.println("Version: " + Info.BOT_VERSION);
+        System.out.println("Operating System: " + System.getProperty("os.name") + " (" + System.getProperty("os.arch") + ") version " + System.getProperty("os.version"));
+        System.out.println("Java Version: " + System.getProperty("java.version") + ", " + System.getProperty("java.vendor"));
+        System.out.println("Java VM Version: " + System.getProperty("java.vm.name") + " (" + System.getProperty("java.vm.info") + "), " + System.getProperty("java.vm.vendor"));
+        System.out.println("JDA: " + JDAInfo.VERSION);
+        System.out.println("Lavaplayer: " + PlayerLibrary.VERSION);
+        System.out.println("\n");
         new File("rubicon_logs").mkdirs();
         new File("data/").mkdirs();
         new File("data/bot/settings").mkdirs();
@@ -129,15 +123,17 @@ public class RubiconBot {
 
         DatabaseGenerator.createAllDatabasesIfNecessary();
 
+        SHARD_COUNT = generateShardCount();
+        Logger.info(String.format("Starting with %d shards...", SHARD_COUNT));
+
         //Init punishments
         punishmentManager = new PunishmentManager();
-
-        SHARD_COUNT = generateShardCount();
 
         commandManager = new CommandManager();
         if (configuration.getString("maintenance") != null)
             if (Boolean.valueOf(configuration.getString("maintenance"))) commandManager.setMaintenance(true);
 
+        lavalinkManager = new LavalinkManager();
         pollManager = new PollManager();
         registerCommands();
         permissionManager = new PermissionManager();
@@ -178,11 +174,9 @@ public class RubiconBot {
         // Fun
         commandManager.registerCommandHandlers(
                 new CommandRandom(),
-<<<<<<< HEAD
-                new CommandLmgtfy()
-=======
-                new CommandAscii()
->>>>>>> lee-rewok
+                new CommandLmgtfy(),
+                new CommandAscii(),
+                new CommandGiphy()
         );
 
         //General
@@ -195,15 +189,12 @@ public class RubiconBot {
                 new CommandInvite(),
                 new CommandSay(),
                 new CommandUserinfo(),
-<<<<<<< HEAD
                 new CommandMoney(),
-                new CommandStatistics()
-=======
+                new CommandStatistics(),
                 new CommandUptime(),
                 new CommandYouTube(),
                 new CommandSearch(),
                 new CommandPremium()
->>>>>>> lee-rewok
         );
 
         //Moderation
@@ -225,10 +216,10 @@ public class RubiconBot {
                 new CommandShort()
         );
 
-        //Fun
+        //Music
         commandManager.registerCommandHandlers(
-                new CommandGiphy(),
-                new CommandLmgtfy()
+                new CommandJoin(),
+                new CommandLeave()
         );
     }
 
@@ -259,7 +250,6 @@ public class RubiconBot {
         builder.setStatus(OnlineStatus.DO_NOT_DISTURB);
         builder.setShardsTotal(SHARD_COUNT);
 
-
         //Register Event Listeners
         builder.addEventListeners(
                 new BotJoinListener(),
@@ -277,16 +267,30 @@ public class RubiconBot {
                 new AutochannelListener(),
                 new PunishmentListener(),
                 new GeneralMessageListener(),
-                new RoleDeleteListener()
-
+                new RoleDeleteListener(),
+                new LavalinkManager()
         );
         try {
             shardManager = builder.build();
         } catch (LoginException e) {
             Logger.error(e);
+            throw new RuntimeException("Can't start bot!");
         }
-
+        lavalinkManager.initialize();
         Info.lastRestart = new Date();
+    }
+
+    private static int generateShardCount() {
+
+        HttpRequestBuilder builder = new HttpRequestBuilder("https://discordapp.com/api/gateway/bot", RequestType.GET)
+                .setRequestHeader(new RequestHeader().addField("Authorization", getConfiguration().getString("token")).addField("User-Agent", "Rubicon"));
+        try {
+            RequestResponse response = builder.sendRequest();
+            return (int) (new JSONObject(response.getResponseMessage())).get("shards");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("The Discord API did not Respond with a Shard count!");
+        }
     }
 
     /**
@@ -345,13 +349,15 @@ public class RubiconBot {
     public static String getNewTimestamp() {
         return timeStampFormatter.format(new Date());
     }
+
     /**
      * @param date A Date object
      * @return a generated timestamp in the 'dd.MM.yyyy HH:mm:ss' format.
      */
-    public static String getTimestamp(Date date){
+    public static String getTimestamp(Date date) {
         return timeStampFormatter.format(date);
     }
+
     /**
      * @return the {@link MySQL} instance
      */
@@ -401,5 +407,7 @@ public class RubiconBot {
         return instance.bitlyAPI;
     }
 
-
+    public static LavalinkManager getLavalinkManager() {
+        return lavalinkManager;
+    }
 }
