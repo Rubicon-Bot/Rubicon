@@ -27,7 +27,8 @@ public class DatabaseGenerator {
             createYouTubeTable();
             createAutochannelTable();
             createAutoroleTable();
-
+            createLavalinkNodeTable();
+            createKeyTable();
         } catch (Exception e) {
             Logger.error(e);
             return false;
@@ -161,16 +162,45 @@ public class DatabaseGenerator {
     }
 
     private static void createYouTubeTable() {
-        try{
-            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS `youtube`" +
+        try {
+            PreparedStatement ps = RubiconBot.getMySQL().prepareStatement("CREATE TABLE IF NOT EXISTS `youtube`" +
                     "(" +
                     "`serverid` BIGINT(25)," +
                     "`youmsg` TEXT ," +
-                    "`youchannel` BIGINT(25),"+
-                    "`youcreator` VARCHAR(50)"+
+                    "`youchannel` BIGINT(25)," +
+                    "`youcreator` VARCHAR(50)" +
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();
         } catch (SQLException e) {
+            Logger.error(e);
+        }
+    }
+
+    private static void createLavalinkNodeTable() {
+        try {
+            PreparedStatement ps = RubiconBot.getMySQL().prepareStatement("CREATE TABLE IF NOT EXISTS `lavanodes`" +
+                    "(" +
+                    "`name` VARCHAR(50)," +
+                    "`uri` VARCHAR(50)," +
+                    "`password` VARCHAR(50)," +
+                    " PRIMARY KEY (`uri`)" +
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+    }
+
+    private static void createKeyTable() {
+        try {
+            PreparedStatement ps = RubiconBot.getMySQL().prepareStatement("CREATE TABLE IF NOT EXISTS `keys`" +
+                    "(" +
+                    "`uuid` VARCHAR(16)," +
+                    "`gift` VARCHAR(50)," +
+                    " PRIMARY KEY (`uuid`)" +
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
+            ps.execute();
+        }catch (SQLException e){
             Logger.error(e);
         }
     }

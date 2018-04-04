@@ -8,6 +8,7 @@ package fun.rubicon.listener;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.RubiconUser;
+import fun.rubicon.core.music.GuildMusicPlayer;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.entities.ChannelType;

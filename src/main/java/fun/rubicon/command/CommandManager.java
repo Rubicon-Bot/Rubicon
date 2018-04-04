@@ -28,8 +28,6 @@ import java.util.*;
 public class CommandManager extends ListenerAdapter {
     private final Map<String, CommandHandler> commandAssociations = new HashMap<>();
 
-    private boolean maintenance = false;
-
     /**
      * Registers multiple CommandHandlers with their invocation aliases.
      *
@@ -59,24 +57,18 @@ public class CommandManager extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if (!RubiconBot.allShardsInitialised())
+        if (!RubiconBot.allShardsInitialised() || event.isFromType(ChannelType.PRIVATE) || event.getAuthor().isBot() || event.getAuthor().isFake())
             return;
-        if (event.isFromType(ChannelType.PRIVATE)) return;
-
         super.onMessageReceived(event);
 
         //Check Database Entries
-        RubiconGuild rubiconGuild = RubiconGuild.fromGuild(event.getGuild());
+        RubiconGuild.fromGuild(event.getGuild());
         if(event.getChannelType().isGuild()) {
-            RubiconMember rubiconMember = RubiconMember.fromMember(event.getMember());
+            RubiconMember.fromMember(event.getMember());
         }
 
         ParsedCommandInvocation commandInvocation = parse(event.getMessage());
         if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake() && !event.isWebhookMessage()) {
-            if (maintenance && !(Arrays.asList(Info.BOT_AUTHOR_IDS).contains(event.getAuthor().getIdLong()) || Arrays.asList(Info.COMMUNITY_STAFF_TEAM).contains(event.getAuthor().getIdLong()))) {
-                SafeMessage.sendMessage(event.getTextChannel(), EmbedUtil.info("Maintenance", "Bot is currently in maintenance mode.").build(), 5);
-                return;
-            }
             call(commandInvocation);
         }
     }
@@ -264,13 +256,5 @@ public class CommandManager extends ListenerAdapter {
             }
             return entry;
         }
-    }
-
-    public boolean isMaintenanceEnabled() {
-        return maintenance;
-    }
-
-    public void setMaintenance(boolean maintenance) {
-        this.maintenance = maintenance;
     }
 }
