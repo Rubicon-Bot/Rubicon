@@ -28,7 +28,7 @@ public class DatabaseGenerator {
             createAutochannelTable();
             createAutoroleTable();
             createLavalinkNodeTable();
-
+            createKeyTable();
         } catch (Exception e) {
             Logger.error(e);
             return false;
@@ -182,10 +182,25 @@ public class DatabaseGenerator {
                     "(" +
                     "`name` VARCHAR(50)," +
                     "`uri` VARCHAR(50)," +
-                    "`password` VARCHAR(50)" +
+                    "`password` VARCHAR(50)," +
+                    " PRIMARY KEY (`uri`)" +
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();
         } catch (SQLException e) {
+            Logger.error(e);
+        }
+    }
+
+    private static void createKeyTable() {
+        try {
+            PreparedStatement ps = RubiconBot.getMySQL().prepareStatement("CREATE TABLE IF NOT EXISTS `keys`" +
+                    "(" +
+                    "`uuid` VARCHAR(16)," +
+                    "`gift` VARCHAR(50)," +
+                    " PRIMARY KEY (`uuid`)" +
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
+            ps.execute();
+        }catch (SQLException e){
             Logger.error(e);
         }
     }

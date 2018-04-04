@@ -6,21 +6,24 @@ import fun.rubicon.command.CommandManager;
 import fun.rubicon.core.music.GuildMusicPlayer;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
+import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.entities.Message;
 
 /**
  * @author ForYaSee / Yannick Seeger
  */
-public class CommandLeave extends CommandHandler {
+public class CommandPlay extends CommandHandler {
 
-    public CommandLeave() {
-        super(new String[]{"leave"}, CommandCategory.MUSIC, new PermissionRequirements("leave", false, true), "Let the bot leaves your voice channel.", "");
+    public CommandPlay() {
+        super(new String[]{"play", "p"}, CommandCategory.MUSIC, new PermissionRequirements("play", false, true), "Starts playing music.", "<link or keyword>");
     }
+
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
-        final GuildMusicPlayer musicPlayer = new GuildMusicPlayer(invocation, userPermissions);
-        musicPlayer.leave();
+        GuildMusicPlayer musicPlayer = new GuildMusicPlayer(invocation, userPermissions);
+
+        musicPlayer.playMusic(false);
         return null;
     }
 }

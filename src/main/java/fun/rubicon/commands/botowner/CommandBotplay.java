@@ -27,13 +27,15 @@ public class CommandBotplay extends CommandHandler {
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) throws UnsupportedEncodingException {
         File gameFile = FileUtil.createFileIfNotExist(new File("data/bot/settings", "status.game"));
 
-        if (invocation.getArgs().length < 2)
+        if (invocation.getArgs().length < 1)
             return createHelpMessage();
         final String type = invocation.getArgs()[0];
         if (type.equalsIgnoreCase("reset")) {
             FileUtil.writeToFile(gameFile, "");
             return EmbedUtil.message(EmbedUtil.success("Set playing status!", "Resetted."));
         }
+        if (invocation.getArgs().length < 2)
+            return createHelpMessage();
         if (type.equalsIgnoreCase("stream") || type.equalsIgnoreCase("s")) {
             final String link = invocation.getArgs()[1];
             final String message = invocation.getArgsString().replaceFirst(type + " " + link + " ", "");

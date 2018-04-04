@@ -69,21 +69,21 @@ public class CommandYouTube extends CommandHandler {
             return;
         if (!event.getAuthor().equals(announce.getAuthor()))
             return;
-        if (announce.getTextchannel() == 0) {
+        if (announce.getTextChannel() == 0) {
             if (event.getMessage().getMentionedChannels().size() < 1)
                 return;
             if (!RubiconUser.fromUser(event.getAuthor()).isPremium()) {
                 message(EmbedUtil.error("No Premium", "Sorry, but you have no Premium."));
                 return;
             }
-            announce.setTextchannel(event.getMessage().getMentionedChannels().get(0).getIdLong());
+            announce.setTextChannel(event.getMessage().getMentionedChannels().get(0).getIdLong());
             SafeMessage.sendMessage(event.getTextChannel(), "Ok Channel is set! Please now send the YouTube ChannelID!");
-        } else if (announce.getYoutubechannel().equals("")) {
+        } else if (announce.getYoutubeChannel().equals("")) {
             if (!RubiconUser.fromUser(event.getAuthor()).isPremium()) {
                 message(EmbedUtil.error("No Premium", "Sorry, but you have no Premium."));
                 return;
             }
-            announce.setYoutubechannel(event.getMessage().getContentDisplay());
+            announce.setYoutubeChannel(event.getMessage().getContentDisplay());
             timer.cancel();
             announce.fini();
             announce.save();
@@ -94,8 +94,8 @@ public class CommandYouTube extends CommandHandler {
 
     private class Announce {
         private String message;
-        private long textchannel;
-        private String youtubechannel;
+        private long textChannel;
+        private String youtubeChannel;
         private User author;
         private boolean allset = false;
 
@@ -111,20 +111,20 @@ public class CommandYouTube extends CommandHandler {
             this.message = message;
         }
 
-        public long getTextchannel() {
-            return textchannel;
+        public long getTextChannel() {
+            return textChannel;
         }
 
-        public void setTextchannel(long textchannel) {
-            this.textchannel = textchannel;
+        public void setTextChannel(long textChannel) {
+            this.textChannel = textChannel;
         }
 
-        public String getYoutubechannel() {
-            return youtubechannel;
+        public String getYoutubeChannel() {
+            return youtubeChannel;
         }
 
-        public void setYoutubechannel(String youtubechannel) {
-            this.youtubechannel = youtubechannel;
+        public void setYoutubeChannel(String youtubeChannel) {
+            this.youtubeChannel = youtubeChannel;
         }
 
         public User getAuthor() {
@@ -145,10 +145,10 @@ public class CommandYouTube extends CommandHandler {
                         "`youchannel`," +
                         "`youcreator`)" +
                         "VALUES (?,?,?,?)");
-                ps.setLong(1, RubiconBot.getShardManager().getGuildById(getTextchannel()).getIdLong());
+                ps.setLong(1, RubiconBot.getShardManager().getGuildById(getTextChannel()).getIdLong());
                 ps.setString(2, getMessage());
-                ps.setLong(3, getTextchannel());
-                ps.setString(4, getYoutubechannel());
+                ps.setLong(3, getTextChannel());
+                ps.setString(4, getYoutubeChannel());
                 ps.execute();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -159,8 +159,8 @@ public class CommandYouTube extends CommandHandler {
         public Announce(String message, long textchannel, String youtubechannel, User author) {
             this.author = author;
             this.message = message;
-            this.textchannel = textchannel;
-            this.youtubechannel = youtubechannel;
+            this.textChannel = textchannel;
+            this.youtubeChannel = youtubechannel;
         }
 
 

@@ -3,6 +3,10 @@ package fun.rubicon.core.music;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.util.Logger;
 import lavalink.client.io.Lavalink;
@@ -10,7 +14,6 @@ import lavalink.client.io.Link;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavaplayerPlayerWrapper;
 import net.dv8tion.jda.bot.sharding.ShardManager;
-import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.hooks.EventListener;
@@ -33,7 +36,10 @@ public class LavalinkManager implements EventListener {
 
     public LavalinkManager() {
         this.audioPlayerManager = new DefaultAudioPlayerManager();
-        audioPlayerManager.enableGcMonitoring();
+        audioPlayerManager.registerSourceManager(new YoutubeAudioSourceManager());
+        audioPlayerManager.registerSourceManager(new SoundCloudAudioSourceManager());
+        audioPlayerManager.registerSourceManager(new HttpAudioSourceManager());
+        audioPlayerManager.registerSourceManager(new TwitchStreamAudioSourceManager());
     }
 
     public void initialize() {
@@ -44,6 +50,7 @@ public class LavalinkManager implements EventListener {
                 RubiconBot.getMaximumShardCount(),
                 shardManager::getShardById
         );
+
         loadNodes().forEach(lavalinkNode -> lavalink.addNode(lavalinkNode.getName(), lavalinkNode.getUri(), lavalinkNode.getPassword()));
     }
 
