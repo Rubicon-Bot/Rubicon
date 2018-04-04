@@ -1,11 +1,21 @@
 package fun.rubicon.commands.music;
 
+<<<<<<< HEAD
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.core.music.GuildMusicPlayer;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
+=======
+import fun.rubicon.RubiconBot;
+import fun.rubicon.command.CommandCategory;
+import fun.rubicon.command.CommandHandler;
+import fun.rubicon.command.CommandManager;
+import fun.rubicon.permission.PermissionRequirements;
+import fun.rubicon.permission.UserPermissions;
+import fun.rubicon.util.EmbedUtil;
+>>>>>>> Rework-1.0.0
 import net.dv8tion.jda.core.entities.Message;
 
 /**
@@ -19,8 +29,27 @@ public class CommandJoin extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
+<<<<<<< HEAD
         final GuildMusicPlayer musicPlayer = new GuildMusicPlayer(invocation, userPermissions);
         musicPlayer.join();
         return null;
+=======
+        if (!invocation.getMember().getVoiceState().inVoiceChannel())
+            return EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.novc.title"), invocation.translate("phrase.novc.description")));
+        if (!RubiconBot.getLavalinkManager().isConnected(invocation.getGuild().getId()))
+            return joinChannel(invocation);
+
+        PermissionRequirements moveIfInVoiceChannelPermissions = new PermissionRequirements("join.move", false, true);
+
+        if (!moveIfInVoiceChannelPermissions.coveredBy(userPermissions)) {
+            return EmbedUtil.message(EmbedUtil.no_permissions());
+        }
+        return joinChannel(invocation);
+    }
+
+    private Message joinChannel(CommandManager.ParsedCommandInvocation invocation) {
+        RubiconBot.getLavalinkManager().createConnection(invocation.getMember().getVoiceState().getChannel());
+        return EmbedUtil.message(EmbedUtil.success(invocation.translate("command.join.joined.title"), invocation.translate("command.join.joined.description").replace("%channel%", invocation.getMember().getVoiceState().getChannel().getName())));
+>>>>>>> Rework-1.0.0
     }
 }
