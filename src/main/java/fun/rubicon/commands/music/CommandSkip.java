@@ -8,19 +8,21 @@ import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import net.dv8tion.jda.core.entities.Message;
 
-/**
- * @author ForYaSee / Yannick Seeger
- */
-public class CommandLeave extends CommandHandler {
+import java.io.UnsupportedEncodingException;
 
-    public CommandLeave() {
-        super(new String[]{"leave"}, CommandCategory.MUSIC, new PermissionRequirements("leave", false, true), "Let the bot leaves your voice channel.", "");
+/**
+ * @author Schlaubi / Michael Rittmeister
+ */
+
+public class CommandSkip extends CommandHandler {
+    public CommandSkip() {
+        super(new String[] {"skip"}, CommandCategory.MUSIC, new PermissionRequirements("skip", false, true), "Skip a song", "<songs>");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
-        final GuildMusicPlayer musicPlayer = new GuildMusicPlayer(invocation, userPermissions);
-        musicPlayer.leave();
+        GuildMusicPlayer player = new GuildMusicPlayer(invocation, userPermissions);
+        player.skip();
         return null;
     }
 }

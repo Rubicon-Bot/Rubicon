@@ -17,8 +17,7 @@ import fun.rubicon.commands.botowner.*;
 import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.*;
-import fun.rubicon.commands.music.CommandJoin;
-import fun.rubicon.commands.music.CommandLeave;
+import fun.rubicon.commands.music.*;
 import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.GameAnimator;
@@ -154,7 +153,8 @@ public class RubiconBot {
                 new CommandEval(),
                 new CommandShardManage(),
                 new CommandBotstatus(),
-                new CommandBotplay()
+                new CommandBotplay(),
+                new CommandDisco()
         );
 
         //Admin
@@ -218,7 +218,11 @@ public class RubiconBot {
         //Music
         commandManager.registerCommandHandlers(
                 new CommandJoin(),
-                new CommandLeave()
+                new CommandLeave(),
+                new CommandPlay(),
+                new CommandForcePlay(),
+                new CommandVolume(),
+                new CommandSkip()
         );
     }
 
@@ -264,7 +268,8 @@ public class RubiconBot {
                 new PunishmentListener(),
                 new GeneralMessageListener(),
                 new RoleDeleteListener(),
-                new LavalinkManager()
+                new LavalinkManager(),
+                new GeneralMessageListener()
         );
         try {
             shardManager = builder.build();
