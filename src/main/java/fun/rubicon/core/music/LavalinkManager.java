@@ -33,7 +33,6 @@ public class LavalinkManager implements EventListener {
 
     public LavalinkManager() {
         this.audioPlayerManager = new DefaultAudioPlayerManager();
-        audioPlayerManager.enableGcMonitoring();
     }
 
     public void initialize() {

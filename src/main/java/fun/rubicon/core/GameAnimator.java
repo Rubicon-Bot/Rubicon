@@ -31,7 +31,8 @@ public class GameAnimator {
             Game.playing("Version: " + Info.BOT_VERSION),
             Game.watching("Rubiteam <3"),
             Game.watching("New Translations"),
-            Game.playing("translate.rubicon.fun")
+            Game.playing("translate.rubicon.fun"),
+            Game.watching("Unicorns flying in the sky"),
     };
     private int currentGame = 0;
 

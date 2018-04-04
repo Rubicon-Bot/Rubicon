@@ -1,7 +1,6 @@
 package fun.rubicon.core;
 
 import fun.rubicon.util.FileUtil;
-import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.Game;
 
 import java.io.File;
@@ -24,7 +23,6 @@ public class GameStatusFileParser {
         } else if(content.startsWith("s:")) {
             final String replaced = content.replaceFirst("s:", "");
             final String[] splitted = replaced.split(";;");
-            Logger.debug(String.join(" ", splitted));
             result = Game.streaming(splitted[1], splitted[0]);
         }
         return result;

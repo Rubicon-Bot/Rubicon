@@ -145,15 +145,16 @@ public class RubiconBot {
         initShardManager();
 
         gameAnimator.start();
-
-
+        shardManager.setStatus(OnlineStatus.ONLINE);
     }
 
     private void registerCommands() {
         //Bot Owner
         commandManager.registerCommandHandlers(
                 new CommandEval(),
-                new CommandShardManage()
+                new CommandShardManage(),
+                new CommandBotstatus(),
+                new CommandBotplay()
         );
 
         //Admin
@@ -176,7 +177,6 @@ public class RubiconBot {
                 new CommandGiphy()
         );
 
-
         //General
         commandManager.registerCommandHandlers(
                 new CommandHelp(),
@@ -192,7 +192,8 @@ public class RubiconBot {
                 new CommandUptime(),
                 new CommandYouTube(),
                 new CommandSearch(),
-                new CommandPremium()
+                new CommandPremium(),
+                new CommandKey()
         );
 
         //Moderation
