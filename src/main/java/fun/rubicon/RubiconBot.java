@@ -222,13 +222,13 @@ public class RubiconBot {
                 new CommandPlay(),
                 new CommandForcePlay(),
                 new CommandVolume(),
-<<<<<<< HEAD
-                new CommandSkip()
-=======
-                new CommandSkip(),
+                <<<<<<<HEAD
+        new CommandSkip()
+                =======
+        new CommandSkip(),
                 new CommandJoin(),
                 new CommandLeave()
->>>>>>> ece514d0c3b865fdccfe0d7f6dfe43d01128ad0e
+                        >>>>>>>ece514d0c3b865fdccfe0d7f6dfe43d01128ad0e
         );
     }
 
