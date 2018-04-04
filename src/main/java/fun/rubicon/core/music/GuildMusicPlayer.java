@@ -133,7 +133,6 @@ public class GuildMusicPlayer extends MusicPlayer {
                     embedBuilder.setColor(Colors.COLOR_PRIMARY);
                     SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(embedBuilder));
                     play(track);
-
                 } else {
                     queueTrack(track);
                 }
@@ -187,7 +186,7 @@ public class GuildMusicPlayer extends MusicPlayer {
                     try {
                         musicSearchResult.addTrack(track);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Logger.error(e);
                     }
                 });
                 musicSearchResult.setMessage(SafeMessage.sendMessageBlocking(invocation.getTextChannel(), EmbedUtil.message(musicSearchResult.generateEmbed())));
@@ -196,7 +195,7 @@ public class GuildMusicPlayer extends MusicPlayer {
                     @Override
                     public void run() {
                         if (musicChoose.contains(musicSearchResult)) {
-                            musicSearchResult.getMessage().delete().queue();
+                            //musicSearchResult.getMessage().delete().queue();
                             musicChoose.remove(musicSearchResult);
                         }
                     }
@@ -225,6 +224,7 @@ public class GuildMusicPlayer extends MusicPlayer {
 
     @Override
     public void closeAudioConnection() {
+        clearQueue();
         lavalinkManager.closeConnection(guild.getId());
     }
 
@@ -302,7 +302,7 @@ public class GuildMusicPlayer extends MusicPlayer {
         embedBuilder.addField(TranslationUtil.translate(event.getAuthor(), "command.play.loadTrack.duration"), trackData.isStream ? TranslationUtil.translate(event.getAuthor(), "command.play.loadTrack.stream") : getTimestamp(trackData.duration), false);
         embedBuilder.setColor(Colors.COLOR_PRIMARY);
         SafeMessage.sendMessage(event.getTextChannel(), embedBuilder.build());
-        storage.get(0).getMessage().delete().queue();
+        //storage.get(0).getMessage().delete().queue();
         musicChoose.remove(storage.get(0));
         if (event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE))
             event.getMessage().delete().queue();
@@ -314,7 +314,11 @@ public class GuildMusicPlayer extends MusicPlayer {
 
     public void skipTrack(int x) {
         if(x > 25) {
-            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.skip.toomuch.title"), invocation.translate("command.skip.toomuch.description"))))
+            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.skip.toomuch.title"), invocation.translate("command.skip.toomuch.description"))));
+            return;
+        } else if(x < 0) {
+            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.skip.tooless.title"), invocation.translate("command.skip.tooless.description"))));
+            return;
         }
         for (int i = 0; i < x; i++) {
             play(pollTrack());

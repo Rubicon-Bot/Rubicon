@@ -268,8 +268,7 @@ public class RubiconBot {
                 new PunishmentListener(),
                 new GeneralMessageListener(),
                 new RoleDeleteListener(),
-                new LavalinkManager(),
-                new GeneralMessageListener()
+                new LavalinkManager()
         );
         try {
             shardManager = builder.build();
