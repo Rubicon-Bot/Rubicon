@@ -131,14 +131,7 @@ public class RubiconBot {
         punishmentManager = new PunishmentManager();
 
         commandManager = new CommandManager();
-<<<<<<<
         lavalinkManager = new LavalinkManager();
-=======
-        if (configuration.getString("maintenance") != null)
-            if (Boolean.valueOf(configuration.getString("maintenance"))) commandManager.setMaintenance(true);
-
-        lavalinkManager = new LavalinkManager();
->>>>>>>
         pollManager = new PollManager();
         registerCommands();
         permissionManager = new PermissionManager();
