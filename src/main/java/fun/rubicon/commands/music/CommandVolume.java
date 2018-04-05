@@ -7,6 +7,7 @@ import fun.rubicon.core.music.GuildMusicPlayer;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
+import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.io.UnsupportedEncodingException;
@@ -23,6 +24,8 @@ public class CommandVolume extends CommandHandler {
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) throws UnsupportedEncodingException {
         GuildMusicPlayer musicPlayer = new GuildMusicPlayer(invocation, userPermissions);
+        if(!musicPlayer.checkVoiceAvailability())
+            return null;
         if(invocation.getArgs().length == 0)
             return createHelpMessage();
         int volume;
@@ -31,8 +34,8 @@ public class CommandVolume extends CommandHandler {
         } catch (NumberFormatException e){
             return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.volume.invalidnumber.title"), invocation.translate("command.volume.invalidnumber.description")));
         }
-        if(volume > 200)
-            return EmbedUtil.message(EmbedUtil.error());
+        if(volume > 200 || volume < 0)
+            return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.volume.invalidnumber.title"), invocation.translate("command.volume.invalidnumber.description")));
         musicPlayer.setVolume(volume);
         return EmbedUtil.message(EmbedUtil.success(invocation.translate("command.volume.set.title"), String.format(invocation.translate("command.volume.set.title"), volume)));
     }

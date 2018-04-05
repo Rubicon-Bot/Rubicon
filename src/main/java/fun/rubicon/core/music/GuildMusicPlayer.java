@@ -20,10 +20,7 @@ import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.managers.AudioManager;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -36,6 +33,7 @@ public class GuildMusicPlayer extends MusicPlayer {
      */
 
     private static List<MusicSearchResult> musicChoose = new ArrayList<>();
+    private static Map<Long, Queue<AudioTrack>> queueStorage = new HashMap<>();
 
     private final CommandManager.ParsedCommandInvocation invocation;
     private final UserPermissions userPermissions;
@@ -56,6 +54,10 @@ public class GuildMusicPlayer extends MusicPlayer {
 
         initMusicPlayer(player);
         instance = this;
+        if (queueStorage.get(guild.getIdLong()) == null)
+            setQueue(new LinkedList<>());
+        else
+            setQueue(queueStorage.get(guild.getIdLong()));
     }
 
     public void join() {
@@ -89,13 +91,14 @@ public class GuildMusicPlayer extends MusicPlayer {
     public void leave() {
         GuildVoiceState voiceState = invocation.getMember().getVoiceState();
         VoiceChannel botChannel = RubiconBot.getLavalinkManager().getLink(invocation.getGuild().getId()).getChannel();
-        if (botChannel == null)
+        if (botChannel == null) {
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leave.novc.title"), invocation.translate("command.leave.novc.description"))));
-
-        if (!voiceState.inVoiceChannel() || voiceState.getChannel() != botChannel)
+            return;
+        }
+        if (!voiceState.inVoiceChannel() || voiceState.getChannel() != botChannel) {
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leave.nosame.title"), invocation.translate("command.leave.nosame.title"))));
-        player.stopTrack();
-        clearQueue();
+            return;
+        }
         RubiconBot.getLavalinkManager().closeConnection(invocation.getGuild().getId());
         SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leave.left.title"), invocation.translate("command.leave.left.title"))));
     }
@@ -170,9 +173,11 @@ public class GuildMusicPlayer extends MusicPlayer {
                     return;
                 }
                 if (isURL) {
+                    Logger.debug(playlistTracks.size() + "");
                     playlistTracks.forEach(track -> queueTrack(track));
+                    Logger.debug(getQueueSize() + "");
                     EmbedBuilder embedBuilder = new EmbedBuilder();
-                    embedBuilder.setAuthor(invocation.translate("command.play.loadPlaylist.title.queued"), null, null);
+                    embedBuilder.setAuthor(invocation.translate("command.play.loadPlaylist.queued.title"), null, null);
                     embedBuilder.setDescription(invocation.translate("command.play.loadPlaylist.queued.description")
                             .replaceFirst("%count%", playlistTracks.size() + "")
                             .replaceFirst("%name%", playlist.getName())
@@ -216,13 +221,17 @@ public class GuildMusicPlayer extends MusicPlayer {
         });
     }
 
-    private boolean isMemberInSameChannel() { return invocation.getMember().getVoiceState().getChannel().equals(invocation.getSelfMember().getVoiceState().getChannel()); }
+    private boolean isMemberInSameChannel() {
+        return invocation.getMember().getVoiceState().getChannel().equals(invocation.getSelfMember().getVoiceState().getChannel());
+    }
 
     private boolean isMemberInVoiceChannel() {
         return invocation.getMember().getVoiceState().inVoiceChannel();
     }
 
-    private boolean isBotInVoiceChannel() { return invocation.getSelfMember().getVoiceState().inVoiceChannel(); }
+    private boolean isBotInVoiceChannel() {
+        return invocation.getSelfMember().getVoiceState().inVoiceChannel();
+    }
 
     @Override
     public void closeAudioConnection() {
@@ -244,15 +253,15 @@ public class GuildMusicPlayer extends MusicPlayer {
     public void skip() {
         if (!isBotInVoiceChannel())
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leave.novc.title"), invocation.translate("command.leave.novc.description"))));
-        if(!isMemberInVoiceChannel())
+        if (!isMemberInVoiceChannel())
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.novc.title"), invocation.translate("phrase.novc.description"))));
-        if(!isMemberInSameChannel())
+        if (!isMemberInSameChannel())
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.nosamevc.title"), invocation.translate("phrase.nosamevc.description"))));
         int count = 1;
-        if(invocation.getArgs().length > 0){
-            try{
+        if (invocation.getArgs().length > 0) {
+            try {
                 count = Integer.parseInt(invocation.getArgs()[0]);
-            } catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.skip.invalidnumber.title"), invocation.translate("command.skip.invalidnumber.description"))));
             }
         }
@@ -304,7 +313,7 @@ public class GuildMusicPlayer extends MusicPlayer {
         embedBuilder.addField(TranslationUtil.translate(event.getAuthor(), "command.play.loadTrack.duration"), trackData.isStream ? TranslationUtil.translate(event.getAuthor(), "command.play.loadTrack.stream") : getTimestamp(trackData.duration), false);
         embedBuilder.setColor(Colors.COLOR_PRIMARY);
         SafeMessage.sendMessage(event.getTextChannel(), embedBuilder.build());
-        //storage.get(0).getMessage().delete().queue();
+        storage.get(0).getMessage().delete().queue();
         musicChoose.remove(storage.get(0));
         if (event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE))
             event.getMessage().delete().queue();
@@ -315,15 +324,40 @@ public class GuildMusicPlayer extends MusicPlayer {
     }
 
     public void skipTrack(int x) {
-        if(x > 25) {
+        Logger.debug(getQueueSize() + "");
+        if (x > 25) {
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.skip.toomuch.title"), invocation.translate("command.skip.toomuch.description"))));
             return;
-        } else if(x < 0) {
+        } else if (x < 0) {
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.skip.tooless.title"), invocation.translate("command.skip.tooless.description"))));
             return;
         }
-        for (int i = 0; i < x; i++) {
-            play(pollTrack());
+        for (int i = 1; i < x; i++) {
+            pollTrack();
+            if (getQueueSize() == 0)
+                break;
         }
+        Logger.debug(getQueueSize() + "");
+        play(pollTrack());
+    }
+
+    public boolean checkVoiceAvailability() {
+        if (!isBotInVoiceChannel()) {
+            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leave.novc.title"), invocation.translate("command.leave.novc.description"))));
+            return false;
+        } else if (!isMemberInVoiceChannel()) {
+            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.novc.title"), invocation.translate("phrase.novc.description"))));
+            return false;
+        } else if (!isMemberInSameChannel()) {
+            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.nosamevc.title"), invocation.translate("phrase.nosamevc.description"))));
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    protected void saveQueue() {
+        queueStorage.put(guild.getIdLong(), getQueue());
     }
 }
