@@ -41,6 +41,7 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
 
     public void play(AudioTrack track) {
         if (track == null) {
+            closeAudioConnection();
             return;
         }
         if (player.isPaused())
@@ -101,11 +102,9 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
     }
 
     public void queueTrack(AudioTrack audioTrack) {
-        boolean wasEmpty = trackQueue.isEmpty();
         trackQueue.add(audioTrack);
-        AudioTrack nextTrack = pollTrack();
-        if(wasEmpty)
-            play(nextTrack);
+        if(player.getPlayingTrack() == null)
+            play(pollTrack());
     }
 
     public AudioTrack pollTrack() {
@@ -125,19 +124,26 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
     }
 
     private void handleTrackStop(AudioPlayer player, AudioTrack track, boolean error) {
-        Logger.debug(track.getInfo().title);
         if (repeating && !error) {
-            player.playTrack(track);
+            queueTrack(track);
             return;
         }
         AudioTrack newTrack = pollTrack();
-        player.playTrack(newTrack);
+        queueTrack(newTrack);
     }
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
+        if(endReason.equals(AudioTrackEndReason.FINISHED)) {
+            AudioTrack nextTrack = pollTrack();
+            if(nextTrack == null) {
+                closeAudioConnection();
+                return;
+            }
+            play(nextTrack);
+            return;
+        }
         if (!endReason.equals(AudioTrackEndReason.LOAD_FAILED)) {
-            Logger.debug(endReason.toString());
             handleTrackStop(player, track, false);
         } else {
             handleTrackStop(player, track, true);

@@ -222,9 +222,7 @@ public class RubiconBot {
                 new CommandPlay(),
                 new CommandForcePlay(),
                 new CommandVolume(),
-                new CommandSkip(),
-                new CommandJoin(),
-                new CommandLeave()
+                new CommandSkip()
         );
     }
 
@@ -270,8 +268,7 @@ public class RubiconBot {
                 new PunishmentListener(),
                 new GeneralMessageListener(),
                 new RoleDeleteListener(),
-                new LavalinkManager(),
-                new GeneralMessageListener()
+                new LavalinkManager()
         );
         try {
             shardManager = builder.build();
