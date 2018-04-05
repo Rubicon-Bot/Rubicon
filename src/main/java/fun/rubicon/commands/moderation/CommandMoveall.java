@@ -28,7 +28,7 @@ public class CommandMoveall extends CommandHandler {
         if (invocation.getArgs().length == 0)
             return createHelpMessage();
         if (!invocation.getMember().getVoiceState().inVoiceChannel())
-            return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.moveall.error.novc.title"), invocation.translate("command.moveall.error.novc.description")));
+            return EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.novc.title"), invocation.translate("phrase.novc.description")));
         if (!invocation.getGuild().getSelfMember().hasPermission(Permission.VOICE_MOVE_OTHERS))
             return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.moveall.error.noperms.title"), invocation.translate("command.moveall.error.noperms.description")));
         List<VoiceChannel> foundChannels = invocation.getGuild().getVoiceChannelsByName(invocation.getArgsString(), true);

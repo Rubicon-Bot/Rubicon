@@ -7,6 +7,7 @@
 package fun.rubicon.command;
 
 import fun.rubicon.RubiconBot;
+import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
@@ -43,7 +44,7 @@ public abstract class CommandHandler {
      * @param description            a short command description.
      * @param parameterUsage         the usage message.
      */
-    protected CommandHandler(String[] invocationAliases, CommandCategory category,
+    public CommandHandler(String[] invocationAliases, CommandCategory category,
                              PermissionRequirements permissionRequirements, String description, String parameterUsage) {
         this.invocationAliases = invocationAliases;
         this.category = category;
@@ -52,7 +53,7 @@ public abstract class CommandHandler {
         this.parameterUsage = parameterUsage;
     }
 
-    protected CommandHandler(String[] invocationAliases, CommandCategory category,
+    public CommandHandler(String[] invocationAliases, CommandCategory category,
                              PermissionRequirements permissionRequirements, String description, String parameterUsage, boolean disabled) {
         this.invocationAliases = invocationAliases;
         this.category = category;
@@ -106,7 +107,7 @@ public abstract class CommandHandler {
      * @param userPermissions         an object to query the invoker's permissions.
      * @return a response that will be sent and deleted by the caller.
      */
-    protected abstract Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) throws UnsupportedEncodingException;
+    protected abstract Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) throws Exception;
 
     /**
      * @return all aliases this CommandHandler wants to listen to.

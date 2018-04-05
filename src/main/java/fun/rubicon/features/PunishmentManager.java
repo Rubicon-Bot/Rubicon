@@ -2,6 +2,7 @@ package fun.rubicon.features;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandHandler;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.Member;
 
 import java.util.ArrayList;
@@ -15,6 +16,10 @@ public class PunishmentManager {
 
     private HashMap<Member, Long> muteCache = new HashMap<>();
 
+    private boolean running = false;
+
+    private Thread t;
+
     public void registerPunishmentHandler(PunishmentHandler handler){
         RubiconBot.getCommandManager().registerCommandHandler((CommandHandler) handler);
         punishmentHandlers.add(handler);
@@ -27,8 +32,14 @@ public class PunishmentManager {
         }
     }
 
-    public void loadPunishments(){
-        punishmentHandlers.forEach(PunishmentHandler::loadPunishments);
+    public synchronized void loadPunishments(){
+        if(!running){
+            Logger.info("Loading punishments in thread \"PunishmentLoader\"");
+            t = new Thread(() -> {
+                punishmentHandlers.forEach(PunishmentHandler::loadPunishments);
+            }, "PunishmentLoader");
+            t.start();
+        }
     }
 
     public HashMap<Member, Long> getMuteCache() {

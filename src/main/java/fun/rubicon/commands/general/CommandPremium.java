@@ -50,9 +50,9 @@ public class CommandPremium extends CommandHandler {
                 Colors.COLOR_SECONDARY
         );
         if ((author.isPremium())) {
-            em.setDescription("Premium is activated until " + author.formatExpiryDate());
+            em.setDescription(invocation.translate("command.premium.until")+" " + author.formatExpiryDate());
         } else {
-            em.setDescription("No premium. \n\nBuy premium with `rc!premium buy` for 500k rubys.");
+            em.setDescription(invocation.translate("command.premium.nopremium"));
         }
         return message(em);
         }
@@ -62,25 +62,26 @@ public class CommandPremium extends CommandHandler {
                return createHelpMessage();
             case "buy":
                 if ((author.isPremium())) {
-                    return message(EmbedUtil.info("Already activated!", "You already have premium until " + author.getPremiumExpiryDate()));
+                    return message(EmbedUtil.info(invocation.translate("command.premium.already.title"), invocation.translate("command.premium.until")+" " + author.getPremiumExpiryDate()));
                 }
                 int userMoney = author.getMoney();
                 if (userMoney - PriceList.PREMIUM.getPrice() >= 0) {
                     author.setPremium(PREMIUM_TIME);
                     author.setMoney(userMoney - PriceList.PREMIUM.getPrice());
                     assignPremiumRole(author);
-                    return message(EmbedUtil.success("Success!", "Successfully bought premium."));
+                    return message(EmbedUtil.success(invocation.translate("command.premium.success"), invocation.translate("command.premium.success.buy")));
                 } else {
-                    return message(EmbedUtil.error("Not enough money!", "Premium costs `" + PriceList.PREMIUM.getPrice() + "` rubys but you only have `" + userMoney + "` rubys"));
+                    return message(EmbedUtil.error(invocation.translate("command.premium.money.title"), String.format(invocation.translate("command.premium.money.desc"),PriceList.PREMIUM.getPrice(),userMoney)));
                 }
             case "add":
                 if (userPermissions.hasPermissionNode("premium.modify")) {
+                    System.out.println(1);
                     List<User> users = invocation.getMessage().getMentionedUsers();
                     if (users.size() == 0) {
-                        return EmbedUtil.message(EmbedUtil.error("Error!", "You have to mention at least 1 user."));
+                        return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.premium.modify.error.title"), invocation.translate("command.premium.modify.error.desc")));
                     } else {
                         StringBuilder successValue = new StringBuilder();
-                        successValue.append("Successfully added premium to");
+                        successValue.append(invocation.translate("command.premium.modify.success.add"));
                         for (User user : users) {
                             RubiconUser pUser = RubiconUser.fromUser(user);
                             pUser.setPremium(PREMIUM_TIME);
@@ -88,17 +89,17 @@ public class CommandPremium extends CommandHandler {
                             successValue.append(" / ").append(user.getAsMention());
                         }
                         String successText = successValue.toString().replaceFirst(" /", "");
-                        return EmbedUtil.message(EmbedUtil.success("Success!", successText + "."));
+                        return EmbedUtil.message(EmbedUtil.success(invocation.translate("command.premium.success"), successText + "."));
                     }
                 }
             case "remove":
                 if (userPermissions.hasPermissionNode("premium.modify")) {
                     List<User> users = invocation.getMessage().getMentionedUsers();
                     if (users.size() == 0) {
-                        return EmbedUtil.message(EmbedUtil.error("Error!", "You have to mention at least 1 user."));
+                        return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.premium.modify.error.title"), invocation.translate("command.premium.modify.error.desc")));
                     } else {
                         StringBuilder successValue = new StringBuilder();
-                        successValue.append("Successfully removed premium from");
+                        successValue.append(invocation.translate("command.premium.modify.success.remove"));
                         for (User user : users) {
                             RubiconUser pUser = RubiconUser.fromUser(user);
                             pUser.setPremium(0);
@@ -106,7 +107,7 @@ public class CommandPremium extends CommandHandler {
                             successValue.append(" / ").append(user.getAsMention());
                         }
                         String successText = successValue.toString().replaceFirst(" /", "");
-                        return EmbedUtil.message(EmbedUtil.success("Success!", successText + "."));
+                        return EmbedUtil.message(EmbedUtil.success(invocation.translate("command.premium.success"), successText + "."));
                     }
                 }
         }
@@ -118,6 +119,8 @@ public class CommandPremium extends CommandHandler {
         Guild guild = RubiconBot.getShardManager().getGuildById(Info.RUBICON_SERVER);
         if (guild.getMember(user.getUser()) == null) return;
         Role role = guild.getRoleById(382160159339970560L);
+        if(role == null)
+            return;
         guild.getController().addSingleRoleToMember(guild.getMember(user.getUser()), role).queue();
     }
 

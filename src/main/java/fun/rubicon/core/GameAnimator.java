@@ -31,19 +31,17 @@ public class GameAnimator {
             Game.playing("Version: " + Info.BOT_VERSION),
             Game.watching("Rubiteam <3"),
             Game.watching("New Translations"),
-            Game.playing("translate.rubicon.fun")
+            Game.playing("translate.rubicon.fun"),
+            Game.watching("Unicorns flying in the sky"),
     };
     private int currentGame = 0;
 
     public GameAnimator() {
         timer = new Timer();
-
         gameFile = FileUtil.createFileIfNotExist(new File("data/bot/settings", "status.game"));
-
     }
 
     public void start() {
-        if(RubiconBot.getCommandManager().isMaintenanceEnabled()) return;
         Logger.info("Starting Game Animator....");
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -55,12 +53,14 @@ public class GameAnimator {
                     RubiconBot.getShardManager().setStatus(OnlineStatus.ONLINE);
                     RubiconBot.getShardManager().setGame(games[currentGame]);
                     currentGame++;
+                } else {
+                    RubiconBot.getShardManager().setGame(GameStatusFileParser.parse());
                 }
             }
         }, 0, 1000 * 60);
     }
 
-    public void stop(){
+    public void stop() {
         Logger.info("Stopping Game Animator ....");
         timer.cancel();
     }
