@@ -16,15 +16,11 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.GuildVoiceState;
-import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.managers.AudioManager;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -37,6 +33,7 @@ public class GuildMusicPlayer extends MusicPlayer {
      */
 
     private static List<MusicSearchResult> musicChoose = new ArrayList<>();
+    private static Map<Long, Queue<AudioTrack>> queueStorage = new HashMap<>();
 
     private final CommandManager.ParsedCommandInvocation invocation;
     private final UserPermissions userPermissions;
@@ -57,6 +54,10 @@ public class GuildMusicPlayer extends MusicPlayer {
 
         initMusicPlayer(player);
         instance = this;
+        if (queueStorage.get(guild.getIdLong()) == null)
+            setQueue(new LinkedList<>());
+        else
+            setQueue(queueStorage.get(guild.getIdLong()));
     }
 
     public void join() {
@@ -90,11 +91,14 @@ public class GuildMusicPlayer extends MusicPlayer {
     public void leave() {
         GuildVoiceState voiceState = invocation.getMember().getVoiceState();
         VoiceChannel botChannel = RubiconBot.getLavalinkManager().getLink(invocation.getGuild().getId()).getChannel();
-        if (botChannel == null)
+        if (botChannel == null) {
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leave.novc.title"), invocation.translate("command.leave.novc.description"))));
-
-        if (!voiceState.inVoiceChannel() || voiceState.getChannel() != botChannel)
+            return;
+        }
+        if (!voiceState.inVoiceChannel() || voiceState.getChannel() != botChannel) {
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leave.nosame.title"), invocation.translate("command.leave.nosame.title"))));
+            return;
+        }
         RubiconBot.getLavalinkManager().closeConnection(invocation.getGuild().getId());
         SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leave.left.title"), invocation.translate("command.leave.left.title"))));
     }
@@ -169,9 +173,11 @@ public class GuildMusicPlayer extends MusicPlayer {
                     return;
                 }
                 if (isURL) {
+                    Logger.debug(playlistTracks.size() + "");
                     playlistTracks.forEach(track -> queueTrack(track));
+                    Logger.debug(getQueueSize() + "");
                     EmbedBuilder embedBuilder = new EmbedBuilder();
-                    embedBuilder.setAuthor(invocation.translate("command.play.loadPlaylist.title.queued"), null, null);
+                    embedBuilder.setAuthor(invocation.translate("command.play.loadPlaylist.queued.title"), null, null);
                     embedBuilder.setDescription(invocation.translate("command.play.loadPlaylist.queued.description")
                             .replaceFirst("%count%", playlistTracks.size() + "")
                             .replaceFirst("%name%", playlist.getName())
@@ -318,6 +324,7 @@ public class GuildMusicPlayer extends MusicPlayer {
     }
 
     public void skipTrack(int x) {
+        Logger.debug(getQueueSize() + "");
         if (x > 25) {
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.skip.toomuch.title"), invocation.translate("command.skip.toomuch.description"))));
             return;
@@ -325,11 +332,12 @@ public class GuildMusicPlayer extends MusicPlayer {
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.skip.tooless.title"), invocation.translate("command.skip.tooless.description"))));
             return;
         }
-        for (int i = 0; i < x; i++) {
+        for (int i = 1; i < x; i++) {
             pollTrack();
             if (getQueueSize() == 0)
                 break;
         }
+        Logger.debug(getQueueSize() + "");
         play(pollTrack());
     }
 
@@ -346,5 +354,10 @@ public class GuildMusicPlayer extends MusicPlayer {
         } else {
             return true;
         }
+    }
+
+    @Override
+    protected void saveQueue() {
+        queueStorage.put(guild.getIdLong(), getQueue());
     }
 }

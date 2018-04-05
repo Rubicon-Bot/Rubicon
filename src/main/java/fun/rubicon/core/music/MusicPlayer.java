@@ -5,7 +5,6 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import fun.rubicon.RubiconBot;
-import fun.rubicon.util.Logger;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.event.AudioEventAdapterWrapped;
 import net.dv8tion.jda.core.audio.AudioSendHandler;
@@ -18,7 +17,7 @@ import java.util.*;
 public abstract class MusicPlayer extends AudioEventAdapterWrapped implements AudioSendHandler {
 
     protected final LavalinkManager lavalinkManager;
-    private final Queue<AudioTrack> trackQueue;
+    private Queue<AudioTrack> trackQueue;
     private IPlayer player;
     private boolean repeating;
     private boolean stayInChannel;
@@ -101,14 +100,27 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
         return player.getTrackPosition();
     }
 
+    public void setQueue(Queue<AudioTrack> queue) {
+        this.trackQueue = queue;
+    }
+
+    public Queue<AudioTrack> getQueue() {
+        return trackQueue;
+    }
+
     public void queueTrack(AudioTrack audioTrack) {
         trackQueue.add(audioTrack);
         if(player.getPlayingTrack() == null)
             play(pollTrack());
+        saveQueue();
     }
 
     public AudioTrack pollTrack() {
-        return trackQueue.isEmpty() ? null : trackQueue.poll();
+        if(trackQueue.isEmpty())
+            return null;
+        AudioTrack track = trackQueue.poll();
+        saveQueue();
+        return track;
     }
 
     public void clearQueue() {
@@ -150,7 +162,8 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
         }
     }
 
-    public abstract void closeAudioConnection();
+    protected abstract void closeAudioConnection();
+    protected abstract void saveQueue();
 
     @Override
     public void onTrackException(AudioPlayer player, AudioTrack track, FriendlyException exception) {
