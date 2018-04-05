@@ -125,23 +125,21 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
     }
 
     private void handleTrackStop(AudioPlayer player, AudioTrack track, boolean error) {
-        Logger.debug(track.getInfo().title);
         if (repeating && !error) {
             player.playTrack(track);
             return;
         }
         AudioTrack newTrack = pollTrack();
-        player.playTrack(newTrack);
+        if(newTrack != null) {
+            player.playTrack(newTrack);
+        } else {
+            closeAudioConnection();
+        }
     }
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        if (!endReason.equals(AudioTrackEndReason.LOAD_FAILED)) {
-            Logger.debug(endReason.toString());
-            handleTrackStop(player, track, false);
-        } else {
-            handleTrackStop(player, track, true);
-        }
+        handleTrackStop(player, track, endReason.equals(AudioTrackEndReason.LOAD_FAILED));
     }
 
     public abstract void closeAudioConnection();

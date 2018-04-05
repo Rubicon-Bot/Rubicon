@@ -94,6 +94,8 @@ public class GuildMusicPlayer extends MusicPlayer {
 
         if (!voiceState.inVoiceChannel() || voiceState.getChannel() != botChannel)
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leave.nosame.title"), invocation.translate("command.leave.nosame.title"))));
+        player.stopTrack();
+        clearQueue();
         RubiconBot.getLavalinkManager().closeConnection(invocation.getGuild().getId());
         SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leave.left.title"), invocation.translate("command.leave.left.title"))));
     }

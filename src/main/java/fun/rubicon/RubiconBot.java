@@ -19,6 +19,7 @@ import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.*;
 import fun.rubicon.commands.music.CommandJoin;
 import fun.rubicon.commands.music.CommandLeave;
+import fun.rubicon.commands.music.CommandPlay;
 import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.GameAnimator;
@@ -226,8 +227,7 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(
                 new CommandJoin(),
                 new CommandLeave(),
-                new CommandJoin(),
-                new CommandLeave()
+                new CommandPlay()
 
         );
     }

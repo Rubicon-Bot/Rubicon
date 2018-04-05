@@ -73,6 +73,7 @@ public class CommandManager extends ListenerAdapter {
         }
     }
 
+
     /**
      * Call the CommandHandler for commandInvocation.
      *
