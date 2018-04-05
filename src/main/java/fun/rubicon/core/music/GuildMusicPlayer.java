@@ -302,7 +302,7 @@ public class GuildMusicPlayer extends MusicPlayer {
         embedBuilder.addField(TranslationUtil.translate(event.getAuthor(), "command.play.loadTrack.duration"), trackData.isStream ? TranslationUtil.translate(event.getAuthor(), "command.play.loadTrack.stream") : getTimestamp(trackData.duration), false);
         embedBuilder.setColor(Colors.COLOR_PRIMARY);
         SafeMessage.sendMessage(event.getTextChannel(), embedBuilder.build());
-        storage.get(0).getMessage().delete().queue();
+        //storage.get(0).getMessage().delete().queue();
         musicChoose.remove(storage.get(0));
         if (event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE))
             event.getMessage().delete().queue();
@@ -321,7 +321,7 @@ public class GuildMusicPlayer extends MusicPlayer {
             return;
         }
         for (int i = 0; i < x; i++) {
-            pollTrack();
+            play(pollTrack());
         }
     }
 }

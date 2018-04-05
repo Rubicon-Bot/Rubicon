@@ -175,6 +175,8 @@ public class DatabaseGenerator {
             Logger.error(e);
         }
     }
+<<<<<<<
+
     private static void createLavalinkNodeTable() {
         try {
             PreparedStatement ps = RubiconBot.getMySQL().prepareStatement("CREATE TABLE IF NOT EXISTS `lavanodes`" +
@@ -203,4 +205,20 @@ public class DatabaseGenerator {
             Logger.error(e);
         }
     }
+=======
+
+    private static void createLavalinkNodeTable() {
+        try {
+            PreparedStatement ps = RubiconBot.getMySQL().prepareStatement("CREATE TABLE IF NOT EXISTS `lavanodes`" +
+                    "(" +
+                    "`name` VARCHAR(50)," +
+                    "`uri` VARCHAR(50)," +
+                    "`password` VARCHAR(50)" +
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
+            ps.execute();
+        } catch (SQLException e) {
+            Logger.error(e);
+        }
+    }
+>>>>>>>
 }

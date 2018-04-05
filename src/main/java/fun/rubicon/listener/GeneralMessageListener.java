@@ -14,7 +14,7 @@ public class GeneralMessageListener extends ListenerAdapter{
 
     public void onMessageReceived(MessageReceivedEvent event) {
         new Thread(() -> CommandYouTube.handle(event)).start();
-        new Thread(() ->  GuildMusicPlayer.handleTrackChoose(event), "Track-chooser-"+ event.getMessage().getId() + "-Thread").start();
+        new Thread(() -> { GuildMusicPlayer.handleTrackChoose(event); Thread.currentThread().setName("Track-chooser-"+ event.getMessage().getId() + "-Thread");}).start();
     }
 
 }

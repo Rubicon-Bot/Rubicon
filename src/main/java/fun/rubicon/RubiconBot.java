@@ -17,7 +17,8 @@ import fun.rubicon.commands.botowner.*;
 import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.*;
-import fun.rubicon.commands.music.*;
+import fun.rubicon.commands.music.CommandJoin;
+import fun.rubicon.commands.music.CommandLeave;
 import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.GameAnimator;
@@ -130,7 +131,14 @@ public class RubiconBot {
         punishmentManager = new PunishmentManager();
 
         commandManager = new CommandManager();
+<<<<<<<
         lavalinkManager = new LavalinkManager();
+=======
+        if (configuration.getString("maintenance") != null)
+            if (Boolean.valueOf(configuration.getString("maintenance"))) commandManager.setMaintenance(true);
+
+        lavalinkManager = new LavalinkManager();
+>>>>>>>
         pollManager = new PollManager();
         registerCommands();
         permissionManager = new PermissionManager();
@@ -217,12 +225,17 @@ public class RubiconBot {
 
         //Music
         commandManager.registerCommandHandlers(
+<<<<<<<
                 new CommandJoin(),
                 new CommandLeave(),
                 new CommandPlay(),
                 new CommandForcePlay(),
                 new CommandVolume(),
                 new CommandSkip()
+=======
+                new CommandJoin(),
+                new CommandLeave()
+>>>>>>>
         );
     }
 
@@ -267,8 +280,14 @@ public class RubiconBot {
                 new AutochannelListener(),
                 new PunishmentListener(),
                 new GeneralMessageListener(),
+<<<<<<<
+                new RoleDeleteListener(),
+                new LavalinkManager(),
+                new GeneralMessageListener()
+=======
                 new RoleDeleteListener(),
                 new LavalinkManager()
+>>>>>>>
         );
         try {
             shardManager = builder.build();

@@ -21,7 +21,6 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
     private final Queue<AudioTrack> trackQueue;
     private IPlayer player;
     private boolean repeating;
-    private boolean repeatingQueue;
     private boolean stayInChannel;
 
     protected final int DEFAULT_VOLUME = 10;
@@ -31,7 +30,6 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
         lavalinkManager = RubiconBot.getLavalinkManager();
         trackQueue = new LinkedList<>();
         repeating = false;
-        repeatingQueue = false;
         //When this variable is true you will die automatically
         stayInChannel = false;
     }
@@ -103,9 +101,11 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
     }
 
     public void queueTrack(AudioTrack audioTrack) {
+        boolean wasEmpty = trackQueue.isEmpty();
         trackQueue.add(audioTrack);
-        if(player.getPlayingTrack() == null)
-            play(pollTrack());
+        AudioTrack nextTrack = pollTrack();
+        if(wasEmpty)
+            play(nextTrack);
     }
 
     public AudioTrack pollTrack() {
@@ -125,31 +125,17 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
     }
 
     private void handleTrackStop(AudioPlayer player, AudioTrack track, boolean error) {
+        Logger.debug(track.getInfo().title);
         if (repeating && !error) {
-            queueTrack(track);
+            player.playTrack(track);
             return;
         }
         AudioTrack newTrack = pollTrack();
-        queueTrack(newTrack);
+        player.playTrack(newTrack);
     }
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        if(endReason.equals(AudioTrackEndReason.FINISHED)) {
-            AudioTrack nextTrack;
-            if(repeating)
-                nextTrack = track;
-            else
-                nextTrack = pollTrack();
-            if(repeatingQueue)
-                trackQueue.add(track);
-            if(nextTrack == null) {
-                closeAudioConnection();
-                return;
-            }
-            play(nextTrack);
-            return;
-        }
         if (!endReason.equals(AudioTrackEndReason.LOAD_FAILED)) {
             Logger.debug(endReason.toString());
             handleTrackStop(player, track, false);
