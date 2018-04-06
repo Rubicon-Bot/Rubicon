@@ -22,6 +22,7 @@ public class CommandPlay extends CommandHandler {
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
         GuildMusicPlayer musicPlayer = new GuildMusicPlayer(invocation, userPermissions);
+
         musicPlayer.playMusic(false);
         return null;
     }

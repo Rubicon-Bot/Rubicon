@@ -31,7 +31,7 @@ public class VoteListener extends ListenerAdapter{
     public void onMessageReactionRemove(MessageReactionRemoveEvent event) {
         new Thread(() -> handleReactenRemove(event), "PollReactionRemoveHandler-" + event.getMessageId());
     }
-
+    
     private void handleMessageReaction(MessageReactionAddEvent event){
         Guild guild = event.getGuild();
         if(event.getUser().isBot() || !pollManager.pollExists(guild)) return;
@@ -52,7 +52,7 @@ public class VoteListener extends ListenerAdapter{
         poll.updateMessages(event.getGuild(), CommandPoll.getParsedPoll(poll, event.getGuild()));
         pollManager.replacePoll(poll, guild);
     }
-
+    
     private void handleaMessageDeletion(MessageDeleteEvent event){
         if(!pollManager.pollExists(event.getGuild())) return;
         RubiconPoll poll = pollManager.getPollByGuild(event.getGuild());
@@ -60,7 +60,7 @@ public class VoteListener extends ListenerAdapter{
         poll.removePollMsg(event.getMessageId());
         pollManager.replacePoll(poll, event.getGuild());
     }
-
+    
     private void handleReactenRemove(MessageReactionRemoveEvent event){
         try {
             if (!pollManager.pollExists(event.getGuild())) return;

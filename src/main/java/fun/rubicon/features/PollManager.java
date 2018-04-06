@@ -17,13 +17,11 @@ public class PollManager {
 
     private HashMap<Guild, RubiconPoll> polls = new HashMap<>();
     private Thread t;
-    private Thread pollSaver;
     private boolean running = false;
 
     public synchronized void loadPolls(){
-        pollSaver = new Thread("Poll saver");
         if(!running) {
-            t = new Thread(() -> {
+            Thread t = new Thread(() -> {
                 running = true;
                 if(running) {
                     HashMap<Guild, RubiconPoll> polls = getPolls();
@@ -48,7 +46,6 @@ public class PollManager {
                     });
                     Logger.info("Finished poll loading. Stopping thread");
                     running = false;
-                    Thread.currentThread().interrupt();
                 }
             });
             t.setName("Poll-loader");
@@ -93,13 +90,7 @@ public class PollManager {
     }
 
     public void replacePoll(RubiconPoll poll, Guild guild){
-        try {
-            pollSaver.join();
-            getPolls().replace(guild, poll);
-            poll.savePoll();
-        } catch (InterruptedException e) {
-            Logger.error(e);
-        }
-
+        getPolls().replace(guild, poll);
+        poll.savePoll();
     }
 }

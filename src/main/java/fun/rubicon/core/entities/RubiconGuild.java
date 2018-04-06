@@ -272,7 +272,7 @@ public class RubiconGuild {
             guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: I can't manage channels so you can't use mute feature! Please give me `MANAGE_CHANNELS` Permission").queue();
             return mute;
         }
-        guild.getCategories().forEach(tc -> {
+        guild.getTextChannels().forEach(tc -> {
             if (tc.getPermissionOverride(mute) != null) return;
             PermissionOverride override = tc.createPermissionOverride(mute).complete();
             override.getManager().deny(Permission.MESSAGE_WRITE).queue();
