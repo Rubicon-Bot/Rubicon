@@ -48,6 +48,7 @@ public class PollManager {
                     });
                     Logger.info("Finished poll loading. Stopping thread");
                     running = false;
+                    Thread.currentThread().interrupt();
                 }
             });
             t.setName("Poll-loader");

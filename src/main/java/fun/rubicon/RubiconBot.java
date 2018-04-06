@@ -225,7 +225,11 @@ public class RubiconBot {
                 new CommandVolume(),
                 new CommandSkip(),
                 new CommandClear(),
-                new CommandQueue()
+                new CommandQueue(),
+                new CommandStop(),
+                new CommandPause(),
+                new CommandResume(),
+                new CommandShuffle()
         );
     }
 

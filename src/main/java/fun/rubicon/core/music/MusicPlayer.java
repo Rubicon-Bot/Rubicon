@@ -185,4 +185,6 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
     public boolean isOpus() {
         return false;
     }
+
+
 }

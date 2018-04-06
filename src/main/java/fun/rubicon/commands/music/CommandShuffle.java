@@ -9,18 +9,18 @@ import fun.rubicon.permission.UserPermissions;
 import net.dv8tion.jda.core.entities.Message;
 
 /**
- * @author ForYaSee / Yannick Seeger
+ * @author Schlaubi / Michael Rittmeister
  */
-public class CommandLeave extends CommandHandler {
 
-    public CommandLeave() {
-        super(new String[]{"leave"}, CommandCategory.MUSIC, new PermissionRequirements("leave", false, true), "Let the bot leaves your voice channel.", "");
+public class CommandShuffle extends CommandHandler {
+    public CommandShuffle() {
+        super(new String[] {"shuffle"}, CommandCategory.MUSIC, new PermissionRequirements("shuffle", false, true), "Shuffle up the queue", "");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
-        final GuildMusicPlayer musicPlayer = new GuildMusicPlayer(invocation, userPermissions);
-        musicPlayer.leave(false);
+        GuildMusicPlayer player = new GuildMusicPlayer(invocation, userPermissions);
+        player.shuffleUp();
         return null;
     }
 }

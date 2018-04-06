@@ -37,6 +37,7 @@ public class PunishmentManager {
             Logger.info("Loading punishments in thread \"PunishmentLoader\"");
             t = new Thread(() -> {
                 punishmentHandlers.forEach(PunishmentHandler::loadPunishments);
+                Thread.currentThread().interrupt();
             }, "PunishmentLoader");
             t.start();
         }

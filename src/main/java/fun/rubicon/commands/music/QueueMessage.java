@@ -2,6 +2,7 @@ package fun.rubicon.commands.music;
 
 import fun.rubicon.core.music.GuildMusicPlayer;
 import fun.rubicon.util.Logger;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageDeleteEvent;
@@ -49,8 +50,8 @@ public class QueueMessage {
             List<String> tracks = queueMessage.tracks.subList((queueMessage.currentSideNumb - 1) * 20, (queueMessage.currentSideNumb - 1) * 20 + 20);
             message.getReactions().forEach(r -> r.removeReaction().queue());
             String formattedQueue = tracks.stream().collect(Collectors.joining("\n"));
-            message.editMessage("**CURRENT QUEUE:**\n" +
-                    "*[" + GuildMusicPlayer.queueStorage.get(event.getGuild().getIdLong()).size() + " Tracks | Side " + queueMessage.currentSideNumb + " / " + queueMessage.sideNumbAll + "]* \n" + formattedQueue).queue();
+            message.editMessage(new EmbedBuilder().setDescription("**CURRENT QUEUE:**\n" +
+                    "*[" + GuildMusicPlayer.queueStorage.get(event.getGuild().getIdLong()).size() + " Tracks | Side " + queueMessage.currentSideNumb + " / " + queueMessage.sideNumbAll + "]* \n" + formattedQueue).build()).queue();
             queueMessageStorage.replace(event.getMessageIdLong(), queueMessage);
             if(queueMessage.currentSideNumb > 1) {
                 message.addReaction("⬅").queue();
