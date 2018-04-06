@@ -60,12 +60,15 @@ public class QueueMessage {
                 message.addReaction("➡").queue();
             }
         }
+        //Stop Thread because we don't need him anymore
+        Thread.currentThread().interrupt();
     }
 
     public static void handleMessageDeletion(MessageDeleteEvent event) {
         if(queueMessageStorage.containsKey(Long.parseLong(event.getMessageId()))) {
             queueMessageStorage.remove(event.getGuild().getIdLong());
-            Logger.debug("Deleted" + event.getMessageId());
         }
+        //Stop Thread because we don't need him anymore
+        Thread.currentThread().interrupt();
     }
 }
