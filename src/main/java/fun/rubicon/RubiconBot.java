@@ -18,6 +18,7 @@ import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.*;
 import fun.rubicon.commands.music.*;
+import fun.rubicon.commands.music.CommandClear;
 import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.GameAnimator;
@@ -222,7 +223,9 @@ public class RubiconBot {
                 new CommandPlay(),
                 new CommandForcePlay(),
                 new CommandVolume(),
-                new CommandSkip()
+                new CommandSkip(),
+                new CommandClear(),
+                new CommandQueue()
         );
     }
 
@@ -410,4 +413,5 @@ public class RubiconBot {
     public static LavalinkManager getLavalinkManager() {
         return lavalinkManager;
     }
+
 }

@@ -5,9 +5,11 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import fun.rubicon.RubiconBot;
+import fun.rubicon.util.Logger;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.event.AudioEventAdapterWrapped;
 import net.dv8tion.jda.core.audio.AudioSendHandler;
+import net.dv8tion.jda.core.entities.Guild;
 
 import java.util.*;
 
@@ -136,30 +138,29 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
     }
 
     private void handleTrackStop(AudioPlayer player, AudioTrack track, boolean error) {
+        AudioTrack newTrack;
         if (repeating && !error) {
-            queueTrack(track);
-            return;
+            newTrack = track;
         }
-        AudioTrack newTrack = pollTrack();
-        queueTrack(newTrack);
+        newTrack = pollTrack();
+        if(newTrack != null)
+            queueTrack(newTrack);
     }
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
         if(endReason.equals(AudioTrackEndReason.FINISHED)) {
+            //System.out.println(trackQueue.size());
             AudioTrack nextTrack = pollTrack();
             if(nextTrack == null) {
+                Logger.debug("153");
                 closeAudioConnection();
                 return;
             }
             play(nextTrack);
             return;
         }
-        if (!endReason.equals(AudioTrackEndReason.LOAD_FAILED)) {
-            handleTrackStop(player, track, false);
-        } else {
-            handleTrackStop(player, track, true);
-        }
+        handleTrackStop(player, track, endReason.equals(AudioTrackEndReason.LOAD_FAILED));
     }
 
     protected abstract void closeAudioConnection();
