@@ -75,6 +75,7 @@ public class CommandPremium extends CommandHandler {
                 }
             case "add":
                 if (userPermissions.hasPermissionNode("premium.modify")) {
+                    System.out.println(1);
                     List<User> users = invocation.getMessage().getMentionedUsers();
                     if (users.size() == 0) {
                         return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.premium.modify.error.title"), invocation.translate("command.premium.modify.error.desc")));

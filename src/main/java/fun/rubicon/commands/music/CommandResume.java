@@ -6,23 +6,21 @@ import fun.rubicon.command.CommandManager;
 import fun.rubicon.core.music.GuildMusicPlayer;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
-import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.entities.Message;
 
 /**
- * @author ForYaSee / Yannick Seeger
+ * @author Schlaubi / Michael Rittmeister
  */
-public class CommandPlay extends CommandHandler {
 
-    public CommandPlay() {
-        super(new String[]{"play", "p"}, CommandCategory.MUSIC, new PermissionRequirements("play", false, true), "Starts playing music.", "<link or keyword>");
+public class CommandResume extends CommandHandler {
+    public CommandResume() {
+        super(new String[] {"resume"}, CommandCategory.MUSIC, new PermissionRequirements("resume", false, true), "Start paused tracks after you've finished drinking your cup of coffee", "");
     }
-
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
-        GuildMusicPlayer musicPlayer = new GuildMusicPlayer(invocation, userPermissions);
-        musicPlayer.playMusic(false);
+        GuildMusicPlayer player = new GuildMusicPlayer(invocation, userPermissions);
+        player.resumeMusic();
         return null;
     }
 }
