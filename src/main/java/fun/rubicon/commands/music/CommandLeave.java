@@ -1,5 +1,6 @@
 package fun.rubicon.commands.music;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
@@ -19,8 +20,8 @@ public class CommandLeave extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
-        final GuildMusicPlayer musicPlayer = new GuildMusicPlayer(invocation, userPermissions);
-        musicPlayer.leave();
+        final GuildMusicPlayer musicPlayer = RubiconBot.getGuildMusicPlayerManager().getAndCreatePlayer(invocation, userPermissions);
+        musicPlayer.leave(false);
         return null;
     }
 }

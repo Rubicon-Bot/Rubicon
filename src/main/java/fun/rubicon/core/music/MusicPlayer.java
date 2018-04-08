@@ -5,11 +5,9 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import fun.rubicon.RubiconBot;
-import fun.rubicon.util.Logger;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.event.AudioEventAdapterWrapped;
 import net.dv8tion.jda.core.audio.AudioSendHandler;
-import net.dv8tion.jda.core.entities.Guild;
 
 import java.util.*;
 
@@ -117,22 +115,22 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
 
     public void queueTrack(AudioTrack audioTrack) {
         trackQueue.add(audioTrack);
-        saveQueue();
-        Logger.debug(getQueueSize() + "");
-        if (player.getPlayingTrack() == null)
+        if(player.getPlayingTrack() == null)
             play(pollTrack());
+        savePlayer();
     }
 
     public AudioTrack pollTrack() {
         if (trackQueue.isEmpty())
             return null;
         AudioTrack track = trackQueue.poll();
-        saveQueue();
+        savePlayer();
         return track;
     }
 
     public void clearQueue() {
-        trackQueue.clear();
+        trackQueue = new LinkedList<>();
+        savePlayer();
     }
 
     public List<AudioTrack> getTrackList() {
@@ -157,12 +155,20 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
+        if(endReason.equals(AudioTrackEndReason.FINISHED)) {
+            AudioTrack nextTrack = pollTrack();
+            if(nextTrack == null) {
+                closeAudioConnection();
+                return;
+            }
+            play(nextTrack);
+            return;
+        }
         handleTrackStop(player, track, endReason.equals(AudioTrackEndReason.LOAD_FAILED));
     }
 
     protected abstract void closeAudioConnection();
-
-    protected abstract void saveQueue();
+    protected abstract void savePlayer();
 
     @Override
     public void onTrackException(AudioPlayer player, AudioTrack track, FriendlyException exception) {

@@ -22,6 +22,8 @@ import fun.rubicon.commands.music.CommandClearQueue;
 import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.GameAnimator;
+import fun.rubicon.core.music.GuildMusicPlayer;
+import fun.rubicon.core.music.GuildMusicPlayerManager;
 import fun.rubicon.core.music.LavalinkManager;
 import fun.rubicon.core.translation.TranslationManager;
 import fun.rubicon.commands.botowner.CommandEval;
@@ -74,6 +76,7 @@ public class RubiconBot {
     private final TranslationManager translationManager;
     private PunishmentManager punishmentManager;
     private PollManager pollManager;
+    private GuildMusicPlayerManager guildMusicPlayerManager;
     private ShardManager shardManager;
     private boolean allShardsInitialised;
     private BitlyAPI bitlyAPI;
@@ -133,6 +136,7 @@ public class RubiconBot {
         commandManager = new CommandManager();
         lavalinkManager = new LavalinkManager();
         pollManager = new PollManager();
+        guildMusicPlayerManager = new GuildMusicPlayerManager();
         registerCommands();
         permissionManager = new PermissionManager();
         translationManager = new TranslationManager();
@@ -416,5 +420,7 @@ public class RubiconBot {
     public static LavalinkManager getLavalinkManager() {
         return lavalinkManager;
     }
+
+    public static GuildMusicPlayerManager getGuildMusicPlayerManager() { return instance.guildMusicPlayerManager; }
 
 }

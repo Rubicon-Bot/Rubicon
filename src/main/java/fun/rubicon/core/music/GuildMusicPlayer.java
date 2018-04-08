@@ -38,10 +38,9 @@ public class GuildMusicPlayer extends MusicPlayer {
      */
 
     private static List<MusicSearchResult> musicChoose = new ArrayList<>();
-    public static Map<Long, Queue<AudioTrack>> queueStorage = new HashMap<>();
 
-    private final CommandManager.ParsedCommandInvocation invocation;
-    private final UserPermissions userPermissions;
+    public CommandManager.ParsedCommandInvocation invocation;
+    public UserPermissions userPermissions;
     private final Guild guild;
     private final IPlayer player;
     private final AudioManager audioManager;
@@ -57,12 +56,7 @@ public class GuildMusicPlayer extends MusicPlayer {
         this.audioManager = guild.getAudioManager();
         this.audioPlayerManager = lavalinkManager.getAudioPlayerManager();
 
-        if (queueStorage.get(guild.getIdLong()) == null)
-            setQueue(new LinkedList<>());
-        else
-            setQueue(queueStorage.get(guild.getIdLong()));
-
-        initMusicPlayer(guild, player);
+        initMusicPlayer(player);
         instance = this;
     }
 
@@ -131,7 +125,7 @@ public class GuildMusicPlayer extends MusicPlayer {
         playMusic(true);
     }
 
-    public void loadTrack(boolean forcePlay) {
+    private void loadTrack(boolean forcePlay) {
         String keyword = invocation.getArgsString();
         boolean isUrl = true;
         if (!keyword.startsWith("http://") && !keyword.startsWith("https://")) {
@@ -214,7 +208,7 @@ public class GuildMusicPlayer extends MusicPlayer {
                     @Override
                     public void run() {
                         if (musicChoose.contains(musicSearchResult)) {
-                            //musicSearchResult.getMessage().delete().queue();
+                            musicSearchResult.getMessage().delete().queue();
                             musicChoose.remove(musicSearchResult);
                         }
                     }
@@ -459,13 +453,13 @@ public class GuildMusicPlayer extends MusicPlayer {
         if (x > 25) {
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.skip.toomuch.title"), invocation.translate("command.skip.toomuch.description"))));
             return;
-        } else if (x < 0) {
-            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.skip.tooless.title"), invocation.translate("command.skip.tooless.description"))));
-            return;
         }
-        for (int i = 1; i < x; i++) {
+        if(x < 0){
+            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.skip.tooless.title"), invocation.translate("command.skip.tooless.description"))));
+        }
+        for(int i = 1; i < x; i++){
             pollTrack();
-            if (getQueueSize() == 0)
+            if(getQueueSize() == 0)
                 break;
         }
         play(pollTrack());
@@ -487,10 +481,9 @@ public class GuildMusicPlayer extends MusicPlayer {
     }
 
     @Override
-    protected void saveQueue() {
-        if (queueStorage.containsKey(guild.getIdLong()))
-            queueStorage.replace(guild.getIdLong(), getQueue());
-        else
-            queueStorage.put(guild.getIdLong(), getQueue());
+    protected void savePlayer() {
+        RubiconBot.getGuildMusicPlayerManager().updatePlayer(invocation, userPermissions);
     }
+
+
 }

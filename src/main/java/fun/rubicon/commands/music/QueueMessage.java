@@ -1,7 +1,6 @@
 package fun.rubicon.commands.music;
 
-import fun.rubicon.core.music.GuildMusicPlayer;
-import fun.rubicon.util.Logger;
+import fun.rubicon.RubiconBot;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
@@ -51,7 +50,7 @@ public class QueueMessage {
             message.getReactions().forEach(r -> r.removeReaction().queue());
             String formattedQueue = tracks.stream().collect(Collectors.joining("\n"));
             message.editMessage(new EmbedBuilder().setDescription("**CURRENT QUEUE:**\n" +
-                    "*[" + GuildMusicPlayer.queueStorage.get(event.getGuild().getIdLong()).size() + " Tracks | Side " + queueMessage.currentSideNumb + " / " + queueMessage.sideNumbAll + "]* \n" + formattedQueue).build()).queue();
+                    "*[" + RubiconBot.getGuildMusicPlayerManager().getPlayerByGuild(event.getGuild()).getTrackList().size() + " Tracks | Side " + queueMessage.currentSideNumb + " / " + queueMessage.sideNumbAll + "]* \n" + formattedQueue).build()).queue();
             queueMessageStorage.replace(event.getMessageIdLong(), queueMessage);
             if (queueMessage.currentSideNumb > 1) {
                 message.addReaction("⬅").queue();
@@ -68,4 +67,6 @@ public class QueueMessage {
             queueMessageStorage.remove(event.getGuild().getIdLong());
         }
     }
+
+
 }
