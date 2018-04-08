@@ -29,42 +29,31 @@ public class CommandUserInfo extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        Message message = parsedCommandInvocation.getMessage();
-        User info;
-        String[] args = parsedCommandInvocation.getArgs();
-        if (args.length > 0) {
-            if (message.getMentionedUsers().size() > 0)
-                info = message.getMentionedUsers().get(0);
-            else {
-                return createHelpMessage();
-            }
-        } else {
-            info = message.getAuthor();
-        }
 
-        Member user = message.getGuild().getMember(info);
+        Member member = parsedCommandInvocation.getMessage().getMentionedMembers().isEmpty() ? parsedCommandInvocation.getMessage().getMember() : parsedCommandInvocation.getMessage().getMentionedMembers().get(0);
+
         StringBuilder rawRoles = new StringBuilder();
-        user.getRoles().forEach(r -> rawRoles.append(r.getName()).append(", "));
+        member.getRoles().forEach(r -> rawRoles.append(r.getName()).append(", "));
         StringBuilder roles = new StringBuilder(rawRoles.toString());
-        if (!user.getRoles().isEmpty())
+        if (!member.getRoles().isEmpty())
             roles.replace(rawRoles.lastIndexOf(","), roles.lastIndexOf(",") + 1, "");
         EmbedBuilder userinfo = new EmbedBuilder();
         userinfo.setColor(Colors.COLOR_PRIMARY);
-        userinfo.setTitle("User information of " + user.getUser().getName());
-        userinfo.setThumbnail(info.getAvatarUrl());
-        userinfo.addField("Nickname", user.getEffectiveName(), false);
-        userinfo.addField("User id", info.getId(), false);
-        userinfo.addField("Status", user.getOnlineStatus().toString().replace("_", ""), false);
-        if (user.getGame() != null)
-            userinfo.addField("Game", user.getGame().getName(), false);
-        userinfo.addField("Guild join date", formatDate(user.getJoinDate()), false);
+        userinfo.setTitle("User information of " + member.getUser().getName());
+        userinfo.setThumbnail(member.getUser().getAvatarUrl());
+        userinfo.addField("Nickname", member.getEffectiveName(), false);
+        userinfo.addField("User id", member.getUser().getId(), false);
+        userinfo.addField("Status", member.getOnlineStatus().toString().replace("_", ""), false);
+        if (member.getGame() != null)
+            userinfo.addField("Game", member.getGame().getName(), false);
+        userinfo.addField("Guild join date", formatDate(member.getJoinDate()), false);
         userinfo.addField("Roles", "`" + roles.toString() + "`", false);
-        userinfo.addField("Discord join date", formatDate(info.getCreationTime()), false);
-        userinfo.addField("Avatar url", (info.getAvatarUrl() != null) ? info.getAvatarUrl() : "https://rubicon.fun", true);
+        userinfo.addField("Discord join date", formatDate(member.getUser().getCreationTime()), false);
+        userinfo.addField("Avatar url", (member.getUser().getAvatarUrl() != null) ? member.getUser().getAvatarUrl() : "https://rubicon.fun", true);
         return new MessageBuilder().setEmbed(userinfo.build()).build();
     }
 
-    public String formatDate(OffsetDateTime date) {
+    private String formatDate(OffsetDateTime date) {
         return date.getMonthValue() + "/" + date.getDayOfMonth() + "/" + date.getYear();
     }
 }
