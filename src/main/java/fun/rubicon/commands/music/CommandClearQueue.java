@@ -1,5 +1,6 @@
 package fun.rubicon.commands.music;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
@@ -12,14 +13,14 @@ import net.dv8tion.jda.core.entities.Message;
  * @author Schlaubi / Michael Rittmeister
  */
 
-public class CommandClear extends CommandHandler {
-    public CommandClear() {
+public class CommandClearQueue extends CommandHandler {
+    public CommandClearQueue() {
         super(new String[] {"clearqueue"}, CommandCategory.MUSIC, new PermissionRequirements("clearqueue", false, false), "", "");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) throws Exception {
-        GuildMusicPlayer musicPlayer = new GuildMusicPlayer(invocation, userPermissions);
+        GuildMusicPlayer musicPlayer = RubiconBot.getGuildMusicPlayerManager().getAndCreatePlayer(invocation, userPermissions);
         musicPlayer.clear();
         return null;
     }

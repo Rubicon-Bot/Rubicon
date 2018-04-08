@@ -1,5 +1,6 @@
 package fun.rubicon.commands.music;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
@@ -24,7 +25,7 @@ public class CommandForcePlay extends CommandHandler {
         RubiconMember member = RubiconMember.fromMember(invocation.getMember());
         if(!member.isPremium())
             return EmbedUtil.message(EmbedUtil.noPremium());
-        new GuildMusicPlayer(invocation, userPermissions).forcePlay();
+        RubiconBot.getGuildMusicPlayerManager().getAndCreatePlayer(invocation, userPermissions).forcePlay();
         return null;
     }
 }
