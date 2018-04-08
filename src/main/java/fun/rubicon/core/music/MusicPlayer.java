@@ -18,6 +18,8 @@ import java.util.*;
  */
 public abstract class MusicPlayer extends AudioEventAdapterWrapped implements AudioSendHandler {
 
+    private static List<Long> guildInstances = new ArrayList<>();
+
     protected final LavalinkManager lavalinkManager;
     private Queue<AudioTrack> trackQueue;
     private IPlayer player;
@@ -35,9 +37,12 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
         stayInChannel = false;
     }
 
-    protected void initMusicPlayer(IPlayer player) {
+    protected void initMusicPlayer(Guild guild, IPlayer player) {
         this.player = player;
-        player.addListener(this);
+        //if(!guildInstances.contains(guild.getIdLong())) {
+        //    guildInstances.add(guild.getIdLong());
+        //    player.addListener(this);
+        //}
     }
 
     public void play(AudioTrack track) {
@@ -112,13 +117,14 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
 
     public void queueTrack(AudioTrack audioTrack) {
         trackQueue.add(audioTrack);
-        if(player.getPlayingTrack() == null)
-            play(pollTrack());
         saveQueue();
+        Logger.debug(getQueueSize() + "");
+        if (player.getPlayingTrack() == null)
+            play(pollTrack());
     }
 
     public AudioTrack pollTrack() {
-        if(trackQueue.isEmpty())
+        if (trackQueue.isEmpty())
             return null;
         AudioTrack track = trackQueue.poll();
         saveQueue();
@@ -139,31 +145,23 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
 
     private void handleTrackStop(AudioPlayer player, AudioTrack track, boolean error) {
         AudioTrack newTrack;
-        if (repeating && !error) {
+        if (repeating && !error)
             newTrack = track;
-        }
-        newTrack = pollTrack();
-        if(newTrack != null)
+        else
+            newTrack = pollTrack();
+        if (newTrack != null) {
             queueTrack(newTrack);
+        } else
+            closeAudioConnection();
     }
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        if(endReason.equals(AudioTrackEndReason.FINISHED)) {
-            //System.out.println(trackQueue.size());
-            AudioTrack nextTrack = pollTrack();
-            if(nextTrack == null) {
-                Logger.debug("153");
-                closeAudioConnection();
-                return;
-            }
-            play(nextTrack);
-            return;
-        }
         handleTrackStop(player, track, endReason.equals(AudioTrackEndReason.LOAD_FAILED));
     }
 
     protected abstract void closeAudioConnection();
+
     protected abstract void saveQueue();
 
     @Override
@@ -185,6 +183,4 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
     public boolean isOpus() {
         return false;
     }
-
-
 }

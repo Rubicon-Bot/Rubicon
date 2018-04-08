@@ -12,9 +12,9 @@ import net.dv8tion.jda.core.entities.Message;
  * @author Schlaubi / Michael Rittmeister
  */
 
-public class CommandClear extends CommandHandler {
-    public CommandClear() {
-        super(new String[] {"clearqueue"}, CommandCategory.MUSIC, new PermissionRequirements("clearqueue", false, false), "", "");
+public class CommandClearQueue extends CommandHandler {
+    public CommandClearQueue() {
+        super(new String[] {"clearqueue"}, CommandCategory.MUSIC, new PermissionRequirements("clearqueue", false, false), "Clears the music queue.", "");
     }
 
     @Override

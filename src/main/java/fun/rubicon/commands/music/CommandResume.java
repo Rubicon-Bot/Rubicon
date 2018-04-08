@@ -14,7 +14,7 @@ import net.dv8tion.jda.core.entities.Message;
 
 public class CommandResume extends CommandHandler {
     public CommandResume() {
-        super(new String[] {"resume"}, CommandCategory.MUSIC, new PermissionRequirements("resume", false, true), "Start paused tracks after you've finished drinking your cup of coffee", "");
+        super(new String[] {"resume"}, CommandCategory.MUSIC, new PermissionRequirements("resume", false, true), "Resumes playing music after you stopped it.", "");
     }
 
     @Override

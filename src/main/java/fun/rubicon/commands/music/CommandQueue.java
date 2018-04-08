@@ -14,11 +14,11 @@ import net.dv8tion.jda.core.entities.Message;
 
 public class CommandQueue extends CommandHandler {
     public CommandQueue() {
-        super(new String[] {"queue"}, CommandCategory.MUSIC, new PermissionRequirements("queue", false, true), "See the beautiful queue", "<page>");
+        super(new String[] {"queue"}, CommandCategory.MUSIC, new PermissionRequirements("queue", false, true), "Shows you all songs that are in the queue.", "<page>");
     }
 
     @Override
-    protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) throws Exception {
+    protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
         GuildMusicPlayer musicPlayer = new GuildMusicPlayer(invocation, userPermissions);
         musicPlayer.queue();
         return null;
