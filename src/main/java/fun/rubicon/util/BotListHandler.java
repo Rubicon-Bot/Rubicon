@@ -26,7 +26,7 @@ public class BotListHandler {
         }
         if (RubiconBot.getConfiguration().getString("discord_pw_token").isEmpty()){
             Logger.warning("In Dev mode. No Discord PW token set!");
-            //return;
+            return;
         }
 
         // init api if necessary
