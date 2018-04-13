@@ -26,7 +26,7 @@ public class BotListHandler {
         }
         if (RubiconBot.getConfiguration().getString("discord_pw_token").isEmpty()){
             Logger.warning("In Dev mode. No Discord PW token set!");
-            return;
+            //return;
         }
 
         // init api if necessary
@@ -59,6 +59,23 @@ public class BotListHandler {
                 Logger.error(e);
         }
         res.close();
+
+        //Post stats to botsfordiscord.com
+        RequestBody bfdbody = RequestBody.create(MediaType.parse("application/json"), json.toString());
+        Request bdfreq = new Request.Builder()
+                .addHeader("Authorization", RubiconBot.getConfiguration().getString("botsfordiscordtoken"))
+                .url("https://botsfordiscord.com/api/v1/bots/" + RubiconBot.getShardManager().getApplicationInfo().getJDA().getSelfUser().getId())
+                .post(bfdbody)
+                .build();
+        Response bdfres = null;
+        try {
+            bdfres = new OkHttpClient().newCall(bdfreq).execute();
+        } catch (IOException e){
+            if(!silent)
+                Logger.error(e);
+        }
+        bdfres.close();
+
 
 
     }
