@@ -26,7 +26,7 @@ Schlaubi#0001<br>
 lucsoft#5138<br>
 tr808axm#7012
 
-##Rentired RubiconBot Team
+## Rentired RubiconBot Team
 xEiisKeksx#7483
 ## Graphics
 Logo(s) - [Zekro](https://github.com/zekroTJA)
