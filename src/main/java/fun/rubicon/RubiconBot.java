@@ -407,7 +407,7 @@ public class RubiconBot {
     public static GameAnimator getGameAnimator() {
         return instance.gameAnimator;
     }
-    
+
     public static PollManager getPollManager() {
         return instance.pollManager;
     }

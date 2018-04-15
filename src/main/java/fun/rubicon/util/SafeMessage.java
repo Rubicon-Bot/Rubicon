@@ -64,6 +64,11 @@ public class SafeMessage {
             return textChannel.sendMessage(message).complete();
         return null;
     }
+    public static Message sendMessageBlocking(TextChannel textChannel, MessageEmbed message) {
+        if (hasPermissions(textChannel))
+            return textChannel.sendMessage(message).complete();
+        return null;
+    }
 
 
     private static boolean hasPermissions(TextChannel channel) {
