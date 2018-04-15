@@ -18,7 +18,7 @@ import java.util.*;
 public abstract class MusicPlayer extends AudioEventAdapterWrapped implements AudioSendHandler {
 
     protected final LavalinkManager lavalinkManager;
-    private final Queue<AudioTrack> trackQueue;
+    private Queue<AudioTrack> trackQueue;
     private IPlayer player;
     private boolean repeating;
     private boolean stayInChannel;
@@ -107,11 +107,16 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
     }
 
     public AudioTrack pollTrack() {
-        return trackQueue.isEmpty() ? null : trackQueue.poll();
+        if(trackQueue.isEmpty())
+            return null;
+        AudioTrack track = trackQueue.poll();
+        savePlayer();
+        return track;
     }
 
     public void clearQueue() {
-        trackQueue.clear();
+        trackQueue = new LinkedList<>();
+        savePlayer();
     }
 
     public List<AudioTrack> getTrackList() {
@@ -150,7 +155,10 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
         }
     }
 
-    public abstract void closeAudioConnection();
+
+    protected abstract void closeAudioConnection();
+    protected abstract void savePlayer();
+
 
     @Override
     public void onTrackException(AudioPlayer player, AudioTrack track, FriendlyException exception) {

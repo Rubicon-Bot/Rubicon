@@ -37,8 +37,8 @@ public class GuildMusicPlayer extends MusicPlayer {
 
     private static List<MusicSearchResult> musicChoose = new ArrayList<>();
 
-    private final CommandManager.ParsedCommandInvocation invocation;
-    private final UserPermissions userPermissions;
+    public CommandManager.ParsedCommandInvocation invocation;
+    public UserPermissions userPermissions;
     private final Guild guild;
     private final IPlayer player;
     private final AudioManager audioManager;
@@ -112,7 +112,7 @@ public class GuildMusicPlayer extends MusicPlayer {
         playMusic(true);
     }
 
-    public void loadTrack(boolean forcePlay) {
+    private void loadTrack(boolean forcePlay) {
         String keyword = invocation.getArgsString();
         boolean isUrl = true;
         if (!keyword.startsWith("http://") && !keyword.startsWith("https://")) {
@@ -195,7 +195,7 @@ public class GuildMusicPlayer extends MusicPlayer {
                     @Override
                     public void run() {
                         if (musicChoose.contains(musicSearchResult)) {
-                            //musicSearchResult.getMessage().delete().queue();
+                            musicSearchResult.getMessage().delete().queue();
                             musicChoose.remove(musicSearchResult);
                         }
                     }
@@ -312,16 +312,42 @@ public class GuildMusicPlayer extends MusicPlayer {
         return invocation;
     }
 
-    public void skipTrack(int x) {
+
+    private void skipTrack(int x) {
         if(x > 25) {
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.skip.toomuch.title"), invocation.translate("command.skip.toomuch.description"))));
             return;
-        } else if(x < 0) {
-            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.skip.tooless.title"), invocation.translate("command.skip.tooless.description"))));
-            return;
         }
-        for (int i = 0; i < x; i++) {
+        if(x < 0){
+            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.skip.tooless.title"), invocation.translate("command.skip.tooless.description"))));
+        }
+        for(int i = 1; i < x; i++){
             pollTrack();
+            if(getQueueSize() == 0)
+                break;
+        }
+        play(pollTrack());
+    }
+
+    public boolean checkVoiceAvailability() {
+        if (!isBotInVoiceChannel()) {
+            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leave.novc.title"), invocation.translate("command.leave.novc.description"))));
+            return false;
+        } else if (!isMemberInVoiceChannel()) {
+            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.novc.title"), invocation.translate("phrase.novc.description"))));
+            return false;
+        } else if (!isMemberInSameChannel()) {
+            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.nosamevc.title"), invocation.translate("phrase.nosamevc.description"))));
+            return false;
+        } else {
+            return true;
         }
     }
+
+    @Override
+    protected void savePlayer() {
+        RubiconBot.getGuildMusicPlayerManager().updatePlayer(invocation, userPermissions);
+    }
+
+
 }

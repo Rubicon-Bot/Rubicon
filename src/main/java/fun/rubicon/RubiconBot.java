@@ -18,9 +18,11 @@ import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.*;
 import fun.rubicon.commands.music.*;
+import fun.rubicon.commands.music.CommandClearQueue;
 import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.GameAnimator;
+import fun.rubicon.core.music.GuildMusicPlayerManager;
 import fun.rubicon.core.music.LavalinkManager;
 import fun.rubicon.core.translation.TranslationManager;
 import fun.rubicon.commands.botowner.CommandEval;
@@ -73,6 +75,7 @@ public class RubiconBot {
     private final TranslationManager translationManager;
     private PunishmentManager punishmentManager;
     private PollManager pollManager;
+    private GuildMusicPlayerManager guildMusicPlayerManager;
     private ShardManager shardManager;
     private boolean allShardsInitialised;
     private BitlyAPI bitlyAPI;
@@ -132,6 +135,7 @@ public class RubiconBot {
         commandManager = new CommandManager();
         lavalinkManager = new LavalinkManager();
         pollManager = new PollManager();
+        guildMusicPlayerManager = new GuildMusicPlayerManager();
         registerCommands();
         permissionManager = new PermissionManager();
         translationManager = new TranslationManager();
@@ -222,7 +226,13 @@ public class RubiconBot {
                 new CommandPlay(),
                 new CommandForcePlay(),
                 new CommandVolume(),
-                new CommandSkip()
+                new CommandSkip(),
+                new CommandClearQueue(),
+                new CommandQueue(),
+                new CommandStop(),
+                new CommandPause(),
+                new CommandResume(),
+                new CommandShuffle()
         );
     }
 
@@ -397,8 +407,7 @@ public class RubiconBot {
     public static GameAnimator getGameAnimator() {
         return instance.gameAnimator;
     }
-
-
+    
     public static PollManager getPollManager() {
         return instance.pollManager;
     }
@@ -410,4 +419,7 @@ public class RubiconBot {
     public static LavalinkManager getLavalinkManager() {
         return lavalinkManager;
     }
+
+    public static GuildMusicPlayerManager getGuildMusicPlayerManager() { return instance.guildMusicPlayerManager; }
+
 }
