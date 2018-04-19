@@ -60,6 +60,23 @@ public class BotListHandler {
         }
         res.close();
 
+        //Post stats to botsfordiscord.com
+        RequestBody bfdbody = RequestBody.create(MediaType.parse("application/json"), json.toString());
+        Request bdfreq = new Request.Builder()
+                .addHeader("Authorization", RubiconBot.getConfiguration().getString("botsfordiscordtoken"))
+                .url("https://botsfordiscord.com/api/v1/bots/" + RubiconBot.getShardManager().getApplicationInfo().getJDA().getSelfUser().getId())
+                .post(bfdbody)
+                .build();
+        Response bdfres = null;
+        try {
+            bdfres = new OkHttpClient().newCall(bdfreq).execute();
+        } catch (IOException e){
+            if(!silent)
+                Logger.error(e);
+        }
+        bdfres.close();
+
+
 
     }
 
