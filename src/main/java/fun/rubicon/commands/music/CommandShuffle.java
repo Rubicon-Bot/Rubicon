@@ -15,7 +15,7 @@ import net.dv8tion.jda.core.entities.Message;
 
 public class CommandShuffle extends CommandHandler {
     public CommandShuffle() {
-        super(new String[] {"shuffle"}, CommandCategory.MUSIC, new PermissionRequirements("shuffle", false, true), "Shuffle up the queue", "");
+        super(new String[] {"shuffle"}, CommandCategory.MUSIC, new PermissionRequirements("shuffle", false, true), "Shuffle up the queue.", "");
     }
 
     @Override

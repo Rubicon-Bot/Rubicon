@@ -230,7 +230,6 @@ public class RubiconBot {
                 new CommandSkip(),
                 new CommandClearQueue(),
                 new CommandQueue(),
-                new CommandStop(),
                 new CommandPause(),
                 new CommandResume(),
                 new CommandShuffle()

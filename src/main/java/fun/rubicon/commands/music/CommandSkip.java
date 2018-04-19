@@ -17,7 +17,7 @@ import java.io.UnsupportedEncodingException;
 
 public class CommandSkip extends CommandHandler {
     public CommandSkip() {
-        super(new String[] {"skip"}, CommandCategory.MUSIC, new PermissionRequirements("skip", false, true), "Skip a song", "<songs>");
+        super(new String[] {"skip"}, CommandCategory.MUSIC, new PermissionRequirements("skip", false, true), "Skip a song.", "<songs>");
     }
 
     @Override
