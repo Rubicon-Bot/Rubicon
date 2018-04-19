@@ -14,14 +14,19 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
+import java.io.IOException;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
+import static fun.rubicon.util.EmbedUtil.error;
 import static fun.rubicon.util.EmbedUtil.message;
 
 /*
@@ -31,183 +36,116 @@ import static fun.rubicon.util.EmbedUtil.message;
  */
 public class CommandYouTube extends CommandHandler {
 
-    private static HashMap<TextChannel, Announce> announceHashMap = new HashMap<>();
+    private static HashMap<Long, AnnounceHolder> announceMap = new HashMap<>();
     private static Timer timer = new Timer();
 
 
     public CommandYouTube() {
-        super(new String[]{"youtube"}, CommandCategory.GENERAL, new PermissionRequirements("youtube", false, false), "Announce your newest YouTube Videos!", "<Message for new Video (%url% = Video,%channel% for Youtube Channel name)>");
+        super(new String[]{"youtube"}, CommandCategory.GENERAL, new PermissionRequirements("youtube", false, false), "Announce your newest YouTube Videos!", "<#channel> <YouTube Channel ID>");
 
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
-        if (invocation.getArgs().length < 1)
+        if (invocation.getArgs().length < 2)
             return message(EmbedUtil.error("Invalid parameters", "Use `rc!help youtube` for more info!"));
-        Announce announce = new Announce(invocation.getArgsString(), 0, "", invocation.getAuthor());
-        announceHashMap.put(invocation.getTextChannel(), announce);
-        SafeMessage.sendMessage(invocation.getTextChannel(), new EmbedBuilder().setTitle("Set Announce Channel").setDescription("Please Mention the Channel where the Notifications should be sent").setFooter("Will abort in 30sec.", null).build(), 30);
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                announceHashMap.remove(invocation.getTextChannel());
-                invocation.getTextChannel().sendMessage("Setup abort").queue(message -> {
-                    message.delete().queueAfter(7L, TimeUnit.SECONDS);
-                });
+        if (!RubiconUser.fromUser(invocation.getAuthor()).isPremium())
+            return EmbedUtil.message(EmbedUtil.noPremium());
+        if (invocation.getMessage().getMentionedChannels().isEmpty())
+            return EmbedUtil.message(EmbedUtil.error("No channel", "You forgot to Mention an Channel"));
+        try {
+            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("SELECT * from `youtube` WHERE serverid=?");
+            ps.setLong(1, invocation.getGuild().getIdLong());
+            ResultSet resultSet = ps.executeQuery();
+            if (resultSet.next()) {
+                PreparedStatement ps2 = RubiconBot.getMySQL().getConnection().prepareStatement("DELETE from `youtube` WHERE serverid=?");
+                ps.setLong(1, invocation.getGuild().getIdLong());
+                ps.execute();
+                return message(error("Error", "Setup is already finished now deleting old Setup!"));
             }
-        }, 30000);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        String creator = invocation.getArgs()[1].replace(" ", "");
+        Request request = new Request.Builder()
+                .url("https://youtube.com/channel/" + creator)
+                .build();
+
+        try {
+            Response response = new OkHttpClient().newCall(request).execute();
+            if (response.code() != 200)
+                return message(error("Wrong ChannelID", "Your given ChannelID is not Valid.It must be something like UCgez9UZRV7E-JFbo64eCcfg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Message infoMessage = SafeMessage.sendMessageBlocking(invocation.getTextChannel(), EmbedUtil.message(new EmbedBuilder().setTitle("Title....").setDescription("Please enter an Message that will be sent whenever an new Video is uploaded! Use %url% for the Video URL and %title% for the Video Title.Markdown **is supported**").setFooter("Will abort in 60 seconds.", null)));
+        announceMap.put(invocation.getAuthor().getIdLong(), new AnnounceHolder(invocation.getTextChannel(), invocation.getMessage().getMentionedChannels().get(0), creator, invocation.getAuthor(), infoMessage));
         return null;
     }
 
     public static void handle(MessageReceivedEvent event) {
-        if (!announceHashMap.containsKey(event.getTextChannel()))
+        if (!announceMap.containsKey(event.getAuthor().getIdLong()))
             return;
-        Announce announce = announceHashMap.get(event.getTextChannel());
-        if (event.getMessage().getContentDisplay().startsWith("rc!"))
+        AnnounceHolder holder = announceMap.get(event.getAuthor().getIdLong());
+        if (!event.getTextChannel().getId().equals(holder.textChannel.getId()))
             return;
-        if (event.getAuthor().equals(RubiconBot.getSelfUser()))
+        if (event.getMessage().getContentDisplay().contains(holder.creator))
             return;
-        if (!event.getAuthor().equals(announce.getAuthor()))
-            return;
-        if (announce.getTextChannel() == 0) {
-            if (event.getMessage().getMentionedChannels().size() < 1)
-                return;
-            if (!RubiconUser.fromUser(event.getAuthor()).isPremium()) {
-                message(EmbedUtil.error("No Premium", "Sorry, but you have no Premium."));
-                return;
-            }
-            announce.setTextChannel(event.getMessage().getMentionedChannels().get(0).getIdLong());
-            SafeMessage.sendMessage(event.getTextChannel(), "Ok Channel is set! Please now send the YouTube ChannelID!");
-        } else if (announce.getYoutubeChannel().equals("")) {
-            if (!RubiconUser.fromUser(event.getAuthor()).isPremium()) {
-                message(EmbedUtil.error("No Premium", "Sorry, but you have no Premium."));
-                return;
-            }
-            announce.setYoutubeChannel(event.getMessage().getContentDisplay());
-            timer.cancel();
-            announce.fini();
-            announce.save();
-
+        String description = event.getMessage().getContentDisplay();
+        try {
+            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("INSERT INTO `youtube` (" +
+                    "`serverid`," +
+                    "`youmsg`," +
+                    "`youchannel`," +
+                    "`youcreator`," +
+                    "`lastvideo`)" +
+                    "VALUES (?,?,?,?,0)");
+            ps.setLong(1, holder.textChannel.getGuild().getIdLong());
+            ps.setString(2, description);
+            ps.setLong(3, holder.channel.getIdLong());
+            ps.setString(4, holder.creator);
+            ps.execute();
+            holder.delete();
+            event.getMessage().delete().queue();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
     }
 
-    private class Announce {
-        private String message;
-        private long textChannel;
-        private String youtubeChannel;
+
+    private static class AnnounceHolder {
+        private TextChannel textChannel;
+        private TextChannel channel;
         private User author;
-        private boolean allset = false;
+        private Message infoMessage;
+        private String creator;
+        private Timer timer;
 
-        public void fini() {
-            allset = true;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public void setMessage(String message) {
-            this.message = message;
-        }
-
-        public long getTextChannel() {
-            return textChannel;
-        }
-
-        public void setTextChannel(long textChannel) {
+        private AnnounceHolder(TextChannel textChannel, TextChannel channel, String creator, User author, Message infoMessage) {
             this.textChannel = textChannel;
-        }
-
-        public String getYoutubeChannel() {
-            return youtubeChannel;
-        }
-
-        public void setYoutubeChannel(String youtubeChannel) {
-            this.youtubeChannel = youtubeChannel;
-        }
-
-        public User getAuthor() {
-            return author;
-        }
-
-        public void setAuthor(User author) {
+            this.channel = channel;
             this.author = author;
+            this.infoMessage = infoMessage;
+            this.creator = creator;
+
+            //Abort
+            timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    infoMessage.delete().queue();
+                    SafeMessage.sendMessage(textChannel, EmbedUtil.message(EmbedUtil.error("Aborted!", "Aborted Setup.")));
+                    announceMap.remove(author.getIdLong());
+                }
+            }, 60000);
         }
 
-        public void save() {
-            if (!allset)
-                throw new IllegalStateException("Not all Set!");
-            try {
-                PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("INSERT INTO `youtube` (" +
-                        "`serverid`," +
-                        "`youmsg`," +
-                        "`youchannel`," +
-                        "`youcreator`)" +
-                        "VALUES (?,?,?,?)");
-                ps.setLong(1, RubiconBot.getShardManager().getGuildById(getTextChannel()).getIdLong());
-                ps.setString(2, getMessage());
-                ps.setLong(3, getTextChannel());
-                ps.setString(4, getYoutubeChannel());
-                ps.execute();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
+        private void delete() {
+            announceMap.remove(author.getIdLong());
+            timer.cancel();
+            SafeMessage.sendMessage(textChannel, EmbedUtil.message(EmbedUtil.success("Success!", "Successfully finished Setup.")));
+            infoMessage.delete().queue();
         }
-
-        public Announce(String message, long textchannel, String youtubechannel, User author) {
-            this.author = author;
-            this.message = message;
-            this.textChannel = textchannel;
-            this.youtubeChannel = youtubechannel;
-        }
-
-
     }
-
 }
-//Old Method
-/*switch (invocation.getArgs()[0]) {
-            case "message":
-                if (!RubiconUser.fromUser(invocation.getAuthor()).isPremium())
-                    return message(EmbedUtil.error("No Premium", "Sorry, but you have no Premium."));
-                if (!userPermissions.hasPermissionNode("youtube.message"))
-                    return message(EmbedUtil.no_permissions("youtube.message"));
-                if (RubiconBot.getMySQL() != null) {
-                    if (invocation.getArgs().length < 3)
-                        return message(EmbedUtil.error("Invalid parameters", "Use `rc!help youtube` for more info!"));
-                    try {
-                        String message = invocation.getArgsString().replace(invocation.getArgs()[0], "");
-                        PreparedStatement ps = RubiconBot.getMySQL().prepareStatement("UPDATE `guilds` SET `youmsg`=? WHERE `serverid`=?");
-                        ps.setString(1, message);
-                        ps.setLong(2, invocation.getGuild().getIdLong());
-                        ps.execute();
-                        return message(EmbedUtil.success("Successfully set Message", "Message was set to `" + message + "`"));
-                    } catch (SQLException | NullPointerException e) {
-                        e.printStackTrace();
-                        return message(EmbedUtil.error());
-                    }
-                }
-                break;
-            case "channel":
-                if (!RubiconUser.fromUser(invocation.getAuthor()).isPremium())
-                    return message(EmbedUtil.error("No Premium", "Sorry, but you have no Premium."));
-                if (!userPermissions.hasPermissionNode("youtube.channel"))
-                    return message(EmbedUtil.no_permissions("youtube.channel"));
-                if (RubiconBot.getMySQL() != null) {
-                    if (invocation.getMessage().getMentionedChannels().size() < 1)
-                        return message(EmbedUtil.error("Invalid parameters", "Use `rc!help youtube` for more info!"));
-                    try {
-                        PreparedStatement ps = RubiconBot.getMySQL().prepareStatement("UPDATE `guilds` SET `youchannel`=? WHERE `serverid`=?");
-                        ps.setLong(1, invocation.getMessage().getMentionedChannels().get(0).getIdLong());
-                        ps.setLong(2, invocation.getGuild().getIdLong());
-                        ps.execute();
-                        return message(EmbedUtil.success("Successfully set Channel", "Channel set to " + invocation.getMessage().getMentionedChannels().get(0).getAsMention()));
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
-                break;
-        }*/
-

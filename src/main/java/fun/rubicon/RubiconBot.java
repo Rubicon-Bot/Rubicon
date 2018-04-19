@@ -22,7 +22,6 @@ import fun.rubicon.commands.music.CommandClearQueue;
 import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.GameAnimator;
-import fun.rubicon.core.music.GuildMusicPlayer;
 import fun.rubicon.core.music.GuildMusicPlayerManager;
 import fun.rubicon.core.music.LavalinkManager;
 import fun.rubicon.core.translation.TranslationManager;
@@ -408,7 +407,6 @@ public class RubiconBot {
     public static GameAnimator getGameAnimator() {
         return instance.gameAnimator;
     }
-
 
     public static PollManager getPollManager() {
         return instance.pollManager;

@@ -269,7 +269,7 @@ public class GuildMusicPlayer extends MusicPlayer {
         skipTrack(count);
         SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.success(invocation.translate("command.skip.skipped.title"), String.format(invocation.translate("command.skip.skipped.description"), count))));
     }
-    
+
     public void shuffleUp(){
         if (!isBotInVoiceChannel()) { SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leave.novc.title"), invocation.translate("command.leave.novc.description"))));return; }
         if (!isMemberInVoiceChannel()) { SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.novc.title"), invocation.translate("phrase.novc.description"))));return; }
@@ -311,10 +311,10 @@ public class GuildMusicPlayer extends MusicPlayer {
 
             String formattedQueue = tracksSubList.stream().collect(Collectors.joining("\n"));
             Message msg = SafeMessage.sendMessageBlocking(invocation.getTextChannel(),
-                            new EmbedBuilder().setDescription("**CURRENT QUEUE:**\n" +
-                                    "*[" + getTrackList().size() + " Tracks | Side " + sideNumb + " / " + sideNumbAll + "]* \n" +
-                                    formattedQueue
-                            ).build());
+                    new EmbedBuilder().setDescription("**CURRENT QUEUE:**\n" +
+                            "*[" + getTrackList().size() + " Tracks | Side " + sideNumb + " / " + sideNumbAll + "]* \n" +
+                            formattedQueue
+                    ).build());
             if(tracks.size() > 20) {
                 msg.addReaction("➡").queue();
                 new QueueMessage(sideNumbAll, msg, tracks, invocation.getAuthor());

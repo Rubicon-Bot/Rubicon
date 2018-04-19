@@ -165,10 +165,11 @@ public class DatabaseGenerator {
         try {
             PreparedStatement ps = RubiconBot.getMySQL().prepareStatement("CREATE TABLE IF NOT EXISTS `youtube`" +
                     "(" +
-                    "`serverid` BIGINT(25)," +
+                    "`serverid` BIGINT(25) PRIMARY KEY," +
                     "`youmsg` TEXT ," +
                     "`youchannel` BIGINT(25)," +
-                    "`youcreator` VARCHAR(50)" +
+                    "`youcreator` VARCHAR(50)," +
+                    "`lastvideo` VARCHAR(50)"+
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
             ps.execute();
         } catch (SQLException e) {
