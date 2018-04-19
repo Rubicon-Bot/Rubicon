@@ -1,12 +1,10 @@
 package fun.rubicon.core.music;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandManager;
@@ -73,7 +71,6 @@ public class GuildMusicPlayer extends MusicPlayer {
 
         if (!moveIfInVoiceChannelPermissions.coveredBy(userPermissions)) {
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.no_permissions()));
-            return;
         }
         joinChannel();
     }
@@ -90,7 +87,7 @@ public class GuildMusicPlayer extends MusicPlayer {
     }
 
 
-    public void leave() {
+    public void leave(boolean silent) {
         GuildVoiceState voiceState = invocation.getMember().getVoiceState();
         VoiceChannel botChannel = RubiconBot.getLavalinkManager().getLink(invocation.getGuild().getId()).getChannel();
         if (botChannel == null) {
@@ -101,8 +98,9 @@ public class GuildMusicPlayer extends MusicPlayer {
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leave.nosame.title"), invocation.translate("command.leave.nosame.title"))));
             return;
         }
-        closeAudioConnection();
-        SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leave.left.title"), invocation.translate("command.leave.left.title"))));
+        RubiconBot.getLavalinkManager().closeConnection(invocation.getGuild().getId());
+        if(!silent)
+            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leave.left.title"), invocation.translate("command.leave.left.title"))));
     }
 
     public void playMusic(boolean force) {
@@ -113,7 +111,7 @@ public class GuildMusicPlayer extends MusicPlayer {
         if (!isBotInVoiceChannel()) {
             joinChannel();
         }
-        if (player.isPaused()) {
+        if(player.isPaused()){
             resume();
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.success(invocation.translate("phrase.resumed.title"), invocation.translate("phrase.resumed.titile"))));
             return;
@@ -242,8 +240,6 @@ public class GuildMusicPlayer extends MusicPlayer {
     @Override
     public void closeAudioConnection() {
         clearQueue();
-        queueStorage.replace(guild.getIdLong(), null);
-        player.stopTrack();
         lavalinkManager.closeConnection(guild.getId());
     }
 
@@ -259,18 +255,9 @@ public class GuildMusicPlayer extends MusicPlayer {
     }
 
     public void skip() {
-        if (!isBotInVoiceChannel()) {
-            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leave.novc.title"), invocation.translate("command.leave.novc.description"))));
-            return;
-        }
-        if (!isMemberInVoiceChannel()) {
-            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.novc.title"), invocation.translate("phrase.novc.description"))));
-            return;
-        }
-        if (!isMemberInSameChannel()) {
-            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.nosamevc.title"), invocation.translate("phrase.nosamevc.description"))));
-            return;
-        }
+        if (!isBotInVoiceChannel()) { SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leave.novc.title"), invocation.translate("command.leave.novc.description"))));return; }
+        if (!isMemberInVoiceChannel()) { SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.novc.title"), invocation.translate("phrase.novc.description"))));return; }
+        if (!isMemberInSameChannel()) { SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.nosamevc.title"), invocation.translate("phrase.nosamevc.description"))));return; }
         int count = 1;
         if (invocation.getArgs().length > 0) {
             try {
@@ -282,20 +269,11 @@ public class GuildMusicPlayer extends MusicPlayer {
         skipTrack(count);
         SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.success(invocation.translate("command.skip.skipped.title"), String.format(invocation.translate("command.skip.skipped.description"), count))));
     }
-
-    public void shuffleUp() {
-        if (!isBotInVoiceChannel()) {
-            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leave.novc.title"), invocation.translate("command.leave.novc.description"))));
-            return;
-        }
-        if (!isMemberInVoiceChannel()) {
-            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.novc.title"), invocation.translate("phrase.novc.description"))));
-            return;
-        }
-        if (!isMemberInSameChannel()) {
-            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.nosamevc.title"), invocation.translate("phrase.nosamevc.description"))));
-            return;
-        }
+    
+    public void shuffleUp(){
+        if (!isBotInVoiceChannel()) { SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leave.novc.title"), invocation.translate("command.leave.novc.description"))));return; }
+        if (!isMemberInVoiceChannel()) { SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.novc.title"), invocation.translate("phrase.novc.description"))));return; }
+        if (!isMemberInSameChannel()) { SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.nosamevc.title"), invocation.translate("phrase.nosamevc.description"))));return; }
         shuffle();
         SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.success(invocation.translate("command.shuffle.shuffled.title"), invocation.translate("command.shuffle.shuffled.description"))));
     }
@@ -312,7 +290,7 @@ public class GuildMusicPlayer extends MusicPlayer {
     }
 
     public void queue() {
-        if (getTrackList().isEmpty()) {
+        if(getTrackList().isEmpty()){
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.queue.empty.title"), invocation.translate("command.queue.empty.description"))));
             return;
         }
@@ -322,7 +300,7 @@ public class GuildMusicPlayer extends MusicPlayer {
             List<String> tracksSubList;
             getTrackList().forEach(track -> tracks.add(buildQueueEntry(track)));
             int sideNumbAll = tracks.size() >= 20 ? tracks.size() / 20 : 1;
-            if (sideNumb > sideNumbAll) {
+            if(sideNumb > sideNumbAll){
                 SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.queue.invalidpage.title"), invocation.translate("command.queue.invalidpage.description"))));
                 return;
             }
@@ -333,65 +311,52 @@ public class GuildMusicPlayer extends MusicPlayer {
 
             String formattedQueue = tracksSubList.stream().collect(Collectors.joining("\n"));
             Message msg = SafeMessage.sendMessageBlocking(invocation.getTextChannel(),
-                    new EmbedBuilder().setDescription("**CURRENT QUEUE:**\n" +
-                            "*[" + getTrackList().size() + " Tracks | Side " + sideNumb + " / " + sideNumbAll + "]* \n" +
-                            formattedQueue
-                    ).build());
-            if (tracks.size() > 20) {
+                            new EmbedBuilder().setDescription("**CURRENT QUEUE:**\n" +
+                                    "*[" + getTrackList().size() + " Tracks | Side " + sideNumb + " / " + sideNumbAll + "]* \n" +
+                                    formattedQueue
+                            ).build());
+            if(tracks.size() > 20) {
                 msg.addReaction("➡").queue();
                 new QueueMessage(sideNumbAll, msg, tracks, invocation.getAuthor());
             }
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException e){
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.queue.invalidnumber.title"), invocation.translate("command.queue.invalidnumber.description"))));
         }
     }
 
-    private String buildQueueEntry(AudioTrack track) {
+    private String buildQueueEntry(AudioTrack track){
         AudioTrackInfo info = track.getInfo();
-        return "`[ " + getTimestamp(info.length) + " ] " + info.title + "`";
+        return "`[ " + getTimestamp(info.length) +" ] " + info.title + "`";
+    }
+
+    public void stopMusic() {
+        if (!isBotInVoiceChannel()) { SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leave.novc.title"), invocation.translate("command.leave.novc.description"))));return; }
+        if (!isMemberInVoiceChannel()) { SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.novc.title"), invocation.translate("phrase.novc.description"))));return; }
+        if (!isMemberInSameChannel()) { SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.nosamevc.title"), invocation.translate("phrase.nosamevc.description"))));return; }
+        clearQueue();
+        stop();
+        leave(true);
+        SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.success(invocation.translate("command.stop.stopped.title"), invocation.translate("command.stop.stopped.title"))));
     }
 
     public void pauseMusic() {
-        if (!isBotInVoiceChannel()) {
-            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leave.novc.title"), invocation.translate("command.leave.novc.description"))));
-            return;
-        }
-        if (!isMemberInVoiceChannel()) {
-            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.novc.title"), invocation.translate("phrase.novc.description"))));
-            return;
-        }
-        if (!isMemberInSameChannel()) {
-            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.nosamevc.title"), invocation.translate("phrase.nosamevc.description"))));
-            return;
-        }
-        if (player.getPlayingTrack() == null) {
-            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.notplayingtrack.title"), invocation.translate("phrase.notplayingtrack.description"))));
-            return;
-        }
+        if (!isBotInVoiceChannel()) { SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leave.novc.title"), invocation.translate("command.leave.novc.description"))));return; }
+        if (!isMemberInVoiceChannel()) { SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.novc.title"), invocation.translate("phrase.novc.description"))));return; }
+        if (!isMemberInSameChannel()) { SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.nosamevc.title"), invocation.translate("phrase.nosamevc.description"))));return; }
+        if(player.getPlayingTrack() == null){ SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.notplayingtrack.title"), invocation.translate("phrase.notplayingtrack.description"))));return; }
         pause();
         SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.success(invocation.translate("command.pause.paused.title"), invocation.translate("command.pause.paused.description"))));
 
     }
 
     public void resumeMusic() {
-        if (!isBotInVoiceChannel()) {
-            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leave.novc.title"), invocation.translate("command.leave.novc.description"))));
-            return;
-        }
-        if (!isMemberInVoiceChannel()) {
-            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.novc.title"), invocation.translate("phrase.novc.description"))));
-            return;
-        }
-        if (!isMemberInSameChannel()) {
-            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.nosamevc.title"), invocation.translate("phrase.nosamevc.description"))));
-            return;
-        }
-        if (!player.isPaused()) {
-            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.resume.notpaused.title"), invocation.translate("command.resume.notpaused.description"))));
-            return;
-        }
+        if (!isBotInVoiceChannel()) { SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leave.novc.title"), invocation.translate("command.leave.novc.description"))));return; }
+        if (!isMemberInVoiceChannel()) { SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.novc.title"), invocation.translate("phrase.novc.description"))));return; }
+        if (!isMemberInSameChannel()) { SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.nosamevc.title"), invocation.translate("phrase.nosamevc.description"))));return; }
+        if(!player.isPaused()){ SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.resume.notpaused.title"), invocation.translate("command.resume.notpaused.description")))); return; }
         resume();
         SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.success(invocation.translate("phrase.resumed.title"), invocation.translate("phrase.resumed.description"))));
+
     }
 
 
@@ -404,7 +369,7 @@ public class GuildMusicPlayer extends MusicPlayer {
         boolean isStream;
         long duration;
 
-        private TrackDataHolder(AudioTrack track) {
+        public TrackDataHolder(AudioTrack track) {
             this.track = track;
             this.name = track.getInfo().title;
             this.author = track.getInfo().author;
@@ -450,7 +415,7 @@ public class GuildMusicPlayer extends MusicPlayer {
     }
 
     private void skipTrack(int x) {
-        if (x > 25) {
+        if(x > 25) {
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.skip.toomuch.title"), invocation.translate("command.skip.toomuch.description"))));
             return;
         }

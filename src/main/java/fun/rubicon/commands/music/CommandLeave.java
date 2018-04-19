@@ -20,7 +20,7 @@ public class CommandLeave extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
-        final GuildMusicPlayer musicPlayer = RubiconBot.getGuildMusicPlayerManager().getAndCreatePlayer(invocation, userPermissions);
+        final GuildMusicPlayer musicPlayer =RubiconBot.getGuildMusicPlayerManager().getAndCreatePlayer(invocation, userPermissions);
         musicPlayer.leave(false);
         return null;
     }

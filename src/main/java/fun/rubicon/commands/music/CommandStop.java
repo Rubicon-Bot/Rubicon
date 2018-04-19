@@ -13,15 +13,15 @@ import net.dv8tion.jda.core.entities.Message;
  * @author Schlaubi / Michael Rittmeister
  */
 
-public class CommandShuffle extends CommandHandler {
-    public CommandShuffle() {
-        super(new String[] {"shuffle"}, CommandCategory.MUSIC, new PermissionRequirements("shuffle", false, true), "Shuffle up the queue", "");
+public class CommandStop extends CommandHandler {
+    public CommandStop() {
+        super(new String[] {"stop"}, CommandCategory.MUSIC, new PermissionRequirements("stop", false,true), "Stop the current music", "");
     }
 
     @Override
-    protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
+    protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) throws Exception {
         GuildMusicPlayer player = RubiconBot.getGuildMusicPlayerManager().getAndCreatePlayer(invocation, userPermissions);
-        player.shuffleUp();
+        player.stopMusic();
         return null;
     }
 }

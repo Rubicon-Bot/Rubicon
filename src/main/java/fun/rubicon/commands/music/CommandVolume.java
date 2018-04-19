@@ -19,7 +19,7 @@ import java.io.UnsupportedEncodingException;
 
 public class CommandVolume extends CommandHandler {
     public CommandVolume() {
-        super(new String[] {"volume"}, CommandCategory.MUSIC, new PermissionRequirements("volume", false, true), "Change the volume.", "<volume>");
+        super(new String[] {"volume"}, CommandCategory.MUSIC, new PermissionRequirements("volume", false, true), "Set the volume, cause the default volume is to loud", "<volume>");
     }
 
     @Override

@@ -16,8 +16,6 @@ import java.util.*;
  */
 public abstract class MusicPlayer extends AudioEventAdapterWrapped implements AudioSendHandler {
 
-    private static List<Long> guildInstances = new ArrayList<>();
-
     protected final LavalinkManager lavalinkManager;
     private Queue<AudioTrack> trackQueue;
     private IPlayer player;
@@ -35,12 +33,9 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
         stayInChannel = false;
     }
 
-    protected void initMusicPlayer(Guild guild, IPlayer player) {
+    protected void initMusicPlayer(IPlayer player) {
         this.player = player;
-        //if(!guildInstances.contains(guild.getIdLong())) {
-        //    guildInstances.add(guild.getIdLong());
-        //    player.addListener(this);
-        //}
+        player.addListener(this);
     }
 
     public void play(AudioTrack track) {
@@ -121,7 +116,7 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
     }
 
     public AudioTrack pollTrack() {
-        if (trackQueue.isEmpty())
+        if(trackQueue.isEmpty())
             return null;
         AudioTrack track = trackQueue.poll();
         savePlayer();
@@ -143,14 +138,12 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
 
     private void handleTrackStop(AudioPlayer player, AudioTrack track, boolean error) {
         AudioTrack newTrack;
-        if (repeating && !error)
+        if (repeating && !error) {
             newTrack = track;
-        else
-            newTrack = pollTrack();
-        if (newTrack != null) {
+        }
+        newTrack = pollTrack();
+        if(newTrack != null)
             queueTrack(newTrack);
-        } else
-            closeAudioConnection();
     }
 
     @Override
@@ -189,4 +182,6 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
     public boolean isOpus() {
         return false;
     }
+
+
 }
