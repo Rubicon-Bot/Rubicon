@@ -37,8 +37,6 @@ import static fun.rubicon.util.EmbedUtil.message;
 public class CommandYouTube extends CommandHandler {
 
     private static HashMap<Long, AnnounceHolder> announceMap = new HashMap<>();
-    private static Timer timer = new Timer();
-
 
     public CommandYouTube() {
         super(new String[]{"youtube"}, CommandCategory.GENERAL, new PermissionRequirements("youtube", false, false), "Announce your newest YouTube Videos!", "<#channel> <YouTube Channel ID>");
@@ -54,13 +52,13 @@ public class CommandYouTube extends CommandHandler {
         if (invocation.getMessage().getMentionedChannels().isEmpty())
             return EmbedUtil.message(EmbedUtil.error("No channel", "You forgot to Mention an Channel"));
         try {
-            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("SELECT * from `youtube` WHERE serverid=?");
+            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("SELECT * from `youtube` WHERE guildId=?");
             ps.setLong(1, invocation.getGuild().getIdLong());
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
-                PreparedStatement ps2 = RubiconBot.getMySQL().getConnection().prepareStatement("DELETE from `youtube` WHERE serverid=?");
-                ps.setLong(1, invocation.getGuild().getIdLong());
-                ps.execute();
+                PreparedStatement ps2 = RubiconBot.getMySQL().getConnection().prepareStatement("DELETE from `youtube` WHERE guildId=?");
+                ps2.setLong(1, invocation.getGuild().getIdLong());
+                ps2.execute();
                 return message(error("Error", "Setup is already finished now deleting old Setup!"));
             }
 
@@ -74,11 +72,15 @@ public class CommandYouTube extends CommandHandler {
 
         try {
             Response response = new OkHttpClient().newCall(request).execute();
-            if (response.code() != 200)
+            if (response.code() != 200) {
+                response.close();
                 return message(error("Wrong ChannelID", "Your given ChannelID is not Valid.It must be something like UCgez9UZRV7E-JFbo64eCcfg"));
+            }
+            response.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         Message infoMessage = SafeMessage.sendMessageBlocking(invocation.getTextChannel(), EmbedUtil.message(new EmbedBuilder().setTitle("Title....").setDescription("Please enter an Message that will be sent whenever an new Video is uploaded! Use %url% for the Video URL and %title% for the Video Title.Markdown **is supported**").setFooter("Will abort in 60 seconds.", null)));
         announceMap.put(invocation.getAuthor().getIdLong(), new AnnounceHolder(invocation.getTextChannel(), invocation.getMessage().getMentionedChannels().get(0), creator, invocation.getAuthor(), infoMessage));
         return null;
@@ -95,7 +97,7 @@ public class CommandYouTube extends CommandHandler {
         String description = event.getMessage().getContentDisplay();
         try {
             PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("INSERT INTO `youtube` (" +
-                    "`serverid`," +
+                    "`guildId`," +
                     "`youmsg`," +
                     "`youchannel`," +
                     "`youcreator`," +
