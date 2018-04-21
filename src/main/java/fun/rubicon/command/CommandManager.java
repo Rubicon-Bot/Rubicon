@@ -62,8 +62,8 @@ public class CommandManager extends ListenerAdapter {
         super.onMessageReceived(event);
 
         //Check Database Entries
-        RubiconGuild.fromGuild(event.getGuild());
         if(event.getChannelType().isGuild()) {
+            RubiconGuild.fromGuild(event.getGuild());
             RubiconMember.fromMember(event.getMember());
         }
 

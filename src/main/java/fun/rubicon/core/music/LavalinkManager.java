@@ -1,6 +1,7 @@
 package fun.rubicon.core.music;
 
 
+import com.rethinkdb.net.Cursor;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
@@ -20,11 +21,9 @@ import net.dv8tion.jda.core.hooks.EventListener;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author ForYaSee / Yannick Seeger
@@ -81,23 +80,20 @@ public class LavalinkManager implements EventListener {
     private List<LavalinkNode> loadNodes() {
         List<LavalinkNode> nodes = new ArrayList<>();
 
-        try {
-            PreparedStatement ps = RubiconBot.getMySQL().prepareStatement("SELECT * FROM lavanodes");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                try {
-                    nodes.add(new LavalinkNode(
-                            rs.getString("name"),
-                            new URI(rs.getString("uri")),
-                            rs.getString("password"))
-                    );
-                } catch (URISyntaxException e) {
-                    Logger.error(e);
-                }
+        Cursor cursor = RubiconBot.getRethink().db.table("lavanodes").run(RubiconBot.getRethink().connection);
+        for (Object obj : cursor) {
+            Map map = (Map) obj;
+            try {
+                nodes.add(new LavalinkNode(
+                        (String) map.get("name"),
+                        new URI((String) map.get("uri")),
+                        (String) map.get("password"))
+                );
+            } catch (URISyntaxException e) {
+                Logger.error(e);
             }
-        } catch (SQLException e) {
-            Logger.error(e);
         }
+
 
         if (nodes.isEmpty()) {
             throw new RuntimeException("No lavalink nodes provided.");

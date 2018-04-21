@@ -1,4 +1,4 @@
-package fun.rubicon.util;
+package fun.rubicon.rethink;
 
 import com.rethinkdb.gen.exc.ReqlOpFailedError;
 
@@ -10,7 +10,15 @@ public class RethinkUtil {
     private final static String[] tables = {
             "users",
             "members",
-            "guilds"
+            "guilds",
+            "mutesettings",
+            "joinmessages",
+            "leavemessages",
+            "autochannels",
+            "autoroles",
+            "punishments",
+            "lavanodes",
+            "permissions"
     };
 
     public static void createDefaults(Rethink rethink) {
