@@ -15,19 +15,23 @@ public class Rethink {
     private final String host;
     private final int port;
     private final String dbName;
+    private final String user;
+    private final String password;
     public Connection connection;
     public Db db;
 
-    public Rethink(String host, int port, String db) {
+    public Rethink(String host, int port, String db, String user, String password) {
         this.host = host;
         this.port = port;
         this.dbName = db;
+        this.user = user;
+        this.password = password;
 
         rethinkDB = RethinkDB.r;
     }
 
     public void connect() {
-        connection = rethinkDB.connection().hostname(host).port(port).connect();
+        connection = rethinkDB.connection().hostname(host).port(port).user(user, password).connect();
         db = rethinkDB.db(dbName);
         Logger.info("RethinkDB connection success");
     }
