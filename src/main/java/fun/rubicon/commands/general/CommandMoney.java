@@ -43,7 +43,7 @@ public class CommandMoney extends CommandHandler {
         }
 
         if(!StringUtil.isNumeric(invocation.getArgs()[1])) {
-            return EmbedUtil.message(EmbedUtil.error("", ""));
+            return EmbedUtil.message(EmbedUtil.error("No number!", "Your entered argument is not a number."));
         }
         int amount = Integer.parseInt(invocation.getArgs()[1]);
         RubiconUser user = RubiconUser.fromUser(invocation.getMessage().getMentionedUsers().get(0));

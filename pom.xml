@@ -103,6 +103,11 @@
             <artifactId>Lavalink</artifactId>
             <version>dev-7f656c3ba6-1</version>
         </dependency>
+        <dependency>
+            <groupId>com.rethinkdb</groupId>
+            <artifactId>rethinkdb-driver</artifactId>
+            <version>2.3.3</version>
+        </dependency>
     </dependencies>
 
     <repositories>

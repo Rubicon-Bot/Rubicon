@@ -6,31 +6,31 @@
 
 package fun.rubicon.core.entities;
 
+import com.rethinkdb.gen.ast.Filter;
+import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
-import fun.rubicon.mysql.MySQL;
-import fun.rubicon.util.Logger;
+import fun.rubicon.core.translation.TranslationUtil;
+import fun.rubicon.rethink.RethinkHelper;
+import fun.rubicon.rethink.Rethink;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  * @author Yannick Seeger / ForYaSee
  */
-public abstract class RubiconUserImpl {
+public abstract class RubiconUserImpl extends RethinkHelper {
 
     protected User user;
-    MySQL mySQL;
+    private Rethink rethink;
+    private final Filter dbUser;
 
     RubiconUserImpl(User user) {
         this.user = user;
-        this.mySQL = RubiconBot.getMySQL();
-
+        this.rethink = RubiconBot.getRethink();
+        dbUser = rethink.db.table("users").filter(rethink.rethinkDB.hashMap("userId", user.getIdLong()));
         createIfNotExist();
     }
 
@@ -39,162 +39,64 @@ public abstract class RubiconUserImpl {
     }
 
     public void setBio(String bio) {
-        try {
-            PreparedStatement ps = mySQL.prepareStatement("UPDATE users SET bio=? WHERE userid=?");
-            ps.setString(1, bio);
-            ps.setLong(2, user.getIdLong());
-            ps.execute();
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
+        dbUser.update(rethink.rethinkDB.hashMap("bio", bio)).run(rethink.connection);
     }
 
     public String getBio() {
-        try {
-            PreparedStatement ps = mySQL.prepareStatement("SELECT bio FROM users WHERE userid = ?");
-            ps.setLong(1, user.getIdLong());
-            ResultSet rs = ps.executeQuery();
-            return rs.next() ? rs.getString("bio") : null;
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-        return null;
+        return getString(retrieve(), "bio");
     }
 
-    public RubiconUserImpl setMoney(int amount) {
-        try {
-            PreparedStatement ps = mySQL.prepareStatement("UPDATE users SET money=? WHERE userid=?");
-            ps.setInt(1, amount);
-            ps.setLong(2, user.getIdLong());
-            ps.execute();
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-        return this;
+    public void setMoney(long amount) {
+        dbUser.update(rethink.rethinkDB.hashMap("money", amount)).run(rethink.connection);
     }
 
-    public int getMoney() {
-        try {
-            PreparedStatement ps = mySQL.prepareStatement("SELECT money FROM users WHERE userid = ?");
-            ps.setLong(1, user.getIdLong());
-            ResultSet rs = ps.executeQuery();
-            return rs.next() ? rs.getInt("money") : 0;
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-        return 0;
+    public long getMoney() {
+        return getLong(retrieve(), "money");
     }
 
-    public void addMoney(int amount) {
+    public void addMoney(long amount) {
         setMoney(getMoney() + amount);
     }
 
-    public void removeMoney(int amount) {
+    public void removeMoney(long amount) {
         setMoney(getMoney() - amount);
     }
 
-    public RubiconUserImpl setPremium(long time) {
-        try {
-            PreparedStatement ps = mySQL.prepareStatement("UPDATE users SET premium=? WHERE userid=?");
-            ps.setLong(1, time);
-            ps.setLong(2, user.getIdLong());
-            ps.execute();
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-        return this;
+    public void setPremium(long time) {
+        dbUser.update(rethink.rethinkDB.hashMap("premium", time)).run(rethink.connection);
     }
 
     public long getPremiumRaw() {
-        try {
-            PreparedStatement ps = mySQL.prepareStatement("SELECT premium FROM users WHERE userid = ?");
-            ps.setLong(1, user.getIdLong());
-            ResultSet rs = ps.executeQuery();
-            return rs.next() ? rs.getLong("premium") : 0;
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-        return 0;
+        return getLong(retrieve(), "premium");
     }
 
     public boolean isPremium() {
-        if (getPremiumRaw() != 0) return true;
-        else return false;
+        if (getPremiumRaw() > new Date().getTime())
+            return true;
+        else
+            dbUser.update(rethink.rethinkDB.hashMap("premium", 0)).run(rethink.connection);
+        return false;
     }
 
-    public RubiconUserImpl setLanguage(String languageKey) {
-        try {
-            PreparedStatement ps = mySQL.prepareStatement("UPDATE users SET language=? WHERE userid=?");
-            ps.setString(1, languageKey);
-            ps.setLong(2, user.getIdLong());
-            ps.execute();
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-        return this;
+    public void setLanguage(String languageKey) {
+        dbUser.update(rethink.rethinkDB.hashMap("language", languageKey)).run(rethink.connection);
     }
 
     public String getLanguage() {
-        try {
-            PreparedStatement ps = mySQL.prepareStatement("SELECT language FROM users WHERE userid = ?");
-            ps.setLong(1, user.getIdLong());
-            ResultSet rs = ps.executeQuery();
-            return rs.next() ? rs.getString("language") : null;
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-        return null;
+        return getString(retrieve(), "language");
     }
 
 
-    public RubiconUserImpl setAFKState(String afk) {
-        try {
-            PreparedStatement ps = mySQL.prepareStatement("UPDATE users SET afk=? WHERE userid=?");
-            ps.setString(1, afk);
-            ps.setLong(2, user.getIdLong());
-            ps.execute();
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-        return this;
+    public void setAFKState(String afk) {
+        dbUser.update(rethink.rethinkDB.hashMap("afk", afk)).run(rethink.connection);
     }
 
     public String getAFKState() {
-        try {
-            PreparedStatement ps = mySQL.prepareStatement("SELECT afk FROM users WHERE userid = ?");
-            ps.setLong(1, user.getIdLong());
-            ResultSet rs = ps.executeQuery();
-            return rs.next() ? rs.getString("afk") : null;
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-        return null;
+        return getString(retrieve(), "afk");
     }
 
     public boolean isAFK() {
-        return !getAFKState().equals("none");
-    }
-
-    public void delete() {
-        try {
-            PreparedStatement ps = mySQL.prepareStatement("DELETE FROM users WHERE userid=?");
-            ps.setLong(1, user.getIdLong());
-            ps.execute();
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-    }
-
-    private boolean exist() {
-        try {
-            PreparedStatement ps = mySQL.prepareStatement("SELECT id FROM users WHERE userid = ?");
-            ps.setLong(1, user.getIdLong());
-            ResultSet rs = ps.executeQuery();
-            return rs.next();
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-        return false;
+        return !getAFKState().equals("");
     }
 
     public Date getPremiumExpiryDate() {
@@ -206,45 +108,35 @@ public abstract class RubiconUserImpl {
     public String formatExpiryDate() {
         if (!this.isPremium())
             return null;
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat(TranslationUtil.translate(user, "date.format"));
         return sdf.format(this.getPremiumExpiryDate());
+    }
+
+    public void unban(Guild guild) {
+        rethink.db.table("punishments").filter(rethink.rethinkDB.hashMap("userId", user.getIdLong()).with("guildId", guild.getIdLong()).with("type", "ban")).delete().run(rethink.connection);
+
+        if (guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
+        } else
+            guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: Unable to unban user `" + user.getName() + "`! Please give Rubicon `BAN_MEMBERS` permission in order to use the unban command").queue();
+    }
+
+    private boolean exist() {
+        return exist(retrieve());
     }
 
     private void createIfNotExist() {
         if (exist())
             return;
-        try {
-            PreparedStatement ps = mySQL.prepareStatement("INSERT INTO users(`userid`, `bio`, `money`, `premium`, `language`, `afk`) VALUES (?, ?, ?, ?, ?, ?)");
-            ps.setLong(1, user.getIdLong());
-            ps.setString(2, "No bio set.");
-            ps.setInt(3, 0);
-            ps.setLong(4, 0);
-            ps.setString(5, "en-US");
-            ps.setString(6, "none");
-            ps.execute();
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
+        rethink.db.table("users").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("userId", user.getIdLong()))).run(rethink.connection);
     }
 
-    public RubiconUser unban(Guild guild) {
-        try {
-            PreparedStatement ps = mySQL.getConnection().prepareStatement("DELETE FROM punishments WHERE serverid=? AND userid=? AND type='ban'");
-            ps.setLong(1, guild.getIdLong());
-            ps.setLong(2, user.getIdLong());
-            ps.execute();
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-        if (guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
-            guild.getController().unban(user).queue();
-        } else
-            guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: Unable to ban user `" + user.getName() + "`! Please give Rubicon `BAN_MEMBERS` permission in order to use ban command").queue();
-
-        return ((RubiconUser) this);
+    public void delete() {
+        dbUser.delete().run(rethink.connection);
     }
 
-
+    private Cursor retrieve() {
+        return dbUser.run(rethink.connection);
+    }
 
     public static RubiconUser fromUser(User user) {
         return new RubiconUser(user);

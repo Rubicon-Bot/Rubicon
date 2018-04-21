@@ -6,16 +6,14 @@
 
 package fun.rubicon.core.entities;
 
+import com.rethinkdb.gen.ast.Filter;
+import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
-import fun.rubicon.util.Logger;
+import fun.rubicon.rethink.Rethink;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -27,13 +25,15 @@ public class RubiconMember extends RubiconUserImpl {
 
     private Member member;
     private Guild guild;
+    private Rethink rethink;
+    private final Filter dbMember;
 
     public RubiconMember(Member member) {
         super(member.getUser());
-
         this.member = member;
         this.guild = member.getGuild();
-
+        this.rethink = RubiconBot.getRethink();
+        dbMember = rethink.db.table("members").filter(rethink.rethinkDB.hashMap("userId", user.getIdLong()).with("guildId", guild.getIdLong()));
         createIfNotExist();
     }
 
@@ -41,110 +41,30 @@ public class RubiconMember extends RubiconUserImpl {
         return member;
     }
 
-    public RubiconMember setLevel(int level) {
-        try {
-            PreparedStatement ps = mySQL.prepareStatement("UPDATE members SET level=? WHERE userid=? AND serverid=?");
-            ps.setInt(1, level);
-            ps.setLong(2, user.getIdLong());
-            ps.setLong(3, guild.getIdLong());
-            ps.execute();
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-        return this;
+    public void setLevel(int level) {
+        dbMember.update(rethink.rethinkDB.hashMap("level", level));
     }
 
-    public String getLevel() {
-        try {
-            PreparedStatement ps = mySQL.prepareStatement("SELECT level FROM members WHERE userid=? AND serverid=?");
-            ps.setLong(1, user.getIdLong());
-            ps.setLong(2, guild.getIdLong());
-            ResultSet rs = ps.executeQuery();
-            return rs.next() ? rs.getString("level") : null;
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-        return null;
+    public int getLevel() {
+        return Long.valueOf(getLong(retrieve(), "level")).intValue();
     }
 
-    public RubiconMember setPoints(int points) {
-        try {
-            PreparedStatement ps = mySQL.prepareStatement("UPDATE members SET points=? WHERE userid=? AND serverid=?");
-            ps.setInt(1, points);
-            ps.setLong(2, user.getIdLong());
-            ps.setLong(3, guild.getIdLong());
-            ps.execute();
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-        return this;
+    public void setPoints(int points) {
+        dbMember.update(rethink.rethinkDB.hashMap("points", points));
     }
 
-    public String getPoints() {
-        try {
-            PreparedStatement ps = mySQL.prepareStatement("SELECT points FROM members WHERE userid=? AND serverid=?");
-            ps.setLong(1, user.getIdLong());
-            ps.setLong(2, guild.getIdLong());
-            ResultSet rs = ps.executeQuery();
-            return rs.next() ? rs.getString("points") : null;
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-        return null;
+    public int getPoints() {
+        return Long.valueOf(getLong(retrieve(), "points")).intValue();
     }
 
 
-
-    public void delete() {
-        try {
-            PreparedStatement ps = mySQL.prepareStatement("DELETE FROM members WHERE userid=? AND serverid=?");
-            ps.setLong(1, user.getIdLong());
-            ps.setLong(2, guild.getIdLong());
-            ps.execute();
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-    }
-
-    private boolean exist() {
-        try {
-            PreparedStatement ps = mySQL.prepareStatement("SELECT id FROM members WHERE userid=? AND serverid=?");
-            ps.setLong(1, user.getIdLong());
-            ps.setLong(2, guild.getIdLong());
-            ResultSet rs = ps.executeQuery();
-            return rs.next();
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-        return false;
-    }
-
-    private RubiconMember createIfNotExist() {
-        if (exist())
-            return this;
-        try {
-            PreparedStatement ps = mySQL.prepareStatement("INSERT INTO members(`userid`, `serverid`, `level`, `points`, `mute`) VALUES (?, ?, ?, ?, '')");
-            ps.setLong(1, user.getIdLong());
-            ps.setLong(2, guild.getIdLong());
-            ps.setInt(3, 0);
-            ps.setLong(4, 0);
-            ps.execute();
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
-        return this;
-    }
-
-    public RubiconMember mute(){
-        try{
-            PreparedStatement ps = mySQL.getConnection().prepareStatement("INSERT INTO punishments(type, serverid, userid, expiry) VALUES('mute',?,?,?)");
-            ps.setLong(1, guild.getIdLong());
-            ps.setLong(2, user.getIdLong());
-            ps.setLong(3, 0L);
-            ps.execute();
-        } catch (SQLException e){
-            Logger.error(e);
-        }
+    public RubiconMember mute() {
+        rethink.db.table("punishments").insert(rethink.rethinkDB.array(
+                rethink.rethinkDB.hashMap("guildId", guild.getIdLong())
+                        .with("type", "mute")
+                        .with("userId", user.getIdLong())
+                        .with("expiry", 0L)
+        )).run(rethink.connection);
         Role muted = RubiconGuild.fromGuild(guild).getMutedRole();
         guild.getController().addSingleRoleToMember(member, muted).queue();
         RubiconBot.getPunishmentManager().getMuteCache().put(member, 0L);
@@ -152,40 +72,29 @@ public class RubiconMember extends RubiconUserImpl {
     }
 
 
-    public RubiconMember mute(Date date){
-        try{
-            PreparedStatement ps = mySQL.getConnection().prepareStatement("INSERT INTO punishments(type, serverid, userid, expiry) VALUES('mute',?,?,?)");
-            ps.setLong(1, guild.getIdLong());
-            ps.setLong(2, user.getIdLong());
-            ps.setLong(3, date.getTime());
-            ps.execute();
-        } catch (SQLException e){
-            Logger.error(e);
-        }
+    public RubiconMember mute(Date date) {
+        rethink.db.table("punishments").insert(rethink.rethinkDB.array(
+                rethink.rethinkDB.hashMap("guildId", guild.getIdLong())
+                        .with("userId", user.getIdLong())
+                        .with("type", "mute")
+                        .with("expiry", date.getTime())
+        )).run(rethink.connection);
         Role muted = RubiconGuild.fromGuild(guild).getMutedRole();
         guild.getController().addSingleRoleToMember(member, muted).queue();
         RubiconBot.getPunishmentManager().getMuteCache().put(member, date.getTime());
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-               RubiconMember.fromMember(member).unmute(true);
+                RubiconMember.fromMember(member).unmute(true);
             }
         }, date);
         return this;
     }
 
 
-
-    public RubiconMember unmute(boolean removeRole){
-        try{
-            PreparedStatement ps = mySQL.getConnection().prepareStatement("DELETE FROM punishments WHERE type='mute' AND serverid=? AND userid=?");
-            ps.setLong(1, guild.getIdLong());
-            ps.setLong(2, user.getIdLong());
-            ps.execute();
-        } catch (SQLException e){
-            Logger.error(e);
-        }
-        if(removeRole) {
+    public RubiconMember unmute(boolean removeRole) {
+        rethink.db.table("punishments").filter(rethink.rethinkDB.hashMap("userId", user.getIdLong()).with("guildId", guild.getIdLong()).with("type", "mute")).delete().run(rethink.connection);
+        if (removeRole) {
             Role muted = RubiconGuild.fromGuild(guild).getMutedRole();
             guild.getController().removeSingleRoleFromMember(member, muted).queue();
         }
@@ -193,37 +102,19 @@ public class RubiconMember extends RubiconUserImpl {
         return this;
     }
 
-    public boolean isMuted(){
-        try{
-            PreparedStatement ps = mySQL.getConnection().prepareStatement("SELECT expiry FROM punishments WHERE serverid=? AND userid=? AND type='mute'");
-            ps.setLong(1, guild.getIdLong());
-            ps.setLong(2, user.getIdLong());
-            ResultSet rs = ps.executeQuery();
-            if(rs.next()){
-                long expiry = rs.getLong("expiry");
-                if(expiry == 0L) return true;
-                else
-                    if(new Date(expiry).after(new Date())) return true;
-                else
-                    return false;
-            } else
-                return false;
-        } catch (SQLException e){
-            Logger.error(e);
-            return false;
-        }
+    public boolean isMuted() {
+        long res = getLong(rethink.db.table("punishments").filter(rethink.rethinkDB.hashMap("userId", user.getIdLong()).with("guildId", guild.getIdLong()).with("type", "mute")).run(rethink.connection), "expiry");
+        if (res == 0L) return true;
+        else return new Date(res).after(new Date());
     }
-    public RubiconMember ban(Date expiry) {
-        try {
-            PreparedStatement ps = mySQL.getConnection().prepareStatement("INSERT INTO punishments(type, serverid, userid, expiry) VALUES ('ban', ?,?,?)");
-            ps.setLong(1, guild.getIdLong());
-            ps.setLong(2, user.getIdLong());
-            ps.setLong(3, expiry.getTime());
-            ps.execute();
-        } catch (SQLException e) {
-            Logger.error(e);
 
-        }
+    public RubiconMember ban(Date expiry) {
+        rethink.db.table("punishments").insert(rethink.rethinkDB.array(
+                rethink.rethinkDB.hashMap("guildId", guild.getIdLong())
+                        .with("userId", user.getIdLong())
+                        .with("type", "ban")
+                        .with("expiry", expiry.getTime())
+        )).run(rethink.connection);
         if (guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
             guild.getController().ban(user, 7).queue();
             new Timer().schedule(new TimerTask() {
@@ -238,15 +129,12 @@ public class RubiconMember extends RubiconUserImpl {
     }
 
     public RubiconMember ban() {
-        try {
-            PreparedStatement ps = mySQL.getConnection().prepareStatement("INSERT INTO punishments(type, serverid, userid, expiry) VALUES ('ban', ?,?,?)");
-            ps.setLong(1, guild.getIdLong());
-            ps.setLong(2, user.getIdLong());
-            ps.setLong(3, 0L);
-            ps.execute();
-        } catch (SQLException e) {
-            Logger.error(e);
-        }
+        rethink.db.table("punishments").insert(rethink.rethinkDB.array(
+                rethink.rethinkDB.hashMap("guildId", guild.getIdLong())
+                        .with("userId", user.getIdLong())
+                        .with("type", "mute")
+                        .with("expiry", 0L)
+        )).run(rethink.connection);
         if (guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
             guild.getController().ban(user, 7).queue();
         } else
@@ -255,8 +143,23 @@ public class RubiconMember extends RubiconUserImpl {
         return this;
     }
 
+    public void delete() {
+        dbMember.delete().run(rethink.connection);
+    }
 
+    private boolean exist() {
+        return exist(retrieve());
+    }
 
+    private void createIfNotExist() {
+        if (exist())
+            return;
+        rethink.db.table("members").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("guildId", guild.getIdLong()).with("userId", user.getIdLong()))).run(rethink.connection);
+    }
+
+    private Cursor retrieve() {
+        return dbMember.run(rethink.connection);
+    }
 
     public static RubiconMember fromMember(Member member) {
         return new RubiconMember(member);

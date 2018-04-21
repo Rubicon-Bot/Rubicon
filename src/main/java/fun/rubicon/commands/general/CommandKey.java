@@ -28,7 +28,7 @@ public class CommandKey extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
-        if (invocation.getArgs().length < 2)
+        /*if (invocation.getArgs().length < 2)
             return createHelpMessage(invocation);
 
         switch (invocation.getArgs()[0]) {
@@ -55,7 +55,7 @@ public class CommandKey extends CommandHandler {
 
                 }
 
-        }
+        }*/
         return null;
     }
 
