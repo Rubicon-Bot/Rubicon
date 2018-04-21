@@ -40,9 +40,9 @@ import fun.rubicon.listener.feature.VoteListener;
 import fun.rubicon.listener.member.MemberJoinListener;
 import fun.rubicon.listener.member.MemberLeaveListener;
 import fun.rubicon.listener.role.RoleDeleteListener;
-import fun.rubicon.mysql.DatabaseGenerator;
-import fun.rubicon.mysql.MySQL;
 import fun.rubicon.permission.PermissionManager;
+import fun.rubicon.rethink.Rethink;
+import fun.rubicon.rethink.RethinkUtil;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.bot.sharding.ShardManager;
@@ -65,10 +65,10 @@ import java.util.Date;
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_database", "mysql_user", "mysql_password", "playingStatus", "dbl_token", "discord_pw_token", "gif_token", "google_token"};
+    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_database", "mysql_user", "mysql_password", "playingStatus", "dbl_token", "discord_pw_token", "gif_token", "google_token", "rethink_host", "rethink_port", "rethink_db", "rethink_user", "rethink_password"};
     private static RubiconBot instance;
     private final Configuration configuration;
-    private final MySQL mySQL;
+    private final Rethink rethink;
     private final GameAnimator gameAnimator;
     private final CommandManager commandManager;
     private final PermissionManager permissionManager;
@@ -116,15 +116,15 @@ public class RubiconBot {
                 configuration.set(configKey, input);
             }
         }
-        //Init MySQL Connection
-        mySQL = new MySQL(
-                configuration.getString("mysql_host"),
-                "3306", configuration.getString("mysql_user"),
-                configuration.getString("mysql_password"),
-                configuration.getString("mysql_database"));
-        mySQL.connect();
-
-        DatabaseGenerator.createAllDatabasesIfNecessary();
+        rethink = new Rethink(
+                configuration.getString("rethink_host"),
+                configuration.getInt("rethink_port"),
+                configuration.getString("rethink_db"),
+                configuration.getString("rethink_user"),
+                configuration.getString("rethink_password")
+        );
+        rethink.connect();
+        RethinkUtil.createDefaults(rethink);
 
         SHARD_COUNT = generateShardCount();
         Logger.info(String.format("Starting with %d shards...", SHARD_COUNT));
@@ -369,13 +369,6 @@ public class RubiconBot {
     }
 
     /**
-     * @return the {@link MySQL} instance
-     */
-    public static MySQL getMySQL() {
-        return instance == null ? null : instance.mySQL;
-    }
-
-    /**
      * @return the translation manager.
      */
     public TranslationManager getTranslationManager() {
@@ -422,4 +415,7 @@ public class RubiconBot {
 
     public static GuildMusicPlayerManager getGuildMusicPlayerManager() { return instance.guildMusicPlayerManager; }
 
+    public static Rethink getRethink() {
+        return instance == null ? null : instance.rethink;
+    }
 }

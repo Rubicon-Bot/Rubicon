@@ -45,7 +45,7 @@ public class CommandYouTube extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
-        if (invocation.getArgs().length < 2)
+        /*if (invocation.getArgs().length < 2)
             return message(EmbedUtil.error("Invalid parameters", "Use `rc!help youtube` for more info!"));
         if (!RubiconUser.fromUser(invocation.getAuthor()).isPremium())
             return EmbedUtil.message(EmbedUtil.noPremium());
@@ -83,10 +83,11 @@ public class CommandYouTube extends CommandHandler {
 
         Message infoMessage = SafeMessage.sendMessageBlocking(invocation.getTextChannel(), EmbedUtil.message(new EmbedBuilder().setTitle("Title....").setDescription("Please enter an Message that will be sent whenever an new Video is uploaded! Use %url% for the Video URL and %title% for the Video Title.Markdown **is supported**").setFooter("Will abort in 60 seconds.", null)));
         announceMap.put(invocation.getAuthor().getIdLong(), new AnnounceHolder(invocation.getTextChannel(), invocation.getMessage().getMentionedChannels().get(0), creator, invocation.getAuthor(), infoMessage));
+        */
         return null;
     }
 
-    public static void handle(MessageReceivedEvent event) {
+    /*public static void handle(MessageReceivedEvent event) {
         if (!announceMap.containsKey(event.getAuthor().getIdLong()))
             return;
         AnnounceHolder holder = announceMap.get(event.getAuthor().getIdLong());
@@ -115,7 +116,7 @@ public class CommandYouTube extends CommandHandler {
         }
     }
 
-
+*/
     private static class AnnounceHolder {
         private TextChannel textChannel;
         private TextChannel channel;
