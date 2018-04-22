@@ -84,10 +84,10 @@ public abstract class CommandHandler {
                 Logger.error("Unknown error during the execution of the '" + parsedCommandInvocation.getCommandInvocation() + "' command. ");
                 Logger.error(e);
                 return new MessageBuilder().setEmbed(new EmbedBuilder()
-                        .setAuthor("Error", null, RubiconBot.getSelfUser().getEffectiveAvatarUrl())
-                        .setDescription("An unknown error occurred while executing your command.")
+                        .setAuthor(":no_entry: Internal Error", null, RubiconBot.getSelfUser().getEffectiveAvatarUrl())
+                        .setDescription("An internal error occurred. ```" + e.getMessage() + "```")
                         .setColor(Colors.COLOR_ERROR)
-                        .setFooter(RubiconBot.getNewTimestamp(), null)
+                        .setFooter("Please report the error. " + RubiconBot.getNewTimestamp(), null)
                         .build()).build();
             }
         } else
