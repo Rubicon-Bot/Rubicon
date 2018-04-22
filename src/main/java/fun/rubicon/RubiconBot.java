@@ -200,7 +200,6 @@ public class RubiconBot {
                 new CommandMoney(),
                 new CommandStatistics(),
                 new CommandUptime(),
-                new CommandYouTube(),
                 new CommandSearch(),
                 new CommandPremium(),
                 new CommandKey(),
@@ -223,7 +222,8 @@ public class RubiconBot {
         //Tools
         commandManager.registerCommandHandlers(
                 new CommandPoll(),
-                new CommandShort()
+                new CommandShort(),
+                new CommandYouTube()
         );
 
         //Music
