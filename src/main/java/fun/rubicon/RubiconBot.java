@@ -158,7 +158,8 @@ public class RubiconBot {
                 new CommandShardManage(),
                 new CommandBotstatus(),
                 new CommandBotplay(),
-                new CommandDisco()
+                new CommandDisco(),
+                new CommandTest()
         );
 
         //Admin
@@ -170,7 +171,8 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(
                 new CommandJoinMessage(),
                 new CommandLeaveMessage(),
-                new CommandAutochannel()
+                new CommandAutochannel(),
+                new CommandJoinImage()
         );
 
         // Fun
@@ -178,7 +180,11 @@ public class RubiconBot {
                 new CommandRandom(),
                 new CommandLmgtfy(),
                 new CommandAscii(),
-                new CommandGiphy()
+                new CommandGiphy(),
+                new CommandRip(),
+                new CommandMedal(),
+                new CommandRoadSign(),
+                new CommandWeddingSign()
         );
 
         //General
@@ -197,7 +203,8 @@ public class RubiconBot {
                 new CommandYouTube(),
                 new CommandSearch(),
                 new CommandPremium(),
-                new CommandKey()
+                new CommandKey(),
+                new CommandPing()
         );
 
         //Moderation
@@ -232,7 +239,8 @@ public class RubiconBot {
                 new CommandStop(),
                 new CommandPause(),
                 new CommandResume(),
-                new CommandShuffle()
+                new CommandShuffle(),
+                new CommandNow()
         );
     }
 
