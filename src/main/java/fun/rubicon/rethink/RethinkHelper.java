@@ -2,6 +2,7 @@ package fun.rubicon.rethink;
 
 import com.rethinkdb.net.Cursor;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -9,7 +10,7 @@ import java.util.Map;
  */
 public abstract class RethinkHelper {
 
-    protected String getString(Cursor cursor, String key) {
+    public static String getString(Cursor cursor, String key) {
         Map map = parse(cursor);
         if (map == null) {
             return "";
@@ -18,7 +19,7 @@ public abstract class RethinkHelper {
         return res == null ? "" : (String) res;
     }
 
-    protected int getInt(Cursor cursor, String key) {
+    public static int getInt(Cursor cursor, String key) {
         Map map = parse(cursor);
         if (map == null)
             return 0;
@@ -26,11 +27,11 @@ public abstract class RethinkHelper {
         return res == null ? 0 : (int) res;
     }
 
-    protected boolean exist(Cursor cursor) {
+    public static boolean exist(Cursor cursor) {
         return cursor.toList().size() != 0;
     }
 
-    protected long getLong(Cursor cursor, String key) {
+    public static long getLong(Cursor cursor, String key) {
         Map map = parse(cursor);
         if (map == null)
             return 0;
@@ -38,11 +39,10 @@ public abstract class RethinkHelper {
         return res == null ? 0 : (long) res;
     }
 
-    private Map parse(Cursor cursor) {
-        try {
-            return (Map) cursor.next();
-        } catch (IndexOutOfBoundsException ignored) {
+    private static Map parse(Cursor cursor) {
+        List list = cursor.toList();
+        if(list.size() == 0)
             return null;
-        }
+        return (Map) list.get(0);
     }
 }

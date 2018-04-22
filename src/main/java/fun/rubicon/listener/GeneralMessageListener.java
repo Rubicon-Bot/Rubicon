@@ -13,7 +13,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 public class GeneralMessageListener extends ListenerAdapter{
 
     public void onMessageReceived(MessageReceivedEvent event) {
-        //new Thread(() -> CommandYouTube.handle(event),"YouTube-"+event.getMessage().getId()+"-Setup-Thread").start();
+        new Thread(() -> CommandYouTube.handle(event),"YouTube-"+event.getMessage().getId()+"-Setup-Thread").start();
         new Thread(() ->  GuildMusicPlayer.handleTrackChoose(event), "Track-chooser-"+ event.getMessage().getId() + "-Thread").start();
     }
 

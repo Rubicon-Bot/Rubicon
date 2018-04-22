@@ -30,7 +30,7 @@ public abstract class RubiconUserImpl extends RethinkHelper {
     RubiconUserImpl(User user) {
         this.user = user;
         this.rethink = RubiconBot.getRethink();
-        dbUser = rethink.db.table("users").filter(rethink.rethinkDB.hashMap("userId", user.getIdLong()));
+        dbUser = rethink.db.table("users").filter(rethink.rethinkDB.hashMap("userId", user.getId()));
         createIfNotExist();
     }
 
@@ -113,7 +113,7 @@ public abstract class RubiconUserImpl extends RethinkHelper {
     }
 
     public void unban(Guild guild) {
-        rethink.db.table("punishments").filter(rethink.rethinkDB.hashMap("userId", user.getIdLong()).with("guildId", guild.getIdLong()).with("type", "ban")).delete().run(rethink.connection);
+        rethink.db.table("punishments").filter(rethink.rethinkDB.hashMap("userId", user.getId()).with("guildId", guild.getId()).with("type", "ban")).delete().run(rethink.connection);
 
         if (guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
         } else
@@ -127,7 +127,7 @@ public abstract class RubiconUserImpl extends RethinkHelper {
     private void createIfNotExist() {
         if (exist())
             return;
-        rethink.db.table("users").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("userId", user.getIdLong()))).run(rethink.connection);
+        rethink.db.table("users").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("userId", user.getId()))).run(rethink.connection);
     }
 
     public void delete() {

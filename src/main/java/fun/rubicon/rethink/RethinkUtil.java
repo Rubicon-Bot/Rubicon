@@ -13,12 +13,14 @@ public class RethinkUtil {
             "guilds",
             "mutesettings",
             "joinmessages",
+            "joinimages",
             "leavemessages",
             "autochannels",
             "autoroles",
             "punishments",
             "lavanodes",
-            "permissions"
+            "permissions",
+            "youtube"
     };
 
     public static void createDefaults(Rethink rethink) {

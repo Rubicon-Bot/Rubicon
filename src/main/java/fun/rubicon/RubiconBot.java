@@ -65,7 +65,7 @@ import java.util.Date;
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_database", "mysql_user", "mysql_password", "playingStatus", "dbl_token", "discord_pw_token", "gif_token", "google_token", "rethink_host", "rethink_port", "rethink_db", "rethink_user", "rethink_password"};
+    private static final String[] CONFIG_KEYS = {"token", "playingStatus", "dbl_token", "discord_pw_token", "gif_token", "google_token", "rethink_host", "rethink_port", "rethink_db", "rethink_user", "rethink_password"};
     private static RubiconBot instance;
     private final Configuration configuration;
     private final Rethink rethink;
@@ -158,7 +158,8 @@ public class RubiconBot {
                 new CommandShardManage(),
                 new CommandBotstatus(),
                 new CommandBotplay(),
-                new CommandDisco()
+                new CommandDisco(),
+                new CommandTest()
         );
 
         //Admin
@@ -170,7 +171,8 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(
                 new CommandJoinMessage(),
                 new CommandLeaveMessage(),
-                new CommandAutochannel()
+                new CommandAutochannel(),
+                new CommandJoinImage()
         );
 
         // Fun
@@ -178,7 +180,11 @@ public class RubiconBot {
                 new CommandRandom(),
                 new CommandLmgtfy(),
                 new CommandAscii(),
-                new CommandGiphy()
+                new CommandGiphy(),
+                new CommandRip(),
+                new CommandMedal(),
+                new CommandRoadSign(),
+                new CommandWeddingSign()
         );
 
         //General
@@ -197,7 +203,8 @@ public class RubiconBot {
                 new CommandYouTube(),
                 new CommandSearch(),
                 new CommandPremium(),
-                new CommandKey()
+                new CommandKey(),
+                new CommandPing()
         );
 
         //Moderation
@@ -232,7 +239,8 @@ public class RubiconBot {
                 new CommandStop(),
                 new CommandPause(),
                 new CommandResume(),
-                new CommandShuffle()
+                new CommandShuffle(),
+                new CommandNow()
         );
     }
 
