@@ -88,6 +88,18 @@ public class RubiconGuild extends RethinkHelper {
         rethink.db.table("joinmessages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).delete().run(rethink.connection);
     }
 
+    public void enableJoinImages(String channelId) {
+        rethink.db.table("joinimages").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("channel", channelId)));
+    }
+
+    public void disableJoinImages() {
+        rethink.db.table("joinimages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).delete().run(rethink.connection);
+    }
+
+    public boolean hasJoinImagesEnabled() {
+        return exist(rethink.db.table("joinimages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection));
+    }
+
     public Role getMutedRole() {
         if (!guild.getRolesByName("rubicon-muted", false).isEmpty())
             return guild.getRolesByName("rubicon-muted", false).get(0);

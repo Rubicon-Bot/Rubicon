@@ -23,7 +23,7 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
     private boolean repeating;
     private boolean stayInChannel;
 
-    protected final int DEFAULT_VOLUME = 10;
+    public final int DEFAULT_VOLUME = 10;
     protected final int QUEUE_MAXIMUM = 50;
 
     public MusicPlayer() {
@@ -41,6 +41,10 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
 
     public void play(AudioTrack track) {
         if (track == null) {
+            if (isStayingInChannel())
+                return;
+            else
+                closeAudioConnection();
             return;
         }
         if (player.isPaused())
@@ -102,12 +106,12 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
 
     public void queueTrack(AudioTrack audioTrack) {
         trackQueue.add(audioTrack);
-        if(player.getPlayingTrack() == null)
+        if (player.getPlayingTrack() == null)
             play(pollTrack());
     }
 
     public AudioTrack pollTrack() {
-        if(trackQueue.isEmpty())
+        if (trackQueue.isEmpty())
             return null;
         AudioTrack track = trackQueue.poll();
         savePlayer();
@@ -138,9 +142,9 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        if(endReason.equals(AudioTrackEndReason.FINISHED)) {
+        if (endReason.equals(AudioTrackEndReason.FINISHED)) {
             AudioTrack nextTrack = pollTrack();
-            if(nextTrack == null) {
+            if (nextTrack == null) {
                 closeAudioConnection();
                 return;
             }
@@ -148,7 +152,6 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
             return;
         }
         if (!endReason.equals(AudioTrackEndReason.LOAD_FAILED)) {
-            Logger.debug(endReason.toString());
             handleTrackStop(player, track, false);
         } else {
             handleTrackStop(player, track, true);
@@ -157,8 +160,8 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
 
 
     protected abstract void closeAudioConnection();
-    protected abstract void savePlayer();
 
+    protected abstract void savePlayer();
 
     @Override
     public void onTrackException(AudioPlayer player, AudioTrack track, FriendlyException exception) {

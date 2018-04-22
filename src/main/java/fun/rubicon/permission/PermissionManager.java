@@ -49,9 +49,9 @@ public class PermissionManager extends RethinkHelper {
         if (hasPermission(target, permission, true))
             return false;
         table.insert(rethink.rethinkDB.array(
-                rethink.rethinkDB.hashMap("guildId", target.getGuild().getIdLong())
+                rethink.rethinkDB.hashMap("guildId", target.getGuild().getId())
                         .with("type", String.valueOf(target.getType().getIdentifier()))
-                        .with("id", target.getId())
+                        .with("id", String.valueOf(target.getId()))
                         .with("permission", permission.getPermissionString())
                         .with("negated", permission.isNegated())
         )).run(rethink.connection);
@@ -69,14 +69,14 @@ public class PermissionManager extends RethinkHelper {
      */
     public boolean hasPermission(PermissionTarget target, Permission permission, boolean ignoreNegation) {
         Cursor cursor = ignoreNegation ? table.filter(
-                rethink.rethinkDB.hashMap("guildId", target.getGuild().getIdLong())
+                rethink.rethinkDB.hashMap("guildId", target.getGuild().getId())
                 .with("type", String.valueOf(target.getType().getIdentifier()))
-                .with("id", target.getId())
+                .with("id", String.valueOf(target.getId()))
                 .with("permission", permission.getPermissionString())
         ).run(rethink.connection) :
-                table.filter(rethink.rethinkDB.hashMap("guildId", target.getGuild().getIdLong())
+                table.filter(rethink.rethinkDB.hashMap("guildId", target.getGuild().getId())
                         .with("type", String.valueOf(target.getType().getIdentifier()))
-                        .with("id", target.getId())
+                        .with("id", String.valueOf(target.getId()))
                         .with("permission", permission.getPermissionString())
                         .with("negated", permission.isNegated())
                 ).run(rethink.connection);
@@ -91,13 +91,14 @@ public class PermissionManager extends RethinkHelper {
      * @return the {@link Permission Permission object} with a negation value or null if it does not exist.
      */
     public Permission getPermission(PermissionTarget target, String permissionString) {
-        Cursor cursor = table.filter(rethink.rethinkDB.hashMap("guildId", target.getGuild().getIdLong())
+        Cursor cursor = table.filter(rethink.rethinkDB.hashMap("guildId", target.getGuild().getId())
                 .with("type", String.valueOf(target.getType().getIdentifier()))
-                .with("id", target.getId())
+                .with("id", String.valueOf(target.getId()))
                 .with("permission", permissionString)
         ).run(rethink.connection);
-        return cursor.toList().size() == 1
-                ? new Permission(permissionString, (boolean) ((Map) cursor.toList().get(0)).get("negated")) // entry with negation value
+        List list = cursor.toList();
+        return list.size() == 1
+                ? new Permission(permissionString, (boolean) ((Map) list.get(0)).get("negated")) // entry with negation value
                 : null; // no entry
     }
 
@@ -112,9 +113,9 @@ public class PermissionManager extends RethinkHelper {
         if (!hasPermission(target, permission, true))
             return false;
         table.filter(
-                rethink.rethinkDB.hashMap("guildId", target.getGuild().getIdLong())
+                rethink.rethinkDB.hashMap("guildId", target.getGuild().getId())
                         .with("type", String.valueOf(target.getType().getIdentifier()))
-                        .with("id", target.getId())
+                        .with("id", String.valueOf(target.getId()))
                         .with("permission", permission.getPermissionString())
         ).delete().run(rethink.connection);
         return true;
@@ -122,9 +123,9 @@ public class PermissionManager extends RethinkHelper {
 
     public List<Permission> getPermissions(PermissionTarget target) {
         Cursor cursor = table.filter(
-                rethink.rethinkDB.hashMap("guildId", target.getGuild().getIdLong())
+                rethink.rethinkDB.hashMap("guildId", target.getGuild().getId())
                         .with("type", String.valueOf(target.getType().getIdentifier()))
-                        .with("id", target.getId())
+                        .with("id", String.valueOf(target.getId()))
         ).run(rethink.connection);
         List<Permission> targetPermissions = new ArrayList<>();
         for (Object obj : cursor) {
@@ -142,7 +143,7 @@ public class PermissionManager extends RethinkHelper {
      */
     public Map<PermissionTarget, List<Permission>> getGuildPermissions(Guild guild) {
         Cursor cursor = table.filter(row -> row
-                .g("guildId").eq(guild.getIdLong())
+                .g("guildId").eq(guild.getId())
         ).run(rethink.connection);
         Map<PermissionTarget, List<Permission>> guildPermissions = new HashMap<>();
         for (Object obj : cursor) {
@@ -150,7 +151,7 @@ public class PermissionManager extends RethinkHelper {
             // construct target (key)
             PermissionTarget target = new PermissionTarget(guild,
                     PermissionTarget.Type.getByIdentifier(((String) map.get("type")).charAt(0)),
-                    (long) map.get("id"));
+                    Long.valueOf((String) map.get("id")));
             // add target entry if necessary
             if (!guildPermissions.containsKey(target))
                 guildPermissions.put(target, new ArrayList<>());

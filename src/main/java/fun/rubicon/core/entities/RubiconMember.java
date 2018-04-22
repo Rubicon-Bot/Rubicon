@@ -10,6 +10,7 @@ import com.rethinkdb.gen.ast.Filter;
 import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.rethink.Rethink;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -64,7 +65,7 @@ public class RubiconMember extends RubiconUserImpl {
                 rethink.rethinkDB.hashMap("guildId", guild.getId())
                         .with("type", "mute")
                         .with("userId", user.getId())
-                        .with("expiry", 0L)
+                        .with("expiry", 1L)
         )).run(rethink.connection);
         Role muted = RubiconGuild.fromGuild(guild).getMutedRole();
         guild.getController().addSingleRoleToMember(member, muted).queue();
@@ -105,7 +106,7 @@ public class RubiconMember extends RubiconUserImpl {
 
     public boolean isMuted() {
         long res = getLong(rethink.db.table("punishments").filter(rethink.rethinkDB.hashMap("userId", user.getId()).with("guildId", guild.getId()).with("type", "mute")).run(rethink.connection), "expiry");
-        if (res == 0L) return true;
+        if (res == 1L) return true;
         else return new Date(res).after(new Date());
     }
 
@@ -134,7 +135,7 @@ public class RubiconMember extends RubiconUserImpl {
                 rethink.rethinkDB.hashMap("guildId", guild.getId())
                         .with("userId", user.getId())
                         .with("type", "mute")
-                        .with("expiry", 0L)
+                        .with("expiry", 1L)
         )).run(rethink.connection);
         if (guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
             guild.getController().ban(user, 7).queue();

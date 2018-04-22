@@ -13,6 +13,7 @@ public class RethinkUtil {
             "guilds",
             "mutesettings",
             "joinmessages",
+            "joinimages",
             "leavemessages",
             "autochannels",
             "autoroles",
