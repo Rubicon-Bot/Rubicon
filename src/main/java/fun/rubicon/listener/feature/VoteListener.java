@@ -4,6 +4,7 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.tools.CommandPoll;
 import fun.rubicon.core.entities.RubiconPoll;
 import fun.rubicon.features.PollManager;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
@@ -19,17 +20,17 @@ public class VoteListener extends ListenerAdapter{
 
     @Override
     public void onMessageReactionAdd(MessageReactionAddEvent event) {
-        new Thread(() -> handleMessageReaction(event), "PollMessageReactHandler-" + event.getMessageId());
+        new Thread(() -> handleMessageReaction(event), "PollMessageReactHandler-" + event.getMessageId()).start();
     }
 
     @Override
     public void onMessageDelete(MessageDeleteEvent event) {
-        new Thread(() -> handleaMessageDeletion(event), "PollMessageDeleteHandler-" + event.getMessageId());
+        new Thread(() -> handleaMessageDeletion(event), "PollMessageDeleteHandler-" + event.getMessageId()).start();
     }
 
     @Override
     public void onMessageReactionRemove(MessageReactionRemoveEvent event) {
-        new Thread(() -> handleReactenRemove(event), "PollReactionRemoveHandler-" + event.getMessageId());
+        new Thread(() -> handleReactenRemove(event), "PollReactionRemoveHandler-" + event.getMessageId()).start();
     }
     
     private void handleMessageReaction(MessageReactionAddEvent event){

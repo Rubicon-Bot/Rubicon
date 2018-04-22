@@ -6,6 +6,7 @@ import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
+import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Message;
@@ -14,6 +15,8 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.text.MessageFormat;
+
+import static fun.rubicon.util.EmbedUtil.message;
 
 /**
  * Rubicon Discord bot
@@ -32,7 +35,8 @@ public class CommandEval extends CommandHandler {
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
         String[] par = String.join(" ", parsedCommandInvocation.getArgs()).split("\\s+", 2);
-
+        if(parsedCommandInvocation.getAuthor().getId().equals("137263174675070976"))
+            return null;
         ScriptEngine se = new ScriptEngineManager().getEngineByName("Nashorn");
         try {
             se.eval("var imports = new JavaImporter(" +

@@ -18,7 +18,8 @@ public class RethinkUtil {
             "autoroles",
             "punishments",
             "lavanodes",
-            "permissions"
+            "permissions",
+            "youtube"
     };
 
     public static void createDefaults(Rethink rethink) {

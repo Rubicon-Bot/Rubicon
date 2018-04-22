@@ -6,7 +6,6 @@ import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
-import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.entities.Message;
 import okhttp3.*;
@@ -17,6 +16,9 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 
+import static fun.rubicon.util.EmbedUtil.error;
+import static fun.rubicon.util.EmbedUtil.message;
+
 /*
  * Copyright (c) 2018  Rubicon Bot Development Team
  * Licensed under the GPL-3.0 license.
@@ -25,7 +27,7 @@ import java.io.IOException;
 public class CommandGiphy extends CommandHandler {
 
     public CommandGiphy() {
-        super(new String[]{"gif","giphy"}, CommandCategory.FUN, new PermissionRequirements("gif", false, true), "Search a gif on Giphy and sends it in the channel", "<keywords>");
+        super(new String[]{"gif", "giphy"}, CommandCategory.FUN, new PermissionRequirements("gif", false, true), "Search a gif on Giphy and sends it in the channel", "<keywords>");
     }
 
     @Override
@@ -36,8 +38,8 @@ public class CommandGiphy extends CommandHandler {
         }
         String query = invocation.getMessage().getContentDisplay().replace(invocation.getPrefix() + invocation.getCommandInvocation(), "");
         HttpUrl.Builder httpBuider = HttpUrl.parse("https://api.giphy.com/v1/gifs/search").newBuilder()
-            .addQueryParameter("api_key", RubiconBot.getConfiguration().getString("gif_token"))
-            .addQueryParameter("q",query);
+                .addQueryParameter("api_key", RubiconBot.getConfiguration().getString("gif_token"))
+                .addQueryParameter("q", query);
 
         Request request = new Request.Builder()
                 .url(httpBuider.build())
@@ -47,7 +49,7 @@ public class CommandGiphy extends CommandHandler {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     e.printStackTrace();
-                    SafeMessage.sendMessage(invocation.getTextChannel(),EmbedUtil.error("Error!", "Found no gif.").build());
+                    SafeMessage.sendMessage(invocation.getTextChannel(), error("Error!", "Found no gif.").build());
                 }
 
                 @Override
@@ -55,16 +57,19 @@ public class CommandGiphy extends CommandHandler {
                     try {
                         JSONObject json = (JSONObject) new JSONParser().parse(response.body().string());
                         JSONArray data = (JSONArray) json.get("data");
-
-                        SafeMessage.sendMessage(invocation.getTextChannel(),(String) ((JSONObject) data.get(0)).get("url"));
+                        if (data.isEmpty()) {
+                            SafeMessage.sendMessage(invocation.getTextChannel(), error("Error!", "Found no gif.").build());
+                            return;
+                        }
+                        SafeMessage.sendMessage(invocation.getTextChannel(), (String) ((JSONObject) data.get(0)).get("url"));
                     } catch (ParseException e) {
                         e.printStackTrace();
-                        SafeMessage.sendMessage(invocation.getTextChannel(),EmbedUtil.error("Error!", "Found no gif.").build());
+                        SafeMessage.sendMessage(invocation.getTextChannel(), error("Error!", "Found no gif.").build());
                     }
                 }
             });
         } catch (Exception e) {
-            return EmbedUtil.message(EmbedUtil.error("Error!", "Found no gif."));
+            return message(error("Error!", "Found no gif."));
         }
         return null;
     }
