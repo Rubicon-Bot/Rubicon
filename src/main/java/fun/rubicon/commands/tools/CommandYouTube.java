@@ -1,4 +1,4 @@
-package fun.rubicon.commands.general;
+package fun.rubicon.commands.tools;
 
 import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
@@ -6,6 +6,7 @@ import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.core.entities.RubiconUser;
+import fun.rubicon.core.translation.TranslationUtil;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.rethink.Rethink;
@@ -45,7 +46,7 @@ public class CommandYouTube extends CommandHandler {
     private static HashMap<Long, AnnounceHolder> announceMap = new HashMap<>();
 
     public CommandYouTube() {
-        super(new String[]{"youtube"}, CommandCategory.GENERAL, new PermissionRequirements("youtube", false, false), "Announce your newest YouTube Videos!", "<#channel> <YouTube Channel ID>");
+        super(new String[]{"youtube"}, CommandCategory.TOOLS, new PermissionRequirements("youtube", false, false), "Announce your newest YouTube Videos!", "<#channel> <YouTube Channel ID>");
 
     }
 
@@ -56,7 +57,7 @@ public class CommandYouTube extends CommandHandler {
         if (!RubiconUser.fromUser(invocation.getAuthor()).isPremium())
             return EmbedUtil.message(EmbedUtil.noPremium());
         if (invocation.getMessage().getMentionedChannels().isEmpty())
-            return EmbedUtil.message(EmbedUtil.error("No channel", "You forgot to Mention an Channel"));
+            return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.yt.mention.title"), invocation.translate("command.yt.mention.description")));
         Cursor cursor = RubiconBot.getRethink().db.table("youtube").filter(RubiconBot.getRethink().rethinkDB.hashMap("guildId", invocation.getGuild().getId())).run(RubiconBot.getRethink().connection);
         if (!cursor.toList().isEmpty()) {
             return message(error("Already registered", "Deleting old Setup"));
@@ -71,14 +72,14 @@ public class CommandYouTube extends CommandHandler {
             Response response = new OkHttpClient().newCall(request).execute();
             if (response.code() != 200) {
                 response.close();
-                return message(error("Wrong ChannelID", "Your given ChannelID is not Valid.It must be something like UCgez9UZRV7E-JFbo64eCcfg"));
+                return message(error(invocation.translate("command.yt.invalid.title"), invocation.translate("command.yt.invalid.description")));
             }
             response.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        Message infoMessage = SafeMessage.sendMessageBlocking(invocation.getTextChannel(), EmbedUtil.message(new EmbedBuilder().setTitle("Title....").setDescription("Please enter an Message that will be sent whenever an new Video is uploaded! Use %url% for the Video URL and %title% for the Video Title.Markdown **is supported**").setFooter("Will abort in 60 seconds.", null)));
+        Message infoMessage = SafeMessage.sendMessageBlocking(invocation.getTextChannel(), EmbedUtil.message(new EmbedBuilder().setTitle(invocation.translate("command.yt.setup.title")).setDescription(invocation.translate("command.yt.setup.description")).setFooter(invocation.translate("command.yt.setup.footer"), null)));
         announceMap.put(invocation.getAuthor().getIdLong(), new AnnounceHolder(invocation.getTextChannel(), invocation.getMessage().getMentionedChannels().get(0), creator, invocation.getAuthor(), infoMessage));
 
         return null;
@@ -125,9 +126,9 @@ public class CommandYouTube extends CommandHandler {
                     JSONObject id = (JSONObject) ((JSONObject) items.get(0)).get("id");
                     title = (String) snippet.get("title");
                     uri = "http://youtu.be/" + id.get("videoId");
-                }else{
+                } else {
                     uri = "https://youtu.be";
-                title = "No Video Found";
+                    title = "No Video Found";
                 }
             }
             response.close();
@@ -159,7 +160,7 @@ public class CommandYouTube extends CommandHandler {
                 @Override
                 public void run() {
                     infoMessage.delete().queue();
-                    SafeMessage.sendMessage(textChannel, EmbedUtil.message(EmbedUtil.error("Aborted!", "Aborted Setup.")));
+                    SafeMessage.sendMessage(textChannel, EmbedUtil.message(EmbedUtil.error(TranslationUtil.translate(author, "command.yt.abort.title"), TranslationUtil.translate(author, "command.yt.abort.description"))));
                     announceMap.remove(author.getIdLong());
                 }
             }, 60000);
@@ -168,7 +169,7 @@ public class CommandYouTube extends CommandHandler {
         private void delete() {
             announceMap.remove(author.getIdLong());
             timer.cancel();
-            SafeMessage.sendMessage(textChannel, EmbedUtil.message(EmbedUtil.success("Success!", "Successfully finished Setup.")));
+            SafeMessage.sendMessage(textChannel, EmbedUtil.message(EmbedUtil.success(TranslationUtil.translate(author, "command.yt.success.title"), TranslationUtil.translate(author, "command.yt.success.description"))));
             infoMessage.delete().queue();
         }
     }
@@ -196,34 +197,33 @@ public class CommandYouTube extends CommandHandler {
             timer.scheduleAtFixedRate(task, executionDate, delay);
         }
 
-        private class loadYouTube extends TimerTask{
+        private class loadYouTube extends TimerTask {
 
 
             @Override
             public void run() {
                 Logger.info("Starting YouTube loading thread \"YouTube-Loader\"");
-                    for (Guild guild :
-                            guildList) {
-                        Cursor cursor = rethink.db.table("youtube").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection);
-                        List l = cursor.toList();
-                        if (l.size() < 1) {
-                            continue;
-                        }
-                        Map map = (Map)  l.get(0);
-                        Logger.info("Loaded YouTube for guild \"" + guild.getName() + "\"");
-                        String creator = (String) map.get("youcreator");
-                        String oldURI = (String) map.get("lastvideo");
-                        String[] strings = getUrlTitle(creator);
-                        if (!strings[0].equals(oldURI)) {
-                            SafeMessage.sendMessage(guild.getTextChannelById(map.get("youchannel").toString()), map.get("youmsg").toString().replace("%url%", strings[0]).replace("%title%", strings[1]));
-                            RubiconBot.getRethink().db.table("youtube").filter(RubiconBot.getRethink().rethinkDB.hashMap("guildId", guild.getId())).update(RubiconBot.getRethink().rethinkDB.hashMap("lastvideo", strings[0])).run(RubiconBot.getRethink().connection);
-                        }
-
+                for (Guild guild :
+                        guildList) {
+                    Cursor cursor = rethink.db.table("youtube").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection);
+                    List l = cursor.toList();
+                    if (l.size() < 1) {
+                        continue;
                     }
-                    Logger.info("Finished YouTube loading. Stopping thread");
-                }
-        }
+                    Map map = (Map) l.get(0);
+                    Logger.info("Loaded YouTube for guild \"" + guild.getName() + "\"");
+                    String creator = (String) map.get("youcreator");
+                    String oldURI = (String) map.get("lastvideo");
+                    String[] strings = getUrlTitle(creator);
+                    if (!strings[0].equals(oldURI)) {
+                        SafeMessage.sendMessage(guild.getTextChannelById(map.get("youchannel").toString()), map.get("youmsg").toString().replace("%url%", strings[0]).replace("%title%", strings[1]));
+                        RubiconBot.getRethink().db.table("youtube").filter(RubiconBot.getRethink().rethinkDB.hashMap("guildId", guild.getId())).update(RubiconBot.getRethink().rethinkDB.hashMap("lastvideo", strings[0])).run(RubiconBot.getRethink().connection);
+                    }
 
+                }
+                Logger.info("Finished YouTube loading. Stopping thread");
+            }
+        }
 
 
     }
