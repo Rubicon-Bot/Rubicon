@@ -7,7 +7,7 @@
 package fun.rubicon.listener.bot;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.commands.general.CommandYouTube;
+import fun.rubicon.commands.tools.CommandYouTube;
 import fun.rubicon.util.BotListHandler;
 
 /**
