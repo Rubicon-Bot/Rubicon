@@ -421,7 +421,9 @@ public class RubiconBot {
         return lavalinkManager;
     }
 
-    public static GuildMusicPlayerManager getGuildMusicPlayerManager() { return instance.guildMusicPlayerManager; }
+    public static GuildMusicPlayerManager getGuildMusicPlayerManager() {
+        return instance.guildMusicPlayerManager;
+    }
 
     public static Rethink getRethink() {
         return instance == null ? null : instance.rethink;
