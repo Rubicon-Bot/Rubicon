@@ -241,18 +241,6 @@ public class CommandManager extends ListenerAdapter {
 
         public UserPermissions getPerms() { return new UserPermissions(getAuthor(), getGuild()); }
 
-        public ResourceBundle getLanguage() {
-            return language;
-        }
-
-        public ResourceBundle getDefaultLanguage() {
-            return defaultResourceBundle;
-        }
-
-        public UserPermissions getPerms() {
-            return new UserPermissions(getAuthor(), getGuild());
-        }
-
         public String translate(String key) {
             String entry;
             try {
