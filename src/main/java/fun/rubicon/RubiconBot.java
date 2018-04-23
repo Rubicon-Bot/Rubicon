@@ -21,6 +21,14 @@ import fun.rubicon.commands.music.*;
 import fun.rubicon.commands.music.CommandClearQueue;
 import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
+import fun.rubicon.commands.moderation.CommandMute;
+import fun.rubicon.commands.moderation.CommandUnmute;
+import fun.rubicon.commands.settings.CommandAutochannel;
+import fun.rubicon.commands.settings.CommandJoinMessage;
+import fun.rubicon.commands.settings.CommandLeaveMessage;
+import fun.rubicon.commands.tools.CommandPoll;
+import fun.rubicon.commands.settings.CommandPrefix;
+import fun.rubicon.commands.tools.CommandRandomColor;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.music.GuildMusicPlayerManager;
 import fun.rubicon.core.music.LavalinkManager;
@@ -36,7 +44,6 @@ import fun.rubicon.listener.bot.ShardListener;
 import fun.rubicon.listener.channel.TextChannelDeleteListener;
 import fun.rubicon.listener.channel.VoiceChannelDeleteListener;
 import fun.rubicon.listener.feature.PunishmentListener;
-import fun.rubicon.listener.feature.VoteListener;
 import fun.rubicon.listener.member.MemberJoinListener;
 import fun.rubicon.listener.member.MemberLeaveListener;
 import fun.rubicon.listener.role.RoleDeleteListener;
@@ -81,6 +88,9 @@ public class RubiconBot {
     private BitlyAPI bitlyAPI;
     private static int SHARD_COUNT;
     private static LavalinkManager lavalinkManager;
+    private boolean allShardsInited;
+
+
 
     /**
      * Constructs the RubiconBot.
@@ -132,6 +142,9 @@ public class RubiconBot {
         //Init punishments
         punishmentManager = new PunishmentManager();
 
+        //Init punishments
+        punishmentManager = new PunishmentManager();
+
         commandManager = new CommandManager();
         lavalinkManager = new LavalinkManager();
         pollManager = new PollManager();
@@ -149,6 +162,7 @@ public class RubiconBot {
 
         gameAnimator.start();
         shardManager.setStatus(OnlineStatus.ONLINE);
+
     }
 
     private void registerCommands() {
@@ -171,8 +185,8 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(
                 new CommandJoinMessage(),
                 new CommandLeaveMessage(),
-                new CommandAutochannel(),
-                new CommandJoinImage()
+                new CommandJoinImage(),
+                new CommandAutochannel()
         );
 
         // Fun
@@ -211,6 +225,7 @@ public class RubiconBot {
                 new CommandUnmute(),
                 new CommandUnban(),
                 new CommandMoveall()
+
         );
 
         //Punishments
@@ -223,7 +238,8 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(
                 new CommandPoll(),
                 new CommandShort(),
-                new CommandYouTube()
+                new CommandYouTube(),
+                new CommandRandomColor()
         );
 
         //Music
@@ -240,7 +256,13 @@ public class RubiconBot {
                 new CommandPause(),
                 new CommandResume(),
                 new CommandShuffle(),
-                new CommandNow()
+                new CommandNow(),
+                new CommandGiphy(),
+                new CommandLmgtfy()
+        );
+        commandManager.registerCommandHandler(
+                new CommandPoll()
+
         );
     }
 
@@ -276,7 +298,6 @@ public class RubiconBot {
                 new UserMentionListener(),
                 new ShardListener(),
                 new SelfMentionListener(),
-                new VoteListener(),
                 new MemberJoinListener(),
                 new MemberLeaveListener(),
                 new TextChannelDeleteListener(),
@@ -287,6 +308,7 @@ public class RubiconBot {
                 new GeneralMessageListener(),
                 new RoleDeleteListener(),
                 new LavalinkManager()
+
         );
         try {
             shardManager = builder.build();
@@ -310,6 +332,7 @@ public class RubiconBot {
             throw new RuntimeException("The Discord API did not Respond with a Shard count!");
         }
     }
+
 
     /**
      * @return the {@link ShardManager} that is used in the Rubicon project
