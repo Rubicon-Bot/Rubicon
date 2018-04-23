@@ -26,7 +26,6 @@ import fun.rubicon.commands.moderation.CommandUnmute;
 import fun.rubicon.commands.settings.CommandAutochannel;
 import fun.rubicon.commands.settings.CommandJoinMessage;
 import fun.rubicon.commands.settings.CommandLeaveMessage;
-import fun.rubicon.commands.tools.CommandPoll;
 import fun.rubicon.commands.settings.CommandPrefix;
 import fun.rubicon.commands.tools.CommandRandomColor;
 import fun.rubicon.core.GameAnimator;
@@ -89,7 +88,6 @@ public class RubiconBot {
     private static int SHARD_COUNT;
     private static LavalinkManager lavalinkManager;
     private boolean allShardsInited;
-
 
 
     /**
@@ -256,13 +254,7 @@ public class RubiconBot {
                 new CommandPause(),
                 new CommandResume(),
                 new CommandShuffle(),
-                new CommandNow(),
-                new CommandGiphy(),
-                new CommandLmgtfy()
-        );
-        commandManager.registerCommandHandler(
-                new CommandPoll()
-
+                new CommandNow()
         );
     }
 
