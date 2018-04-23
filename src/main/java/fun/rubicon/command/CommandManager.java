@@ -239,6 +239,16 @@ public class CommandManager extends ListenerAdapter {
             return defaultResourceBundle;
         }
 
+        public UserPermissions getPerms() { return new UserPermissions(getAuthor(), getGuild()); }
+
+        public ResourceBundle getLanguage() {
+            return language;
+        }
+
+        public ResourceBundle getDefaultLanguage() {
+            return defaultResourceBundle;
+        }
+
         public UserPermissions getPerms() {
             return new UserPermissions(getAuthor(), getGuild());
         }
@@ -250,7 +260,7 @@ public class CommandManager extends ListenerAdapter {
             } catch (MissingResourceException e) {
                 try {
                     entry = defaultResourceBundle.getString(key);
-                } catch (MissingResourceException e2) {
+                } catch (MissingResourceException e2){
                     entry = "Unable to find language string for \"" + key + "\"";
                 }
             }
