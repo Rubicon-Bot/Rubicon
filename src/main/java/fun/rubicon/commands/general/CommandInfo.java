@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017 Rubicon Bot Development Team
- *
- * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ * Copyright (c) 2018  Rubicon Bot Development Team
+ * Licensed under the GPL-3.0 license.
+ * The full license text is available in the LICENSE file provided with this project.
  */
 
 package fun.rubicon.commands.general;
@@ -13,54 +13,75 @@ import fun.rubicon.command.CommandManager;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
+import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
 
 /**
- * Handles the 'info' command.
- *
  * @author Yannick Seeger / ForYaSee
  */
 public class CommandInfo extends CommandHandler {
 
-    private String[] arrSupporter = {"Greg"};
-
     public CommandInfo() {
-        super(new String[]{"info", "inf", "version"}, CommandCategory.GENERAL, new PermissionRequirements("command.info", false, true), "Shows some information about the bot!", "");
+        super(new String[]{"info", "botinfo"}, CommandCategory.GENERAL, new PermissionRequirements("info", false, true), "Shows some information about the bot.", "");
     }
 
     @Override
-    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        //Set some Var´s
-        Message message = parsedCommandInvocation.getMessage();
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setColor(Colors.COLOR_PRIMARY);
-        builder.setAuthor(Info.BOT_NAME + " - Info", "https://rubicon.fun", message.getJDA().getSelfUser().getEffectiveAvatarUrl());
-        StringBuilder authors = new StringBuilder();
+    protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
+        EmbedBuilder embedBuilder = new EmbedBuilder();
+        embedBuilder.setColor(Colors.COLOR_SECONDARY);
+        embedBuilder.setAuthor(Info.BOT_NAME + invocation.translate("command.info.title"), "https://rubicon.fun", RubiconBot.getSelfUser().getEffectiveAvatarUrl());
 
-        //Append Id´s on StringBuilder
+        Guild rubiconGuild = RubiconBot.getShardManager().getGuildById(Info.RUBICON_SERVER);
+
+        Role translatorRole = RubiconBot.getShardManager().getRoleById(Info.ROLE_TRANSLATOR);
+        Role donatorRole = RubiconBot.getShardManager().getRoleById(Info.ROLE_DONATOR);
+
+        StringBuilder devsString = new StringBuilder();
         for (long authorId : Info.BOT_AUTHOR_IDS) {
-            User authorUser = RubiconBot.getJDA().getUserById(authorId);
+            User authorUser = RubiconBot.getShardManager().getUserById(authorId);
             if (authorUser == null)
-                authors.append(authorId).append("\n");
+                devsString.append(authorId).append("\n");
             else
-                authors.append(authorUser.getName()).append("#").append(authorUser.getDiscriminator()).append("\n");
+                devsString.append(authorUser.getName()).append("#").append(authorUser.getDiscriminator()).append("\n");
         }
-        //Set the Embed Values
-        builder.addField("Bot Name", Info.BOT_NAME, true);
-        builder.addField("Bot Version", Info.BOT_VERSION, true);
-        builder.addField("Website", "[Link](" + Info.BOT_WEBSITE + ")", true);
-        builder.addField("Bot Invite", "[Invite RubiconBot](https://discordapp.com/oauth2/authorize?client_id=380713705073147915&scope=bot&permissions=1898982486)", true);
-        builder.addField("Github Link", "[Github Link](" + Info.BOT_GITHUB + ")", true);
-        builder.addField("Patreon Link", "[RubiconBot Dev Team](https://www.patreon.com/rubiconbot)", true);
-        builder.addField("discordbots.org", "[discordbots.org](https://discordbots.org/bot/380713705073147915)\n", true);
-        builder.addField("Support Server", "[Link](dc.rucb.co)", true);
-        builder.addField("Donators", String.join("\n", arrSupporter), true);
-        builder.addField("Devs", authors.toString(), false);
-        return new MessageBuilder().setEmbed(builder.build()).build();
-    }
 
+        StringBuilder staffString = new StringBuilder();
+        for (long authorId : Info.COMMUNITY_STAFF_TEAM) {
+            User authorUser = RubiconBot.getShardManager().getUserById(authorId);
+            if (authorUser == null)
+                staffString.append(authorId).append("\n");
+            else
+                staffString.append(authorUser.getName()).append("#").append(authorUser.getDiscriminator()).append("\n");
+        }
+
+        StringBuilder translatorString = new StringBuilder();
+        for (Member member : rubiconGuild.getMembers()) {
+            if (member.getRoles().contains(translatorRole))
+                translatorString.append(member.getUser().getName()).append("#").append(member.getUser().getDiscriminator()).append("\n");
+        }
+
+        StringBuilder donatorString = new StringBuilder();
+        for (Member member : rubiconGuild.getMembers()) {
+            if (member.getRoles().contains(donatorRole))
+                donatorString.append(member.getUser().getName()).append("#").append(member.getUser().getDiscriminator()).append("\n");
+        }
+
+        embedBuilder.addField(invocation.translate("command.info.version"), Info.BOT_VERSION, true);
+        embedBuilder.addField(invocation.translate("command.info.website"), "[rubicon.fun](https://rubicon.fun)", true);
+        embedBuilder.addField(invocation.translate("command.info.invite"), "[inv.rucb.co](http://inv.rucb.co)", true);
+        embedBuilder.addField("Github", "[github.com](https://github.com/Rubicon-Bot/Rubicon/)", true);
+        embedBuilder.addField("Patreon", "[patreon.com](https://www.patreon.com/rubiconbot)", true);
+        embedBuilder.addField(invocation.translate("command.info.support"), "[dc.rucb.co](http://dc.rucb.co)", true);
+        embedBuilder.addField(invocation.translate("command.info.votes"), "[discordbots.org](https://discordbots.org/bot/380713705073147915)", true);
+        embedBuilder.addBlankField(false);
+        embedBuilder.addField(invocation.translate("command.info.developer"), devsString.toString(), true);
+        embedBuilder.addField(invocation.translate("command.info.staff"), staffString.toString(), true);
+        embedBuilder.addBlankField(false);
+        embedBuilder.addField(invocation.translate("command.info.translator"), translatorString.toString(), true);
+        embedBuilder.addField(invocation.translate("command.info.donator"), donatorString.toString(), true);
+
+        return EmbedUtil.message(embedBuilder);
+    }
 }

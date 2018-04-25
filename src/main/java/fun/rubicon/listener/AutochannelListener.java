@@ -1,74 +1,85 @@
+/*
+ * Copyright (c) 2018  Rubicon Bot Development Team
+ * Licensed under the GPL-3.0 license.
+ * The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.listener;
 
-import fun.rubicon.RubiconBot;
-import net.dv8tion.jda.core.entities.Channel;
+import fun.rubicon.core.entities.RubiconGuild;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.VoiceChannel;
-import net.dv8tion.jda.core.events.channel.voice.VoiceChannelDeleteEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 /**
- * Rubicon Discord bot
- *
  * @author Yannick Seeger / ForYaSee
- * @copyright RubiconBot Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.listener
  */
-
 public class AutochannelListener extends ListenerAdapter {
 
     @Override
-    public void onVoiceChannelDelete(VoiceChannelDeleteEvent e) {
-        String oldEntry = RubiconBot.getMySQL().getGuildValue(e.getGuild(), "autochannels");
-        if (oldEntry != null)
-            if (oldEntry.contains(e.getChannel().getId())) {
-                String newEntry = oldEntry.replace(e.getChannel().getId() + ",", "");
-                RubiconBot.getMySQL().updateGuildValue(e.getGuild(), "autochannels", newEntry);
+    public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
+        try {
+            VoiceChannel voiceChannel = event.getChannelJoined();
+            if (isAutochannel(event.getGuild(), voiceChannel.getIdLong())) {
+                if (hasPermissions(event.getGuild())) {
+                    VoiceChannel newChannel = (VoiceChannel) event.getGuild().getController().createCopyOfChannel(voiceChannel).setName(voiceChannel.getName() + " [AC]").complete();
+                    event.getGuild().getController().moveVoiceMember(event.getMember(), newChannel).queue();
+                }
             }
-    }
+        } catch (Exception ignored) {
 
-    @Override
-    public void onGuildVoiceJoin(GuildVoiceJoinEvent e) {
-        VoiceChannel ch = e.getChannelJoined();
-        if (isAutoChannel(e.getGuild(), ch)) {
-            VoiceChannel newChannel = (VoiceChannel) e.getGuild().getController().createCopyOfChannel(ch).setName(ch.getName() + " [AC]").complete();
-            e.getGuild().getController().moveVoiceMember(e.getMember(), newChannel).queue();
         }
     }
 
     @Override
-    public void onGuildVoiceMove(GuildVoiceMoveEvent e) {
-        VoiceChannel ch = e.getChannelJoined();
-        if (isAutoChannel(e.getGuild(), ch)) {
-            VoiceChannel newChannel = (VoiceChannel) e.getGuild().getController().createCopyOfChannel(ch).setName(ch.getName() + " [AC]").complete();
-            e.getGuild().getController().moveVoiceMember(e.getMember(), newChannel).queue();
-        }
-        if (e.getChannelLeft().getMembers().size() == 0) {
-            if (e.getChannelLeft().getName().contains("[AC]")) {
-                e.getChannelLeft().delete().queue();
+    public void onGuildVoiceMove(GuildVoiceMoveEvent event) {
+        try {
+            VoiceChannel voiceChannel = event.getChannelJoined();
+            if (isAutochannel(event.getGuild(), voiceChannel.getIdLong())) {
+                if (hasPermissions(event.getGuild())) {
+                    VoiceChannel newChannel = (VoiceChannel) event.getGuild().getController().createCopyOfChannel(voiceChannel).setName(voiceChannel.getName() + " [AC]").complete();
+                    event.getGuild().getController().moveVoiceMember(event.getMember(), newChannel).queue();
+                }
             }
+            if (event.getChannelLeft().getMembers().isEmpty()) {
+                if (event.getChannelLeft().getName().contains("[AC]")) {
+                    if (hasPermissions(event.getGuild())) {
+                        event.getChannelLeft().delete().queue();
+                    }
+                }
+            }
+        } catch (Exception ignored) {
+
         }
     }
 
     @Override
-    public void onGuildVoiceLeave(GuildVoiceLeaveEvent e) {
-        if (e.getChannelLeft().getMembers().size() == 0) {
-            if (e.getChannelLeft().getName().contains("[AC]")) {
-                e.getChannelLeft().delete().queue();
+    public void onGuildVoiceLeave(GuildVoiceLeaveEvent event) {
+        try {
+            if (event.getChannelLeft().getMembers().isEmpty()) {
+                if (event.getChannelLeft().getName().contains("[AC]")) {
+                    if (hasPermissions(event.getGuild())) {
+                        event.getChannelLeft().delete().queue();
+                    }
+                }
             }
+        } catch (Exception ignored) {
+
         }
     }
 
-    private boolean isAutoChannel(Guild g, Channel ch) {
-        String oldEntry = RubiconBot.getMySQL().getGuildValue(g, "autochannels");
-        if (oldEntry != null)
-            if (oldEntry.contains(ch.getId())) {
-                return true;
-            }
-        return false;
+    private boolean hasPermissions(Guild guild) {
+        Member selfMember = guild.getSelfMember();
+        return selfMember.getPermissions().contains(Permission.MANAGE_CHANNEL);
+    }
+
+    private boolean isAutochannel(Guild guild, long channelId) {
+        RubiconGuild rubiconGuild = RubiconGuild.fromGuild(guild);
+        return rubiconGuild.getAutochannels().contains(channelId);
     }
 }

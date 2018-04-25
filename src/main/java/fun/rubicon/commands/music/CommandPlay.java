@@ -1,27 +1,29 @@
 package fun.rubicon.commands.music;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.core.music.MusicManager;
+import fun.rubicon.core.music.GuildMusicPlayer;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
+import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.entities.Message;
 
 /**
- * @author Yannick Seeger / ForYaSee
+ * @author ForYaSee / Yannick Seeger
  */
 public class CommandPlay extends CommandHandler {
 
     public CommandPlay() {
-        super(new String[]{"play"}, CommandCategory.MUSIC, new PermissionRequirements("command.play", false, true), "Play music from YouTube or an link.", "<youtubeurl>\n" +
-                "<keyword> (searches music on youtube)\n" +
-                "<url>");
+        super(new String[]{"play", "p"}, CommandCategory.MUSIC, new PermissionRequirements("play", false, true), "Starts playing music.", "<link or keyword>");
     }
 
+
     @Override
-    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        MusicManager musicManager = new MusicManager(parsedCommandInvocation);
-        return musicManager.playMusic(false);
+    protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
+        GuildMusicPlayer musicPlayer = RubiconBot.getGuildMusicPlayerManager().getAndCreatePlayer(invocation, userPermissions);
+        musicPlayer.playMusic(false);
+        return null;
     }
 }

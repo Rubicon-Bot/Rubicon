@@ -1,38 +1,53 @@
+/*
+ * Copyright (c) 2018  Rubicon Bot Development Team
+ * Licensed under the GPL-3.0 license.
+ * The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.util;
 
+import java.util.Calendar;
+import java.util.Date;
+
 /**
- * Rubicon Discord bot
- *
- * @author Leon Kappes / Lee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.util
+ * @author Yannick Seeger / ForYaSee
  */
 public class StringUtil {
-    /**
-     * Check if String is numeric.
-     *
-     * @param str the String which should be tested.
-     * @return true if String is Numeric else false.
-     */
-    public static boolean isNumeric(String str) {
+
+    public static boolean isNumeric(String s) {
         try {
-            double d = Double.parseDouble(str);
-        } catch (NumberFormatException nfe) {
+            int i = Integer.parseInt(s);
+            return true;
+        } catch (Exception e) {
             return false;
         }
-        return true;
     }
 
-    /**
-     * Create Emoji out of Codepoints
-     *
-     * @param str the Codepoint.
-     * @return the Emoji as a String.
-     */
-    public static String emojiOutCodePoint(String str) {
-        int[] codepoints = {Integer.valueOf(str.replace("U+", "0x"))};
-        String s = new String(codepoints, 0, codepoints.length);
-        return s;
+    public static Date parseDate(String date){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        int amount = parseInt(date);
+        if(amount == 0) return null;
+        if(date.contains("d"))
+            cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH) + amount);
+        else if(date.contains("m"))
+            cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE) + amount);
+        else if (date.contains("y"))
+            cal.set(Calendar.YEAR, cal.get(Calendar.YEAR) + amount);
+        else if(date.contains("M"))
+            cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) + amount);
+        else if (date.contains("h"))
+            cal.set(Calendar.HOUR_OF_DAY, cal.get(Calendar.HOUR_OF_DAY) + amount);
+        else
+            return null;
+        return cal.getTime();
+    }
+
+    private static int parseInt(String integer){
+        try{
+            return Integer.parseInt(integer.replace("d", "").replace("m", "").replace("y", "").replace("M", "").replace("h", ""));
+        } catch (NumberFormatException e){
+            return 0;
+        }
     }
 }

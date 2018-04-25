@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017 Rubicon Bot Development Team
- *
- * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ * Copyright (c) 2018  Rubicon Bot Development Team
+ * Licensed under the GPL-3.0 license.
+ * The full license text is available in the LICENSE file provided with this project.
  */
 
 package fun.rubicon.util;
@@ -34,7 +34,13 @@ public class Logger {
                 e.printStackTrace();
             }
         fileLogging = true;
-        String logHeader = ("---- " + appName + " " + appVersion + " Log ----\n") +
+        String logHeader = (" ______        _     _                  \n" +
+                "(_____ \\      | |   (_)                 \n" +
+                " _____) )_   _| |__  _  ____ ___  ____  \n" +
+                "|  __  /| | | |  _ \\| |/ ___) _ \\|  _ \\ \n" +
+                "| |  \\ \\| |_| | |_) ) ( (__| |_| | | | |\n" +
+                "|_|   |_|____/|____/|_|\\____)___/|_| |_|\n" +
+                "                                        \nVersion: " + appVersion + "\n") +
                 "\n" +
                 "Date: " + date + "\n" +
                 "\n" +

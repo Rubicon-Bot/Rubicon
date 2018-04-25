@@ -1,48 +1,84 @@
-/*
- * Copyright (c) 2017 Rubicon Bot Development Team
- *
- * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
- */
-
 package fun.rubicon.commands.moderation;
 
+import com.rethinkdb.net.Cursor;
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
+import fun.rubicon.core.entities.RubiconMember;
+import fun.rubicon.core.entities.RubiconUser;
+import fun.rubicon.features.poll.PunishmentHandler;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
-import fun.rubicon.util.EmbedUtil;
+import fun.rubicon.util.*;
 import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.PrivateChannel;
 
-/**
- * Handles the 'ban' command.
- *
- * @author Michael Rittmeister / Schlaubi
- */
-public class CommandBan extends CommandHandler {
+import java.util.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class CommandBan extends CommandHandler implements PunishmentHandler {
     public CommandBan() {
-        super(new String[]{"ban"}, CommandCategory.MODERATION, new PermissionRequirements("command.ban", false, false), "Bans a user from your server", "<@User>");
+        super(new String[] {"ban", "tempban"}, CommandCategory.MODERATION, new PermissionRequirements("ban", false, false), "Easily (temp)ban your members YEAHHHHHH WHOOOOO BANNING PEROPLE IS NICE", "<@User> [time]");
     }
 
     @Override
-    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        Message msg = parsedCommandInvocation.getMessage();
-        if (msg.getMentionedUsers().isEmpty()) {
-            return new MessageBuilder().setEmbed(EmbedUtil.info("Usage", "ban <@User>").build()).build();
+    protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
+        String[] args = invocation.getArgs();
+        Message message = invocation.getMessage();
+        Member member = invocation.getMember();
+        Guild guild = invocation.getGuild();
+
+        if(args.length == 0)
+            return createHelpMessage();
+        if(args[0].equals("settings"))
+            return new MessageBuilder().setEmbed(EmbedUtil.info("Work in progress", "This feature is still work in progress").build()).build();
+        if(message.getMentionedMembers().isEmpty())
+            return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.ban.unknowuser.title"), invocation.translate("command.ban.unknownuser.description")).build()).build();
+        RubiconMember victim = RubiconMember.fromMember(message.getMentionedMembers().get(0));
+        Member victimMember = victim.getMember();
+        if(victimMember.equals(guild.getSelfMember()) || Arrays.asList(Info.BOT_AUTHOR_IDS).contains(victimMember.getUser().getIdLong()))
+            return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.ban.donotbanrubicon.title"), invocation.translate("command.ban.donotbanrubicon.description")).build()).build();
+        if(!member.canInteract(victimMember) && !Arrays.asList(Info.BOT_AUTHOR_IDS).contains(victimMember.getUser().getIdLong()))
+            return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.ban.nopermissions.user.title"), invocation.translate("command.ban.nopermissions.user.description")).build()).build();
+        if(!invocation.getSelfMember().canInteract(victimMember))
+            return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.ban.nopermissions.bot.title"), invocation.translate("command.ban.nopermissions.bot.description")).build()).build();
+        if(args.length == 1){
+            if(!new PermissionRequirements("ban.permanent", false, false).coveredBy(invocation.getPerms()))
+                return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.ban.nopermissions.user.title"), invocation.translate("command.ban.permanent.noperms.descriptio")).build()).build();
+            victim.ban();
+            return new MessageBuilder().setEmbed(EmbedUtil.success(invocation.translate("command.ban.banned.permanent.title"), String.format(invocation.translate("command.ban.banned.permanent.description"), victimMember.getAsMention())).build()).build();
+        } else if (args.length > 1){
+            Date expiry = StringUtil.parseDate(args[1]);
+            if(expiry == null)
+                return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("general.punishment.invalidnumber.title"), invocation.translate("general.punishment.invalidnumber.description")).build()).build();
+            victim.ban(expiry);
+            return new MessageBuilder().setEmbed(EmbedUtil.success(invocation.translate("command.ban.banned.temporary.title"), invocation.translate("command.ban.banned.temporary.permanent").replace("%mention%", victimMember.getAsMention()).replace("%date%", DateUtil.formatDate(expiry, invocation.translate("date.format")))).build()).build();
         }
-        Member target = msg.getGuild().getMember(msg.getMentionedUsers().get(0));
-        if (!msg.getGuild().getSelfMember().canInteract(target)) {
-            return new MessageBuilder().setEmbed(EmbedUtil.error("No permissions", "Sorry I can't ban this User.").build()).build();
-        } else {
-            if (!target.getUser().isBot()) {
-                PrivateChannel channel = target.getUser().openPrivateChannel().complete();
-                channel.sendMessage(EmbedUtil.success("Banned", "You got banned").build()).queue();
-            }
-            msg.getGuild().getController().ban(target, 7).queue();
-            return new MessageBuilder().setEmbed(EmbedUtil.success("Banned", "Successfully banned " + target.getAsMention()).build()).build();
+
+        return createHelpMessage();
+    }
+
+    @Override
+    public void loadPunishments() {
+        Cursor cursor = RubiconBot.getRethink().db.table("punishments").filter(RubiconBot.getRethink().rethinkDB.hashMap("type", "ban")).run(RubiconBot.getRethink().connection);
+        for (Object obj : cursor) {
+            Map map = (Map) obj;
+            RubiconUser user = RubiconUser.fromUser(RubiconBot.getShardManager().getUserById((long) map.get("userId")));
+            long guildId = (long) map.get("guildId");
+            long expiry = (long) map.get("expiry");
+            if(expiry == 1L) return;
+            if(new Date(expiry).before(new Date())) user.unban(RubiconBot.getShardManager().getGuildById(guildId));
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    user.unban(RubiconBot.getShardManager().getGuildById(guildId));
+                }
+            }, new Date(expiry));
         }
     }
 }

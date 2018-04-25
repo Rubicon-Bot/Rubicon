@@ -1,25 +1,27 @@
 package fun.rubicon.commands.music;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.core.music.MusicManager;
+import fun.rubicon.core.music.GuildMusicPlayer;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import net.dv8tion.jda.core.entities.Message;
 
 /**
- * @author Yannick Seeger / ForYaSee
+ * @author ForYaSee / Yannick Seeger
  */
 public class CommandJoin extends CommandHandler {
 
     public CommandJoin() {
-        super(new String[]{"join", "summon"}, CommandCategory.MUSIC, new PermissionRequirements("command.join", false, true), "Lets the bot join in your voice channel.", "");
+        super(new String[]{"join", "summon"}, CommandCategory.MUSIC, new PermissionRequirements("join", false, true), "Let the bot join in your channel.", "");
     }
 
     @Override
-    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        MusicManager musicManager = new MusicManager(parsedCommandInvocation);
-        return musicManager.joinInVoiceChannel();
+    protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
+        final GuildMusicPlayer musicPlayer = RubiconBot.getGuildMusicPlayerManager().getAndCreatePlayer(invocation, userPermissions);
+        musicPlayer.join();
+        return null;
     }
 }

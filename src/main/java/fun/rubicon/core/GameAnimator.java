@@ -1,69 +1,68 @@
 /*
- * Copyright (c) 2017 Rubicon Bot Development Team
- *
- * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ * Copyright (c) 2018  Rubicon Bot Development Team
+ * Licensed under the GPL-3.0 license.
+ * The full license text is available in the LICENSE file provided with this project.
  */
 
 package fun.rubicon.core;
 
 import fun.rubicon.RubiconBot;
+import fun.rubicon.util.FileUtil;
 import fun.rubicon.util.Info;
+import fun.rubicon.util.Logger;
+import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
 
+import java.io.File;
+import java.util.Timer;
+import java.util.TimerTask;
+
+/**
+ * @author Yannick Seeger / ForYaSee
+ */
 public class GameAnimator {
 
-    private static Thread t;
-    private static boolean running = false;
-    private static int currentGame = 0;
-
-    private static final String[] gameAnimations = {
-            Info.BOT_VERSION,
-            "rubicon.fun",
-            "twitter.com/rubicondevteam"
-
+    private final Timer timer;
+    private final File gameFile;
+    private final Game[] games = {
+            Game.listening("rc!help"),
+            Game.playing("rubicon.fun"),
+            Game.watching("twitter.com/realRubicon"),
+            Game.playing("Version: " + Info.BOT_VERSION),
+            Game.watching("Rubiteam <3"),
+            Game.watching("New Translations"),
+            Game.playing("translate.rubicon.fun"),
+            Game.watching("Unicorns flying in the sky"),
+            Game.listening("for patreons http://donate.rucb.co")
     };
+    private int currentGame = 0;
 
-    public static synchronized void start() {
-        if (!RubiconBot.getConfiguration().has("playingStatus")) {
-            RubiconBot.getConfiguration().set("playingStatus", "0");
-        }
-        if (!running) {
-            t = new Thread(() -> {
-                long last = 0;
-                while (running) {
-                    if (System.currentTimeMillis() >= last + 30000) {
-                        if (RubiconBot.getConfiguration().has("playingStatus")) {
-                            String playStat = RubiconBot.getConfiguration().getString("playingStatus");
-                            if (!playStat.equals("0") && !playStat.equals("")) {
-                                RubiconBot.getJDA().getPresence().setGame(Game.playing(playStat));
-                                last = System.currentTimeMillis();
-                            } else {
-                                RubiconBot.getJDA().getPresence().setGame(Game.playing("rc!help | " + gameAnimations[currentGame]));
-
-                                if (currentGame == gameAnimations.length - 1)
-                                    currentGame = 0;
-                                else
-                                    currentGame += 1;
-                                last = System.currentTimeMillis();
-                            }
-                        }
-                    }
-                }
-            });
-            t.setName("GameAnimator");
-            running = true;
-            t.start();
-        }
+    public GameAnimator() {
+        timer = new Timer();
+        gameFile = FileUtil.createFileIfNotExist(new File("data/bot/settings", "status.game"));
     }
 
-    public static synchronized void stop() {
-        if (running) {
-            try {
-                running = false;
-                t.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+    public void start() {
+        Logger.info("Starting Game Animator....");
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                String gameFileContent = FileUtil.readFromFile(gameFile);
+                if (gameFileContent.equals("")) {
+                    if (currentGame == games.length)
+                        currentGame = 0;
+                    RubiconBot.getShardManager().setStatus(OnlineStatus.ONLINE);
+                    RubiconBot.getShardManager().setGame(games[currentGame]);
+                    currentGame++;
+                } else {
+                    RubiconBot.getShardManager().setGame(GameStatusFileParser.parse());
+                }
             }
-        }
+        }, 0, 1000 * 60);
+    }
+
+    public void stop() {
+        Logger.info("Stopping Game Animator ....");
+        timer.cancel();
     }
 }

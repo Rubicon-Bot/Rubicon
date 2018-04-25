@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2018 Rubicon Bot Development Team
- *
- * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ * Copyright (c) 2018  Rubicon Bot Development Team
+ * Licensed under the GPL-3.0 license.
+ * The full license text is available in the LICENSE file provided with this project.
  */
 
 package fun.rubicon.permission;

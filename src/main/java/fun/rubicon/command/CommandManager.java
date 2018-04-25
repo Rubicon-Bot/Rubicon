@@ -1,23 +1,24 @@
 /*
- * Copyright (c) 2017 Rubicon Bot Development Team
- *
- * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ * Copyright (c) 2018  Rubicon Bot Development Team
+ * Licensed under the GPL-3.0 license.
+ * The full license text is available in the LICENSE file provided with this project.
  */
 
 package fun.rubicon.command;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.core.music.MusicManager;
-import fun.rubicon.sql.GuildSQL;
+import fun.rubicon.core.entities.RubiconGuild;
+import fun.rubicon.core.entities.RubiconMember;
+import fun.rubicon.core.entities.RubiconUser;
+import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.*;
+import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
 
 /**
  * Maintains command invocation associations.
@@ -26,13 +27,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class CommandManager extends ListenerAdapter {
     private final Map<String, CommandHandler> commandAssociations = new HashMap<>();
-
-    /**
-     * Constructs and registers the command manager.
-     */
-    public CommandManager() {
-        RubiconBot.registerEventListener(this);
-    }
 
     /**
      * Registers multiple CommandHandlers with their invocation aliases.
@@ -63,24 +57,18 @@ public class CommandManager extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if (event.getAuthor().isBot())
+        if (!RubiconBot.allShardsInitialised() || event.isFromType(ChannelType.PRIVATE) || event.getAuthor().isBot() || event.getAuthor().isFake())
             return;
-        if (event.isFromType(ChannelType.PRIVATE)) return;
-        GuildSQL guildSQL = GuildSQL.fromGuild(event.getGuild());
-        if (guildSQL.enabledBlacklist())
-            if (guildSQL.isBlacklisted(event.getTextChannel())) return;
-            else if (guildSQL.enabledWhitelist())
-                if (!guildSQL.isWhitelisted(event.getTextChannel())) return;
-
-        MusicManager.handleTrackChoose(event);
         super.onMessageReceived(event);
+
+        //Check Database Entries
+        if(event.getChannelType().isGuild()) {
+            RubiconGuild.fromGuild(event.getGuild());
+            RubiconMember.fromMember(event.getMember());
+        }
+
         ParsedCommandInvocation commandInvocation = parse(event.getMessage());
-        //Send typing because it's useless
         if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake() && !event.isWebhookMessage()) {
-            if (GlobalBlacklist.isOnBlacklist(event.getAuthor())) {
-                event.getTextChannel().sendMessage(EmbedUtil.message(EmbedUtil.error("Blacklisted", "You are on the RubiconBot blacklist! ;)"))).queue(msg -> msg.delete().queueAfter(20, TimeUnit.SECONDS));
-                return;
-            }
             call(commandInvocation);
         }
     }
@@ -94,25 +82,25 @@ public class CommandManager extends ListenerAdapter {
         CommandHandler commandHandler = getCommandHandler(parsedCommandInvocation.getCommandInvocation());
         Message response;
         if (commandHandler == null) {
-            /*response = EmbedUtil.message(EmbedUtil.withTimestamp(EmbedUtil.error("Unknown command", "'" + parsedCommandInvocation.serverPrefix + parsedCommandInvocation.invocationCommand
-                    + "' could not be resolved to a command.\nType '" + parsedCommandInvocation.serverPrefix
-                    + "help' to get a list of all commands.")));*/
             return;
         } else {
-            DevCommandLog.log(parsedCommandInvocation);
             response = commandHandler.call(parsedCommandInvocation);
         }
 
         // respond
         if (response != null)
-            EmbedUtil.sendAndDeleteOnGuilds(parsedCommandInvocation.getMessage().getChannel(), response);
+            SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), response, 60);
 
         // delete invocation message
         if (parsedCommandInvocation.getGuild() != null) {
             if (!parsedCommandInvocation.getGuild().getSelfMember().getPermissions(parsedCommandInvocation.getTextChannel()).contains(Permission.MESSAGE_MANAGE))
                 return; // Do not try to delete message when bot is not allowed to
-            parsedCommandInvocation.getMessage().delete().queue(null, msg -> {
-            }); // suppress failure
+            try {
+                parsedCommandInvocation.getMessage().delete().queue(null, msg -> {
+                }); // suppress failure
+            } catch (Exception e) {
+                // Ignored
+            }
         }
     }
 
@@ -126,15 +114,15 @@ public class CommandManager extends ListenerAdapter {
     private static ParsedCommandInvocation parse(Message message) {
         String prefix = null;
         // react to mention: '@botmention<majorcommand> [arguments]'
-        if (message.getContentRaw().startsWith(RubiconBot.getJDA().getSelfUser().getAsMention())) {
-            prefix = RubiconBot.getJDA().getSelfUser().getAsMention();
+        if (message.getContentRaw().startsWith(RubiconBot.getSelfUser().getAsMention())) {
+            prefix = RubiconBot.getSelfUser().getAsMention();
             // react to default prefix: 'rc!<majorcommand> [arguments]'
         } else if (message.getContentRaw().toLowerCase().startsWith(Info.BOT_DEFAULT_PREFIX.toLowerCase())) {
             prefix = message.getContentRaw().substring(0, Info.BOT_DEFAULT_PREFIX.length());
         }
         // react to custom server prefix: '<custom-server-prefix><majorcommand> [arguments...]'
         else if (message.getChannelType() == ChannelType.TEXT) { // ensure bot is on a server
-            String serverPrefix = RubiconBot.getMySQL().getGuildValue(message.getGuild(), "prefix");
+            String serverPrefix = RubiconGuild.fromGuild(message.getGuild()).getPrefix();
             if (message.getContentRaw().toLowerCase().startsWith(serverPrefix.toLowerCase()))
                 prefix = serverPrefix;
         }
@@ -170,16 +158,33 @@ public class CommandManager extends ListenerAdapter {
 
     public static final class ParsedCommandInvocation {
 
-        private final String[] argsNew;
+        private ResourceBundle language;
+        private final ResourceBundle defaultResourceBundle;
+        private final String[] args;
         private final String commandInvocation;
         private final Message message;
         private final String prefix;
+        private final String argsString;
+        private final JDA jda;
 
         private ParsedCommandInvocation(Message invocationMessage, String serverPrefix, String invocationCommand, String[] args) {
             this.message = invocationMessage;
             this.prefix = serverPrefix;
             this.commandInvocation = invocationCommand;
-            this.argsNew = args;
+            this.args = args;
+            this.jda = message.getJDA();
+            this.argsString = message.getContentDisplay().replace(prefix + invocationCommand + " ", "");
+
+            RubiconGuild.fromGuild(message.getGuild());
+            RubiconMember.fromMember(message.getMember());
+
+            this.defaultResourceBundle = RubiconBot.sGetTranslations().getDefaultTranslationLocale().getResourceBundle();
+            try {
+                this.language = RubiconBot.sGetTranslations().getUserLocale(invocationMessage.getAuthor()).getResourceBundle();
+            } catch (NullPointerException | MissingResourceException e) {
+                this.language = defaultResourceBundle;
+                RubiconUser.fromUser(getAuthor()).setLanguage("en-US");
+            }
         }
 
         public Message getMessage() {
@@ -191,7 +196,7 @@ public class CommandManager extends ListenerAdapter {
         }
 
         public String[] getArgs() {
-            return argsNew;
+            return args;
         }
 
         public String getCommandInvocation() {
@@ -216,6 +221,40 @@ public class CommandManager extends ListenerAdapter {
 
         public TextChannel getTextChannel() {
             return message.getTextChannel();
+        }
+
+        public String getArgsString() {
+            return argsString;
+        }
+
+        public JDA getJDA() {
+            return jda;
+        }
+
+        public ResourceBundle getLanguage() {
+            return language;
+        }
+
+        public ResourceBundle getDefaultLanguage() {
+            return defaultResourceBundle;
+        }
+
+        public UserPermissions getPerms() {
+            return new UserPermissions(getAuthor(), getGuild());
+        }
+
+        public String translate(String key) {
+            String entry;
+            try {
+                entry = language.getString(key);
+            } catch (MissingResourceException e) {
+                try {
+                    entry = defaultResourceBundle.getString(key);
+                } catch (MissingResourceException e2) {
+                    entry = "Unable to find language string for \"" + key + "\"";
+                }
+            }
+            return entry;
         }
     }
 }

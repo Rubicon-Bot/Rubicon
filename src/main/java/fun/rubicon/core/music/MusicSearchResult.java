@@ -1,6 +1,7 @@
 package fun.rubicon.core.music;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import fun.rubicon.command.CommandManager;
 import fun.rubicon.util.Colors;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
@@ -15,15 +16,15 @@ import java.util.List;
  */
 public class MusicSearchResult {
 
-    private User user;
-    private Guild guild;
-    private GuildMusicManager musicManager;
-
-    private List<AudioTrack> trackList;
-
+    private final CommandManager.ParsedCommandInvocation invocation;
+    private final User user;
+    private final Guild guild;
+    private final List<AudioTrack> trackList;
+    private final GuildMusicPlayer guildMusicPlayer;
+    private final boolean force;
     private Message chooseMessage;
 
-    private String[] emotes = {
+    private final String[] emotes = {
             ":one:",
             ":two:",
             ":three:",
@@ -31,10 +32,12 @@ public class MusicSearchResult {
             ":five:"
     };
 
-    public MusicSearchResult(User user, Guild guild, GuildMusicManager musicManager) {
-        this.user = user;
-        this.guild = guild;
-        this.musicManager = musicManager;
+    public MusicSearchResult(CommandManager.ParsedCommandInvocation invocation, GuildMusicPlayer guildMusicPlayer, boolean force) {
+        this.invocation = invocation;
+        this.guildMusicPlayer = guildMusicPlayer;
+        this.force = force;
+        this.user = invocation.getAuthor();
+        this.guild = invocation.getGuild();
 
         trackList = new ArrayList<>();
     }
@@ -54,7 +57,7 @@ public class MusicSearchResult {
             description.append(emotes[i]).append("  [").append(track.getInfo().title).append("](").append(track.getInfo().uri).append(")\n\n");
             i++;
         }
-        builder.setFooter("Type in your choose. <1-5> (After 15 seconds the request will be deleted)", null);
+        builder.setFooter(invocation.translate("command.play.choose"), null);
         builder.setDescription(description.toString());
         return builder;
     }
@@ -79,7 +82,11 @@ public class MusicSearchResult {
         return guild;
     }
 
-    public GuildMusicManager getMusicManager() {
-        return musicManager;
+    public GuildMusicPlayer getGuildMusicPlayer() {
+        return guildMusicPlayer;
+    }
+
+    public boolean isForce() {
+        return force;
     }
 }

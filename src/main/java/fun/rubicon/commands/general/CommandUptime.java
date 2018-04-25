@@ -13,19 +13,12 @@ import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Rubicon Discord bot
- *
- * @author Leon Kappes / Lee
- * @copyright Rubicon Dev Team 2018
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.commands.general
+/*
+ * Copyright (c) 2018  Rubicon Bot Development Team
+ * Licensed under the GPL-3.0 license.
+ * The full license text is available in the LICENSE file provided with this project.
  */
-public class CommandUptime extends CommandHandler {
-
-    public CommandUptime() {
-        super(new String[]{"uptime"}, CommandCategory.GENERAL, new PermissionRequirements("command.uptime", false, true), "Get the Uptime of the Bot", "", false);
-    }
+public class CommandUptime extends CommandHandler{
 
     private String getTime(Date date, String pattern) {
         return new SimpleDateFormat(pattern).format(date);
@@ -48,9 +41,13 @@ public class CommandUptime extends CommandHandler {
     }
 
 
+    public CommandUptime() {
+        super(new String[]{"uptime"}, CommandCategory.GENERAL, new PermissionRequirements("uptime", false, true),"Get the Uptime of the Bot", "", false);
+    }
+
     @Override
-    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        parsedCommandInvocation.getTextChannel().sendMessage(
+    protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
+        invocation.getTextChannel().sendMessage(
                 new EmbedBuilder()
                         .setColor(new Color(255, 71, 0))
                         .setDescription(":alarm_clock:   **UPTIME**")

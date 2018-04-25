@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017 Rubicon Bot Development Team
- *
- * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ * Copyright (c) 2018  Rubicon Bot Development Team
+ * Licensed under the GPL-3.0 license.
+ * The full license text is available in the LICENSE file provided with this project.
  */
 
 package fun.rubicon.util;
@@ -84,7 +84,12 @@ public class EmbedUtil {
      * @return the generated EmbedBuilder.
      */
     public static EmbedBuilder no_permissions() {
-        return embed(":warning: " + "No permissions", "You don't have the permission to execute this command!").setColor(Colors.COLOR_NO_PERMISSION);
+        return embed(":warning: " + "No permissions!", "You don't have the permission to execute this command!").setColor(Colors.COLOR_NO_PERMISSION);
+    }
+
+
+    public static EmbedBuilder no_permissions(String node) {
+        return embed(":warning: " + "No permissions", "You don't have the permission to execute this command! You need the `" + node + "` Permission").setColor(Colors.COLOR_NO_PERMISSION);
     }
 
 

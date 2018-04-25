@@ -1,14 +1,14 @@
+/*
+ * Copyright (c) 2018  Rubicon Bot Development Team
+ * Licensed under the GPL-3.0 license.
+ * The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.command;
 
 /**
- * Rubicon Discord bot
- *
  * @author Yannick Seeger / ForYaSee
- * @copyright Rubicon Dev Team 2017
- * @license MIT License <http://rubicon.fun/license>
- * @package fun.rubicon.command
  */
-
 public enum CommandCategory {
 
     TEST("test", "Test"),

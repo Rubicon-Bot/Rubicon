@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2018 Rubicon Bot Development Team
- *
- * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ * Copyright (c) 2018  Rubicon Bot Development Team
+ * Licensed under the GPL-3.0 license.
+ * The full license text is available in the LICENSE file provided with this project.
  */
 
 package fun.rubicon.permission;
@@ -68,7 +68,7 @@ public class UserPermissions {
      * @return the {@link User} corresponding to userId or null if this is not available.
      */
     public User getDiscordUser() {
-        return RubiconBot.getJDA() == null ? null : RubiconBot.getJDA().getUserById(userId);
+        return RubiconBot.getShardManager() == null ? null : RubiconBot.getShardManager().getUserById(userId);
     }
 
     /**
@@ -77,7 +77,7 @@ public class UserPermissions {
      * @return the {@link Guild} corresponding to guildId or null if this is not available.
      */
     public Guild getDiscordGuild() {
-        return RubiconBot.getJDA() == null ? null : RubiconBot.getJDA().getGuildById(guildId);
+        return RubiconBot.getShardManager() == null ? null : RubiconBot.getShardManager().getGuildById(guildId);
     }
 
     /**

@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2018  Rubicon Bot Development Team
+ * Licensed under the GPL-3.0 license.
+ * The full license text is available in the LICENSE file provided with this project.
+ */
+
 package fun.rubicon.util;
 
 import com.google.gson.JsonElement;
@@ -11,17 +17,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-// import org.apache.commons.io.IOUtils;
-
+/**
+ * @author Schlaubi
+ */
 public class Configuration {
-    /**
-     * @author Schlaubi
-     * @version
-     */
 
     private File file;
     private JsonObject json;
-    public JsonParser jsonParser;
+    private JsonParser jsonParser;
 
     public Configuration(final File file) {
 
@@ -43,8 +46,8 @@ public class Configuration {
     }
 
     /**
-     * @param key
-     * @param val
+     * @param key The key of the config value you want to set
+     * @param val The value of the key you want to set
      * @description Sets tha value of a key in config
      */
     public Configuration set(final String key, final String val) {
@@ -58,8 +61,8 @@ public class Configuration {
     }
 
     /**
-     * @param key
-     * @param val
+     * @param key The key of the config value you want to set
+     * @param val The value of the key you want to set
      * @description Sets tha value of a key in config
      */
     public Configuration set(final String key, final int val) {
@@ -71,7 +74,7 @@ public class Configuration {
     }
 
     /**
-     * @param key
+     * @param key The key you want to delete
      * @description Removes key from config
      */
     public Configuration unset(final String key) {
@@ -100,26 +103,25 @@ public class Configuration {
                 br.close();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         return this;
     }
 
     /**
-     * @param key
+     * @param key The key you want to get
      * @return Value of key in config as string
      */
     public String getString(final String key) {
         try {
             return json.get(key).getAsString();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (NullPointerException e) {
+            return null;
         }
-        return "";
     }
 
     /**
-     * @param key
+     * @param key The key you want to get
      * @return Value of key in config as integer
      */
     public int getInt(final String key) {
@@ -130,7 +132,7 @@ public class Configuration {
     }
 
     /**
-     * @param key
+     * @param key The key you want to check if exists
      * @return If key exists
      */
     public boolean has(final String key) {
@@ -158,6 +160,4 @@ public class Configuration {
         }
         return values;
     }
-
-
 }

@@ -1,9 +1,3 @@
-/*
- * Copyright (c) 2017 Rubicon Bot Development Team
- *
- * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
- */
-
 package fun.rubicon.commands.botowner;
 
 import fun.rubicon.RubiconBot;
@@ -12,23 +6,35 @@ import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
+import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Message;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import javax.swing.*;
+import java.text.MessageFormat;
 
+import static fun.rubicon.util.EmbedUtil.message;
+
+/**
+ * Rubicon Discord bot
+ *
+ * @author Leon Kappes / Lee
+ * @copyright Rubicon Dev Team 2018
+ * @license GPL-3.0 License <http://rubicon.fun/license>
+ * @package fun.rubicon.commands.botowner
+ */
 public class CommandEval extends CommandHandler {
+
     public CommandEval() {
-        super(new String[]{"eval", "e"}, CommandCategory.BOT_OWNER, new PermissionRequirements("command.eval", true, false), "Just Eval", "<code>");
+        super(new String[]{"eval","ausführen"}, CommandCategory.BOT_OWNER, new PermissionRequirements("eval", true, false), "Just Eval. Nothing to see here.", "Ähhm Nothing");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-
-        String[] par = String.join(" ", parsedCommandInvocation.getArgs()).split("\\s+", 2);
-
         ScriptEngine se = new ScriptEngineManager().getEngineByName("Nashorn");
         try {
             se.eval("var imports = new JavaImporter(" +
@@ -46,17 +52,15 @@ public class CommandEval extends CommandHandler {
         } catch (ScriptException er) {
             er.printStackTrace();
         }
-        se.put("jda", RubiconBot.getJDA());
+        se.put("jda", RubiconBot.getShardManager().getApplicationInfo().getJDA());
         se.put("guild", parsedCommandInvocation.getMessage().getGuild());
         se.put("channel", parsedCommandInvocation.getMessage().getChannel());
         se.put("message", parsedCommandInvocation.getMessage());
         se.put("author", parsedCommandInvocation.getMessage().getAuthor());
 
         String modified_msg = String.join(" ", parsedCommandInvocation.getArgs())
-                .replace("getToken", "getTextChannelById(channel.getId()).sendMessage(\"UnsupportedOperationException(\\\"Nice try m8!\\\")\").queue").replace("System.exit", "getTextChannelById(channel.getId()).sendMessage(\"UnsupportedOperationException(\\\"Nice try m8!\\\")\").queue").replace("shutdown", "getTextChannelById(channel.getId()).sendMessage(\"UnsupportedOperationException(\\\"Nice try m8!\\\")\").queue").replace("Runtime", "getTextChannelById(channel.getId()).sendMessage(\"UnsupportedOperationException(\\\"Nice try m8!\\\")\").queue").replace("leave", "getTextChannelById(channel.getId()).sendMessage(\\\"UnsupportedOperationException(\\\\\\\"Nice try m8!\\\\\\\")\\\").queue").replace("kick", "SHUT UP SCHLAUBI").replace("while", "FUCK YOU!").replace("getAsMention()", "getAsShutUp()").replace("Thread", "EINSCHEIß");
-        //        .replace("ProcessBuilder","throw new UnsupportedOperationException(\"Locked\")");
-
-        //    modified_msg = modified_msg.replaceAll("#", "().");
+                .replace("getToken", "getTextChannelById(channel.getId()).sendMessage(\"UnsupportedOperationException(\\\"Nice try m8!\\\")\").queue");
+            modified_msg = modified_msg.replaceAll("#", "().");
 
         try {
             Object out = se.eval(
@@ -67,7 +71,7 @@ public class CommandEval extends CommandHandler {
                             "};");
 
             if (out == null) {
-                out = "Your action..";
+                out = "Your action..<promise pending>";
             }
 
             parsedCommandInvocation.getMessage().getChannel().sendMessage(new StringBuilder().append("```Java\n").append(modified_msg)
@@ -75,8 +79,8 @@ public class CommandEval extends CommandHandler {
             new MessageBuilder().appendCodeBlock(out.toString(), "Java").buildAll(MessageBuilder.SplitPolicy.NEWLINE, MessageBuilder.SplitPolicy.SPACE, MessageBuilder.SplitPolicy.ANYWHERE).forEach(message -> parsedCommandInvocation.getTextChannel().sendMessage(message).queue());
         } catch (ScriptException er) {
             parsedCommandInvocation.getMessage().getTextChannel().sendMessage(new StringBuilder().append("```Java\n").append(modified_msg)
-                    .append("``` ```Java\nAn exception was thrown:" + er.toString() + "```").toString()).queue();
+                    .append(MessageFormat.format("``` ```Java\nAn exception was thrown:{0}```", er.toString())).toString()).queue();
         }
         return null;
     }
-}
+    }

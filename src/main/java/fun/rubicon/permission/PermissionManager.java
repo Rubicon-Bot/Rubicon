@@ -1,13 +1,16 @@
 /*
- * Copyright (c) 2017 Rubicon Bot Development Team
- *
- * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
+ * Copyright (c) 2018  Rubicon Bot Development Team
+ * Licensed under the GPL-3.0 license.
+ * The full license text is available in the LICENSE file provided with this project.
  */
 
 package fun.rubicon.permission;
 
+import com.rethinkdb.gen.ast.Table;
+import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
-import fun.rubicon.sql.MySQL;
+import fun.rubicon.rethink.Rethink;
+import fun.rubicon.rethink.RethinkHelper;
 import net.dv8tion.jda.core.entities.Guild;
 
 import java.sql.PreparedStatement;
@@ -17,31 +20,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Manages the rubicon permission system.
  *
  * @author tr808axm
  */
-public class PermissionManager {
-    private static final String TABLE = "permissions-v1";
+public class PermissionManager extends RethinkHelper {
+
+    private Rethink rethink;
+    private Table table;
 
     public PermissionManager() {
-        // ensure table existence
-        try {
-            MySQL.getConnection().prepareStatement(
-                    "CREATE TABLE IF NOT EXISTS `" + TABLE + "` (" +
-                            "`guildid` BIGINT SIGNED, " +
-                            "`type` CHAR(1), " +
-                            "`id` BIGINT SIGNED, " +
-                            "`permission` VARCHAR(300)," +
-                            "`negated` BOOLEAN" +
-                            ");")
-                    .execute();
-        } catch (SQLException e) {
-            throw new RuntimeException("Could not create permissions table.", e);
-        }
+        rethink = RubiconBot.getRethink();
+        table = rethink.db.table("permissions");
 
         RubiconBot.getCommandManager().registerCommandHandler(new PermissionCommandHandler());
     }
@@ -56,20 +48,14 @@ public class PermissionManager {
     public boolean addPermission(PermissionTarget target, Permission permission) {
         if (hasPermission(target, permission, true))
             return false;
-        try {
-            PreparedStatement insertStatement = MySQL.getConnection()
-                    .prepareStatement("INSERT INTO `" + TABLE + "` " +
-                            "(`guildid`, `type`, `id`, `permission`, `negated`) VALUES (?, ?, ?, ?, ?)");
-            insertStatement.setLong(1, target.getGuild().getIdLong());
-            insertStatement.setString(2, String.valueOf(target.getType().getIdentifier()));
-            insertStatement.setLong(3, target.getId());
-            insertStatement.setString(4, permission.getPermissionString());
-            insertStatement.setBoolean(5, permission.isNegated());
-            insertStatement.execute();
-            return true;
-        } catch (SQLException e) {
-            throw new RuntimeException("An unknown error has occurred while saving data to the database.", e);
-        }
+        table.insert(rethink.rethinkDB.array(
+                rethink.rethinkDB.hashMap("guildId", target.getGuild().getId())
+                        .with("type", String.valueOf(target.getType().getIdentifier()))
+                        .with("id", String.valueOf(target.getId()))
+                        .with("permission", permission.getPermissionString())
+                        .with("negated", permission.isNegated())
+        )).run(rethink.connection);
+        return true;
     }
 
     /**
@@ -82,24 +68,19 @@ public class PermissionManager {
      * @throws RuntimeException in case of an {@link SQLException}.
      */
     public boolean hasPermission(PermissionTarget target, Permission permission, boolean ignoreNegation) {
-        try {
-            PreparedStatement selectStatement = MySQL.getConnection()
-                    .prepareStatement("SELECT * FROM `" + TABLE + "` " +
-                            "WHERE `guildid` = ? " +
-                            "AND `type` = ? " +
-                            "AND `id` = ? " +
-                            "AND `permission` = ?" +
-                            (!ignoreNegation ? "AND `negated` = ?;" : ";"));
-            selectStatement.setLong(1, target.getGuild().getIdLong());
-            selectStatement.setString(2, String.valueOf(target.getType().getIdentifier()));
-            selectStatement.setLong(3, target.getId());
-            selectStatement.setString(4, permission.getPermissionString());
-            if (!ignoreNegation)
-                selectStatement.setBoolean(5, permission.isNegated());
-            return selectStatement.executeQuery().next(); // has permission if there is an entry
-        } catch (SQLException e) {
-            throw new RuntimeException("An unknown error has occurred while fetching database information.", e);
-        }
+        Cursor cursor = ignoreNegation ? table.filter(
+                rethink.rethinkDB.hashMap("guildId", target.getGuild().getId())
+                .with("type", String.valueOf(target.getType().getIdentifier()))
+                .with("id", String.valueOf(target.getId()))
+                .with("permission", permission.getPermissionString())
+        ).run(rethink.connection) :
+                table.filter(rethink.rethinkDB.hashMap("guildId", target.getGuild().getId())
+                        .with("type", String.valueOf(target.getType().getIdentifier()))
+                        .with("id", String.valueOf(target.getId()))
+                        .with("permission", permission.getPermissionString())
+                        .with("negated", permission.isNegated())
+                ).run(rethink.connection);
+        return exist(cursor);
     }
 
     /**
@@ -110,24 +91,15 @@ public class PermissionManager {
      * @return the {@link Permission Permission object} with a negation value or null if it does not exist.
      */
     public Permission getPermission(PermissionTarget target, String permissionString) {
-        try {
-            PreparedStatement selectStatement = MySQL.getConnection()
-                    .prepareStatement("SELECT `negated` FROM `" + TABLE + "` " +
-                            "WHERE `guildid` = ? " +
-                            "AND `type` = ? " +
-                            "AND `id` = ? " +
-                            "AND `permission` = ?;");
-            selectStatement.setLong(1, target.getGuild().getIdLong());
-            selectStatement.setString(2, String.valueOf(target.getType().getIdentifier()));
-            selectStatement.setLong(3, target.getId());
-            selectStatement.setString(4, permissionString);
-            ResultSet queryResult = selectStatement.executeQuery();
-            return queryResult.next()
-                    ? new Permission(permissionString, queryResult.getBoolean("negated")) // entry with negation value
-                    : null; // no entry
-        } catch (SQLException e) {
-            throw new RuntimeException("An unknown error has occurred while fetching database information.", e);
-        }
+        Cursor cursor = table.filter(rethink.rethinkDB.hashMap("guildId", target.getGuild().getId())
+                .with("type", String.valueOf(target.getType().getIdentifier()))
+                .with("id", String.valueOf(target.getId()))
+                .with("permission", permissionString)
+        ).run(rethink.connection);
+        List list = cursor.toList();
+        return list.size() == 1
+                ? new Permission(permissionString, (boolean) ((Map) list.get(0)).get("negated")) // entry with negation value
+                : null; // no entry
     }
 
     /**
@@ -140,43 +112,27 @@ public class PermissionManager {
     public boolean removePermission(PermissionTarget target, Permission permission) {
         if (!hasPermission(target, permission, true))
             return false;
-        try {
-            PreparedStatement deleteStatement = MySQL.getConnection()
-                    .prepareStatement("DELETE FROM `" + TABLE + "` " +
-                            "WHERE `guildid` = ? " +
-                            "AND `type` = ? " +
-                            "AND `id` = ? " +
-                            "AND `permission` = ?;");
-            deleteStatement.setLong(1, target.getGuild().getIdLong());
-            deleteStatement.setString(2, String.valueOf(target.getType().getIdentifier()));
-            deleteStatement.setLong(3, target.getId());
-            deleteStatement.setString(4, permission.getPermissionString());
-            deleteStatement.execute();
-            return true;
-        } catch (SQLException e) {
-            throw new RuntimeException("An unknown error has occurred while saving data to the database.", e);
-        }
+        table.filter(
+                rethink.rethinkDB.hashMap("guildId", target.getGuild().getId())
+                        .with("type", String.valueOf(target.getType().getIdentifier()))
+                        .with("id", String.valueOf(target.getId()))
+                        .with("permission", permission.getPermissionString())
+        ).delete().run(rethink.connection);
+        return true;
     }
 
     public List<Permission> getPermissions(PermissionTarget target) {
-        try {
-            PreparedStatement selectStatement = MySQL.getConnection()
-                    .prepareStatement("SELECT `permission`, `negated` FROM `" + TABLE + "` " +
-                            "WHERE `guildid` = ? " +
-                            "AND `type` = ? " +
-                            "AND `id` = ?;");
-            selectStatement.setLong(1, target.getGuild().getIdLong());
-            selectStatement.setString(2, String.valueOf(target.getType().getIdentifier()));
-            selectStatement.setLong(3, target.getId());
-            ResultSet queryResult = selectStatement.executeQuery();
-            List<Permission> targetPermissions = new ArrayList<>();
-            while (queryResult.next())
-                targetPermissions.add(new Permission(queryResult.getString("permission"),
-                        queryResult.getBoolean("negated")));
-            return targetPermissions;
-        } catch (SQLException e) {
-            throw new RuntimeException("An unknown error occurred while fetching data from the database.", e);
+        Cursor cursor = table.filter(
+                rethink.rethinkDB.hashMap("guildId", target.getGuild().getId())
+                        .with("type", String.valueOf(target.getType().getIdentifier()))
+                        .with("id", String.valueOf(target.getId()))
+        ).run(rethink.connection);
+        List<Permission> targetPermissions = new ArrayList<>();
+        for (Object obj : cursor) {
+            Map map = (Map) obj;
+            targetPermissions.add(new Permission((String) map.get("permission"), (boolean) map.get("negated")));
         }
+        return targetPermissions;
     }
 
     /**
@@ -186,28 +142,23 @@ public class PermissionManager {
      * @return all permissions grouped by their target.
      */
     public Map<PermissionTarget, List<Permission>> getGuildPermissions(Guild guild) {
-        try {
-            PreparedStatement selectStatement = MySQL.getConnection()
-                    .prepareStatement("SELECT `type`, `id`, `permission`, `negated` FROM `" + TABLE + "` WHERE `guildid` = ?;");
-            selectStatement.setLong(1, guild.getIdLong());
-            ResultSet queryResult = selectStatement.executeQuery();
-
-            Map<PermissionTarget, List<Permission>> guildPermissions = new HashMap<>();
-            while (queryResult.next()) {
-                // construct target (key)
-                PermissionTarget target = new PermissionTarget(guild,
-                        PermissionTarget.Type.getByIdentifier(queryResult.getString("type").charAt(0)),
-                        queryResult.getLong("id"));
-                // add target entry if necessary
-                if (!guildPermissions.containsKey(target))
-                    guildPermissions.put(target, new ArrayList<>());
-                // add permission
-                guildPermissions.get(target).add(new Permission(queryResult.getString("permission"),
-                        queryResult.getBoolean("negated")));
-            }
-            return guildPermissions;
-        } catch (SQLException e) {
-            throw new RuntimeException("An unknown error occurred while fetching data from the database.", e);
+        Cursor cursor = table.filter(row -> row
+                .g("guildId").eq(guild.getId())
+        ).run(rethink.connection);
+        Map<PermissionTarget, List<Permission>> guildPermissions = new HashMap<>();
+        for (Object obj : cursor) {
+            Map map = (Map) obj;
+            // construct target (key)
+            PermissionTarget target = new PermissionTarget(guild,
+                    PermissionTarget.Type.getByIdentifier(((String) map.get("type")).charAt(0)),
+                    Long.valueOf((String) map.get("id")));
+            // add target entry if necessary
+            if (!guildPermissions.containsKey(target))
+                guildPermissions.put(target, new ArrayList<>());
+            // add permission
+            guildPermissions.get(target).add(new Permission((String) map.get("permission"),
+                    (boolean) map.get("negated")));
         }
+        return guildPermissions;
     }
 }

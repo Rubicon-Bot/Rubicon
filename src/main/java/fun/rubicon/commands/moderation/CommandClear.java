@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2017 Rubicon Bot Development Team
- *
- * Licensed under the MIT license. The full license text is available in the LICENSE file provided with this project.
- */
 package fun.rubicon.commands.moderation;
 
 import fun.rubicon.command.CommandCategory;
@@ -12,63 +7,58 @@ import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.StringUtil;
+import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
 
+import java.io.UnsupportedEncodingException;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Handles the 'clear' command.
- *
- * @author Yannick Seeger / ForYaSee
+ * @author Schlaubi / Michael Rittmeister
  */
-public class CommandClear extends CommandHandler {
 
+public class CommandClear extends CommandHandler {
     public CommandClear() {
-        super(new String[]{"clear", "purge"}, CommandCategory.MODERATION, new PermissionRequirements("command.clear", false, false), "Clear the chat.", "<amount of messages> [@User]");
+        super(new String[] {"clear", "prune"}, CommandCategory.MODERATION, new PermissionRequirements("clear", false, false), "Deletes message", "<count> [@User]");
     }
 
     @Override
-    protected Message execute(CommandManager.ParsedCommandInvocation parsedCommandInvocation, UserPermissions userPermissions) {
-        if (parsedCommandInvocation.getArgs().length == 0) {
+    protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) throws UnsupportedEncodingException {
+        String[] args = invocation.getArgs();
+        if (args.length == 0)
             return createHelpMessage();
-        }
-
-        if (!StringUtil.isNumeric(parsedCommandInvocation.getArgs()[0])) {
-            return EmbedUtil.message(EmbedUtil.error("Error!", "Parameter must be numeric."));
-        }
-
-        int messageAmount = Integer.parseInt(parsedCommandInvocation.getArgs()[0]);
-        User user = (parsedCommandInvocation.getMessage().getMentionedUsers().size() == 1) ? parsedCommandInvocation.getMessage().getMentionedUsers().get(0) : null;
-
-        if (messageAmount < 2) {
-            return EmbedUtil.message(EmbedUtil.error("Error!", "I can't delete less than 2 messages."));
-        }
-
-        if (messageAmount > 3000) {
-            return EmbedUtil.message(EmbedUtil.error("Error!", "Why do you want to clear more than 3000 messages??"));
-        }
-
-        int deletedMessagesSize = 0;
-        List<Message> messagesToDelete;
-        while (messageAmount != 0) {
-            if (messageAmount > 100) {
-                messagesToDelete = parsedCommandInvocation.getMessage().getTextChannel().getHistory().retrievePast(100).complete();
-                messageAmount -= 100;
+        if(!StringUtil.isNumeric(args[0]))
+            return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.clear.invalidcount.title"), invocation.translate("command.clear.invalidcount.description")).build()).build();
+        int messageCount = Integer.parseInt(args[0]);
+        User user = (invocation.getMessage().getMentionedUsers().isEmpty() ? null : invocation.getMessage().getMentionedUsers().get(0));
+        if(messageCount  < 2)
+            return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.clear.1message.title"), invocation.translate("command.clear.1message.description")).build()).build();
+        if(messageCount  > 3000)
+            return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.clear.tomuchmessages.title"), invocation.translate("command.clear.tomuchmessages.description")).build()).build();
+        if(!invocation.getSelfMember().hasPermission((Channel) invocation.getMessage().getChannel(), Permission.MESSAGE_MANAGE))
+            return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.clear.nopermission.title"), invocation.translate("command.clear.nopermission.description")).build()).build();
+        int deletedMessages = 0;
+        while (messageCount != 0){
+            List<Message> messagesToDelete;
+            if(messageCount > 100){
+                messagesToDelete = invocation.getTextChannel().getHistory().retrievePast(100).complete();
+                messageCount -= 100;
             } else {
-                messagesToDelete = parsedCommandInvocation.getMessage().getTextChannel().getHistory().retrievePast(messageAmount).complete();
-                messageAmount = 0;
+                messagesToDelete = invocation.getTextChannel().getHistory().retrievePast(messageCount).complete();
+                messageCount = 0;
             }
-            messagesToDelete = messagesToDelete.stream().filter(message -> !message.getCreationTime().isBefore(OffsetDateTime.now().minusWeeks(2))).collect(Collectors.toList());
-            if (user != null)
-                messagesToDelete = messagesToDelete.stream().filter(message -> message.getAuthor() == user).collect(Collectors.toList());
-            deletedMessagesSize += messagesToDelete.size();
-            if (messagesToDelete.size() > 1)
-                parsedCommandInvocation.getMessage().getTextChannel().deleteMessages(messagesToDelete).complete();
-            else break;
+            messagesToDelete = messagesToDelete.stream().filter(msg -> !msg.getCreationTime().isBefore(OffsetDateTime.now().minusWeeks(2))).collect(Collectors.toList());
+            if(user != null)
+                messagesToDelete = messagesToDelete.stream().filter(msg -> msg.getAuthor().equals(user)).collect(Collectors.toList());
+            deletedMessages += messagesToDelete.size();
+            if(messagesToDelete.size() > 1)
+                invocation.getTextChannel().deleteMessages(messagesToDelete).complete();
         }
-        return EmbedUtil.message(EmbedUtil.success("Cleared channel!", "Successfully cleared `" + deletedMessagesSize + "` messages"));
+        return new MessageBuilder().setEmbed(EmbedUtil.success(invocation.translate("command.clear.cleared.title"), String.format(invocation.translate("command.clear.cleared.description"), deletedMessages)).build()).build();
     }
 }
