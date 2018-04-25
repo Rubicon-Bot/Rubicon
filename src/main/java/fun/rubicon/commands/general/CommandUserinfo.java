@@ -51,8 +51,8 @@ public class CommandUserinfo extends CommandHandler {
         embedBuilder.addField(invocation.translate("command.userinfo.tag"), infoUser.getName() + "#" + infoUser.getDiscriminator(), true);
         embedBuilder.addField(invocation.translate("command.userinfo.creation.title"), DateUtil.formatDate(infoUser.getCreationTime(), invocation.translate("date.format")), true);
         embedBuilder.addField(invocation.translate("command.userinfo.joindate.title"), DateUtil.formatDate(infoMember.getJoinDate(), invocation.translate("date.format")), true);
-        embedBuilder.addField(invocation.translate("command.userinfo.roles.title"), "```" + resRoles + "```", false);
         embedBuilder.addField(invocation.translate("command.userinfo.avatar.title"), infoUser.getAvatarUrl(), false);
+        embedBuilder.addField(invocation.translate("command.userinfo.roles.title"), "```" + resRoles + "```", false);
         return EmbedUtil.message(embedBuilder);
     }
 }

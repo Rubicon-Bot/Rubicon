@@ -1,4 +1,4 @@
-package fun.rubicon.features.poll;
+package fun.rubicon.features;
 
 public interface PunishmentHandler {
 

@@ -1,4 +1,4 @@
-package fun.rubicon.features.poll;
+package fun.rubicon.features;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.RubiconPoll;
@@ -22,7 +22,6 @@ public class PollManager {
     public synchronized void loadPolls(){
         if(!running) {
             Thread t = new Thread(() -> {
-                Logger.info("Staring poll loading thread \"" + Thread.currentThread().getName() + "\"");
                 running = true;
                 if(running) {
                     HashMap<Guild, RubiconPoll> polls = getPolls();
@@ -50,6 +49,7 @@ public class PollManager {
                 }
             });
             t.setName("Poll-loader");
+            Logger.info("Staring poll loading thread \"" + t.getName() + "\"");
             t.start();
         }
     }

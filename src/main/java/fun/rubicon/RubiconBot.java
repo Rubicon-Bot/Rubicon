@@ -21,15 +21,20 @@ import fun.rubicon.commands.music.*;
 import fun.rubicon.commands.music.CommandClearQueue;
 import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
+import fun.rubicon.commands.moderation.CommandMute;
+import fun.rubicon.commands.moderation.CommandUnmute;
+import fun.rubicon.commands.settings.CommandAutochannel;
+import fun.rubicon.commands.settings.CommandJoinMessage;
+import fun.rubicon.commands.settings.CommandLeaveMessage;
+import fun.rubicon.commands.settings.CommandPrefix;
+import fun.rubicon.commands.tools.CommandRandomColor;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.music.GuildMusicPlayerManager;
 import fun.rubicon.core.music.LavalinkManager;
 import fun.rubicon.core.translation.TranslationManager;
 import fun.rubicon.commands.botowner.CommandEval;
-import fun.rubicon.features.poll.PollManager;
-import fun.rubicon.features.poll.PunishmentManager;
-import fun.rubicon.features.verification.VerificationCommandHandler;
-import fun.rubicon.features.verification.VerificationLoader;
+import fun.rubicon.features.PollManager;
+import fun.rubicon.features.PunishmentManager;
 import fun.rubicon.listener.*;
 import fun.rubicon.listener.bot.BotJoinListener;
 import fun.rubicon.listener.bot.BotLeaveListener;
@@ -38,16 +43,12 @@ import fun.rubicon.listener.bot.ShardListener;
 import fun.rubicon.listener.channel.TextChannelDeleteListener;
 import fun.rubicon.listener.channel.VoiceChannelDeleteListener;
 import fun.rubicon.listener.feature.PunishmentListener;
-import fun.rubicon.listener.feature.VerificationListener;
-import fun.rubicon.listener.feature.VoteListener;
 import fun.rubicon.listener.member.MemberJoinListener;
 import fun.rubicon.listener.member.MemberLeaveListener;
 import fun.rubicon.listener.role.RoleDeleteListener;
 import fun.rubicon.permission.PermissionManager;
 import fun.rubicon.rethink.Rethink;
 import fun.rubicon.rethink.RethinkUtil;
-import fun.rubicon.setup.SetupListener;
-import fun.rubicon.setup.SetupManager;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.bot.sharding.ShardManager;
@@ -84,10 +85,10 @@ public class RubiconBot {
     private ShardManager shardManager;
     private boolean allShardsInitialised;
     private BitlyAPI bitlyAPI;
-    private VerificationLoader verificationLoader;
-    private SetupManager setupManager;
     private static int SHARD_COUNT;
     private static LavalinkManager lavalinkManager;
+    private boolean allShardsInited;
+
 
     /**
      * Constructs the RubiconBot.
@@ -139,6 +140,9 @@ public class RubiconBot {
         //Init punishments
         punishmentManager = new PunishmentManager();
 
+        //Init punishments
+        punishmentManager = new PunishmentManager();
+
         commandManager = new CommandManager();
         lavalinkManager = new LavalinkManager();
         pollManager = new PollManager();
@@ -149,8 +153,6 @@ public class RubiconBot {
         gameAnimator = new GameAnimator();
         //Init url shorter API
         bitlyAPI = new BitlyAPI(configuration.getString("bitly_token"));
-        verificationLoader = new VerificationLoader();
-        setupManager = new SetupManager();
 
 
         //Init Shard
@@ -158,6 +160,7 @@ public class RubiconBot {
 
         gameAnimator.start();
         shardManager.setStatus(OnlineStatus.ONLINE);
+
     }
 
     private void registerCommands() {
@@ -180,8 +183,8 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(
                 new CommandJoinMessage(),
                 new CommandLeaveMessage(),
-                new CommandAutochannel(),
-                new CommandJoinImage()
+                new CommandJoinImage(),
+                new CommandAutochannel()
         );
 
         // Fun
@@ -209,7 +212,6 @@ public class RubiconBot {
                 new CommandMoney(),
                 new CommandStatistics(),
                 new CommandUptime(),
-                new CommandYouTube(),
                 new CommandSearch(),
                 new CommandPremium(),
                 new CommandKey(),
@@ -221,6 +223,7 @@ public class RubiconBot {
                 new CommandUnmute(),
                 new CommandUnban(),
                 new CommandMoveall()
+
         );
 
         //Punishments
@@ -233,8 +236,8 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(
                 new CommandPoll(),
                 new CommandShort(),
-                new CommandNick(),
-                new VerificationCommandHandler()
+                new CommandYouTube(),
+                new CommandRandomColor()
         );
 
         //Music
@@ -287,7 +290,6 @@ public class RubiconBot {
                 new UserMentionListener(),
                 new ShardListener(),
                 new SelfMentionListener(),
-                new VoteListener(),
                 new MemberJoinListener(),
                 new MemberLeaveListener(),
                 new TextChannelDeleteListener(),
@@ -297,9 +299,8 @@ public class RubiconBot {
                 new PunishmentListener(),
                 new GeneralMessageListener(),
                 new RoleDeleteListener(),
-                new LavalinkManager(),
-                new VerificationListener(),
-                new SetupListener()
+                new LavalinkManager()
+
         );
         try {
             shardManager = builder.build();
@@ -307,7 +308,7 @@ public class RubiconBot {
             Logger.error(e);
             throw new RuntimeException("Can't start bot!");
         }
-        //lavalinkManager.initialize();
+        lavalinkManager.initialize();
         Info.lastRestart = new Date();
     }
 
@@ -323,6 +324,7 @@ public class RubiconBot {
             throw new RuntimeException("The Discord API did not Respond with a Shard count!");
         }
     }
+
 
     /**
      * @return the {@link ShardManager} that is used in the Rubicon project
@@ -434,13 +436,11 @@ public class RubiconBot {
         return lavalinkManager;
     }
 
-    public static GuildMusicPlayerManager getGuildMusicPlayerManager() { return instance.guildMusicPlayerManager; }
+    public static GuildMusicPlayerManager getGuildMusicPlayerManager() {
+        return instance.guildMusicPlayerManager;
+    }
 
     public static Rethink getRethink() {
         return instance == null ? null : instance.rethink;
     }
-
-    public static VerificationLoader getVerificationLoader() { return instance.verificationLoader; }
-
-    public static SetupManager getSetupManager() { return instance.setupManager; }
 }

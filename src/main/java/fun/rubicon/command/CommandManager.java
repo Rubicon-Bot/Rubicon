@@ -239,9 +239,7 @@ public class CommandManager extends ListenerAdapter {
             return defaultResourceBundle;
         }
 
-        public UserPermissions getPerms() {
-            return new UserPermissions(getAuthor(), getGuild());
-        }
+        public UserPermissions getPerms() { return new UserPermissions(getAuthor(), getGuild()); }
 
         public String translate(String key) {
             String entry;
@@ -250,7 +248,7 @@ public class CommandManager extends ListenerAdapter {
             } catch (MissingResourceException e) {
                 try {
                     entry = defaultResourceBundle.getString(key);
-                } catch (MissingResourceException e2) {
+                } catch (MissingResourceException e2){
                     entry = "Unable to find language string for \"" + key + "\"";
                 }
             }
