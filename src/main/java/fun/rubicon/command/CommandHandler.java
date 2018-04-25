@@ -84,10 +84,10 @@ public abstract class CommandHandler {
                 Logger.error("Unknown error during the execution of the '" + parsedCommandInvocation.getCommandInvocation() + "' command. ");
                 Logger.error(e);
                 return new MessageBuilder().setEmbed(new EmbedBuilder()
-                        .setAuthor(":no_entry: Internal Error", null, RubiconBot.getSelfUser().getEffectiveAvatarUrl())
-                        .setDescription("An internal error occurred. ```" + e.getMessage() + "```")
+                        .setAuthor("Error", null, RubiconBot.getSelfUser().getEffectiveAvatarUrl())
+                        .setDescription("An unknown error occurred while executing your command.")
                         .setColor(Colors.COLOR_ERROR)
-                        .setFooter("Please report the error. " + RubiconBot.getNewTimestamp(), null)
+                        .setFooter(RubiconBot.getNewTimestamp(), null)
                         .build()).build();
             }
         } else
@@ -215,6 +215,10 @@ public abstract class CommandHandler {
                 .addField("Aliases", String.join(", ", getInvocationAliases()), false)
                 .addField("Usage", usage.toString(), false));
     }
+
+
+
+
 
 
 }
