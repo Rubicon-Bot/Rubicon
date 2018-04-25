@@ -72,10 +72,7 @@ public class SafeMessage {
 
 
     private static boolean hasPermissions(TextChannel channel) {
-        if(channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_READ) && channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE)) {
-            return true;
-        }
-        return false;
+        return channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_READ) && channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE);
     }
 
     private static boolean hasDeletePermission(TextChannel channel) {

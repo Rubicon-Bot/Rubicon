@@ -20,7 +20,9 @@ public class RethinkUtil {
             "punishments",
             "lavanodes",
             "permissions",
-            "youtube"
+            "youtube",
+            "verification_settings",
+            "verification_users"
     };
 
     public static void createDefaults(Rethink rethink) {
