@@ -222,6 +222,7 @@ public class RubiconBot {
                 new CommandUnmute(),
                 new CommandUnban(),
                 new CommandMoveall()
+
         );
 
         //Punishments
