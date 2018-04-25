@@ -1,4 +1,4 @@
-package fun.rubicon.features;
+package fun.rubicon.features.poll;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandHandler;

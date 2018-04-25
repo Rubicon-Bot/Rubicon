@@ -25,7 +25,7 @@ public class Colors {
     /**
      * For error messages that are not defined in further purpose.
      */
-    public static Color COLOR_ERROR = new Color(229, 22, 0);
+    public static Color COLOR_ERROR = new Color(229, 60, 18);
     /**
      * For permission-related error messages.
      */
