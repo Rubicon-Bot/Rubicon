@@ -221,8 +221,7 @@ public class RubiconBot {
         //Moderation
         commandManager.registerCommandHandlers(
                 new CommandUnmute(),
-                new CommandUnban(),
-                new CommandMoveAll()
+                new CommandUnban()
 
         );
 
