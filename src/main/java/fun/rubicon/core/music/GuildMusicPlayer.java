@@ -116,15 +116,14 @@ public class GuildMusicPlayer extends MusicPlayer {
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.success(invocation.translate("phrase.resumed.title"), invocation.translate("phrase.resumed.titile"))), 30);
             return;
         }
-        loadTrack(force);
+        loadTrack(invocation.getArgsString(), force, false);
     }
 
     public void forcePlay() {
         playMusic(true);
     }
 
-    private void loadTrack(boolean forcePlay) {
-        String keyword = invocation.getArgsString();
+    public void loadTrack(String keyword, boolean forcePlay, boolean silent) {
         boolean isUrl = true;
         if (!keyword.startsWith("http://") && !keyword.startsWith("https://")) {
             keyword = "ytsearch: " + keyword;
@@ -136,24 +135,28 @@ public class GuildMusicPlayer extends MusicPlayer {
             public void trackLoaded(AudioTrack track) {
                 TrackDataHolder trackData = new TrackDataHolder(track);
                 if (forcePlay) {
+                    if (!silent) {
+                        EmbedBuilder embedBuilder = new EmbedBuilder();
+                        embedBuilder.setAuthor(invocation.translate("command.play.loadTrack.playing"), trackData.url, null);
+                        embedBuilder.addField(invocation.translate("command.play.loadTrack.title"), trackData.name, true);
+                        embedBuilder.addField(invocation.translate("command.play.loadTrack.author"), trackData.author, true);
+                        embedBuilder.addField(invocation.translate("command.play.loadTrack.duration"), trackData.isStream ? invocation.translate("command.play.loadTrack.stream") : getTimestamp(trackData.duration), false);
+                        embedBuilder.setColor(Colors.COLOR_PRIMARY);
+                        SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(embedBuilder));
+                    }
+                    play(track);
+                } else {
+                    queueTrack(track);
+                }
+                if (!silent) {
                     EmbedBuilder embedBuilder = new EmbedBuilder();
-                    embedBuilder.setAuthor(invocation.translate("command.play.loadTrack.playing"), trackData.url, null);
+                    embedBuilder.setAuthor(forcePlay ? invocation.translate("command.play.loadTrack.playing") : invocation.translate("command.play.loadTrack.queued"), trackData.url, null);
                     embedBuilder.addField(invocation.translate("command.play.loadTrack.title"), trackData.name, true);
                     embedBuilder.addField(invocation.translate("command.play.loadTrack.author"), trackData.author, true);
                     embedBuilder.addField(invocation.translate("command.play.loadTrack.duration"), trackData.isStream ? invocation.translate("command.play.loadTrack.stream") : getTimestamp(trackData.duration), false);
                     embedBuilder.setColor(Colors.COLOR_PRIMARY);
                     SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(embedBuilder));
-                    play(track);
-                } else {
-                    queueTrack(track);
                 }
-                EmbedBuilder embedBuilder = new EmbedBuilder();
-                embedBuilder.setAuthor(forcePlay ? invocation.translate("command.play.loadTrack.playing") : invocation.translate("command.play.loadTrack.queued"), trackData.url, null);
-                embedBuilder.addField(invocation.translate("command.play.loadTrack.title"), trackData.name, true);
-                embedBuilder.addField(invocation.translate("command.play.loadTrack.author"), trackData.author, true);
-                embedBuilder.addField(invocation.translate("command.play.loadTrack.duration"), trackData.isStream ? invocation.translate("command.play.loadTrack.stream") : getTimestamp(trackData.duration), false);
-                embedBuilder.setColor(Colors.COLOR_PRIMARY);
-                SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(embedBuilder));
             }
 
             @Override
@@ -167,60 +170,68 @@ public class GuildMusicPlayer extends MusicPlayer {
                     playlistTracks.remove(firstTrack);
                 }
                 if (forcePlay) {
-                    TrackDataHolder trackData = new TrackDataHolder(firstTrack);
-                    EmbedBuilder embedBuilder = new EmbedBuilder();
-                    embedBuilder.setAuthor(invocation.translate("command.play.loadTrack.playing"), trackData.url, null);
-                    embedBuilder.addField(invocation.translate("command.play.loadTrack.title"), trackData.name, true);
-                    embedBuilder.addField(invocation.translate("command.play.loadTrack.author"), trackData.author, true);
-                    embedBuilder.addField(invocation.translate("command.play.loadTrack.duration"), trackData.isStream ? invocation.translate("command.play.loadTrack.stream") : getTimestamp(trackData.duration), false);
-                    embedBuilder.setColor(Colors.COLOR_PRIMARY);
-                    SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(embedBuilder));
+                    if (!silent) {
+                        TrackDataHolder trackData = new TrackDataHolder(firstTrack);
+                        EmbedBuilder embedBuilder = new EmbedBuilder();
+                        embedBuilder.setAuthor(invocation.translate("command.play.loadTrack.playing"), trackData.url, null);
+                        embedBuilder.addField(invocation.translate("command.play.loadTrack.title"), trackData.name, true);
+                        embedBuilder.addField(invocation.translate("command.play.loadTrack.author"), trackData.author, true);
+                        embedBuilder.addField(invocation.translate("command.play.loadTrack.duration"), trackData.isStream ? invocation.translate("command.play.loadTrack.stream") : getTimestamp(trackData.duration), false);
+                        embedBuilder.setColor(Colors.COLOR_PRIMARY);
+                        SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(embedBuilder));
+                    }
                     play(firstTrack);
                     return;
                 }
                 if (isURL) {
                     playlistTracks.forEach(track -> queueTrack(track));
-                    EmbedBuilder embedBuilder = new EmbedBuilder();
-                    embedBuilder.setAuthor(invocation.translate("command.play.loadPlaylist.queued.title"), null, null);
-                    embedBuilder.setDescription(invocation.translate("command.play.loadPlaylist.queued.description")
-                            .replaceFirst("%count%", playlistTracks.size() + "")
-                            .replaceFirst("%name%", playlist.getName())
-                            .replaceFirst("%sname%", firstTrack.getInfo().title));
-                    embedBuilder.addField(invocation.translate("command.play.loadPlaylist.queued.author"), firstTrack.getInfo().author, false);
-                    embedBuilder.addField(invocation.translate("command.play.loadPlaylist.queued.duration"), getTimestamp(firstTrack.getDuration()), false);
-                    embedBuilder.setColor(Colors.COLOR_PRIMARY);
-                    SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(embedBuilder));
+                    if (!silent) {
+                        EmbedBuilder embedBuilder = new EmbedBuilder();
+                        embedBuilder.setAuthor(invocation.translate("command.play.loadPlaylist.queued.title"), null, null);
+                        embedBuilder.setDescription(invocation.translate("command.play.loadPlaylist.queued.description")
+                                .replaceFirst("%count%", playlistTracks.size() + "")
+                                .replaceFirst("%name%", playlist.getName())
+                                .replaceFirst("%sname%", firstTrack.getInfo().title));
+                        embedBuilder.addField(invocation.translate("command.play.loadPlaylist.queued.author"), firstTrack.getInfo().author, false);
+                        embedBuilder.addField(invocation.translate("command.play.loadPlaylist.queued.duration"), getTimestamp(firstTrack.getDuration()), false);
+                        embedBuilder.setColor(Colors.COLOR_PRIMARY);
+                        SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(embedBuilder));
+                    }
                     return;
                 }
-                MusicSearchResult musicSearchResult = new MusicSearchResult(invocation, instance, forcePlay);
-                playlist.getTracks().stream().limit(5).collect(Collectors.toList()).forEach(track -> {
-                    try {
-                        musicSearchResult.addTrack(track);
-                    } catch (Exception e) {
-                        Logger.error(e);
-                    }
-                });
-                musicSearchResult.setMessage(SafeMessage.sendMessageBlocking(invocation.getTextChannel(), EmbedUtil.message(musicSearchResult.generateEmbed())));
-                musicChoose.add(musicSearchResult);
-                new Timer().schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        if (musicChoose.contains(musicSearchResult)) {
-                            musicSearchResult.getMessage().delete().queue();
-                            musicChoose.remove(musicSearchResult);
+                if (!silent) {
+                    MusicSearchResult musicSearchResult = new MusicSearchResult(invocation, instance, forcePlay);
+                    playlist.getTracks().stream().limit(5).collect(Collectors.toList()).forEach(track -> {
+                        try {
+                            musicSearchResult.addTrack(track);
+                        } catch (Exception e) {
+                            Logger.error(e);
                         }
-                    }
-                }, 15000);
+                    });
+                    musicSearchResult.setMessage(SafeMessage.sendMessageBlocking(invocation.getTextChannel(), EmbedUtil.message(musicSearchResult.generateEmbed())));
+                    musicChoose.add(musicSearchResult);
+                    new Timer().schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            if (musicChoose.contains(musicSearchResult)) {
+                                musicSearchResult.getMessage().delete().queue();
+                                musicChoose.remove(musicSearchResult);
+                            }
+                        }
+                    }, 15000);
+                }
             }
 
             @Override
             public void noMatches() {
-                SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.error(invocation.translate("command.music.nomatch.title"), invocation.translate("command.music.nomatch.description")).build(), 30);
+                if (!silent)
+                    SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.error(invocation.translate("command.music.nomatch.title"), invocation.translate("command.music.nomatch.description")).build(), 30);
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
-                SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.error(invocation.translate("command.music.error.title"), invocation.translate("command.music.error.description")).build(), 30);
+                if (!silent)
+                    SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.error(invocation.translate("command.music.error.title"), invocation.translate("command.music.error.description")).build(), 30);
             }
         });
     }
@@ -255,7 +266,7 @@ public class GuildMusicPlayer extends MusicPlayer {
     }
 
     public void skip() {
-        if(!checkVoiceAvailability())
+        if (!checkVoiceAvailability())
             return;
         int count = 1;
         if (invocation.getArgs().length > 0) {
@@ -270,14 +281,14 @@ public class GuildMusicPlayer extends MusicPlayer {
     }
 
     public void shuffleUp() {
-        if(!checkVoiceAvailability())
+        if (!checkVoiceAvailability())
             return;
         shuffle();
         SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.success(invocation.translate("command.shuffle.shuffled.title"), invocation.translate("command.shuffle.shuffled.description"))), 30);
     }
 
     public void clear() {
-        if(!checkVoiceAvailability())
+        if (!checkVoiceAvailability())
             return;
         clearQueue();
         SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.success(invocation.translate("command.clearqueue.cleared.title"), invocation.translate("command.clearqueue.cleared.title"))), 30);
@@ -326,7 +337,7 @@ public class GuildMusicPlayer extends MusicPlayer {
     }
 
     public void stopMusic() {
-        if(!checkVoiceAvailability())
+        if (!checkVoiceAvailability())
             return;
         clearQueue();
         stop();
@@ -335,7 +346,7 @@ public class GuildMusicPlayer extends MusicPlayer {
     }
 
     public void pauseMusic() {
-        if(!checkVoiceAvailability())
+        if (!checkVoiceAvailability())
             return;
         if (player.getPlayingTrack() == null) {
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.notplayingtrack.title"), invocation.translate("phrase.notplayingtrack.description"))), 30);
@@ -351,7 +362,7 @@ public class GuildMusicPlayer extends MusicPlayer {
     }
 
     public void resumeMusic() {
-        if(!checkVoiceAvailability())
+        if (!checkVoiceAvailability())
             return;
         if (!player.isPaused()) {
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.resume.notpaused.title"), invocation.translate("command.resume.notpaused.description"))), 30);
@@ -363,11 +374,11 @@ public class GuildMusicPlayer extends MusicPlayer {
 
     public void displayNow() {
         AudioTrack track = player.getPlayingTrack();
-        if(track == null) {
+        if (track == null) {
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("phrase.notplayingtrack.title"), invocation.translate("phrase.notplayingtrack.description"))), 30);
             return;
         }
-        if(!checkVoiceAvailability())
+        if (!checkVoiceAvailability())
             return;
         TrackDataHolder t = new TrackDataHolder(track);
         EmbedBuilder embedBuilder = new EmbedBuilder();

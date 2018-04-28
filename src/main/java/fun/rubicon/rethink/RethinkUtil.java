@@ -23,7 +23,9 @@ public class RethinkUtil {
             "youtube",
             "rpg_inventories",
             "verification_settings",
-            "verification_users"
+            "verification_users",
+            "warn_punishments",
+            "warns"
     };
 
     public static void createDefaults(Rethink rethink) {

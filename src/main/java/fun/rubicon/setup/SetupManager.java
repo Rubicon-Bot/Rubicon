@@ -14,7 +14,6 @@ public class SetupManager {
     public HashMap<String, SetupRequest> requestStorage = new HashMap<>();
 
     public void handleMessage(GuildMessageReceivedEvent event){
-        if(event.getMember().getUser().isBot() || event.getMember().getUser().isFake()) return;
         new Thread(() -> {
             if (!requestStorage.containsKey(event.getMember().getUser().getId())) return;
             SetupRequest request = requestStorage.get(event.getMember().getUser().getId());
@@ -27,7 +26,6 @@ public class SetupManager {
     }
 
     public void handleReaction(GuildMessageReactionAddEvent event){
-        if(event.getMember().getUser().isBot() || event.getMember().getUser().isFake()) return;
         new Thread(() -> {
             if (!requestStorage.containsKey(event.getUser().getId())) return;
             SetupRequest request = requestStorage.get(event.getUser().getId());
