@@ -6,8 +6,14 @@
 
 package fun.rubicon.util;
 
+import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.webhook.WebhookClient;
+import net.dv8tion.jda.webhook.WebhookClientBuilder;
+
+import java.awt.*;
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Date;
 
 public class Logger {
@@ -15,6 +21,12 @@ public class Logger {
     private static String loggerText = "";
     private static boolean fileLogging = false;
     private static SimpleDateFormat logDateFormatter = new SimpleDateFormat("HH:mm:ss");
+    private static WebhookClient webhookClient;
+
+    public static void enableWebhooks(String url) {
+        WebhookClientBuilder builder = new WebhookClientBuilder(url);
+        webhookClient = builder.build();
+    }
 
     public static void logInFile(String appName, String appVersion, String logDirectory) {
         String date = new SimpleDateFormat("dd_MM_yyyy-HH:mm:ss").format(new Date());
@@ -101,24 +113,29 @@ public class Logger {
                 String infoMessage = formatLogMessage("Info", text);
                 System.out.println(infoMessage);
                 addLogEntry(infoMessage + "\n");
+                webhookClient.send(new EmbedBuilder().setColor(Colors.COLOR_SECONDARY).setTitle("INFO").setDescription("```" + text + "```").setTimestamp(Instant.now()).build());
                 break;
             case DEBUG:
                 String debugMessage = formatLogMessage("Debug", text);
                 System.out.println(debugMessage);
                 addLogEntry(debugMessage + "\n");
+                webhookClient.send(new EmbedBuilder().setColor(Colors.COLOR_NO_PERMISSION).setTitle("DEBUG").setDescription("```" + text + "```").setTimestamp(Instant.now()).build());
                 break;
             case ERROR:
                 String errorMessage = formatLogMessage("Error", text);
                 System.err.println(errorMessage);
                 addLogEntry(errorMessage + "\n");
+                webhookClient.send(new EmbedBuilder().setColor(Colors.COLOR_ERROR).setTitle("ERROR").setDescription("```" + text + "```").setTimestamp(Instant.now()).build());
                 break;
             case THROWABLE:
                 addLogEntry(formatLogMessage("Error", text) + "\n");
+                webhookClient.send(new EmbedBuilder().setColor(Colors.COLOR_ERROR).setTitle("THROWABLE").setDescription("```" + text + "```").setTimestamp(Instant.now()).build());
                 break;
             case WARNING:
                 String warningMessage = formatLogMessage("Warning", text);
                 System.err.println(warningMessage);
                 addLogEntry(warningMessage + "\n");
+                webhookClient.send(new EmbedBuilder().setColor(Colors.COLOR_PREMIUM).setTitle("WARNING").setDescription("```" + text + "```").setTimestamp(Instant.now()).build());
                 break;
             default:
                 break;

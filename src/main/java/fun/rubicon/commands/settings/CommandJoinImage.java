@@ -14,7 +14,7 @@ import net.dv8tion.jda.core.entities.TextChannel;
 public class CommandJoinImage extends CommandHandler {
 
     public CommandJoinImage() {
-        super(new String[]{"joinimage", "jimage"}, CommandCategory.SETTINGS, new PermissionRequirements("joinimage", false, false), "Sends a nice image with the avatar and the name of a joined user.", "<disable>\n<enable> <#channel>");
+        super(new String[]{"joinimage", "joinimages", "jimage"}, CommandCategory.SETTINGS, new PermissionRequirements("joinimage", false, false), "Sends a nice image with the avatar and the name of a joined user.", "<disable>\n<enable> <#channel>");
     }
 
     @Override

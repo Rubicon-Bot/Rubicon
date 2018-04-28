@@ -38,8 +38,8 @@ public class PermissionCommandHandler extends CommandHandler {
      * Initializes the command handler.
      */
     protected PermissionCommandHandler() {
-        super(new String[]{"permission", "permit", "permissions", "perm", "perms"}, CommandCategory.ADMIN,
-                new PermissionRequirements("command.permission", false, false),
+        super(new String[]{"permissions", "permit", "permission", "perm", "perms"}, CommandCategory.ADMIN,
+                new PermissionRequirements("permission", false, false),
                 "Allows modifying and listing permissions.",
                 "allow/deny <@User/@Role/dp:id> <command-permission>\n" +
                         "list <@User/@Role/dp:id> <command>");
@@ -120,7 +120,6 @@ public class PermissionCommandHandler extends CommandHandler {
                 listBuilder.setDescription("Permissions of " + target.toString());
                 listBuilder.addField("Allowed Permissions", allowedPermissionString.toString(), true);
                 listBuilder.addField("Denied Permissions", deniedPermissionString.toString(), true);
-                listBuilder.setFooter("NOTICE - Permissions always starts with command. | This command is a pre-version.", null);
                 return message(listBuilder);
             }
 
@@ -156,7 +155,6 @@ public class PermissionCommandHandler extends CommandHandler {
             return message(error("Invalid arguments", e.getMessage() + " Use `" +
                     invocation.getPrefix() + invocation.getCommandInvocation() + "` for a " + "command manual."));
         }
-
     }
 
     /**
@@ -186,7 +184,7 @@ public class PermissionCommandHandler extends CommandHandler {
                 .addField("Parameters",
                         "`command-permission`\n" +
                                 "Permission of the command. If you want to add a command\n" +
-                                "you have to use `command.yourCommand`\n" +
-                                "All command-permissions are displayed next to the commands at our [documentation](http://rubicon.fun)", false));
+                                "you have to use `yourCommand`\n" +
+                                "All command-permissions are displayed next to the commands at our [documentation](https://rubicon.fun)", false));
     }
 }

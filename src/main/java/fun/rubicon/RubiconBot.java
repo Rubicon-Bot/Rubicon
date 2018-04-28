@@ -19,12 +19,15 @@ import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.*;
 import fun.rubicon.commands.music.*;
 import fun.rubicon.commands.music.CommandClearQueue;
+import fun.rubicon.commands.botowner.CommandInvMod;
+import fun.rubicon.commands.rpg.CommandInventory;
 import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
 import fun.rubicon.commands.tools.CommandYouTube;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.music.GuildMusicPlayerManager;
 import fun.rubicon.core.music.LavalinkManager;
+import fun.rubicon.core.rpg.RPGItemRegistry;
 import fun.rubicon.core.translation.TranslationManager;
 import fun.rubicon.commands.botowner.CommandEval;
 import fun.rubicon.features.poll.PollManager;
@@ -71,7 +74,7 @@ import java.util.Date;
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"token", "playingStatus", "dbl_token", "discord_pw_token", "gif_token", "google_token", "rethink_host", "rethink_port", "rethink_db", "rethink_user", "rethink_password"};
+    private static final String[] CONFIG_KEYS = {"log_webhook", "token", "playingStatus", "dbl_token", "discord_pw_token", "gif_token", "google_token", "rethink_host", "rethink_port", "rethink_db", "rethink_user", "rethink_password"};
     private static RubiconBot instance;
     private final Configuration configuration;
     private final Rethink rethink;
@@ -89,6 +92,7 @@ public class RubiconBot {
     private SetupManager setupManager;
     private static int SHARD_COUNT;
     private static LavalinkManager lavalinkManager;
+    private RPGItemRegistry rpgItemRegistry;
 
     /**
      * Constructs the RubiconBot.
@@ -124,6 +128,7 @@ public class RubiconBot {
                 configuration.set(configKey, input);
             }
         }
+        Logger.enableWebhooks(configuration.getString("log_webhook"));
         rethink = new Rethink(
                 configuration.getString("rethink_host"),
                 configuration.getInt("rethink_port"),
@@ -148,6 +153,7 @@ public class RubiconBot {
         permissionManager = new PermissionManager();
         translationManager = new TranslationManager();
         gameAnimator = new GameAnimator();
+        rpgItemRegistry = new RPGItemRegistry();
         //Init url shorter API
         bitlyAPI = new BitlyAPI(configuration.getString("bitly_token"));
         verificationLoader = new VerificationLoader();
@@ -159,6 +165,7 @@ public class RubiconBot {
 
         gameAnimator.start();
         shardManager.setStatus(OnlineStatus.ONLINE);
+        Logger.info("Started!");
     }
 
     private void registerCommands() {
@@ -169,7 +176,8 @@ public class RubiconBot {
                 new CommandBotstatus(),
                 new CommandBotplay(),
                 new CommandDisco(),
-                new CommandTest()
+                new CommandTest(),
+                new CommandInvMod()
         );
 
         //Admin
@@ -234,6 +242,7 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(
                 new CommandPoll(),
                 new CommandShort(),
+                new CommandYouTube(),
                 new CommandNick(),
                 new VerificationCommandHandler()
         );
@@ -253,6 +262,11 @@ public class RubiconBot {
                 new CommandResume(),
                 new CommandShuffle(),
                 new CommandNow()
+        );
+
+        //RPG
+        commandManager.registerCommandHandlers(
+                new CommandInventory()
         );
     }
 
@@ -298,6 +312,7 @@ public class RubiconBot {
                 new PunishmentListener(),
                 new GeneralMessageListener(),
                 new RoleDeleteListener(),
+                new LavalinkManager(),
                 new LavalinkManager(),
                 new VerificationListener(),
                 new SetupListener()
@@ -439,6 +454,10 @@ public class RubiconBot {
 
     public static Rethink getRethink() {
         return instance == null ? null : instance.rethink;
+    }
+
+    public static RPGItemRegistry getRPGItemRegistry() {
+        return instance == null ? null : instance.rpgItemRegistry;
     }
 
     public static VerificationLoader getVerificationLoader() { return instance.verificationLoader; }
