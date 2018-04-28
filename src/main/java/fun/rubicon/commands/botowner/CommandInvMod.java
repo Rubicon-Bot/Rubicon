@@ -1,4 +1,4 @@
-package fun.rubicon.commands.rpg;
+package fun.rubicon.commands.botowner;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;

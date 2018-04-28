@@ -19,7 +19,7 @@ import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.*;
 import fun.rubicon.commands.music.*;
 import fun.rubicon.commands.music.CommandClearQueue;
-import fun.rubicon.commands.rpg.CommandInvMod;
+import fun.rubicon.commands.botowner.CommandInvMod;
 import fun.rubicon.commands.rpg.CommandInventory;
 import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;

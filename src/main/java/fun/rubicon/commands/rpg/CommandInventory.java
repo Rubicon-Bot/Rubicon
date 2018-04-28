@@ -29,22 +29,25 @@ public class CommandInventory extends CommandHandler {
         List<RPGInventoryItem> items = inventory.getItems();
         EmbedBuilder embed = new EmbedBuilder();
         embed.setColor(Colors.COLOR_SECONDARY);
-        embed.setAuthor(invocation.getAuthor().getName() + "`s Inventory", null, invocation.getAuthor().getAvatarUrl());
-        embed.setDescription("Total Slots: " + inventory.getSlotCount() + "\n" +
-                "Free Slots: " + inventory.getFreeSpace() + "\n" +
-                "Used Slots: " + items.size());
-        embed.addField("Helmet", inventory.getHelmet().getRpgItem().getDisplayName(), true);
-        embed.addField("Chest", inventory.getChest().getRpgItem().getDisplayName(), true);
+        embed.setAuthor(invocation.getAuthor().getName() + invocation.translate("command.inv.title"), null, invocation.getAuthor().getAvatarUrl());
+        embed.setDescription(invocation.translate("command.inv.total") + ": " + inventory.getSlotCount() + "\n" +
+                invocation.translate("command.inv.free") + ": " + inventory.getFreeSpace() + "\n" +
+                invocation.translate("command.inv.used") + "Used Slots: " + items.size());
+        embed.addField(invocation.translate("command.inv.helmet"), inventory.getHelmet().getRpgItem().getDisplayName(), true);
+        embed.addField(invocation.translate("command.inv.chest"), inventory.getChest().getRpgItem().getDisplayName(), true);
         embed.addBlankField(true);
-        embed.addField("Pants", inventory.getPants().getRpgItem().getDisplayName(), true);
-        embed.addField("Shoes", inventory.getShoes().getRpgItem().getDisplayName(), true);
+        embed.addField(invocation.translate("command.inv.pants"), inventory.getPants().getRpgItem().getDisplayName(), true);
+        embed.addField(invocation.translate("command.inv.shoes"), inventory.getShoes().getRpgItem().getDisplayName(), true);
 
-        StringBuilder slotString = new StringBuilder();
-        for(RPGInventoryItem item : items) {
-            slotString.append(item.getAmount() + " x " + item.getRpgItem().getDisplayName() + "\n");
-        }
-        embed.addBlankField(true);
-        embed.addField("Items", slotString.toString(), false);
+        if(items.size() > 0) {
+            StringBuilder slotString = new StringBuilder();
+            for (RPGInventoryItem item : items) {
+                slotString.append(item.getAmount() + " x " + item.getRpgItem().getDisplayName() + "\n");
+            }
+            embed.addBlankField(true);
+            embed.addField(invocation.translate("command.inv.items"), slotString.toString(), false);
+        } else
+            embed.addField(invocation.translate("command.inv.items"), "Empty", false);
         return message(embed);
     }
 }
