@@ -133,7 +133,7 @@ public class CommandHelp extends CommandHandler {
         builder.addField(invocation.translate("command.help.list.category.settings"), listSettings.toString(), false);
         builder.addField(invocation.translate("command.help.list.category.tools"), listTools.toString(), false);
         builder.addField(invocation.translate("command.help.list.category.fun"), listFun.toString(), false);
-        builder.addField(invocation.translate("command.help.list.category.rpg" + "(Early Development)"), listRpg.toString(), false);
+        builder.addField(invocation.translate("command.help.list.category.rpg") + "(Early Development)", listRpg.toString(), false);
         return builder;
     }
 }

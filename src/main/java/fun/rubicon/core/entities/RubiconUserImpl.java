@@ -17,6 +17,9 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Yannick Seeger / ForYaSee
@@ -116,8 +119,30 @@ public abstract class RubiconUserImpl extends RethinkHelper {
         rethink.db.table("punishments").filter(rethink.rethinkDB.hashMap("userId", user.getId()).with("guildId", guild.getId()).with("type", "ban")).delete().run(rethink.connection);
 
         if (guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
+            guild.getController().ban(user, 7).queue();
         } else
             guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: Unable to unban user `" + user.getName() + "`! Please give Rubicon `BAN_MEMBERS` permission in order to use the unban command").queue();
+    }
+
+    public void saveMusicPlaylist(List<String> links, String name) {
+        HashMap<String, List<String>> pl = getMusicPlaylists();
+        if(pl == null)
+            pl = new HashMap<>();
+        pl.put(name, links);
+        saveMusicPlaylist(pl);
+    }
+
+    public void saveMusicPlaylist(HashMap<String, List<String>> list) {
+        if(list == null)
+            return;
+        dbUser.update(rethink.rethinkDB.hashMap("playlists", null)).run(rethink.connection);
+        dbUser.update(rethink.rethinkDB.hashMap("playlists", list)).run(rethink.connection);
+    }
+
+    public HashMap<String, List<String>> getMusicPlaylists() {
+        Cursor cursor = retrieve();
+        HashMap<?, ?> root = (HashMap<?, ?>) cursor.toList().get(0);
+        return (HashMap<String, List<String>>) root.get("playlists");
     }
 
     private boolean exist() {

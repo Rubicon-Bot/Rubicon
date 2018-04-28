@@ -12,7 +12,6 @@ import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
 
 
-
 /**
  * @author Schlaubi / Michael Rittmeister
  */
@@ -21,7 +20,6 @@ public class VerificationSetupRequest extends ReactionSetupRequest {
 
     private VerificationSettings settings;
     private Guild guild;
-    private TextChannel setupChannel;
 
 
     private VerificationSetupRequest(Message msg, Member author) {

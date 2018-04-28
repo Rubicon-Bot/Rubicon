@@ -202,7 +202,6 @@ public class CommandYouTube extends CommandHandler {
 
             @Override
             public void run() {
-                Logger.info("Starting YouTube loading thread \"YouTube-Loader\"");
                 for (Guild guild :
                         guildList) {
                     Cursor cursor = rethink.db.table("youtube").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection);
@@ -211,7 +210,6 @@ public class CommandYouTube extends CommandHandler {
                         continue;
                     }
                     Map map = (Map) l.get(0);
-                    Logger.info("Loaded YouTube for guild \"" + guild.getName() + "\"");
                     String creator = (String) map.get("youcreator");
                     String oldURI = (String) map.get("lastvideo");
                     String[] strings = getUrlTitle(creator);
@@ -221,7 +219,6 @@ public class CommandYouTube extends CommandHandler {
                     }
 
                 }
-                Logger.info("Finished YouTube loading. Stopping thread");
             }
         }
 

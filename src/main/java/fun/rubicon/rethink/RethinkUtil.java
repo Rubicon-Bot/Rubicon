@@ -24,7 +24,9 @@ public class RethinkUtil {
             "rpg_inventories",
             "verification_settings",
             "verification_users",
-            "keys"
+            "keys",
+            "warn_punishments",
+            "warns"
     };
 
     public static void createDefaults(Rethink rethink) {

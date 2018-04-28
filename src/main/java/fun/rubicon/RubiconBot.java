@@ -218,7 +218,6 @@ public class RubiconBot {
                 new CommandMoney(),
                 new CommandStatistics(),
                 new CommandUptime(),
-                new CommandYouTube(),
                 new CommandSearch(),
                 new CommandPremium(),
                 new CommandKey(),
@@ -229,8 +228,8 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(
                 new CommandUnmute(),
                 new CommandUnban(),
-                new CommandMoveall()
-
+                new CommandMoveall(),
+                new CommandWarn()
         );
 
         //Punishments
@@ -262,7 +261,8 @@ public class RubiconBot {
                 new CommandPause(),
                 new CommandResume(),
                 new CommandShuffle(),
-                new CommandNow()
+                new CommandNow(),
+                new CommandPlaylist()
         );
 
         //RPG
@@ -324,7 +324,7 @@ public class RubiconBot {
             Logger.error(e);
             throw new RuntimeException("Can't start bot!");
         }
-        //lavalinkManager.initialize();
+        lavalinkManager.initialize();
         Info.lastRestart = new Date();
     }
 

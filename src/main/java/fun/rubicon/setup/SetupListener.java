@@ -13,11 +13,13 @@ public class SetupListener extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+        if(event.getAuthor().isBot() || event.getAuthor().isFake()) return;
         RubiconBot.getSetupManager().handleMessage(event);
     }
 
     @Override
     public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event) {
+        if(event.getUser().isBot() || event.getUser().isFake()) return;
         RubiconBot.getSetupManager().handleReaction(event);
     }
 }

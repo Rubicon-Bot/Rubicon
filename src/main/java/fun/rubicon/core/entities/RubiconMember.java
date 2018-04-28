@@ -9,6 +9,7 @@ package fun.rubicon.core.entities;
 import com.rethinkdb.gen.ast.Filter;
 import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
+import fun.rubicon.core.translation.TranslationUtil;
 import fun.rubicon.rethink.Rethink;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.Permission;
@@ -16,15 +17,12 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 /**
  * @author Yannick Seeger / ForYaSee, Michael Rittmeister / Schlaubi
  */
-public class RubiconMember extends RubiconUserImpl {
+public class RubiconMember extends RubiconUserImpl{
 
     private Member member;
     private Guild guild;
@@ -164,7 +162,43 @@ public class RubiconMember extends RubiconUserImpl {
         return dbMember.run(rethink.connection);
     }
 
+    public void warn(String reason, Member moderator) {
+        rethink.db.table("warns").insert(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("userId", user.getId()).with("reason", reason).with("moderator", moderator.getUser().getId()).with("issueTime", String.valueOf(new Date().getTime()))).run(rethink.connection);
+    }
+
+    public void unwarn(String id) {
+        rethink.db.table("warns").filter(rethink.rethinkDB.hashMap("id", id)).delete().run(rethink.connection);
+    }
+
+    public List<RubiconWarn> getWarns(){
+        List<RubiconWarn> warnList = new ArrayList<>();
+        Cursor cursor = rethink.db.table("warns").filter(rethink.rethinkDB.hashMap("userId", user.getId()).with("guildId", guild.getId())).run(rethink.connection);
+        for(Object obj : cursor){
+            Map map = (Map) obj;
+            warnList.add(new RubiconWarn((String) map.get("id"), guild.getMemberById((String) map.get("userId")), (String) map.get("reason"), guild.getMemberById((String) map.get("moderator")), new Date(Long.parseLong((String) map.get("issueTime")))));
+        }
+        return warnList;
+    }
+
+    public boolean hasWarn(String id){
+        System.out.println(id);
+        Cursor cursor = rethink.db.table("warns").filter(rethink.rethinkDB.hashMap("userId", user.getId()).with("guildId", guild.getId()).with("id", id)).run(rethink.connection);
+        return !cursor.toList().isEmpty();
+    }
+
+    public int getWarnCount(){
+        return getWarns().size();
+    }
+
     public static RubiconMember fromMember(Member member) {
         return new RubiconMember(member);
+    }
+
+    public boolean hasWarns(){
+        return !getWarns().isEmpty();
+    }
+
+    public String translate(String key){
+        return TranslationUtil.translate(user, key);
     }
 }
