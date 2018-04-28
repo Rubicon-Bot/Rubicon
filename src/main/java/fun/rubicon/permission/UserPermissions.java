@@ -160,20 +160,21 @@ public class UserPermissions {
      * Iterates through all {@link PermissionTarget PermissionTargets} and returns the effective {@link Permission} entry.
      *
      * @param context                used to check discord permissions in a channel.
-     * @param requiredPermissionNode the permission to query.
+     * @param requiredPermissionNodes the permission(s) to query.
      * @return the effect
      */
-    public Permission getEffectivePermissionEntry(Channel context, String requiredPermissionNode) {
+    public Permission getEffectivePermissionEntry(Channel context, String... requiredPermissionNodes) {
         PermissionManager permissionManager = RubiconBot.sGetPermissionManager();
-        Permission effectivePermissionEntry = null;
         // check permissions
         List<PermissionTarget> permissionTargets = getPermissionTargets(context);
-        for (int i = 0; effectivePermissionEntry == null && i < permissionTargets.size(); i++) {
-            Permission permission = permissionManager.getPermission(permissionTargets.get(i), requiredPermissionNode);
-            if (permission != null)
-                effectivePermissionEntry = permission;
+        for (int i = 0; i < permissionTargets.size(); i++) {
+            for(String requiredPermissionNode : requiredPermissionNodes) {
+                Permission permission = permissionManager.getPermission(permissionTargets.get(i), requiredPermissionNode);
+                if (permission != null)
+                    return permission;
+            }
         }
-        return effectivePermissionEntry;
+        return null;
     }
 
     /**

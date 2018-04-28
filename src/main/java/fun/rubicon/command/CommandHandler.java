@@ -27,7 +27,7 @@ import static fun.rubicon.util.EmbedUtil.*;
  *
  * @author tr808axm
  */
-public abstract class CommandHandler {
+public abstract class CommandHandler extends EmbedUtil {
     private final String[] invocationAliases;
     private final CommandCategory category;
     private final PermissionRequirements permissionRequirements;
@@ -84,7 +84,7 @@ public abstract class CommandHandler {
                 Logger.error("Unknown error during the execution of the '" + parsedCommandInvocation.getCommandInvocation() + "' command. ");
                 Logger.error(e);
                 return new MessageBuilder().setEmbed(new EmbedBuilder()
-                        .setAuthor(":no_entry: Internal Error", null, RubiconBot.getSelfUser().getEffectiveAvatarUrl())
+                        .setAuthor("⛔ Internal Error", null, RubiconBot.getSelfUser().getEffectiveAvatarUrl())
                         .setDescription("An internal error occurred. ```" + e.getMessage() + "```")
                         .setColor(Colors.COLOR_ERROR)
                         .setFooter("Please report the error. " + RubiconBot.getNewTimestamp(), null)
