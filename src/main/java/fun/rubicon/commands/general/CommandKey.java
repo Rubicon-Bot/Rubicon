@@ -32,7 +32,7 @@ public class CommandKey extends CommandHandler {
             case "generate":
                 switch (invocation.getArgs()[1]) {
                     case "premium":
-                        RubiconBot.getRethink().db.table("keys").insert(RubiconBot.getRethink().rethinkDB.hashMap("type","premium").with("date",new Date().)).run(RubiconBot.getRethink().connection);
+                        //RubiconBot.getRethink().db.table("keys").insert(RubiconBot.getRethink().rethinkDB.hashMap("type","premium").with("date",new Date().)).run(RubiconBot.getRethink().connection);
                         break;
                     default:
                         return createHelpMessage(invocation);

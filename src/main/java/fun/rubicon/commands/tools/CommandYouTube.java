@@ -25,8 +25,10 @@ import okhttp3.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 import static fun.rubicon.util.EmbedUtil.error;
 import static fun.rubicon.util.EmbedUtil.message;
@@ -38,15 +40,11 @@ import static fun.rubicon.util.EmbedUtil.message;
  */
 public class CommandYouTube extends CommandHandler {
 
-    /*TODO: Multiple Creator per Guild
-    /*TODO: Remove same as add(as Creator)
-    /*TODO: Check for every Creator
-    */
 
     private static HashMap<Long, AnnounceHolder> announceMap = new HashMap<>();
 
     public CommandYouTube() {
-        super(new String[]{"youtube"}, CommandCategory.TOOLS, new PermissionRequirements("youtube", false, false), "Announce your newest YouTube Videos!", "<#channel> <YouTube Channel ID>");
+        super(new String[]{"youtube","yt"}, CommandCategory.TOOLS, new PermissionRequirements("youtube", false, false), "Announce your newest YouTube Videos! **Delete it by reentering the Same Values again**", "<#channel> <YouTube Channel ID>");
 
     }
 
@@ -59,8 +57,19 @@ public class CommandYouTube extends CommandHandler {
         if (invocation.getMessage().getMentionedChannels().isEmpty())
             return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.yt.mention.title"), invocation.translate("command.yt.mention.description")));
         Cursor cursor = RubiconBot.getRethink().db.table("youtube").filter(RubiconBot.getRethink().rethinkDB.hashMap("guildId", invocation.getGuild().getId())).run(RubiconBot.getRethink().connection);
-        if (!cursor.toList().isEmpty()) {
-            return message(error("Already registered", "Deleting old Setup"));
+        List l = cursor.toList();
+        if (l.size() > 1) {
+            String cretor = invocation.getArgs()[1].replace(" ", "");
+            for (Object item : l
+                    ) {
+                Map map = (Map) item;
+                if (map.get("youcreator").toString().equalsIgnoreCase(cretor)) {
+                    RubiconBot.getRethink().db.table("youtube").filter(RubiconBot.getRethink().rethinkDB.hashMap("youcreator", map.get("youcreator"))).delete().run(RubiconBot.getRethink().connection);
+                    return SafeMessage.sendMessageBlocking(invocation.getTextChannel(), new EmbedBuilder().setColor(Color.RED).setDescription(invocation.translate("command.yt.delete") + map.get("youcreator").toString()).build());
+                }
+
+            }
+
         }
 
         String creator = invocation.getArgs()[1].replace(" ", "");
@@ -99,7 +108,7 @@ public class CommandYouTube extends CommandHandler {
                         .with("youmsg", description)
                         .with("youchannel", holder.channel.getId())
                         .with("youcreator", holder.creator)
-                        .with("lastvideo", 0)
+                        .with("lastvideo", "0")
         )).run(RubiconBot.getRethink().getConnection());
         String[] strings = getUrlTitle(holder.creator);
         if (!strings[0].equals("") && !strings[1].equals("")) {
@@ -209,15 +218,16 @@ public class CommandYouTube extends CommandHandler {
                     if (l.size() < 1) {
                         continue;
                     }
-                    Map map = (Map) l.get(0);
-                    String creator = (String) map.get("youcreator");
-                    String oldURI = (String) map.get("lastvideo");
-                    String[] strings = getUrlTitle(creator);
-                    if (!strings[0].equals(oldURI)) {
-                        SafeMessage.sendMessage(guild.getTextChannelById(map.get("youchannel").toString()), map.get("youmsg").toString().replace("%url%", strings[0]).replace("%title%", strings[1]));
-                        RubiconBot.getRethink().db.table("youtube").filter(RubiconBot.getRethink().rethinkDB.hashMap("guildId", guild.getId())).update(RubiconBot.getRethink().rethinkDB.hashMap("lastvideo", strings[0])).run(RubiconBot.getRethink().connection);
+                    for (Object item : l) {
+                        Map map = (Map) item;
+                        String creator = (String) map.get("youcreator");
+                        String oldURI = (String) map.get("lastvideo");
+                        String[] strings = getUrlTitle(creator);
+                        if (!strings[0].equals(oldURI)) {
+                            SafeMessage.sendMessage(guild.getTextChannelById(map.get("youchannel").toString()), map.get("youmsg").toString().replace("%url%", strings[0]).replace("%title%", strings[1]));
+                            RubiconBot.getRethink().db.table("youtube").filter(RubiconBot.getRethink().rethinkDB.hashMap("youcreator", map.get("youcreator"))).update(RubiconBot.getRethink().rethinkDB.hashMap("lastvideo", strings[0])).run(RubiconBot.getRethink().connection);
+                        }
                     }
-
                 }
             }
         }
