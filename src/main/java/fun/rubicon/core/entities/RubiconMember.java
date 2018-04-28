@@ -12,6 +12,7 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.core.translation.TranslationUtil;
 import fun.rubicon.rethink.Rethink;
 import fun.rubicon.util.Logger;
+import fun.rubicon.util.StringUtil;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -164,10 +165,12 @@ public class RubiconMember extends RubiconUserImpl{
 
     public void warn(String reason, Member moderator) {
         rethink.db.table("warns").insert(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("userId", user.getId()).with("reason", reason).with("moderator", moderator.getUser().getId()).with("issueTime", String.valueOf(new Date().getTime()))).run(rethink.connection);
+        punish();
     }
 
     public void unwarn(String id) {
         rethink.db.table("warns").filter(rethink.rethinkDB.hashMap("id", id)).delete().run(rethink.connection);
+        unpunish();
     }
 
     public List<RubiconWarn> getWarns(){
@@ -186,26 +189,48 @@ public class RubiconMember extends RubiconUserImpl{
         return !cursor.toList().isEmpty();
     }
 
-    public void punish(){
+    private void punish(){
         if(!punishmentExists(getWarnCount())) return;
-        Cursor cursor = rethink.db.table("warn_punishments").filter(rethink.rethinkDB.hashMap().with("guildId", guild.getId()).with("amount", getWarnCount())).run(rethink.connection);
+        Cursor cursor = rethink.db.table("warn_punishments").filter(rethink.rethinkDB.hashMap().with("guildId", guild.getId()).with("amount", String.valueOf(getWarnCount()))).run(rethink.connection);
         Map map = (Map) cursor.toList().get(0);
         PunishmentType type = PunishmentType.valueOf(((String) map.get("type")));
-        int expiry = Integer.parseInt((String) map.get("length") == null ? "0" : (String) map.get("length"));
+        long expiry = (long) map.get("length");
         switch (type) {
             case KICK:
-                if(guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("PUNISHMENT ERROR: Could not kick " + member.getAsMention() + " due to permission error").queue(); return; }
+                if(!guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("PUNISHMENT ERROR: Could not kick " + member.getAsMention() + " due to permission error").queue(); return; }
+                guild.getController().kick(member).reason("To many warns").queue();
                 break;
             case BAN:
-                if()
+                if(expiry == 0L)
+                    ban();
+                else
+                    ban(StringUtil.parseDate(expiry + "m"));
                 break;
             case MUTE:
+                if(expiry == 0L)
+                    mute();
+                else
+                    mute(StringUtil.parseDate(expiry + "m"));
                 break;
         }
     }
 
+    private void unpunish(){
+        if(!punishmentExists(getWarnCount())) return;
+        Cursor cursor = rethink.db.table("warn_punishments").filter(rethink.rethinkDB.hashMap().with("guildId", guild.getId()).with("amount", getWarnCount())).run(rethink.connection);
+        Map map = (Map) cursor.toList().get(0);
+        PunishmentType type = PunishmentType.valueOf(((String) map.get("type")));
+        switch (type) {
+            case BAN:
+                RubiconUser.fromUser(getUser()).unban(guild);
+                break;
+            case MUTE:
+                unmute(true);
+        }
+    }
+
     private boolean punishmentExists(int warnCount){
-        Cursor cursor = rethink.db.table("warn_punishments").filter(rethink.rethinkDB.hashMap().with("guildId", guild.getId()).with("amount", warnCount)).run(rethink.connection);
+        Cursor cursor = rethink.db.table("warn_punishments").filter(rethink.rethinkDB.hashMap().with("guildId", guild.getId()).with("amount", String.valueOf(warnCount))).run(rethink.connection);
         return !cursor.toList().isEmpty();
     }
 
