@@ -1,11 +1,14 @@
 package fun.rubicon.commands.general;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import net.dv8tion.jda.core.entities.Message;
+
+import java.util.Date;
 
 /**
  * @author Leon Kappes / Lee
@@ -16,7 +19,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class CommandKey extends CommandHandler {
 
     public CommandKey() {
-        super(new String[]{"key", "redeem"}, CommandCategory.GENERAL, new PermissionRequirements("key", false, true), "Redeem an Gift Code or Generate one.", "<key>\ngen");
+        super(new String[]{"key", "redeem"}, CommandCategory.GENERAL, new PermissionRequirements("key", false, true), "Redeem an Gift Code or Generate one.", "<key>\ngen <type>");
     }
 
     @Override
@@ -29,7 +32,7 @@ public class CommandKey extends CommandHandler {
             case "generate":
                 switch (invocation.getArgs()[1]) {
                     case "premium":
-                        
+                        RubiconBot.getRethink().db.table("keys").insert(RubiconBot.getRethink().rethinkDB.hashMap("type","premium").with("date",new Date().)).run(RubiconBot.getRethink().connection);
                         break;
                     default:
                         return createHelpMessage(invocation);
