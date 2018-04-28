@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * @author Yannick Seeger / ForYaSee
  */
-public class RubiconGuild extends RethinkHelper {
+public class RubiconGuild extends RethinkHelper{
 
     private Guild guild;
     private Rethink rethink;

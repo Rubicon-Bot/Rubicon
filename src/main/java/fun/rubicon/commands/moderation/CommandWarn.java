@@ -6,11 +6,13 @@ import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.core.entities.PunishmentType;
+import fun.rubicon.core.entities.RubiconMember;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.rethink.Rethink;
 import fun.rubicon.setup.SetupRequest;
 import fun.rubicon.util.Colors;
+import fun.rubicon.util.DateUtil;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -33,13 +35,31 @@ public class CommandWarn extends CommandHandler {
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
         String[] args = invocation.getArgs();
+        Message message = invocation.getMessage();
         if(args.length == 0)
             return createHelpMessage();
+        RubiconMember member;
         switch (args[0]){
-            case "remove":
             case "unwarn":
+            case "remove":
+                if(message.getMentionedUsers().isEmpty())
+                    return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.warn.nouser.title"), invocation.translate("command.warn.nouser.description")));
+                if(args.length < 2)
+                    return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.warn.noid.title"), invocation.translate("command.warn.noid.description")));
+                args = invocation.getArgsString().replace("@", "").replace(invocation.getMessage().getMentionedMembers().get(0).getEffectiveName(), "a").split(" ");
+                member = RubiconMember.fromMember(message.getMentionedMembers().get(0));
+                if(!member.hasWarn(args[2]))
+                    return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.warn.remove.notmemberswarn.title"), invocation.translate("command.warn.remove.notmemberswarn.description")));
+                member.unwarn(args[2]);
+                SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.success(invocation.translate("command.warn.removed.title"), invocation.translate("command.warn.removed.description"))));
                 break;
             case "list":
+                if(message.getMentionedUsers().isEmpty())
+                    return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.warn.nouser.title"), invocation.translate("command.warn.nouser.description")));
+                member = RubiconMember.fromMember(message.getMentionedMembers().get(0));
+                if(!member.hasWarns())
+                    return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.warn.list.nowarns.title"), invocation.translate("command.warn.list.nowarns.description")));
+                SafeMessage.sendMessage(invocation.getTextChannel(), formatListMessage(member).build());
                 break;
             case "punishment":
             case "punishments":
@@ -61,6 +81,18 @@ public class CommandWarn extends CommandHandler {
                         break;
                 }
                 break;
+             default:
+                 if(message.getMentionedUsers().isEmpty())
+                     return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.warn.nouser.title"), invocation.translate("command.warn.nouser.description")));
+                 if(args.length < 2)
+                     return EmbedUtil.message(EmbedUtil.error());
+                 args = invocation.getArgsString().replace("@", "").replace(invocation.getMessage().getMentionedMembers().get(0).getEffectiveName(), "a").split(" ");
+                 String reason = args[1];
+                 member = RubiconMember.fromMember(invocation.getMessage().getMentionedMembers().get(0));
+                 member.warn(reason, invocation.getMember());
+                 SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.success(invocation.translate("command.warn.warned.title"), String.format(invocation.translate("command.warn.warned.description"), member.getUser().getAsMention(), reason)).build());
+                 SafeMessage.sendMessage(invocation.getTextChannel(), new EmbedBuilder().setColor(Colors.COLOR_ERROR).setTitle(member.translate("warnembed.title")).setDescription(String.format(member.translate("warnembed.description"), member.getUser().getAsMention(), reason)).setFooter(String.format(member.translate("warnembed.footer"), member.getWarnCount()), member.getUser().getAvatarUrl()).build());
+                 break;
         }
         return null;
     }
@@ -68,6 +100,14 @@ public class CommandWarn extends CommandHandler {
     private boolean doesPunishmentExists(String id){
         Cursor cursor = rethink.db.table("warn_punishments").filter(rethink.rethinkDB.hashMap("id", id)).run(rethink.connection);
         return !cursor.toList().isEmpty();
+    }
+
+    private EmbedBuilder formatListMessage(RubiconMember member){
+        StringBuilder warnList = new StringBuilder();
+        member.getWarns().forEach(w -> warnList.append("**ID**: `").append(w.getId()).append("`").append("\n").append("**User**:").append(w.getMember().getAsMention()).append("\n").append("**Reason**:").append(w.getReason()).append("\n").append("**Time**:").append(DateUtil.formatDate(w.getIssueTime(), member.translate("date.format"))).append("\n").append("**Moderator**:").append(w.getModerator().getAsMention()).append("\n\n"));
+        return new EmbedBuilder()
+                .setColor(Colors.COLOR_PRIMARY)
+                .setDescription(warnList.toString());
     }
 
     private void deletePunishment(CommandManager.ParsedCommandInvocation invocation) {
@@ -99,6 +139,7 @@ public class CommandWarn extends CommandHandler {
                 .setColor(Colors.COLOR_PRIMARY)
                 .setTitle("Warn punishments")
                 .setDescription(punishmentsString.toString());
+
     }
 
     private class WarnPunishmentSetupRequest extends SetupRequest {
@@ -184,6 +225,4 @@ public class CommandWarn extends CommandHandler {
 
         }
     }
-
-
 }

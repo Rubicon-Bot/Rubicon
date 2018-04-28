@@ -23,7 +23,8 @@ public class RethinkUtil {
             "youtube",
             "verification_settings",
             "verification_users",
-            "warn_punishments"
+            "warn_punishments",
+            "warns"
     };
 
     public static void createDefaults(Rethink rethink) {
