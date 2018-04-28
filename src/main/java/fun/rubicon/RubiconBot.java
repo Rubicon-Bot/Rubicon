@@ -221,7 +221,8 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(
                 new CommandUnmute(),
                 new CommandUnban(),
-                new CommandMoveall()
+                new CommandMoveall(),
+                new CommandWarn()
         );
 
         //Punishments

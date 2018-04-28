@@ -3,10 +3,13 @@ package fun.rubicon.setup;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.translation.TranslationUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.awt.*;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -18,6 +21,8 @@ public abstract class SetupRequest {
     public Member author;
     public Message infoMessage;
     public int step = 0;
+    public TextChannel setupChannel;
+    public Guild guild;
 
     public abstract void next(Message invokeMsg);
 
@@ -28,10 +33,10 @@ public abstract class SetupRequest {
     }
 
     public void unregister(){
-        abort(); RubiconBot.getSetupManager().requestStorage.remove(author.getUser().getId(), this); infoMessage.delete().queue();
+        abort(); RubiconBot.getSetupManager().requestStorage.remove(author.getUser().getId(), this); infoMessage.delete().queueAfter(5, TimeUnit.SECONDS);
     }
 
-    public void update() { step++; RubiconBot.getSetupManager().requestStorage.replace(infoMessage.getId(), this); }
+    public void update() { this.step++; RubiconBot.getSetupManager().requestStorage.replace(infoMessage.getId(), this); }
 
     public String translate(String key) {
         return TranslationUtil.translate(author, key);

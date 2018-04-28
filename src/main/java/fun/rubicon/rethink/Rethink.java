@@ -2,7 +2,6 @@ package fun.rubicon.rethink;
 
 import com.rethinkdb.RethinkDB;
 import com.rethinkdb.gen.ast.Db;
-import com.rethinkdb.model.MapObject;
 import com.rethinkdb.net.Connection;
 import fun.rubicon.util.Logger;
 
