@@ -21,7 +21,9 @@ public class RethinkUtil {
             "lavanodes",
             "permissions",
             "youtube",
-            "rpg_inventories"
+            "rpg_inventories",
+            "verification_settings",
+            "verification_users"
     };
 
     public static void createDefaults(Rethink rethink) {

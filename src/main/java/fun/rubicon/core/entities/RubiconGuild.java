@@ -21,7 +21,10 @@ import net.dv8tion.jda.core.entities.Role;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
+import net.dv8tion.jda.core.entities.TextChannel;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 /**
  * @author Yannick Seeger / ForYaSee
  */
@@ -89,15 +92,11 @@ public class RubiconGuild extends RethinkHelper {
     }
 
     public void enableJoinImages(String channelId) {
-        rethink.db.table("joinimages").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("channel", channelId))).run(rethink.connection);
+        rethink.db.table("joinimages").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("channel", channelId)));
     }
 
     public void disableJoinImages() {
         rethink.db.table("joinimages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).delete().run(rethink.connection);
-    }
-
-    public String getJoinImageChannel() {
-        return getString(rethink.db.table("joinimages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection), "channel");
     }
 
     public boolean hasJoinImagesEnabled() {
@@ -214,6 +213,35 @@ public class RubiconGuild extends RethinkHelper {
 
     private Cursor retrieve() {
         return dbGuild.run(rethink.connection);
+    }
+
+    public boolean isVerificationEnabled(){
+        Cursor cursor = rethink.db.table("verification_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection);
+        return cursor.toList().size() >= 1;
+    }
+
+    public void disableVerification(){
+        rethink.db.table("verification_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).delete().run(rethink.connection);
+    }
+
+    public TextChannel getVerificationChannel(){
+        Cursor cursor = rethink.db.table("verification_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection);
+        Map map = (Map) cursor.toList().get(0);
+        String channelId = (String) map.get("channelId");
+        return guild.getTextChannelById(channelId);
+    }
+
+    public Role getVerificationRole(){
+        Cursor cursor = rethink.db.table("verification_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection);
+        Map map = (Map) cursor.toList().get(0);
+        String channelId = (String) map.get("roleId");
+        return guild.getRoleById(channelId);
+    }
+
+    public String getVerificationKickText(){
+        Cursor cursor = rethink.db.table("verification_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection);
+        Map map = (Map) cursor.toList().get(0);
+        return (String) map.get("kickText");
     }
 
     public static RubiconGuild fromGuild(Guild guild) {

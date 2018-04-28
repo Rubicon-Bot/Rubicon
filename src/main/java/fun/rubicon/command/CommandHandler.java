@@ -87,7 +87,7 @@ public abstract class CommandHandler extends EmbedUtil {
                         .setAuthor("⛔ Internal Error", null, RubiconBot.getSelfUser().getEffectiveAvatarUrl())
                         .setDescription("An internal error occurred. ```" + e.getMessage() + "```")
                         .setColor(Colors.COLOR_ERROR)
-                        .setFooter("Please report the error. " + RubiconBot.getNewTimestamp(), null)
+                        .setFooter(RubiconBot.getNewTimestamp(), null)
                         .build()).build();
             }
         } else
@@ -215,6 +215,10 @@ public abstract class CommandHandler extends EmbedUtil {
                 .addField("Aliases", String.join(", ", getInvocationAliases()), false)
                 .addField("Usage", usage.toString(), false));
     }
+
+
+
+
 
 
 }
