@@ -186,6 +186,29 @@ public class RubiconMember extends RubiconUserImpl{
         return !cursor.toList().isEmpty();
     }
 
+    public void punish(){
+        if(!punishmentExists(getWarnCount())) return;
+        Cursor cursor = rethink.db.table("warn_punishments").filter(rethink.rethinkDB.hashMap().with("guildId", guild.getId()).with("amount", getWarnCount())).run(rethink.connection);
+        Map map = (Map) cursor.toList().get(0);
+        PunishmentType type = PunishmentType.valueOf(((String) map.get("type")));
+        int expiry = Integer.parseInt((String) map.get("length") == null ? "0" : (String) map.get("length"));
+        switch (type) {
+            case KICK:
+                if(guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("PUNISHMENT ERROR: Could not kick " + member.getAsMention() + " due to permission error").queue(); return; }
+                break;
+            case BAN:
+                if()
+                break;
+            case MUTE:
+                break;
+        }
+    }
+
+    private boolean punishmentExists(int warnCount){
+        Cursor cursor = rethink.db.table("warn_punishments").filter(rethink.rethinkDB.hashMap().with("guildId", guild.getId()).with("amount", warnCount)).run(rethink.connection);
+        return !cursor.toList().isEmpty();
+    }
+
     public int getWarnCount(){
         return getWarns().size();
     }
