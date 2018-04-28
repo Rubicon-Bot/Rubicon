@@ -18,12 +18,13 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.PermissionOverride;
 import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.entities.TextChannel;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
+import net.dv8tion.jda.core.entities.TextChannel;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 /**
  * @author Yannick Seeger / ForYaSee
  */
