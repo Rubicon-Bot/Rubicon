@@ -20,6 +20,7 @@ public enum CommandCategory {
     BOT_OWNER("botOwner", "Bot Owner"),
     TOOLS("tools", "Tools"),
     SETTINGS("settings", "Settings"),
+    RPG("rpg", "RPG"),
     MUSIC("music", "Music");
 
     private String id;

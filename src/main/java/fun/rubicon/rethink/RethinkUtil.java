@@ -21,6 +21,7 @@ public class RethinkUtil {
             "lavanodes",
             "permissions",
             "youtube",
+            "rpg_inventories",
             "verification_settings",
             "verification_users",
             "warn_punishments",
