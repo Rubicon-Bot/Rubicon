@@ -12,30 +12,28 @@ import de.foryasee.httprequest.RequestHeader;
 import de.foryasee.httprequest.RequestResponse;
 import de.foryasee.httprequest.RequestType;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.commands.admin.*;
+import fun.rubicon.commands.admin.CommandAutorole;
 import fun.rubicon.commands.botowner.*;
 import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.*;
 import fun.rubicon.commands.music.*;
-import fun.rubicon.commands.music.CommandClearQueue;
-import fun.rubicon.commands.botowner.CommandInvMod;
 import fun.rubicon.commands.rpg.CommandInventory;
 import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
-import fun.rubicon.commands.tools.CommandSearch;
-import fun.rubicon.commands.tools.CommandYouTube;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.music.GuildMusicPlayerManager;
 import fun.rubicon.core.music.LavalinkManager;
 import fun.rubicon.core.rpg.RPGItemRegistry;
 import fun.rubicon.core.translation.TranslationManager;
-import fun.rubicon.commands.botowner.CommandEval;
 import fun.rubicon.features.poll.PollManager;
 import fun.rubicon.features.poll.PunishmentManager;
 import fun.rubicon.features.verification.VerificationCommandHandler;
 import fun.rubicon.features.verification.VerificationLoader;
-import fun.rubicon.listener.*;
+import fun.rubicon.listener.AutochannelListener;
+import fun.rubicon.listener.GeneralMessageListener;
+import fun.rubicon.listener.GeneralReactionListener;
+import fun.rubicon.listener.UserMentionListener;
 import fun.rubicon.listener.bot.BotJoinListener;
 import fun.rubicon.listener.bot.BotLeaveListener;
 import fun.rubicon.listener.bot.SelfMentionListener;
@@ -220,7 +218,7 @@ public class RubiconBot {
                 new CommandMoney(),
                 new CommandStatistics(),
                 new CommandUptime(),
-                new CommandYtSearch(),
+                new CommandSearch(),
                 new CommandPremium(),
                 new CommandKey(),
                 new CommandPing()
@@ -247,9 +245,7 @@ public class RubiconBot {
                 new CommandYouTube(),
                 new CommandNick(),
                 new VerificationCommandHandler(),
-                new CommandChoose(),
-                new CommandSearch(),
-                new CommandNick()
+                new CommandChoose()
         );
 
         //Music
@@ -456,7 +452,9 @@ public class RubiconBot {
         return lavalinkManager;
     }
 
-    public static GuildMusicPlayerManager getGuildMusicPlayerManager() { return instance.guildMusicPlayerManager; }
+    public static GuildMusicPlayerManager getGuildMusicPlayerManager() {
+        return instance.guildMusicPlayerManager;
+    }
 
     public static Rethink getRethink() {
         return instance == null ? null : instance.rethink;
@@ -466,7 +464,11 @@ public class RubiconBot {
         return instance == null ? null : instance.rpgItemRegistry;
     }
 
-    public static VerificationLoader getVerificationLoader() { return instance.verificationLoader; }
+    public static VerificationLoader getVerificationLoader() {
+        return instance.verificationLoader;
+    }
 
-    public static SetupManager getSetupManager() { return instance.setupManager; }
+    public static SetupManager getSetupManager() {
+        return instance.setupManager;
+    }
 }
