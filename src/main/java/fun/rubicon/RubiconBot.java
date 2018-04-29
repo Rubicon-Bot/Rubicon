@@ -248,7 +248,8 @@ public class RubiconBot {
                 new CommandNick(),
                 new VerificationCommandHandler(),
                 new CommandChoose(),
-                new CommandSearch()
+                new CommandSearch(),
+                new CommandNick()
         );
 
         //Music
