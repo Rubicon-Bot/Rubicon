@@ -5,7 +5,7 @@ import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.core.entities.RubiconPoll;
-import fun.rubicon.features.PollManager;
+import fun.rubicon.features.poll.PollManager;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
@@ -15,7 +15,7 @@ import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.exceptions.ErrorResponseException;
 
 import java.awt.*;
-import java.io.*;
+import java.io.Serializable;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -300,11 +300,6 @@ public class CommandPoll extends CommandHandler implements Serializable {
         EmbedBuilder messageText = getParsedPoll(poll, message.getGuild(), parsedCommandInvocation);
         poll.updateMessages(message.getGuild(), messageText);
     }
-
-
-
-
-
 
 
 }

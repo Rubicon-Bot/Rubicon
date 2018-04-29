@@ -5,6 +5,7 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import fun.rubicon.RubiconBot;
+import fun.rubicon.util.Logger;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.event.AudioEventAdapterWrapped;
 import net.dv8tion.jda.core.audio.AudioSendHandler;
@@ -22,7 +23,7 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
     private boolean repeating;
     private boolean stayInChannel;
 
-    protected final int DEFAULT_VOLUME = 10;
+    public final int DEFAULT_VOLUME = 10;
     protected final int QUEUE_MAXIMUM = 50;
 
     public MusicPlayer() {
@@ -40,7 +41,10 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
 
     public void play(AudioTrack track) {
         if (track == null) {
-            closeAudioConnection();
+            if (isStayingInChannel())
+                return;
+            else
+                closeAudioConnection();
             return;
         }
         if (player.isPaused())
@@ -84,6 +88,10 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
         return repeating;
     }
 
+    public boolean isPlaying() {
+        return player.getPlayingTrack() != null;
+    }
+
     public void setStayingInChannel(boolean stayInChannel) {
         this.stayInChannel = stayInChannel;
     }
@@ -100,23 +108,14 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
         return player.getTrackPosition();
     }
 
-    public void setQueue(Queue<AudioTrack> queue) {
-        this.trackQueue = queue;
-    }
-
-    public Queue<AudioTrack> getQueue() {
-        return trackQueue;
-    }
-
     public void queueTrack(AudioTrack audioTrack) {
         trackQueue.add(audioTrack);
-        if(player.getPlayingTrack() == null)
+        if (player.getPlayingTrack() == null)
             play(pollTrack());
-        savePlayer();
     }
 
     public AudioTrack pollTrack() {
-        if(trackQueue.isEmpty())
+        if (trackQueue.isEmpty())
             return null;
         AudioTrack track = trackQueue.poll();
         savePlayer();
@@ -136,31 +135,39 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
         return trackQueue.size();
     }
 
+    public Queue<AudioTrack> getQueue() {
+        return trackQueue;
+    }
+
     private void handleTrackStop(AudioPlayer player, AudioTrack track, boolean error) {
-        AudioTrack newTrack;
         if (repeating && !error) {
-            newTrack = track;
+            queueTrack(track);
+            return;
         }
-        newTrack = pollTrack();
-        if(newTrack != null)
-            queueTrack(newTrack);
+        AudioTrack newTrack = pollTrack();
+        queueTrack(newTrack);
     }
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        if(endReason.equals(AudioTrackEndReason.FINISHED)) {
+        if (endReason.equals(AudioTrackEndReason.FINISHED)) {
             AudioTrack nextTrack = pollTrack();
-            if(nextTrack == null) {
+            if (nextTrack == null) {
                 closeAudioConnection();
                 return;
             }
             play(nextTrack);
             return;
         }
-        handleTrackStop(player, track, endReason.equals(AudioTrackEndReason.LOAD_FAILED));
+        if (!endReason.equals(AudioTrackEndReason.LOAD_FAILED)) {
+            handleTrackStop(player, track, false);
+        } else {
+            handleTrackStop(player, track, true);
+        }
     }
 
     protected abstract void closeAudioConnection();
+
     protected abstract void savePlayer();
 
     @Override
@@ -182,6 +189,4 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
     public boolean isOpus() {
         return false;
     }
-
-
 }

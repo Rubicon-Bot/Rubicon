@@ -64,7 +64,7 @@ public class CommandPremium extends CommandHandler {
                 if ((author.isPremium())) {
                     return message(EmbedUtil.info(invocation.translate("command.premium.already.title"), invocation.translate("command.premium.until")+" " + author.getPremiumExpiryDate()));
                 }
-                int userMoney = author.getMoney();
+                long userMoney = author.getMoney();
                 if (userMoney - PriceList.PREMIUM.getPrice() >= 0) {
                     author.setPremium(PREMIUM_TIME);
                     author.setMoney(userMoney - PriceList.PREMIUM.getPrice());
@@ -116,6 +116,8 @@ public class CommandPremium extends CommandHandler {
 
     private void assignPremiumRole(RubiconUser user) {
         if (!user.isPremium()) return;
+        if(RubiconBot.getSelfUser().getIdLong() != 380713705073147915L)
+            return;
         Guild guild = RubiconBot.getShardManager().getGuildById(Info.RUBICON_SERVER);
         if (guild.getMember(user.getUser()) == null) return;
         Role role = guild.getRoleById(382160159339970560L);

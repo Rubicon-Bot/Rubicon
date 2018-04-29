@@ -8,7 +8,6 @@ import fun.rubicon.core.music.GuildMusicPlayer;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
-import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.io.UnsupportedEncodingException;
@@ -27,8 +26,10 @@ public class CommandVolume extends CommandHandler {
         GuildMusicPlayer musicPlayer = RubiconBot.getGuildMusicPlayerManager().getAndCreatePlayer(invocation, userPermissions);
         if(!musicPlayer.checkVoiceAvailability())
             return null;
-        if(invocation.getArgs().length == 0)
-            return createHelpMessage();
+        if(invocation.getArgs().length == 0) {
+            musicPlayer.setVolume(musicPlayer.DEFAULT_VOLUME);
+            return EmbedUtil.message(EmbedUtil.success(invocation.translate("command.volume.reset.title"), invocation.translate("command.volume.reset.desc")));
+        }
         int volume;
         try {
             volume = Integer.parseInt(invocation.getArgs()[0]);
@@ -37,7 +38,8 @@ public class CommandVolume extends CommandHandler {
         }
         if(volume > 200 || volume < 0)
             return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.volume.invalidnumber.title"), invocation.translate("command.volume.invalidnumber.description")));
+
         musicPlayer.setVolume(volume);
-        return EmbedUtil.message(EmbedUtil.success(invocation.translate("command.volume.set.title"), String.format(invocation.translate("command.volume.set.title"), volume)));
+        return EmbedUtil.message(EmbedUtil.success(invocation.translate("command.volume.set.title"), String.format(invocation.translate("command.volume.set.description"), volume)));
     }
 }

@@ -1,12 +1,13 @@
 package fun.rubicon.commands.moderation;
 
+import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.core.entities.RubiconMember;
 import fun.rubicon.core.entities.RubiconUser;
-import fun.rubicon.features.PunishmentHandler;
+import fun.rubicon.features.poll.PunishmentHandler;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.*;
@@ -15,13 +16,10 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 
-import java.util.Arrays;
-import java.util.Date;
+import java.util.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class CommandBan extends CommandHandler implements PunishmentHandler {
     public CommandBan() {
@@ -67,23 +65,20 @@ public class CommandBan extends CommandHandler implements PunishmentHandler {
 
     @Override
     public void loadPunishments() {
-        try{
-            PreparedStatement ps = RubiconBot.getMySQL().getConnection().prepareStatement("SELECT serverid, userid, expiry FROM punishments WHERE type='ban'");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()){
-                RubiconUser user = RubiconUser.fromUser(RubiconBot.getShardManager().getUserById(rs.getLong("userid")));
-                long guildid = rs.getLong("serverid");
-                if(rs.getLong("expiry") == 0L) return;
-                if(new Date(rs.getLong("expiry")).before(new Date())) user.unban(RubiconBot.getShardManager().getGuildById(guildid));
-                new Timer().schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        user.unban(RubiconBot.getShardManager().getGuildById(guildid));
-                    }
-                }, new Date(rs.getLong("expiry")));
-            }
-        } catch (SQLException e){
-            Logger.error(e);
+        Cursor cursor = RubiconBot.getRethink().db.table("punishments").filter(RubiconBot.getRethink().rethinkDB.hashMap("type", "ban")).run(RubiconBot.getRethink().connection);
+        for (Object obj : cursor) {
+            Map map = (Map) obj;
+            RubiconUser user = RubiconUser.fromUser(RubiconBot.getShardManager().getUserById((long) map.get("userId")));
+            long guildId = (long) map.get("guildId");
+            long expiry = (long) map.get("expiry");
+            if(expiry == 1L) return;
+            if(new Date(expiry).before(new Date())) user.unban(RubiconBot.getShardManager().getGuildById(guildId));
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    user.unban(RubiconBot.getShardManager().getGuildById(guildId));
+                }
+            }, new Date(expiry));
         }
     }
 }

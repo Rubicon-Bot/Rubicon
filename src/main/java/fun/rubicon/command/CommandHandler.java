@@ -27,7 +27,7 @@ import static fun.rubicon.util.EmbedUtil.*;
  *
  * @author tr808axm
  */
-public abstract class CommandHandler {
+public abstract class CommandHandler extends EmbedUtil {
     private final String[] invocationAliases;
     private final CommandCategory category;
     private final PermissionRequirements permissionRequirements;
@@ -84,8 +84,8 @@ public abstract class CommandHandler {
                 Logger.error("Unknown error during the execution of the '" + parsedCommandInvocation.getCommandInvocation() + "' command. ");
                 Logger.error(e);
                 return new MessageBuilder().setEmbed(new EmbedBuilder()
-                        .setAuthor("Error", null, RubiconBot.getSelfUser().getEffectiveAvatarUrl())
-                        .setDescription("An unknown error occurred while executing your command.")
+                        .setAuthor("⛔ Internal Error", null, RubiconBot.getSelfUser().getEffectiveAvatarUrl())
+                        .setDescription("An internal error occurred. ```" + e.getMessage() + "```")
                         .setColor(Colors.COLOR_ERROR)
                         .setFooter(RubiconBot.getNewTimestamp(), null)
                         .build()).build();
@@ -215,6 +215,10 @@ public abstract class CommandHandler {
                 .addField("Aliases", String.join(", ", getInvocationAliases()), false)
                 .addField("Usage", usage.toString(), false));
     }
+
+
+
+
 
 
 }

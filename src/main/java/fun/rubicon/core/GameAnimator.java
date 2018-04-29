@@ -33,6 +33,7 @@ public class GameAnimator {
             Game.watching("New Translations"),
             Game.playing("translate.rubicon.fun"),
             Game.watching("Unicorns flying in the sky"),
+            Game.listening("for patreons http://donate.rucb.co")
     };
     private int currentGame = 0;
 

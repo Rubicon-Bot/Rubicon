@@ -3,7 +3,7 @@ package fun.rubicon.listener.feature;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.tools.CommandPoll;
 import fun.rubicon.core.entities.RubiconPoll;
-import fun.rubicon.features.PollManager;
+import fun.rubicon.features.poll.PollManager;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
@@ -19,19 +19,19 @@ public class VoteListener extends ListenerAdapter{
 
     @Override
     public void onMessageReactionAdd(MessageReactionAddEvent event) {
-        new Thread(() -> handleMessageReaction(event), "PollMessageReactHandler-" + event.getMessageId());
+        new Thread(() -> handleMessageReaction(event), "PollMessageReactHandler-" + event.getMessageId()).start();
     }
 
     @Override
     public void onMessageDelete(MessageDeleteEvent event) {
-        new Thread(() -> handleaMessageDeletion(event), "PollMessageDeleteHandler-" + event.getMessageId());
+        new Thread(() -> handleaMessageDeletion(event), "PollMessageDeleteHandler-" + event.getMessageId()).start();
     }
 
     @Override
     public void onMessageReactionRemove(MessageReactionRemoveEvent event) {
-        new Thread(() -> handleReactenRemove(event), "PollReactionRemoveHandler-" + event.getMessageId());
+        new Thread(() -> handleReactenRemove(event), "PollReactionRemoveHandler-" + event.getMessageId()).start();
     }
-
+    
     private void handleMessageReaction(MessageReactionAddEvent event){
         Guild guild = event.getGuild();
         if(event.getUser().isBot() || !pollManager.pollExists(guild)) return;
@@ -52,7 +52,7 @@ public class VoteListener extends ListenerAdapter{
         poll.updateMessages(event.getGuild(), CommandPoll.getParsedPoll(poll, event.getGuild()));
         pollManager.replacePoll(poll, guild);
     }
-
+    
     private void handleaMessageDeletion(MessageDeleteEvent event){
         if(!pollManager.pollExists(event.getGuild())) return;
         RubiconPoll poll = pollManager.getPollByGuild(event.getGuild());
@@ -60,7 +60,7 @@ public class VoteListener extends ListenerAdapter{
         poll.removePollMsg(event.getMessageId());
         pollManager.replacePoll(poll, event.getGuild());
     }
-
+    
     private void handleReactenRemove(MessageReactionRemoveEvent event){
         try {
             if (!pollManager.pollExists(event.getGuild())) return;

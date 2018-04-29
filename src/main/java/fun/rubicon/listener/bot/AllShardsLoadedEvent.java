@@ -7,12 +7,8 @@
 package fun.rubicon.listener.bot;
 
 import fun.rubicon.RubiconBot;
+import fun.rubicon.commands.tools.CommandYouTube;
 import fun.rubicon.util.BotListHandler;
-import net.dv8tion.jda.core.entities.Game;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * @author Yannick Seeger / ForYaSee
@@ -31,5 +27,9 @@ public class AllShardsLoadedEvent {
         BotListHandler.postStats(false);
         //Load all polls
         RubiconBot.getPollManager().loadPolls();
+        //Load all YouTube Events
+        new CommandYouTube.YouTubeChecker(RubiconBot.getShardManager().getGuilds());
+        //Load verification cache
+        RubiconBot.getVerificationLoader().loadVerificationCache();
     }
 }

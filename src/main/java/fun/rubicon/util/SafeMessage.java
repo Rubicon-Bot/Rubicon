@@ -9,6 +9,7 @@ package fun.rubicon.util;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageEmbed;
+import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.util.concurrent.TimeUnit;
@@ -27,6 +28,8 @@ public class SafeMessage {
             // Ignored
         }
     }
+
+
 
     public static Message sendMessageBlocking(TextChannel textChannel, Message message) {
         if (hasPermissions(textChannel))
@@ -72,11 +75,10 @@ public class SafeMessage {
 
 
     private static boolean hasPermissions(TextChannel channel) {
-        if(channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_READ) && channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE)) {
-            return true;
-        }
-        return false;
+        return channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_READ) && channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE);
     }
+
+
 
     private static boolean hasDeletePermission(TextChannel channel) {
         return channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_MANAGE);

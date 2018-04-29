@@ -19,16 +19,21 @@ import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.*;
 import fun.rubicon.commands.music.*;
 import fun.rubicon.commands.music.CommandClearQueue;
+import fun.rubicon.commands.botowner.CommandInvMod;
+import fun.rubicon.commands.rpg.CommandInventory;
 import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
+import fun.rubicon.commands.tools.CommandYouTube;
 import fun.rubicon.core.GameAnimator;
-import fun.rubicon.core.music.GuildMusicPlayer;
 import fun.rubicon.core.music.GuildMusicPlayerManager;
 import fun.rubicon.core.music.LavalinkManager;
+import fun.rubicon.core.rpg.RPGItemRegistry;
 import fun.rubicon.core.translation.TranslationManager;
 import fun.rubicon.commands.botowner.CommandEval;
-import fun.rubicon.features.PollManager;
-import fun.rubicon.features.PunishmentManager;
+import fun.rubicon.features.poll.PollManager;
+import fun.rubicon.features.poll.PunishmentManager;
+import fun.rubicon.features.verification.VerificationCommandHandler;
+import fun.rubicon.features.verification.VerificationLoader;
 import fun.rubicon.listener.*;
 import fun.rubicon.listener.bot.BotJoinListener;
 import fun.rubicon.listener.bot.BotLeaveListener;
@@ -37,13 +42,16 @@ import fun.rubicon.listener.bot.ShardListener;
 import fun.rubicon.listener.channel.TextChannelDeleteListener;
 import fun.rubicon.listener.channel.VoiceChannelDeleteListener;
 import fun.rubicon.listener.feature.PunishmentListener;
+import fun.rubicon.listener.feature.VerificationListener;
 import fun.rubicon.listener.feature.VoteListener;
 import fun.rubicon.listener.member.MemberJoinListener;
 import fun.rubicon.listener.member.MemberLeaveListener;
 import fun.rubicon.listener.role.RoleDeleteListener;
-import fun.rubicon.mysql.DatabaseGenerator;
-import fun.rubicon.mysql.MySQL;
 import fun.rubicon.permission.PermissionManager;
+import fun.rubicon.rethink.Rethink;
+import fun.rubicon.rethink.RethinkUtil;
+import fun.rubicon.setup.SetupListener;
+import fun.rubicon.setup.SetupManager;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.bot.sharding.ShardManager;
@@ -66,10 +74,10 @@ import java.util.Date;
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"token", "mysql_host", "mysql_database", "mysql_user", "mysql_password", "playingStatus", "dbl_token", "discord_pw_token", "gif_token", "google_token"};
+    private static final String[] CONFIG_KEYS = {"log_webhook", "token", "playingStatus", "dbl_token", "discord_pw_token", "gif_token", "google_token", "rethink_host", "rethink_port", "rethink_db", "rethink_user", "rethink_password"};
     private static RubiconBot instance;
     private final Configuration configuration;
-    private final MySQL mySQL;
+    private final Rethink rethink;
     private final GameAnimator gameAnimator;
     private final CommandManager commandManager;
     private final PermissionManager permissionManager;
@@ -80,8 +88,11 @@ public class RubiconBot {
     private ShardManager shardManager;
     private boolean allShardsInitialised;
     private BitlyAPI bitlyAPI;
+    private VerificationLoader verificationLoader;
+    private SetupManager setupManager;
     private static int SHARD_COUNT;
     private static LavalinkManager lavalinkManager;
+    private RPGItemRegistry rpgItemRegistry;
 
     /**
      * Constructs the RubiconBot.
@@ -117,15 +128,16 @@ public class RubiconBot {
                 configuration.set(configKey, input);
             }
         }
-        //Init MySQL Connection
-        mySQL = new MySQL(
-                configuration.getString("mysql_host"),
-                "3306", configuration.getString("mysql_user"),
-                configuration.getString("mysql_password"),
-                configuration.getString("mysql_database"));
-        mySQL.connect();
-
-        DatabaseGenerator.createAllDatabasesIfNecessary();
+        Logger.enableWebhooks(configuration.getString("log_webhook"));
+        rethink = new Rethink(
+                configuration.getString("rethink_host"),
+                configuration.getInt("rethink_port"),
+                configuration.getString("rethink_db"),
+                configuration.getString("rethink_user"),
+                configuration.getString("rethink_password")
+        );
+        rethink.connect();
+        RethinkUtil.createDefaults(rethink);
 
         SHARD_COUNT = generateShardCount();
         Logger.info(String.format("Starting with %d shards...", SHARD_COUNT));
@@ -141,8 +153,11 @@ public class RubiconBot {
         permissionManager = new PermissionManager();
         translationManager = new TranslationManager();
         gameAnimator = new GameAnimator();
+        rpgItemRegistry = new RPGItemRegistry();
         //Init url shorter API
         bitlyAPI = new BitlyAPI(configuration.getString("bitly_token"));
+        verificationLoader = new VerificationLoader();
+        setupManager = new SetupManager();
 
 
         //Init Shard
@@ -150,6 +165,7 @@ public class RubiconBot {
 
         gameAnimator.start();
         shardManager.setStatus(OnlineStatus.ONLINE);
+        Logger.info("Started!");
     }
 
     private void registerCommands() {
@@ -159,7 +175,9 @@ public class RubiconBot {
                 new CommandShardManage(),
                 new CommandBotstatus(),
                 new CommandBotplay(),
-                new CommandDisco()
+                new CommandDisco(),
+                new CommandTest(),
+                new CommandInvMod()
         );
 
         //Admin
@@ -171,7 +189,8 @@ public class RubiconBot {
         commandManager.registerCommandHandlers(
                 new CommandJoinMessage(),
                 new CommandLeaveMessage(),
-                new CommandAutochannel()
+                new CommandAutochannel(),
+                new CommandJoinImage()
         );
 
         // Fun
@@ -179,7 +198,11 @@ public class RubiconBot {
                 new CommandRandom(),
                 new CommandLmgtfy(),
                 new CommandAscii(),
-                new CommandGiphy()
+                new CommandGiphy(),
+                new CommandRip(),
+                new CommandMedal(),
+                new CommandRoadSign(),
+                new CommandWeddingSign()
         );
 
         //General
@@ -195,17 +218,18 @@ public class RubiconBot {
                 new CommandMoney(),
                 new CommandStatistics(),
                 new CommandUptime(),
-                new CommandYouTube(),
                 new CommandSearch(),
                 new CommandPremium(),
-                new CommandKey()
+                new CommandKey(),
+                new CommandPing()
         );
 
         //Moderation
         commandManager.registerCommandHandlers(
                 new CommandUnmute(),
                 new CommandUnban(),
-                new CommandMoveall()
+                new CommandMoveall(),
+                new CommandWarn()
         );
 
         //Punishments
@@ -217,7 +241,10 @@ public class RubiconBot {
         //Tools
         commandManager.registerCommandHandlers(
                 new CommandPoll(),
-                new CommandShort()
+                new CommandShort(),
+                new CommandYouTube(),
+                new CommandNick(),
+                new VerificationCommandHandler()
         );
 
         //Music
@@ -233,7 +260,14 @@ public class RubiconBot {
                 new CommandStop(),
                 new CommandPause(),
                 new CommandResume(),
-                new CommandShuffle()
+                new CommandShuffle(),
+                new CommandNow(),
+                new CommandPlaylist()
+        );
+
+        //RPG
+        commandManager.registerCommandHandlers(
+                new CommandInventory()
         );
     }
 
@@ -279,7 +313,10 @@ public class RubiconBot {
                 new PunishmentListener(),
                 new GeneralMessageListener(),
                 new RoleDeleteListener(),
-                new LavalinkManager()
+                new LavalinkManager(),
+                new LavalinkManager(),
+                new VerificationListener(),
+                new SetupListener()
         );
         try {
             shardManager = builder.build();
@@ -370,13 +407,6 @@ public class RubiconBot {
     }
 
     /**
-     * @return the {@link MySQL} instance
-     */
-    public static MySQL getMySQL() {
-        return instance == null ? null : instance.mySQL;
-    }
-
-    /**
      * @return the translation manager.
      */
     public TranslationManager getTranslationManager() {
@@ -409,7 +439,6 @@ public class RubiconBot {
         return instance.gameAnimator;
     }
 
-
     public static PollManager getPollManager() {
         return instance.pollManager;
     }
@@ -424,4 +453,15 @@ public class RubiconBot {
 
     public static GuildMusicPlayerManager getGuildMusicPlayerManager() { return instance.guildMusicPlayerManager; }
 
+    public static Rethink getRethink() {
+        return instance == null ? null : instance.rethink;
+    }
+
+    public static RPGItemRegistry getRPGItemRegistry() {
+        return instance == null ? null : instance.rpgItemRegistry;
+    }
+
+    public static VerificationLoader getVerificationLoader() { return instance.verificationLoader; }
+
+    public static SetupManager getSetupManager() { return instance.setupManager; }
 }
