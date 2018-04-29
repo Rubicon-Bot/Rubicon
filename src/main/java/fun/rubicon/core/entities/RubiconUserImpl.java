@@ -119,7 +119,7 @@ public abstract class RubiconUserImpl extends RethinkHelper {
         rethink.db.table("punishments").filter(rethink.rethinkDB.hashMap("userId", user.getId()).with("guildId", guild.getId()).with("type", "ban")).delete().run(rethink.connection);
 
         if (guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
-            guild.getController().ban(user, 7).queue();
+            guild.getController().unban(user).queue();
         } else
             guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: Unable to unban user `" + user.getName() + "`! Please give Rubicon `BAN_MEMBERS` permission in order to use the unban command").queue();
     }
