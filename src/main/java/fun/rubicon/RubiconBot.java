@@ -245,7 +245,8 @@ public class RubiconBot {
                 new CommandShort(),
                 new CommandYouTube(),
                 new CommandNick(),
-                new VerificationCommandHandler()
+                new VerificationCommandHandler(),
+                new CommandChoose()
         );
 
         //Music
