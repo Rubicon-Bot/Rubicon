@@ -202,7 +202,8 @@ public class RubiconBot {
                 new CommandRip(),
                 new CommandMedal(),
                 new CommandRoadSign(),
-                new CommandWeddingSign()
+                new CommandWeddingSign(),
+                new CommandDice()
         );
 
         //General
