@@ -68,14 +68,20 @@ public class CommandMute extends CommandHandler implements PunishmentHandler {
         Cursor cursor = RubiconBot.getRethink().db.table("punishments").filter(RubiconBot.getRethink().rethinkDB.hashMap("type", "mute")).run(RubiconBot.getRethink().connection);
         for (Object obj : cursor) {
             Map map = (Map) obj;
-            RubiconMember member = RubiconMember.fromMember(RubiconBot.getShardManager().getGuildById((String) map.get("guildId")).getMemberById((String) map.get("userId")));
+            RubiconMember member;
+            try {
+               member = RubiconMember.fromMember(RubiconBot.getShardManager().getGuildById((String) map.get("guildId")).getMemberById((String) map.get("userId")));
+            }catch (Exception ignored){
+                continue;
+            }
             RubiconBot.getPunishmentManager().getMuteCache().put(member.getMember(), (long) map.get("expiry"));
             if ((long) map.get("expiry") == 1L) return;
             if (new Date((long) map.get("expiry")).before(new Date())) member.unmute(true);
+            RubiconMember finalMember = member;
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    member.unmute(true);
+                    finalMember.unmute(true);
                 }
             }, new Date((long) map.get("expiry")));
         }

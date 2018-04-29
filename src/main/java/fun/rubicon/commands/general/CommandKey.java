@@ -1,14 +1,18 @@
 package fun.rubicon.commands.general;
 
+import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
+import fun.rubicon.core.entities.RubiconUser;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Leon Kappes / Lee
@@ -18,26 +22,53 @@ import java.util.Date;
 
 public class CommandKey extends CommandHandler {
 
+
     public CommandKey() {
-        super(new String[]{"key", "redeem"}, CommandCategory.GENERAL, new PermissionRequirements("key", false, true), "Redeem an Gift Code or Generate one.", "<key>\ngen <type>");
+        super(new String[]{"key", "redeem", "keys"}, CommandCategory.GENERAL, new PermissionRequirements("key", false, true), "Redeem an Gift Code or Generate one.", "<key>\ngen <type>");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
-        if (invocation.getArgs().length < 2)
+        if (invocation.getArgs().length < 1)
             return createHelpMessage(invocation);
 
         switch (invocation.getArgs()[0]) {
             case "gen":
             case "generate":
-                switch (invocation.getArgs()[1]) {
-                    case "premium":
-                        //RubiconBot.getRethink().db.table("keys").insert(RubiconBot.getRethink().rethinkDB.hashMap("type","premium").with("date",new Date().)).run(RubiconBot.getRethink().connection);
-                        break;
-                    default:
-                        return createHelpMessage(invocation);
-
-                }
+                if (invocation.getArgs().length >= 2) {
+                    switch (invocation.getArgs()[1]) {
+                        case "premium":
+                            long creationDate = new Date().getTime();
+                            RubiconBot.getRethink().db.table("keys").insert(RubiconBot.getRethink().rethinkDB.hashMap("type", "premium").with("date", String.valueOf(creationDate)).with("creator", invocation.getAuthor().getId())).run(RubiconBot.getRethink().connection);
+                            Cursor cursor = RubiconBot.getRethink().db.table("keys").filter(RubiconBot.getRethink().rethinkDB.hashMap("date", String.valueOf(creationDate))).run(RubiconBot.getRethink().connection);
+                            List l = cursor.toList();
+                            Map map = (Map) l.get(0);
+                            try {
+                                invocation.getAuthor().openPrivateChannel().complete().sendMessage("Your Token is: `" + map.get("id") + "`").queue();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            break;
+                        default:
+                            return createHelpMessage(invocation);
+                    }
+                } else
+                    return createHelpMessage(invocation);
+                break;
+            default:
+                Cursor cursor = RubiconBot.getRethink().db.table("keys").filter(RubiconBot.getRethink().rethinkDB.hashMap("id", invocation.getArgs()[0])).run(RubiconBot.getRethink().connection);
+                List l = cursor.toList();
+                if (l.size() == 1) {
+                    Map map = (Map) l.get(0);
+                    switch (String.valueOf(map.get("type"))) {
+                        case "premium":
+                            RubiconUser.fromUser(invocation.getAuthor()).setPremium(CommandPremium.PREMIUM_TIME);
+                            return message(success("Key redeemed", "Successfully activated your Premium"));
+                        default:
+                            return message(error("Invalid Type", "The Type of The Token was undefined. Please get a new Token!"));
+                    }
+                } else
+                    return message(error("Invalid Key", "Your provided Key was Invalid!"));
 
         }
         return null;

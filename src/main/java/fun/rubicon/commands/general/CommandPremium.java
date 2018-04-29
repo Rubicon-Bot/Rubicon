@@ -30,7 +30,7 @@ import static fun.rubicon.util.EmbedUtil.message;
  */
 public class CommandPremium extends CommandHandler {
 
-    private final long PREMIUM_TIME = new Date().getTime() + 15638400000L;
+    public static final long PREMIUM_TIME = new Date().getTime() + 15638400000L;
 
     public CommandPremium() {
         super(new String[]{"premium"}, CommandCategory.GENERAL, new PermissionRequirements("premium", false, true), "See your premium state or buy premium.","| Shows current premium state\n"+
