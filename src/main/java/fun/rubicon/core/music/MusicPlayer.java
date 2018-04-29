@@ -88,6 +88,10 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
         return repeating;
     }
 
+    public boolean isPlaying() {
+        return player.getPlayingTrack() != null;
+    }
+
     public void setStayingInChannel(boolean stayInChannel) {
         this.stayInChannel = stayInChannel;
     }
@@ -131,6 +135,10 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
         return trackQueue.size();
     }
 
+    public Queue<AudioTrack> getQueue() {
+        return trackQueue;
+    }
+
     private void handleTrackStop(AudioPlayer player, AudioTrack track, boolean error) {
         if (repeating && !error) {
             queueTrack(track);
@@ -157,7 +165,6 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
             handleTrackStop(player, track, true);
         }
     }
-
 
     protected abstract void closeAudioConnection();
 
