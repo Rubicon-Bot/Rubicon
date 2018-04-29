@@ -1,4 +1,4 @@
-package fun.rubicon.commands.admin;
+package fun.rubicon.commands.settings;
 
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;

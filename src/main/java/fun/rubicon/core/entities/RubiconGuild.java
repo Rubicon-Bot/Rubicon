@@ -107,12 +107,12 @@ public class RubiconGuild extends RethinkHelper{
         if (!guild.getRolesByName("rubicon-muted", false).isEmpty())
             return guild.getRolesByName("rubicon-muted", false).get(0);
         if (!guild.getSelfMember().hasPermission(Permission.MANAGE_ROLES)) {
-            guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: I can't create roles so you can't use mute feature! Please give me `MANAGE_ROLES` Permission").queue();
+            guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: I can't create roles so you can't use mute feature! Please give me `MANAGE_ROLES` RubiconPermission").queue();
             return null;
         }
         Role mute = guild.getController().createRole().setName("rubicon-muted").complete();
         if (!guild.getSelfMember().hasPermission(Permission.MANAGE_CHANNEL)) {
-            guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: I can't manage channels so you can't use mute feature! Please give me `MANAGE_CHANNELS` Permission").queue();
+            guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: I can't manage channels so you can't use mute feature! Please give me `MANAGE_CHANNELS` RubiconPermission").queue();
             return mute;
         }
         guild.getTextChannels().forEach(tc -> {

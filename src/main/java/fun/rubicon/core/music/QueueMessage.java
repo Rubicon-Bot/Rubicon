@@ -1,4 +1,4 @@
-package fun.rubicon.commands.music;
+package fun.rubicon.core.music;
 
 import fun.rubicon.RubiconBot;
 import net.dv8tion.jda.core.EmbedBuilder;

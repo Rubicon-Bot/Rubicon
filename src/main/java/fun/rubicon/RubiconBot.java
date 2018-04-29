@@ -12,7 +12,7 @@ import de.foryasee.httprequest.RequestHeader;
 import de.foryasee.httprequest.RequestResponse;
 import de.foryasee.httprequest.RequestType;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.commands.admin.*;
+import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.botowner.*;
 import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
@@ -182,7 +182,7 @@ public class RubiconBot {
 
         //Admin
         commandManager.registerCommandHandlers(
-                new CommandAutorole()
+                new CommandPortal()
         );
 
         // Settings
@@ -190,8 +190,9 @@ public class RubiconBot {
                 new CommandJoinMessage(),
                 new CommandLeaveMessage(),
                 new CommandAutochannel(),
-                new CommandJoinImage()
-        );
+                new CommandJoinImage(),
+                new CommandAutorole()
+                );
 
         // Fun
         commandManager.registerCommandHandlers(
@@ -214,10 +215,10 @@ public class RubiconBot {
                 new CommandBio(),
                 new CommandInvite(),
                 new CommandSay(),
+                new CommandUptime(),
                 new CommandUserinfo(),
                 new CommandMoney(),
                 new CommandStatistics(),
-                new CommandUptime(),
                 new CommandSearch(),
                 new CommandPremium(),
                 new CommandKey(),
@@ -229,11 +230,7 @@ public class RubiconBot {
                 new CommandUnmute(),
                 new CommandUnban(),
                 new CommandMoveall(),
-                new CommandWarn()
-        );
-
-        //Punishments
-        punishmentManager.registerPunishmentHandlers(
+                new CommandWarn(),
                 new CommandMute(),
                 new CommandBan()
         );
@@ -243,7 +240,6 @@ public class RubiconBot {
                 new CommandPoll(),
                 new CommandShort(),
                 new CommandYouTube(),
-                new CommandNick(),
                 new VerificationCommandHandler()
         );
 
@@ -451,7 +447,9 @@ public class RubiconBot {
         return lavalinkManager;
     }
 
-    public static GuildMusicPlayerManager getGuildMusicPlayerManager() { return instance.guildMusicPlayerManager; }
+    public static GuildMusicPlayerManager getGuildMusicPlayerManager() {
+        return instance.guildMusicPlayerManager;
+    }
 
     public static Rethink getRethink() {
         return instance == null ? null : instance.rethink;
@@ -461,7 +459,11 @@ public class RubiconBot {
         return instance == null ? null : instance.rpgItemRegistry;
     }
 
-    public static VerificationLoader getVerificationLoader() { return instance.verificationLoader; }
+    public static VerificationLoader getVerificationLoader() {
+        return instance.verificationLoader;
+    }
 
-    public static SetupManager getSetupManager() { return instance.setupManager; }
+    public static SetupManager getSetupManager() {
+        return instance.setupManager;
+    }
 }

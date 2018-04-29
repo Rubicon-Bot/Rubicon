@@ -11,7 +11,6 @@ import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.translation.TranslationUtil;
 import fun.rubicon.rethink.Rethink;
-import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -57,7 +56,6 @@ public class RubiconMember extends RubiconUserImpl{
     public int getPoints() {
         return Long.valueOf(getLong(retrieve(), "points")).intValue();
     }
-
 
     public RubiconMember mute() {
         rethink.db.table("punishments").insert(rethink.rethinkDB.array(

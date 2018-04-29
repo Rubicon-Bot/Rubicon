@@ -19,6 +19,15 @@ public abstract class RethinkHelper {
         return res == null ? "" : (String) res;
     }
 
+    public static boolean getBoolean(Cursor cursor, String key) {
+        Map map = parse(cursor);
+        if (map == null) {
+            return false;
+        }
+        Object res = map.get(key);
+        return res != null && (boolean) res;
+    }
+
     public static int getInt(Cursor cursor, String key) {
         Map map = parse(cursor);
         if (map == null)

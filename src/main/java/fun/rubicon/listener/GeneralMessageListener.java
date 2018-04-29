@@ -2,6 +2,8 @@ package fun.rubicon.listener;
 
 import fun.rubicon.commands.tools.CommandYouTube;
 import fun.rubicon.core.music.GuildMusicPlayer;
+import fun.rubicon.core.music.QueueMessage;
+import net.dv8tion.jda.core.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -17,4 +19,8 @@ public class GeneralMessageListener extends ListenerAdapter {
         new Thread(() -> GuildMusicPlayer.handleTrackChoose(event), "Track-chooser-" + event.getMessage().getId() + "-Thread").start();
     }
 
+    @Override
+    public void onMessageDelete(MessageDeleteEvent event) {
+        new Thread(() -> QueueMessage.handleMessageDeletion(event));
+    }
 }
