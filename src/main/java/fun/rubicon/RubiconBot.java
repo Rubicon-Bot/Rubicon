@@ -23,6 +23,7 @@ import fun.rubicon.commands.botowner.CommandInvMod;
 import fun.rubicon.commands.rpg.CommandInventory;
 import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
+import fun.rubicon.commands.tools.CommandSearch;
 import fun.rubicon.commands.tools.CommandYouTube;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.music.GuildMusicPlayerManager;
@@ -202,7 +203,8 @@ public class RubiconBot {
                 new CommandRip(),
                 new CommandMedal(),
                 new CommandRoadSign(),
-                new CommandWeddingSign()
+                new CommandWeddingSign(),
+                new CommandDice()
         );
 
         //General
@@ -218,7 +220,7 @@ public class RubiconBot {
                 new CommandMoney(),
                 new CommandStatistics(),
                 new CommandUptime(),
-                new CommandSearch(),
+                new CommandYtSearch(),
                 new CommandPremium(),
                 new CommandKey(),
                 new CommandPing()
@@ -244,7 +246,10 @@ public class RubiconBot {
                 new CommandShort(),
                 new CommandYouTube(),
                 new CommandNick(),
-                new VerificationCommandHandler()
+                new VerificationCommandHandler(),
+                new CommandChoose(),
+                new CommandSearch(),
+                new CommandNick()
         );
 
         //Music
