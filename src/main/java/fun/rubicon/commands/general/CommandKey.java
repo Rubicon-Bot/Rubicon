@@ -37,9 +37,10 @@ public class CommandKey extends CommandHandler {
             case "gen":
             case "generate":
                 if (invocation.getArgs().length >= 2) {
+                    if(!userPermissions.isBotAuthor())
+                        return message(no_permissions());
                     switch (invocation.getArgs()[1]) {
                         case "premium":
-
                             RubiconBot.getRethink().db.table("keys").insert(RubiconBot.getRethink().rethinkDB.hashMap("type", "premium").with("date", String.valueOf(creationDate)).with("creator", invocation.getAuthor().getId())).run(RubiconBot.getRethink().connection);
                             Cursor cursor = RubiconBot.getRethink().db.table("keys").filter(RubiconBot.getRethink().rethinkDB.hashMap("date", String.valueOf(creationDate))).run(RubiconBot.getRethink().connection);
                             List l = cursor.toList();
@@ -75,16 +76,16 @@ public class CommandKey extends CommandHandler {
                         case "premium":
                             RubiconUser.fromUser(invocation.getAuthor()).setPremium(CommandPremium.PREMIUM_TIME);
                             RubiconBot.getRethink().db.table("keys").filter(RubiconBot.getRethink().rethinkDB.hashMap("id", invocation.getArgs()[0])).delete().run(RubiconBot.getRethink().connection);
-                            return message(success("Key redeemed", "Successfully activated your Premium"));
+                            return message(success(invocation.translate("command.key.redeem"), invocation.translate("command.key.redeem.premium")));
                         case "beta":
                             RubiconGuild.fromGuild(invocation.getGuild()).setBeta(true);
                             RubiconBot.getRethink().db.table("keys").filter(RubiconBot.getRethink().rethinkDB.hashMap("id", invocation.getArgs()[0])).delete().run(RubiconBot.getRethink().connection);
-                            return message(success("Key redeemed", "Successfully activated your Beta-Key"));
+                            return message(success(invocation.translate("command.key.redeem"), invocation.translate("command.key.redeem.beta")));
                         default:
-                            return message(error("Invalid Type", "The Type of The Token was undefined. Please get a new Token!"));
+                            return message(error(invocation.translate("command.key.type.title"), invocation.translate("command.key.type.description")));
                     }
                 } else
-                    return message(error("Invalid Key", "Your provided Key was Invalid!"));
+                    return message(error(invocation.translate("command.key.invalid.title"), invocation.translate("command.key.invalid.description")));
 
         }
         return null;

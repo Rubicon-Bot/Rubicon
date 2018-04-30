@@ -222,7 +222,7 @@ public class RubiconBot {
                 new CommandMoney(),
                 new CommandStatistics(),
                 new CommandUptime(),
-                new CommandSearch(),
+                new CommandYTSearch(),
                 new CommandPremium(),
                 new CommandKey(),
                 new CommandPing()
@@ -249,7 +249,8 @@ public class RubiconBot {
                 new CommandYouTube(),
                 new CommandNick(),
                 new VerificationCommandHandler(),
-                new CommandChoose()
+                new CommandChoose(),
+                new CommandSearch()
         );
 
         //Music
