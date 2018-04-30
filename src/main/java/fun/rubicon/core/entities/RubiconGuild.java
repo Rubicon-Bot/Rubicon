@@ -244,6 +244,19 @@ public class RubiconGuild extends RethinkHelper{
         return (String) map.get("kickText");
     }
 
+    public boolean isBeta() {
+        Cursor cursor = rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection);
+        Map map = (Map) cursor.toList().get(0);
+        return map.get("beta") != null;
+    }
+
+    public void setBeta(boolean state) {
+        if(state) {
+            rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(rethink.rethinkDB.hashMap("beta", 1)).run(rethink.connection);
+        }else
+            rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(rethink.rethinkDB.hashMap("beta", null)).run(rethink.connection);
+    }
+
     public static RubiconGuild fromGuild(Guild guild) {
         return new RubiconGuild(guild);
     }

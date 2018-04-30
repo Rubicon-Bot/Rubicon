@@ -127,6 +127,9 @@ public class RubiconBot {
                 configuration.set(configKey, input);
             }
         }
+        //Deactivate Beta if not active
+        if(!configuration.has("beta"))
+            configuration.set("beta",0);
         Logger.enableWebhooks(configuration.getString("log_webhook"));
         rethink = new Rethink(
                 configuration.getString("rethink_host"),
@@ -176,7 +179,8 @@ public class RubiconBot {
                 new CommandBotplay(),
                 new CommandDisco(),
                 new CommandTest(),
-                new CommandInvMod()
+                new CommandInvMod(),
+                new CommandBeta()
         );
 
         //Admin
