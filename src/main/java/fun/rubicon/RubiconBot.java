@@ -214,8 +214,6 @@ public class RubiconBot {
                 new CommandWeddingSign(),
                 new CommandDice(),
                 new CommandOverwatch()
-                new CommandWeddingSign(),
-                new CommandDice()
         );
 
         //General
@@ -232,7 +230,6 @@ public class RubiconBot {
                 new CommandStatistics(),
                 new CommandUptime(),
                 new CommandYTSearch(),
-                new CommandYtSearch(),
                 new CommandPremium(),
                 new CommandKey(),
                 new CommandPing(),
@@ -264,10 +261,6 @@ public class RubiconBot {
                 new CommandChoose(),
                 new CommandSearch(),
                 new CommandServerInfo()
-                new VerificationCommandHandler(),
-                new CommandChoose(),
-                new CommandSearch(),
-                new CommandNick()
         );
 
         //Music
