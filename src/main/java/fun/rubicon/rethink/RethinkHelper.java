@@ -13,10 +13,10 @@ public abstract class RethinkHelper {
     public static String getString(Cursor cursor, String key) {
         Map map = parse(cursor);
         if (map == null) {
-            return "";
+            return null;
         }
         Object res = map.get(key);
-        return res == null ? "" : (String) res;
+        return res == null ? null : (String) res;
     }
 
     public static boolean getBoolean(Cursor cursor, String key) {

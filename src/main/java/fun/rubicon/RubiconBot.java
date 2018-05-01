@@ -74,10 +74,10 @@ import java.util.Date;
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"log_webhook", "token", "playingStatus", "dbl_token", "discord_pw_token", "gif_token", "google_token", "rethink_host", "rethink_port", "rethink_db", "rethink_user", "rethink_password"};
+    private static final String[] CONFIG_KEYS = {"log_webhook", "token", "playingStatus", "dbl_token", "discord_pw_token", "gif_token", "google_token", "rethink_host", "rethink_port", "rethink_db", "rethink_user", "rethink_password", "rethink_host2", "rethink_port2", "rethink_host3", "rethink_port3"};
     private static RubiconBot instance;
     private final Configuration configuration;
-    private final Rethink rethink;
+    private static Rethink rethink;
     private final GameAnimator gameAnimator;
     private final CommandManager commandManager;
     private final PermissionManager permissionManager;
@@ -129,14 +129,7 @@ public class RubiconBot {
             }
         }
         Logger.enableWebhooks(configuration.getString("log_webhook"));
-        rethink = new Rethink(
-                configuration.getString("rethink_host"),
-                configuration.getInt("rethink_port"),
-                configuration.getString("rethink_db"),
-                configuration.getString("rethink_user"),
-                configuration.getString("rethink_password")
-        );
-        rethink.connect();
+        connectRethink();
         RethinkUtil.createDefaults(rethink);
 
         SHARD_COUNT = generateShardCount();
@@ -453,6 +446,17 @@ public class RubiconBot {
 
     public static Rethink getRethink() {
         return instance == null ? null : instance.rethink;
+    }
+
+    public static void connectRethink() {
+        rethink = new Rethink(
+                instance.configuration.getString("rethink_host"),
+                instance.configuration.getInt("rethink_port"),
+                instance.configuration.getString("rethink_db"),
+                instance.configuration.getString("rethink_user"),
+                instance.configuration.getString("rethink_password")
+        );
+        rethink.connect();
     }
 
     public static RPGItemRegistry getRPGItemRegistry() {
