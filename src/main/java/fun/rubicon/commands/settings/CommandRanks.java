@@ -10,6 +10,7 @@ import fun.rubicon.util.Colors;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;
@@ -43,7 +44,9 @@ public class CommandRanks extends CommandHandler {
                     return message(error(invocation.translate("command.ranks.noperm.title"), invocation.translate("command.ranks.noperm.user.description")));
                 if (!invocation.getSelfMember().hasPermission(Permission.MANAGE_ROLES))
                     return message(error(invocation.translate("command.ranks.noperm.title"), invocation.translate("command.ranks.noperm.bot.description")));
-                Role rank = guild.getGuild().getController().createRole().setName(args[1]).setMentionable(true).complete();
+                Role rank = getOrCreateRole(args[1], guild.getGuild(), member);
+                if(rank == null)
+                    return message(error(invocation.translate("command.ranks.noperm.role.title"), invocation.translate("command.ranks.noperm.role.description")));
                 /* Whitelist role as rank */
                 guild.allowRank(rank);
                 SafeMessage.sendMessage(invocation.getTextChannel(), message(success(invocation.translate("command.ranks.created.title"), String.format(invocation.translate("command.ranks.created.description"), rank.getName()))));
@@ -79,10 +82,12 @@ public class CommandRanks extends CommandHandler {
                     if (guild.getGuild().getRolesByName(name, true).isEmpty()) return;
                     Role rankRole = guild.getGuild().getRolesByName(name, true).get(0);
                     if (member.getRoles().contains(rankRole)) {
-                        toRemoveRoles.add(rankRole);
+                        if(guild.getGuild().getSelfMember().canInteract(rankRole))
+                            toRemoveRoles.add(rankRole);
                         removedRoles.append(rankRole.getName()).append(", ");
                     } else {
-                        toAddRoles.add(rankRole);
+                        if(guild.getGuild().getSelfMember().canInteract(rankRole))
+                            toAddRoles.add(rankRole);
                         addedRoles.append(rankRole.getName()).append(", ");
                     }
                 });
@@ -99,7 +104,20 @@ public class CommandRanks extends CommandHandler {
                     addedRoles.replace(addedRoles.lastIndexOf(","), addedRoles.lastIndexOf(",") + 1, "");
                     emb.addField(invocation.translate("command.ranks.embed.added"), addedRoles.toString(), false);
                 }
+                if(toAddRoles.isEmpty() && toRemoveRoles.isEmpty())
+                    return message(error(invocation.translate("command.ranks.noperm.title"), invocation.translate("command.ranks.noperm.bot.description")));
                 SafeMessage.sendMessage(invocation.getTextChannel(), message(emb));
+        }
+        return null;
+    }
+
+    private Role getOrCreateRole(String name, Guild guild, Member invoker){
+        if(guild.getRolesByName(name, true).isEmpty())
+            return guild.getController().createRole().setName(name).setMentionable(true).complete();
+        else {
+            Role role = guild.getRolesByName(name, true).get(0);
+            if(invoker.canInteract(role) && guild.getSelfMember().canInteract(role) && !role.isManaged())
+                return role;
         }
         return null;
     }
