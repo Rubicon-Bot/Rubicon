@@ -12,14 +12,12 @@ import de.foryasee.httprequest.RequestHeader;
 import de.foryasee.httprequest.RequestResponse;
 import de.foryasee.httprequest.RequestType;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.commands.admin.*;
+import fun.rubicon.commands.admin.CommandAutorole;
 import fun.rubicon.commands.botowner.*;
 import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.*;
 import fun.rubicon.commands.music.*;
-import fun.rubicon.commands.music.CommandClearQueue;
-import fun.rubicon.commands.botowner.CommandInvMod;
 import fun.rubicon.commands.rpg.CommandInventory;
 import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
@@ -30,12 +28,14 @@ import fun.rubicon.core.music.GuildMusicPlayerManager;
 import fun.rubicon.core.music.LavalinkManager;
 import fun.rubicon.core.rpg.RPGItemRegistry;
 import fun.rubicon.core.translation.TranslationManager;
-import fun.rubicon.commands.botowner.CommandEval;
 import fun.rubicon.features.poll.PollManager;
 import fun.rubicon.features.poll.PunishmentManager;
 import fun.rubicon.features.verification.VerificationCommandHandler;
 import fun.rubicon.features.verification.VerificationLoader;
-import fun.rubicon.listener.*;
+import fun.rubicon.listener.AutochannelListener;
+import fun.rubicon.listener.GeneralMessageListener;
+import fun.rubicon.listener.GeneralReactionListener;
+import fun.rubicon.listener.UserMentionListener;
 import fun.rubicon.listener.bot.BotJoinListener;
 import fun.rubicon.listener.bot.BotLeaveListener;
 import fun.rubicon.listener.bot.SelfMentionListener;
@@ -59,6 +59,7 @@ import net.dv8tion.jda.bot.sharding.ShardManager;
 import net.dv8tion.jda.core.JDAInfo;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
 import org.json.JSONObject;
 
@@ -67,6 +68,8 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Rubicon-bot's main class. Initializes all components.
@@ -129,6 +132,9 @@ public class RubiconBot {
                 configuration.set(configKey, input);
             }
         }
+        //Deactivate Beta if not active
+        if(!configuration.has("beta"))
+            configuration.set("beta",0);
         Logger.enableWebhooks(configuration.getString("log_webhook"));
         rethink = new Rethink(
                 configuration.getString("rethink_host"),
@@ -178,7 +184,8 @@ public class RubiconBot {
                 new CommandBotplay(),
                 new CommandDisco(),
                 new CommandTest(),
-                new CommandInvMod()
+                new CommandInvMod(),
+                new CommandBeta()
         );
 
         //Admin
@@ -205,6 +212,9 @@ public class RubiconBot {
                 new CommandMedal(),
                 new CommandRoadSign(),
                 new CommandWeddingSign(),
+                new CommandDice(),
+                new CommandOverwatch()
+                new CommandWeddingSign(),
                 new CommandDice()
         );
 
@@ -221,10 +231,12 @@ public class RubiconBot {
                 new CommandMoney(),
                 new CommandStatistics(),
                 new CommandUptime(),
+                new CommandYTSearch(),
                 new CommandYtSearch(),
                 new CommandPremium(),
                 new CommandKey(),
-                new CommandPing()
+                new CommandPing(),
+                new CommandPermissionCheck()
         );
 
         //Moderation
@@ -232,7 +244,8 @@ public class RubiconBot {
                 new CommandUnmute(),
                 new CommandUnban(),
                 new CommandMoveall(),
-                new CommandWarn()
+                new CommandWarn(),
+                new CommandClear()
         );
 
         //Punishments
@@ -247,6 +260,10 @@ public class RubiconBot {
                 new CommandShort(),
                 new CommandYouTube(),
                 new CommandNick(),
+                new VerificationCommandHandler(),
+                new CommandChoose(),
+                new CommandSearch(),
+                new CommandServerInfo()
                 new VerificationCommandHandler(),
                 new CommandChoose(),
                 new CommandSearch(),
@@ -433,6 +450,13 @@ public class RubiconBot {
         return instance == null ? null : instance.translationManager;
     }
 
+    /**
+     * @return List<Guild> of Guilds by name
+     */
+    public static List<Guild> getGuildsByName(String name, boolean ignoreCase) {
+        return ignoreCase ? getShardManager().getGuilds().stream().filter(guild -> guild.getName().equalsIgnoreCase(name)).collect(Collectors.toList()) : getShardManager().getGuilds().stream().filter(guild -> guild.getName().equals(name)).collect(Collectors.toList());
+    }
+
     public static boolean allShardsInitialised() {
         return instance.allShardsInitialised;
     }
@@ -457,7 +481,9 @@ public class RubiconBot {
         return lavalinkManager;
     }
 
-    public static GuildMusicPlayerManager getGuildMusicPlayerManager() { return instance.guildMusicPlayerManager; }
+    public static GuildMusicPlayerManager getGuildMusicPlayerManager() {
+        return instance.guildMusicPlayerManager;
+    }
 
     public static Rethink getRethink() {
         return instance == null ? null : instance.rethink;
@@ -467,7 +493,11 @@ public class RubiconBot {
         return instance == null ? null : instance.rpgItemRegistry;
     }
 
-    public static VerificationLoader getVerificationLoader() { return instance.verificationLoader; }
+    public static VerificationLoader getVerificationLoader() {
+        return instance.verificationLoader;
+    }
 
-    public static SetupManager getSetupManager() { return instance.setupManager; }
+    public static SetupManager getSetupManager() {
+        return instance.setupManager;
+    }
 }

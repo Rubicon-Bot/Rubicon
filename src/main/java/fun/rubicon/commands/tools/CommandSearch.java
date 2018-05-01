@@ -52,15 +52,15 @@ public class CommandSearch extends CommandHandler {
                 roles.append(r.getName()).append("(`").append(r.getId()).append("`)\n");
         });
 
-        EmbedBuilder emb = new EmbedBuilder().setColor(Colors.COLOR_PRIMARY).setTitle("Results");
+        EmbedBuilder emb = new EmbedBuilder().setColor(Colors.COLOR_PRIMARY).setTitle(invocation.translate("command.search.result"));
         if(!textChannels.toString().equals(""))
-            emb.addField("Textchannels", textChannels.toString(), false);
+            emb.addField(invocation.translate("command.search.result.text"), textChannels.toString(), false);
         if(!voiceChannels.toString().equals(""))
-            emb.addField("Voicechannels", voiceChannels.toString(), false);
+            emb.addField(invocation.translate("command.search.result.voice"), voiceChannels.toString(), false);
         if(!members.toString().equals(""))
-            emb.addField("Members", members.toString(), false);
+            emb.addField(invocation.translate("command.search.result.memb"), members.toString(), false);
         if(!roles.toString().equals(""))
-            emb.addField("Roles", roles.toString(), false);
+            emb.addField(invocation.translate("command.search.result.role"), roles.toString(), false);
         if(emb.getFields().isEmpty())
             return message(EmbedUtil.error(invocation.translate("command.search.noresulst.title"), invocation.translate("command.search.noresulst.description")));
         return message(emb);

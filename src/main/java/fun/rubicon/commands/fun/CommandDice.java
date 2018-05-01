@@ -16,13 +16,13 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class CommandDice extends CommandHandler {
     public CommandDice() {
-        super(new String[] {"dice"}, CommandCategory.FUN, new PermissionRequirements("dice", false, true), "Roll a dice", "[max] [min]");
+        super(new String[] {"dice"}, CommandCategory.FUN, new PermissionRequirements("dice", false, true), "Roll a dice", "[max]");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) throws Exception {
         int max = 6;
-        int min = 0;
+        int min = 1;
         String[] args = invocation.getArgs();
         if(args.length >= 1){
             try {
@@ -31,16 +31,9 @@ public class CommandDice extends CommandHandler {
                 return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.dice.invalidnumber.title"), invocation.translate("command.dice.invalidnumber.description")));
             }
         }
-        if(args.length >= 2){
-            try {
-                min = Integer.parseInt(args[1]);
-            } catch (NumberFormatException e){
-                return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.dice.invalidnumber.title"), invocation.translate("command.dice.invalidnumber.description")));
-            }
-        }
 
-        if(min > max){
-            return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.dice.invalidmin.title"), invocation.translate("command.dice.invalidmin.description")));
+        if(max<=1){
+            return message(error(invocation.translate("command.dice.invalidmin.title"),invocation.translate("command.dice.invalidmin.description")));
         }
 
         int random = ThreadLocalRandom.current().nextInt(min, max);
