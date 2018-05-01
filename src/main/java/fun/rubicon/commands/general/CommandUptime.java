@@ -51,8 +51,8 @@ public class CommandUptime extends CommandHandler{
                 new EmbedBuilder()
                         .setColor(new Color(255, 71, 0))
                         .setDescription(":alarm_clock:   **UPTIME**")
-                        .addField("Last restart", getTime(Info.lastRestart, "dd.MM.yyyy - HH:mm:ss (z)"), false)
-                        .addField("Online since", getTimeDiff(new Date(), Info.lastRestart), false)
+                        .addField(invocation.translate("command.uptime.restart"), getTime(Info.lastRestart, "dd.MM.yyyy - HH:mm:ss (z)"), false)
+                        .addField(invocation.translate("command.uptime.online"), getTimeDiff(new Date(), Info.lastRestart), false)
                         .build()
         ).queue();
         return null;

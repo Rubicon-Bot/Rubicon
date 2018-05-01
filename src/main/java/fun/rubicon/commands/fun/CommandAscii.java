@@ -32,13 +32,13 @@ public class CommandAscii extends CommandHandler {
         Request req = new Request.Builder()
                 .url("http://artii.herokuapp.com/make?text=" + invocation.getArgsString())
                 .build();
-        Response response = null;
+        Response response;
         try {
             response = new OkHttpClient().newCall(req).execute();
             SafeMessage.sendMessage(invocation.getTextChannel(), "```fix\n" + response.body().string() + "```");
         } catch (IOException e) {
             e.printStackTrace();
-            return message(EmbedUtil.error("Error!", "Was not able to build! Please try again later or Report Bug!"));
+            return message(EmbedUtil.error(invocation.translate("command.money.give.selferror.title"), invocation.translate("command.ascii.error")));
         }
         response.close();
         return null;

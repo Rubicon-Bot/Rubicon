@@ -57,6 +57,7 @@ import net.dv8tion.jda.bot.sharding.ShardManager;
 import net.dv8tion.jda.core.JDAInfo;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
 import org.json.JSONObject;
 
@@ -65,6 +66,8 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Rubicon-bot's main class. Initializes all components.
@@ -206,7 +209,8 @@ public class RubiconBot {
                 new CommandMedal(),
                 new CommandRoadSign(),
                 new CommandWeddingSign(),
-                new CommandDice()
+                new CommandDice(),
+                new CommandOverwatch()
         );
 
         //General
@@ -225,7 +229,8 @@ public class RubiconBot {
                 new CommandYTSearch(),
                 new CommandPremium(),
                 new CommandKey(),
-                new CommandPing()
+                new CommandPing(),
+                new CommandPermissionCheck()
         );
 
         //Moderation
@@ -233,7 +238,8 @@ public class RubiconBot {
                 new CommandUnmute(),
                 new CommandUnban(),
                 new CommandMoveall(),
-                new CommandWarn()
+                new CommandWarn(),
+                new CommandClear()
         );
 
         //Punishments
@@ -250,7 +256,8 @@ public class RubiconBot {
                 new CommandNick(),
                 new VerificationCommandHandler(),
                 new CommandChoose(),
-                new CommandSearch()
+                new CommandSearch(),
+                new CommandServerInfo()
         );
 
         //Music
@@ -431,6 +438,13 @@ public class RubiconBot {
      */
     public static TranslationManager sGetTranslations() {
         return instance == null ? null : instance.translationManager;
+    }
+
+    /**
+     * @return List<Guild> of Guilds by name
+     */
+    public static List<Guild> getGuildsByName(String name, boolean ignoreCase) {
+        return ignoreCase ? getShardManager().getGuilds().stream().filter(guild -> guild.getName().equalsIgnoreCase(name)).collect(Collectors.toList()) : getShardManager().getGuilds().stream().filter(guild -> guild.getName().equals(name)).collect(Collectors.toList());
     }
 
     public static boolean allShardsInitialised() {
