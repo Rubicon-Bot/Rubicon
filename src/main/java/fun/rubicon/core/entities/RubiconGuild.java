@@ -14,6 +14,7 @@ import fun.rubicon.commands.settings.CommandLeaveMessage;
 import fun.rubicon.rethink.Rethink;
 import fun.rubicon.rethink.RethinkHelper;
 import fun.rubicon.util.Info;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.PermissionOverride;
@@ -22,9 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import net.dv8tion.jda.core.entities.TextChannel;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 /**
  * @author Yannick Seeger / ForYaSee
  */
@@ -242,6 +240,64 @@ public class RubiconGuild extends RethinkHelper{
         Cursor cursor = rethink.db.table("verification_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection);
         Map map = (Map) cursor.toList().get(0);
         return (String) map.get("kickText");
+    }
+
+    private List<String> getRankIDs(){
+        List<String> idList = new ArrayList<>();
+        Cursor cursor = rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection);
+        Map map = (Map) cursor.toList().get(0);
+        return ((List<List<String>>) map.get("ranks")).get(0);
+    }
+
+    public List<Role> getRanks(){
+        checkRanks();
+        List<Role> roles = new ArrayList<>();
+        getRankIDs().forEach(id -> {
+            roles.add(guild.getRoleById(id));
+        });
+        return roles;
+    }
+
+    public void checkRanks(){
+        if(!useRanks()) return;
+        List<String> idList = getRankIDs();
+        getRankIDs().forEach(id -> {
+            Role role = guild.getRoleById(id);
+            if(role == null)
+                idList.remove(id);
+        });
+        updateRanks(idList);
+    }
+
+    public boolean isRank(Role role){
+        Logger.debug(getRankIDs().toString());
+        Logger.debug(role.getId());
+        return getRankIDs().contains(role.getId());
+    }
+
+    public boolean useRanks(){
+        if(getRankIDs() == null) return false;
+        return !getRankIDs().isEmpty();
+    }
+
+    public void allowRank(Role role){
+        List<String> list;
+        if(useRanks())
+            list = getRankIDs();
+        else
+            list = new ArrayList<>();
+        list.add(role.getId());
+        updateRanks(list);
+    }
+
+    public void disallowRank(Role role){
+        List<String> list = getRankIDs();
+        list.remove(role.getId());
+        updateRanks(list);
+    }
+
+    private void updateRanks(List<String> idList){
+        rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(rethink.rethinkDB.hashMap("ranks", rethink.rethinkDB.array(idList))).run(rethink.connection);
     }
 
     public static RubiconGuild fromGuild(Guild guild) {

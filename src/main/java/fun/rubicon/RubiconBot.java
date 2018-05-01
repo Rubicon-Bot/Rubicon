@@ -191,7 +191,8 @@ public class RubiconBot {
                 new CommandJoinMessage(),
                 new CommandLeaveMessage(),
                 new CommandAutochannel(),
-                new CommandJoinImage()
+                new CommandJoinImage(),
+                new CommandRanks()
         );
 
         // Fun
