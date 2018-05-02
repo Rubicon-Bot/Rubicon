@@ -53,6 +53,8 @@ public class CommandRanks extends CommandHandler {
                 break;
             case "remove":
             case "delete":
+                if(!userPermissions.hasPermissionNode("command.ranks.manage"))
+                    return message(error(invocation.translate("command.ranks.noperm.manage.title"), invocation.translate("command.ranks.noperm.manage.description")));
                 if (message.getMentionedRoles().isEmpty())
                     return message(error(invocation.translate("command.ranks.nomention.title"), invocation.translate("command.ranks.nomention.bot.description")));
                 Role role = message.getMentionedRoles().get(0);
@@ -81,14 +83,17 @@ public class CommandRanks extends CommandHandler {
                 Arrays.asList(args).forEach(name -> {
                     if (guild.getGuild().getRolesByName(name, true).isEmpty()) return;
                     Role rankRole = guild.getGuild().getRolesByName(name, true).get(0);
+                    if(!guild.isRank(rankRole)) return;
                     if (member.getRoles().contains(rankRole)) {
-                        if(guild.getGuild().getSelfMember().canInteract(rankRole))
+                        if(guild.getGuild().getSelfMember().canInteract(rankRole)) {
                             toRemoveRoles.add(rankRole);
-                        removedRoles.append(rankRole.getName()).append(", ");
+                            removedRoles.append(rankRole.getName()).append(", ");
+                        }
                     } else {
-                        if(guild.getGuild().getSelfMember().canInteract(rankRole))
+                        if(guild.getGuild().getSelfMember().canInteract(rankRole)) {
                             toAddRoles.add(rankRole);
-                        addedRoles.append(rankRole.getName()).append(", ");
+                            addedRoles.append(rankRole.getName()).append(", ");
+                        }
                     }
                 });
                 EmbedBuilder emb = new EmbedBuilder()
