@@ -1,8 +1,6 @@
 package fun.rubicon.features.portal;
 
-import net.dv8tion.jda.core.entities.Channel;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.*;
 
 import java.util.HashMap;
 
@@ -19,5 +17,17 @@ public interface Portal {
 
     void addGuild(String guildId, String channelId);
 
+    void removeGuild(String guildId);
+
     void delete();
+
+    void broadcast(String channelExclude, String message, String authorName, String avatarUrl, String guildName);
+
+    void broadcastSystemMessage(MessageEmbed messageEmbed);
+
+    void setPortalTopic(String topic);
+
+    void changeOwnership();
+
+    boolean containsChannel(Channel channel);
 }

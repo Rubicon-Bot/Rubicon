@@ -237,6 +237,10 @@ public class RubiconGuild extends RethinkHelper {
         dbGuild.update(rethink.rethinkDB.hashMap("portal", rootGuildId)).run(rethink.connection);
     }
 
+    public String getPortalRoot() {
+        return getString(retrieve(), "portal");
+    }
+
     public void closePortal() {
         dbGuild.update(rethink.rethinkDB.hashMap("portal", null)).run(rethink.connection);
     }
@@ -254,6 +258,10 @@ public class RubiconGuild extends RethinkHelper {
     public void setPortalInvites(boolean state) {
         rethink.db.table("portal_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId()))
                 .update(rethink.rethinkDB.hashMap("invites", state)).run(rethink.connection);
+    }
+
+    public boolean hasPortalEmbedsEnables() {
+        return getBoolean(rethink.db.table("portal_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection), "embeds");
     }
 
     public void deletePortalSettings() {

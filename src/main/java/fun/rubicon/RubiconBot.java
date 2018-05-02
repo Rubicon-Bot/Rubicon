@@ -32,6 +32,7 @@ import fun.rubicon.core.translation.TranslationManager;
 import fun.rubicon.commands.botowner.CommandEval;
 import fun.rubicon.features.poll.PollManager;
 import fun.rubicon.features.poll.PunishmentManager;
+import fun.rubicon.features.portal.PortalMessageListener;
 import fun.rubicon.features.verification.VerificationCommandHandler;
 import fun.rubicon.features.verification.VerificationLoader;
 import fun.rubicon.listener.*;
@@ -73,6 +74,7 @@ import java.util.Date;
  * @author tr808axm, ForYaSee
  */
 public class RubiconBot {
+
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
     private static final String[] CONFIG_KEYS = {"log_webhook", "token", "playingStatus", "dbl_token", "discord_pw_token", "gif_token", "google_token", "rethink_host", "rethink_port", "rethink_db", "rethink_user", "rethink_password", "rethink_host2", "rethink_port2", "rethink_host3", "rethink_port3"};
     private static RubiconBot instance;
@@ -233,7 +235,8 @@ public class RubiconBot {
                 new CommandPoll(),
                 new CommandShort(),
                 new CommandYouTube(),
-                new VerificationCommandHandler()
+                new VerificationCommandHandler(),
+                new CommandLeet()
         );
 
         //Music
@@ -305,7 +308,8 @@ public class RubiconBot {
                 new LavalinkManager(),
                 new LavalinkManager(),
                 new VerificationListener(),
-                new SetupListener()
+                new SetupListener(),
+                new PortalMessageListener()
         );
         try {
             shardManager = builder.build();

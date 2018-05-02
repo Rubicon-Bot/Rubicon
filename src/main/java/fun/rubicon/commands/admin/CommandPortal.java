@@ -86,12 +86,40 @@ public class CommandPortal extends CommandHandler {
     }
 
     private Message closePortal(CommandManager.ParsedCommandInvocation invocation) {
+        RubiconGuild rubiconGuild = RubiconGuild.fromGuild(invocation.getGuild());
+        PortalManager portalManager = new PortalManager();
 
+        if(!rubiconGuild.hasPortal())
+            return message(error("No Portal!", "You have to create a portal first."));
+
+        String portalRoot = rubiconGuild.getPortalRoot();
+        if(portalRoot.equals("SEARCH")) {
+            rubiconGuild.closePortal();
+            return message(success("Closed Portal!", "Successfully closed the portal request."));
+        }
+
+        Portal portal = portalManager.getPortalByOwner(portalRoot);
+        if(portal == null) {
+            rubiconGuild.closePortal();
+            return message(success("Closed Portal!", "Successfully closed the portal."));
+        }
+
+        portal.removeGuild(invocation.getGuild().getId());
+        rubiconGuild.closePortal();
+        if(portal.getMembers().size() == 0) {
+            portal.broadcastSystemMessage(new EmbedBuilder().setColor(Colors.COLOR_ERROR).setDescription(invocation.getGuild().getName() + " left the portal. Closing portal.").build());
+            portal.delete();
+        } else {
+            portal.broadcastSystemMessage(new EmbedBuilder().setColor(Colors.COLOR_ERROR).setDescription(invocation.getGuild().getName() + " left the portal").build());
+        }
+        return message(success("Portal closed!", "Successfully closed the portal."));
     }
 
     private Message createPortal(CommandManager.ParsedCommandInvocation invocation) {
         Member self = invocation.getSelfMember();
         RubiconGuild rubiconGuild = RubiconGuild.fromGuild(invocation.getGuild());
+        if(rubiconGuild.hasPortal())
+            return message(error("Already in a portal!", "You only can create one portal."));
         TextChannel portalChannel;
         List<TextChannel> resChannelList = invocation.getGuild().getTextChannelsByName("rubicon-portal", true);
         if(resChannelList.isEmpty()) {

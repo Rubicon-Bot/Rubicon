@@ -36,12 +36,19 @@ public class PortalManager {
                 .with("members",
                         rethink.rethinkDB.hashMap()
                 ))).run(rethink.connection);
-        Cursor cursor = rethink.db.table("portals").filter(rethink.rethinkDB.hashMap("root_guild", rootGuildId)).run(rethink.connection);
-        HashMap<String, ?> map = (HashMap<String, ?>) cursor.toList().get(0);
-        return new PortalImpl(rootGuildId, rootChannelId, (HashMap<String, String>) map.get("members"));
+        return getPortalByOwner(rootGuildId);
     }
 
-    public Portal getPortal(String guildId) {
-
+    public Portal getPortalByOwner(String guildId) {
+        Cursor cursor = rethink.db.table("portals").filter(rethink.rethinkDB.hashMap("root_guild", guildId)).run(rethink.connection);
+        List<HashMap<String, ?>> list = cursor.toList();
+        if(list.isEmpty())
+            return null;
+        try {
+            HashMap<String, ?> map = list.get(0);
+            return new PortalImpl(guildId, (String) map.get("root_channel"), (HashMap<String, String>) map.get("members"));
+        } catch (IndexOutOfBoundsException e) {
+            return null;
+        }
     }
 }
