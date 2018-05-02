@@ -6,12 +6,14 @@
 
 package fun.rubicon.util;
 
+import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 
+import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
 public class SafeMessage {
@@ -82,5 +84,16 @@ public class SafeMessage {
 
     private static boolean hasDeletePermission(TextChannel channel) {
         return channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_MANAGE);
+    }
+
+    public static void sendFile(TextChannel channel, Message message, InputStream image) {
+        if(hasPermissions(channel))
+            channel.sendFile(image, "file.png", message).queue();
+    }
+
+    public static Message sendFileBlocking(TextChannel channel, Message message, InputStream image) {
+        if(hasPermissions(channel))
+            return channel.sendFile(image, "file.png", message).complete();
+        return null;
     }
 }

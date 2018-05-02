@@ -213,7 +213,8 @@ public class RubiconBot {
                 new CommandRoadSign(),
                 new CommandWeddingSign(),
                 new CommandDice(),
-                new CommandOverwatch()
+                new CommandOverwatch(),
+                new CommandQR()
         );
 
         //General
