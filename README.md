@@ -5,7 +5,8 @@
 
 [![Discord Bots](https://discordbots.org/api/widget/status/380713705073147915.png)](https://discordbots.org/bot/rubicon)
 [![Travis-CI](https://travis-ci.org/Rubicon-Bot/Rubicon.svg?branch=master)](https://travis-ci.org/Rubicon-Bot/Rubicon)
-<a href="https://discord.gg/tnZW6mt"><img src="https://discordapp.com/api/guilds/381419503164325900/embed.png"/></a> <br>
+<a href="https://discord.gg/tnZW6mt"><img src="https://discordapp.com/api/guilds/381419503164325900/embed.png"/></a>
+<img src="https://rubicon.fun/api/embed.php"><br>
 
 ## Commands
 <br>Command Documantion can be found [here](http://rubicon.fun)
