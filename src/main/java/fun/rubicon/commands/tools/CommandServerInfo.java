@@ -46,7 +46,7 @@ public class CommandServerInfo extends CommandHandler {
                 .addField(invocation.translate("command.serverinfo.owner"), guild.getOwner().getUser().getName() + "#" + guild.getOwner().getUser().getDiscriminator(), true)
                 .addField(invocation.translate("command.serverinfo.creation"), DateUtil.formatDate(guild.getCreationTime(), invocation.translate("date.format")), true);
         if (hasIcon(guild)) {
-            serverInfo.addField(invocation.translate("command.serverinfo.icon"), guild.getIconUrl(), true);
+            serverInfo.addField(invocation.translate("command.serverinfo.icon"), "["+invocation.translate("click")+"]("+guild.getIconUrl()+")", true);
         }
         return message(serverInfo);
 
@@ -54,6 +54,8 @@ public class CommandServerInfo extends CommandHandler {
 
 
     private Guild getGuild(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
+        if(parsedCommandInvocation.getArgs().length<1)
+            return parsedCommandInvocation.getGuild();
         try {
             Guild guild = RubiconBot.getShardManager().getGuildById(parsedCommandInvocation.getArgs()[0]);
             guild.getName();
