@@ -34,10 +34,7 @@ public class CommandNick extends CommandHandler {
             return createHelpMessage();
         if (msg.getMentionedMembers().isEmpty()) {
             victim = invocation.getMember();
-            for (String arg : args) {
-                builder.append(arg).append(" ");
-            }
-            nickname = builder.toString();
+            nickname = invocation.getArgsString();
         } else {
             victim = msg.getMentionedMembers().get(0);
             for (int i = 1; i < args.length; i++) {

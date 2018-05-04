@@ -9,6 +9,7 @@ package fun.rubicon.listener.bot;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.util.Colors;
+import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -26,7 +27,7 @@ public class SelfMentionListener extends ListenerAdapter {
             if (message.getMentionedUsers().contains(RubiconBot.getSelfUser()))
                 if (message.getContentDisplay().replaceFirst("@", "").equals(event.getGuild().getSelfMember().getEffectiveName())) {
                     RubiconGuild guild = RubiconGuild.fromGuild(event.getGuild());
-                    Message mymsg = event.getChannel().sendMessage(
+                    Message mymsg = SafeMessage.sendMessageBlocking(event.getTextChannel(),
                             new EmbedBuilder()
                                     .setColor(Colors.COLOR_SECONDARY)
                                     .setAuthor(event.getJDA().getSelfUser().getName(), null, event.getJDA().getSelfUser().getAvatarUrl())
@@ -34,7 +35,7 @@ public class SelfMentionListener extends ListenerAdapter {
                                     .addField("**Prefix**", "`" + guild.getPrefix() + "`", false)
                                     .addField("**Documentation**", "[rubicon.fun](https://rubicon.fun)", false)
                                     .build()
-                    ).complete();
+                    );
                     //Inspired by Lukass27s's (Lukass27s#6595) NerdBot
                     for (String emoji : RUBICON_EMOJIS) {
                         mymsg.addReaction(emoji).queue();
