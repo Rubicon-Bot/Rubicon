@@ -24,6 +24,7 @@ import fun.rubicon.commands.tools.*;
 import fun.rubicon.commands.tools.CommandSearch;
 import fun.rubicon.commands.tools.CommandYouTube;
 import fun.rubicon.core.GameAnimator;
+import fun.rubicon.core.entities.RubiconRemind;
 import fun.rubicon.core.music.GuildMusicPlayerManager;
 import fun.rubicon.core.music.LavalinkManager;
 import fun.rubicon.core.rpg.RPGItemRegistry;
@@ -172,6 +173,7 @@ public class RubiconBot {
 
         gameAnimator.start();
         shardManager.setStatus(OnlineStatus.ONLINE);
+
         Logger.info("Started!");
     }
 
@@ -261,7 +263,8 @@ public class RubiconBot {
                 new VerificationCommandHandler(),
                 new CommandChoose(),
                 new CommandSearch(),
-                new CommandServerInfo()
+                new CommandServerInfo(),
+                new CommandRemindMe()
         );
 
         //Music

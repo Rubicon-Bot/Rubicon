@@ -107,7 +107,7 @@ public class SafeMessage {
             string.append("**__").append(field.getName()).append("__**\n").append(field.getValue()).append("\n");
         });
         if(embed.getFooter() != null)
-            string.append("_").append(embed.getFooter().getText()).append("_");
+            string.append("\n").append("_").append(embed.getFooter().getText()).append("_");
         String out = string.toString();
         if(string.length() > 1024)
             out = "This message is to longer than 1024 chars, please give me `MESSAGE_EMBED_LINKS` permission and try again";
