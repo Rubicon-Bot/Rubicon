@@ -108,7 +108,6 @@ public class RubiconRemind {
                 User user = RubiconBot.getShardManager().getUserById((String) map.get("userId"));
                 if(user == null) continue;
                 new RubiconRemind(user).schedule();
-                Logger.info("Loaded remind for" + (String) map.get("userId"));
             }
         }, "RemindLoaderThread").start();
     }

@@ -35,7 +35,7 @@ public class CommandRemindMe extends CommandHandler {
                 if(!remind.exists())
                     return message(error(invocation.translate("command.remind.noreminder.title"), invocation.translate("command.remind.noreminder.description")));
                 remind.cancel();
-                SafeMessage.sendMessage(invocation.getTextChannel(), message(success(invocation.translate("command.remind.canceled.title"), invocation.translate("command.remind.canceled.description"))));
+                SafeMessage.sendMessage(invocation.getTextChannel(), message(success(invocation.translate("command.remind.cancelled.title"), invocation.translate("command.remind.canceled.description"))));
                 break;
             case "info":
                 if(!remind.exists())
@@ -56,8 +56,8 @@ public class CommandRemindMe extends CommandHandler {
     private EmbedBuilder formatReminder(String title, RubiconRemind remind){
         EmbedBuilder emb = new EmbedBuilder();
         emb.setTitle(title);
-        emb.setDescription("Message: `" + remind.getRemindMessage() + "`");
-        emb.setFooter("Expires at " + DateUtil.formatDate(remind.getRemindDate(), TranslationUtil.translate(remind.getAuthor(), "date.format")), remind.getAuthor().getAvatarUrl());
+        emb.setDescription(String.format(TranslationUtil.translate(remind.getAuthor(), "reminder.embed.description"), remind.getRemindMessage()));
+        emb.setFooter(String.format(TranslationUtil.translate(remind.getAuthor(), "reminder.embed.footer"), DateUtil.formatDate(remind.getRemindDate(), TranslationUtil.translate(remind.getAuthor(), "date.format"))), remind.getAuthor().getAvatarUrl());
         return emb;
 
     }
