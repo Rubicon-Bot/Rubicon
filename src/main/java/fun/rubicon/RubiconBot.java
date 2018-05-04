@@ -79,7 +79,7 @@ import java.util.stream.Collectors;
  */
 public class RubiconBot {
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"log_webhook", "token", "playingStatus", "dbl_token", "discord_pw_token", "gif_token", "google_token", "rethink_host", "rethink_port", "rethink_db", "rethink_user", "rethink_password"};
+    private static final String[] CONFIG_KEYS = {"log_webhook", "token", "playingStatus", "dbl_token", "discord_pw_token", "gif_token", "google_token", "rethink_host", "rethink_port", "rethink_db", "rethink_user", "rethink_password","fortnite_key"};
     private static RubiconBot instance;
     private final Configuration configuration;
     private final Rethink rethink;
@@ -215,8 +215,9 @@ public class RubiconBot {
                 new CommandRoadSign(),
                 new CommandWeddingSign(),
                 new CommandDice(),
-                new CommandOverwatch(),
                 new CommandQR()
+                new CommandFortnite()
+                new CommandOverwatch(),
         );
 
         //General

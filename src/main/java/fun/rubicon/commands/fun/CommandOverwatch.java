@@ -22,7 +22,7 @@ import org.json.JSONObject;
 public class CommandOverwatch extends CommandHandler {
 
     public CommandOverwatch() {
-        super(new String[]{"overwatch"}, CommandCategory.FUN, new PermissionRequirements("overwatch", false, true), "Get Overwatch Stats!", "<PLATFORM(pc / ps4 /...)> <REGION(eu / us / kr)> <BATTLETAG>");
+        super(new String[]{"overwatch"}, CommandCategory.FUN, new PermissionRequirements("overwatch", false, true), "Get Overwatch stats!", "<PLATFORM(pc / ps4 /...)> <REGION(eu / us / kr)> <BATTLETAG>");
     }
 
     @Override

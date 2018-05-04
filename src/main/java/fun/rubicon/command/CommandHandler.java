@@ -7,20 +7,13 @@
 package fun.rubicon.command;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
-import fun.rubicon.util.Colors;
-import fun.rubicon.util.EmbedUtil;
-import fun.rubicon.util.Info;
-import fun.rubicon.util.Logger;
+import fun.rubicon.util.*;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Message;
-
-import java.io.UnsupportedEncodingException;
-
-import static fun.rubicon.util.EmbedUtil.*;
 
 /**
  * Handles a command.
@@ -45,7 +38,7 @@ public abstract class CommandHandler extends EmbedUtil {
      * @param parameterUsage         the usage message.
      */
     public CommandHandler(String[] invocationAliases, CommandCategory category,
-                             PermissionRequirements permissionRequirements, String description, String parameterUsage) {
+                          PermissionRequirements permissionRequirements, String description, String parameterUsage) {
         this.invocationAliases = invocationAliases;
         this.category = category;
         this.permissionRequirements = permissionRequirements;
@@ -54,7 +47,7 @@ public abstract class CommandHandler extends EmbedUtil {
     }
 
     public CommandHandler(String[] invocationAliases, CommandCategory category,
-                             PermissionRequirements permissionRequirements, String description, String parameterUsage, boolean disabled) {
+                          PermissionRequirements permissionRequirements, String description, String parameterUsage, boolean disabled) {
         this.invocationAliases = invocationAliases;
         this.category = category;
         this.permissionRequirements = permissionRequirements;
@@ -71,40 +64,51 @@ public abstract class CommandHandler extends EmbedUtil {
      */
     public Message call(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
         if (disabled) {
-            return new MessageBuilder().setEmbed(EmbedUtil.info("Command disabled", "Command is currently disabled.").build()).build();
+            return new MessageBuilder().setEmbed(info(parsedCommandInvocation.translate("command.disabled"), parsedCommandInvocation.translate("command.disabled.description")).build()).build();
         }
         UserPermissions userPermissions = new UserPermissions(parsedCommandInvocation.getMessage().getAuthor(),
                 parsedCommandInvocation.getMessage().getGuild());
-        // check permission
-        if (permissionRequirements.coveredBy(userPermissions)) {
-            // execute command
-            try {
-                return execute(parsedCommandInvocation, userPermissions);
-            } catch (Exception e) { // catch exceptions in command and provide an answer
-                Logger.error("Unknown error during the execution of the '" + parsedCommandInvocation.getCommandInvocation() + "' command. ");
-                Logger.error(e);
+        //Check for Rubicon Permissions
+        if (!parsedCommandInvocation.getGuild().getMember(RubiconBot.getSelfUser()).hasPermission(Permission.MESSAGE_EMBED_LINKS)) {
+            if (parsedCommandInvocation.getGuild().getMember(RubiconBot.getSelfUser()).hasPermission(parsedCommandInvocation.getTextChannel(),Permission.MESSAGE_WRITE)) {
+                SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), parsedCommandInvocation.translate("permissions.links"));
+            } else {
+                try {
+                    parsedCommandInvocation.getAuthor().openPrivateChannel().complete().sendMessage(parsedCommandInvocation.translate("permissions.links")).queue();
+                } catch (Exception ignored) {
+                }
+            }
+        }
+            // check permission
+            if (permissionRequirements.coveredBy(userPermissions)) {
+                // execute command
+                try {
+                    return execute(parsedCommandInvocation, userPermissions);
+                } catch (Exception e) { // catch exceptions in command and provide an answer
+                    Logger.error("Unknown error during the execution of the '" + parsedCommandInvocation.getCommandInvocation() + "' command. ");
+                    Logger.error(e);
+                    return new MessageBuilder().setEmbed(new EmbedBuilder()
+                            .setAuthor(parsedCommandInvocation.translate("error.internal"), null, RubiconBot.getSelfUser().getEffectiveAvatarUrl())
+                            .setDescription(parsedCommandInvocation.translate("error.internal.description")+" ```" + e.getMessage() + "```")
+                            .setColor(Colors.COLOR_ERROR)
+                            .setFooter(RubiconBot.getNewTimestamp(), null)
+                            .build()).build();
+                }
+            } else
+                // respond with 'no-permission'-message
                 return new MessageBuilder().setEmbed(new EmbedBuilder()
-                        .setAuthor("⛔ Internal Error", null, RubiconBot.getSelfUser().getEffectiveAvatarUrl())
-                        .setDescription("An internal error occurred. ```" + e.getMessage() + "```")
-                        .setColor(Colors.COLOR_ERROR)
+                        .setAuthor(parsedCommandInvocation.translate("permissions"), null, RubiconBot.getSelfUser().getEffectiveAvatarUrl())
+                        .setDescription(parsedCommandInvocation.translate("permissions.description"))
+                        .setColor(Colors.COLOR_NO_PERMISSION)
                         .setFooter(RubiconBot.getNewTimestamp(), null)
                         .build()).build();
-            }
-        } else
-            // respond with 'no-permission'-message
-            return new MessageBuilder().setEmbed(new EmbedBuilder()
-                    .setAuthor("Missing permissions", null, RubiconBot.getSelfUser().getEffectiveAvatarUrl())
-                    .setDescription("You are not permitted to execute this command.")
-                    .setColor(Colors.COLOR_NO_PERMISSION)
-                    .setFooter(RubiconBot.getNewTimestamp(), null)
-                    .build()).build();
     }
 
     /**
      * Method to be implemented by actual command handlers.
      *
-     * @param invocation the command arguments with prefix and command head removed.
-     * @param userPermissions         an object to query the invoker's permissions.
+     * @param invocation      the command arguments with prefix and command head removed.
+     * @param userPermissions an object to query the invoker's permissions.
      * @return a response that will be sent and deleted by the caller.
      */
     protected abstract Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) throws Exception;
@@ -180,7 +184,6 @@ public abstract class CommandHandler extends EmbedUtil {
      */
 
 
-
     /**
      * Generates a usage message for this command with the default prefix and alias.
      *
@@ -215,10 +218,6 @@ public abstract class CommandHandler extends EmbedUtil {
                 .addField("Aliases", String.join(", ", getInvocationAliases()), false)
                 .addField("Usage", usage.toString(), false));
     }
-
-
-
-
 
 
 }
