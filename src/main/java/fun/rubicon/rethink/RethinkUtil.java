@@ -30,6 +30,7 @@ public class RethinkUtil {
             "reminders",
             "portals",
             "portal_settings",
+            "votes"
     };
 
     public static void createDefaults(Rethink rethink) {

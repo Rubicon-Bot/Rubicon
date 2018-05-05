@@ -361,6 +361,10 @@ public class RubiconGuild extends RethinkHelper {
         rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(rethink.rethinkDB.hashMap("ranks", rethink.rethinkDB.array(idList))).run(rethink.connection);
     }
 
+    public void deletePoll(){
+        rethink.db.table("votes").filter(rethink.rethinkDB.hashMap("guild", guild.getId())).delete().run(rethink.connection);
+    }
+
     public static RubiconGuild fromGuild(Guild guild) {
         return new RubiconGuild(guild);
     }

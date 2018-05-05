@@ -1,13 +1,17 @@
 package fun.rubicon.features.poll;
 
+import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
+import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.core.entities.RubiconPoll;
-import fun.rubicon.util.Logger;
+import fun.rubicon.rethink.Rethink;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
 
 import java.io.*;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Michael Rittmeister / Schlaubi
@@ -16,47 +20,26 @@ import java.util.HashMap;
 public class PollManager {
 
     private HashMap<Guild, RubiconPoll> polls = new HashMap<>();
-    private Thread t;
     private boolean running = false;
+    Rethink rethink = RubiconBot.getRethink();
 
     public synchronized void loadPolls(){
-        if(!running) {
-            Thread t = new Thread(() -> {
-                running = true;
-                if(running) {
-                    HashMap<Guild, RubiconPoll> polls = getPolls();
-                    File folder = new File("data/votes");
-                    if (!folder.exists())
-                        folder.mkdirs();
-                    File[] voteSaves = folder.listFiles();
-                    if (voteSaves.length == 0) {
-                        running = false;
-                        return;
-                    }
-                    Arrays.asList(voteSaves).forEach(vs -> {
-                        try {
-                            RubiconPoll poll = readFile(vs);
-                            Guild guild = getGuild(poll.getGuild());
-                            polls.put(guild, poll);
-                        } catch (IOException | ClassNotFoundException e) {
-                            Logger.error(e);
-                        }
-                    });
-                    running = false;
+        new Thread(() -> {
+            Cursor cursor = rethink.db.table("votes").run(rethink.connection);
+            for(Object obj : cursor){
+                Map map = (Map) obj;
+                Guild guild = RubiconBot.getShardManager().getGuildById((String) map.get("guild"));
+                if(guild == null) {
+                    RubiconGuild.fromGuild(guild).deletePoll();
+                    continue;
                 }
-            });
-            t.setName("Poll-loader");
-            t.start();
-        }
+                Member member = guild.getMemberById((String) map.get("creator"));
+                RubiconPoll poll = new RubiconPoll(member, (String) map.get("heading"), (List<String>) map.get("answers"), (HashMap<String, String>) map.get("pollmsgs"), (HashMap<String, Integer>) map.get("votes"), (HashMap<String, Integer>) map.get("reacts"), guild);
+                polls.put(guild, poll);
+            }
+        }, "PollLoadingThread").start();
     }
 
-    private RubiconPoll readFile(File file) throws IOException, ClassNotFoundException {
-        FileInputStream fis = new FileInputStream(file);
-        ObjectInputStream ois = new ObjectInputStream(fis);
-        RubiconPoll poll = (RubiconPoll) ois.readObject();
-        ois.close();
-        return poll;
-    }
 
     private Guild getGuild(String id){
         return RubiconBot.getShardManager().getGuildById(id);
@@ -71,22 +54,14 @@ public class PollManager {
     }
 
     public boolean pollExists(Guild guild){
-        return polls.containsKey(guild);
-    }
-
-
-
-    public synchronized void abortPollLoading(){
-        try {
-            running = false;
-            t.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        Cursor cursor = rethink.db.table("votes").filter(rethink.rethinkDB.hashMap("guild", guild.getId())).run(rethink.connection);
+        return !cursor.toList().isEmpty();
     }
 
     public void replacePoll(RubiconPoll poll, Guild guild){
         getPolls().replace(guild, poll);
         poll.savePoll();
     }
+
+
 }
