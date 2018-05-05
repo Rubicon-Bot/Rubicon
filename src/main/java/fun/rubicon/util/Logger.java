@@ -129,7 +129,8 @@ public class Logger {
                 break;
             case THROWABLE:
                 addLogEntry(formatLogMessage("Error", text) + "\n");
-                webhookClient.send(new EmbedBuilder().setColor(Colors.COLOR_ERROR).setTitle("THROWABLE").setDescription("```" + text + "```").setTimestamp(Instant.now()).build());
+                if (text.length() < 2000)
+                    webhookClient.send(new EmbedBuilder().setColor(Colors.COLOR_ERROR).setTitle("THROWABLE").setDescription("```" + text + "```").setTimestamp(Instant.now()).build());
                 break;
             case WARNING:
                 String warningMessage = formatLogMessage("Warning", text);

@@ -33,11 +33,6 @@ public class CommandInfo extends CommandHandler {
         embedBuilder.setColor(Colors.COLOR_SECONDARY);
         embedBuilder.setAuthor(Info.BOT_NAME + invocation.translate("command.info.title"), "https://rubicon.fun", RubiconBot.getSelfUser().getEffectiveAvatarUrl());
 
-        Guild rubiconGuild = RubiconBot.getShardManager().getGuildById(Info.RUBICON_SERVER);
-
-        Role translatorRole = RubiconBot.getShardManager().getRoleById(Info.ROLE_TRANSLATOR);
-        Role donatorRole = RubiconBot.getShardManager().getRoleById(Info.ROLE_DONATOR);
-
         StringBuilder devsString = new StringBuilder();
         for (long authorId : Info.BOT_AUTHOR_IDS) {
             User authorUser = RubiconBot.getShardManager().getUserById(authorId);
@@ -56,32 +51,19 @@ public class CommandInfo extends CommandHandler {
                 staffString.append(authorUser.getName()).append("#").append(authorUser.getDiscriminator()).append("\n");
         }
 
-        StringBuilder translatorString = new StringBuilder();
-        for (Member member : rubiconGuild.getMembers()) {
-            if (member.getRoles().contains(translatorRole))
-                translatorString.append(member.getUser().getName()).append("#").append(member.getUser().getDiscriminator()).append("\n");
-        }
+        String partner = "[Groovy - Music Bot](https://rxsto.github.io/musicBot/invite/)\n" +
+                "[ModBot.xyz](https://modbot.xyz/)";
 
-        StringBuilder donatorString = new StringBuilder();
-        for (Member member : rubiconGuild.getMembers()) {
-            if (member.getRoles().contains(donatorRole))
-                donatorString.append(member.getUser().getName()).append("#").append(member.getUser().getDiscriminator()).append("\n");
-        }
-
-        embedBuilder.addField(invocation.translate("command.info.version"), Info.BOT_VERSION, true);
-        embedBuilder.addField(invocation.translate("command.info.website"), "[rubicon.fun](https://rubicon.fun)", true);
-        embedBuilder.addField(invocation.translate("command.info.invite"), "[inv.rucb.co](http://inv.rucb.co)", true);
-        embedBuilder.addField("Github", "[github.com](https://github.com/Rubicon-Bot/Rubicon/)", true);
-        embedBuilder.addField("Patreon", "[patreon.com](https://www.patreon.com/rubiconbot)", true);
-        embedBuilder.addField(invocation.translate("command.info.support"), "[dc.rucb.co](http://dc.rucb.co)", true);
-        embedBuilder.addField(invocation.translate("command.info.votes"), "[discordbots.org](https://discordbots.org/bot/380713705073147915)", true);
-        embedBuilder.addBlankField(false);
-        embedBuilder.addField(invocation.translate("command.info.developer"), devsString.toString(), true);
-        embedBuilder.addField(invocation.translate("command.info.staff"), staffString.toString(), true);
-        embedBuilder.addBlankField(false);
-        embedBuilder.addField(invocation.translate("command.info.translator"), translatorString.toString(), true);
-        embedBuilder.addField(invocation.translate("command.info.donator"), donatorString.toString(), true);
-
+        embedBuilder.setDescription("**" + invocation.translate("command.info.version") + ":** " + Info.BOT_VERSION + "\n" +
+                "**" + invocation.translate("command.info.website") + ":** [rubicon.fun](https://rubicon.fun)\n" +
+                "**" + invocation.translate("command.info.invite") + ":** [inv.rucb.co](http://inv.rucb.co)\n" +
+                "**Github:** [github.com](https://github.com/Rubicon-Bot/Rubicon/)\n" +
+                "**Patreon:** [patreon.com](https://www.patreon.com/rubiconbot)\n" +
+                "**" + invocation.translate("command.info.support") + ":** [dc.rucb.co](http://dc.rucb.co)\n" +
+                "**" + invocation.translate("command.info.votes") + ":** [discordbots.org](https://discordbots.org/bot/380713705073147915)\n\n" +
+                "**" + invocation.translate("command.info.developer") + "** " + devsString.toString() + "\n" +
+                "**" + invocation.translate("command.info.staff") + "**\n" + staffString.toString() + "\n" +
+                "**" + invocation.translate("command.info.partner") + "**\n" + partner);
         return EmbedUtil.message(embedBuilder);
     }
 }

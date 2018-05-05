@@ -8,6 +8,8 @@ package fun.rubicon.listener.bot;
 
 import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.core.entities.RubiconMember;
+import fun.rubicon.features.portal.Portal;
+import fun.rubicon.features.portal.PortalManager;
 import fun.rubicon.util.BotListHandler;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.events.guild.GuildLeaveEvent;
@@ -24,6 +26,15 @@ public class BotLeaveListener extends ListenerAdapter {
         rubiconGuild.deleteMuteSettings();
         rubiconGuild.disableAutorole();
         rubiconGuild.disableJoinImages();
+        rubiconGuild.deleteMuteSettings();
+        rubiconGuild.disableVerification();
+
+        PortalManager portalManager = new PortalManager();
+        if(rubiconGuild.hasPortal()) {
+            Portal portal = portalManager.getPortalByOwner(rubiconGuild.getPortalRoot());
+            portal.removeGuild(event.getGuild().getId());
+            rubiconGuild.closePortal();
+        }
 
         for (String id : rubiconGuild.getAutochannels()) {
             rubiconGuild.deleteAutochannel(id);

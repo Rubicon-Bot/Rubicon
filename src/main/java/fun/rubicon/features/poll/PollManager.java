@@ -22,7 +22,6 @@ public class PollManager {
     public synchronized void loadPolls(){
         if(!running) {
             Thread t = new Thread(() -> {
-                Logger.info("Staring poll loading thread \"" + Thread.currentThread().getName() + "\"");
                 running = true;
                 if(running) {
                     HashMap<Guild, RubiconPoll> polls = getPolls();
@@ -31,7 +30,6 @@ public class PollManager {
                         folder.mkdirs();
                     File[] voteSaves = folder.listFiles();
                     if (voteSaves.length == 0) {
-                        Logger.info("No polls that need to be loaded found. Skipping ...");
                         running = false;
                         return;
                     }
@@ -40,12 +38,10 @@ public class PollManager {
                             RubiconPoll poll = readFile(vs);
                             Guild guild = getGuild(poll.getGuild());
                             polls.put(guild, poll);
-                            Logger.info("Loaded poll for guild \"" + guild.getName() + "\"");
                         } catch (IOException | ClassNotFoundException e) {
                             Logger.error(e);
                         }
                     });
-                    Logger.info("Finished poll loading. Stopping thread");
                     running = false;
                 }
             });

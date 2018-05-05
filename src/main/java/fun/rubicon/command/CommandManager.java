@@ -6,11 +6,13 @@
 
 package fun.rubicon.command;
 
+import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.core.entities.RubiconMember;
 import fun.rubicon.core.entities.RubiconUser;
 import fun.rubicon.permission.UserPermissions;
+import fun.rubicon.rethink.Rethink;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.Permission;
@@ -60,7 +62,13 @@ public class CommandManager extends ListenerAdapter {
         if (!RubiconBot.allShardsInitialised() || event.isFromType(ChannelType.PRIVATE) || event.getAuthor().isBot() || event.getAuthor().isFake())
             return;
         super.onMessageReceived(event);
-
+        //Auto Rethink Connecter
+        try {
+            Cursor cursor = RubiconBot.getRethink().db.table("guilds").run(RubiconBot.getRethink().connection);
+        } catch (Exception e) {
+            Rethink.reanimate();
+            return;
+        }
         //Check Database Entries
         if(event.getChannelType().isGuild()) {
             RubiconGuild.fromGuild(event.getGuild());

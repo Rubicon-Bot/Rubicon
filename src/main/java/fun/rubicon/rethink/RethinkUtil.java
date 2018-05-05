@@ -26,7 +26,10 @@ public class RethinkUtil {
             "verification_users",
             "keys",
             "warn_punishments",
-            "warns"
+            "warns",
+            "reminders",
+            "portals",
+            "portal_settings",
     };
 
     public static void createDefaults(Rethink rethink) {

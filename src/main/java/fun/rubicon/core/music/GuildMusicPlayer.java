@@ -8,7 +8,6 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.commands.music.QueueMessage;
 import fun.rubicon.core.translation.TranslationUtil;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
@@ -251,6 +250,7 @@ public class GuildMusicPlayer extends MusicPlayer {
     @Override
     public void closeAudioConnection() {
         clearQueue();
+        player.stopTrack();
         lavalinkManager.closeConnection(guild.getId());
     }
 
