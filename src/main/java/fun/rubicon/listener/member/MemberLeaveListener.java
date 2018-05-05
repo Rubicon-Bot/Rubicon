@@ -9,6 +9,7 @@ package fun.rubicon.listener.member;
 import fun.rubicon.commands.settings.CommandLeaveMessage;
 import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.core.entities.RubiconMember;
+import fun.rubicon.util.BotListHandler;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -22,6 +23,8 @@ public class MemberLeaveListener extends ListenerAdapter {
     public void onGuildMemberLeave(GuildMemberLeaveEvent event) {
         RubiconGuild rubiconGuild = RubiconGuild.fromGuild(event.getGuild());
         RubiconMember.fromMember(event.getMember()).delete();
+
+        BotListHandler.postRubiconFunUserCounts(false);
 
         if (rubiconGuild.hasLeaveMessagesEnabled()) {
             try {
