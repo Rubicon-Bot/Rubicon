@@ -24,8 +24,6 @@ import java.util.*;
  */
 public class BotJoinListener extends ListenerAdapter {
 
-    public static HashMap<String, Thread> betaGuilds = new HashMap<>();
-
     @Override
     public void onGuildJoin(GuildJoinEvent event) {
         //Database Inserts
