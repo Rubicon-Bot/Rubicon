@@ -15,7 +15,7 @@ public interface Portal {
 
     HashMap<Guild, Channel> getMembers();
 
-    void addGuild(String guildId, String channelId);
+    void addGuild(String guildId, String channelId, String servername);
 
     void removeGuild(String guildId);
 

@@ -29,8 +29,7 @@ public class Info {
     public final static Long[] BOT_AUTHOR_IDS = {
             227817074976751616L, // ForYaSee
             153507094933274624L, // Lee
-            ////264048760580079616L, // Schlaubi
-            //137253345336229889L, // lucsoft
+            264048760580079616L, // Schlaubi
             137263174675070976L,  // tr808axm
     };
 

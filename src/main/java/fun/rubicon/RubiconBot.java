@@ -331,7 +331,6 @@ public class RubiconBot {
                 new GeneralMessageListener(),
                 new RoleDeleteListener(),
                 new LavalinkManager(),
-                new LavalinkManager(),
                 new VerificationListener(),
                 new SetupListener(),
                 new PortalMessageListener()
