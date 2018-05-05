@@ -19,15 +19,13 @@ public interface Portal {
 
     void removeGuild(String guildId);
 
-    void delete();
+    void delete(String reason);
 
     void broadcast(String channelExclude, String message, String authorName, String avatarUrl, String guildName);
 
     void broadcastSystemMessage(MessageEmbed messageEmbed);
 
     void setPortalTopic(String topic);
-
-    void changeOwnership();
 
     boolean containsChannel(Channel channel);
 }

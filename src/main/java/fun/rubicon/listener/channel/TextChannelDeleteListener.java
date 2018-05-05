@@ -9,6 +9,7 @@ package fun.rubicon.listener.channel;
 import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.features.portal.Portal;
 import fun.rubicon.features.portal.PortalManager;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.events.channel.text.TextChannelDeleteEvent;
@@ -40,9 +41,8 @@ public class TextChannelDeleteListener extends ListenerAdapter {
             PortalManager portalManager = new PortalManager();
             Portal portal = portalManager.getPortalByOwner(rubiconGuild.getPortalRoot());
             if(portal.containsChannel(event.getChannel())) {
-                portal.removeGuild(event.getGuild().getId());
+                portal.removeGuild(rubiconGuild.getGuild().getId());
                 rubiconGuild.closePortal();
-                //TODO TEST THIS
             }
         }
     }

@@ -7,6 +7,7 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.rethink.Rethink;
 import fun.rubicon.util.Colors;
+import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.Logger;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -39,6 +40,19 @@ public class PortalImpl implements Portal {
         rethink = RubiconBot.getRethink();
         table = rethink.db.table("portals");
         dbPortal = table.filter(rethink.rethinkDB.hashMap("root_guild", rawRootGuild));
+
+        //Check for null guilds
+        for (Map.Entry<String, String> entry : rawMembers.entrySet()) {
+            Guild guild = RubiconBot.getShardManager().getGuildById(entry.getKey());
+            TextChannel channel = RubiconBot.getShardManager().getTextChannelById(entry.getValue());
+
+            if (guild == null || channel == null) {
+                removeGuild(entry.getKey());
+            }
+        }
+        if (getRootGuild() == null || getRootChannel() == null) {
+            delete("The owner closed the portal.");
+        }
     }
 
     @Override
@@ -58,6 +72,7 @@ public class PortalImpl implements Portal {
             try {
                 map.put(RubiconBot.getShardManager().getGuildById((String) entry.getKey()), RubiconBot.getShardManager().getTextChannelById((String) entry.getValue()));
             } catch (Exception ignored) {
+                Logger.error(ignored);
             }
         }
         return map;
@@ -71,27 +86,31 @@ public class PortalImpl implements Portal {
 
     @Override
     public void removeGuild(String guildId) {
-        if (guildId.equals(getRootGuild().getId())) {
-            changeOwnership();
+        if(guildId.equals(rawRootGuild)) {
+            delete("The portal owner closed the portal");
             return;
         }
         rawMembers.remove(guildId);
         dbPortal.update(rethink.rethinkDB.hashMap("members", rawMembers)).run(rethink.connection);
+        Logger.debug("scurr");
+        if(rawMembers.size() == 0)
+            delete("You were the last member.");
     }
 
     @Override
-    public void delete() {
-        for (Map.Entry entry : getMembers().entrySet()) {
-            Guild guild = (Guild) entry.getKey();
-            TextChannel textChannel = (TextChannel) entry.getValue();
+    public void delete(String reason) {
+        rawMembers.put(rawRootGuild, rawRootChannel);
+        for (Map.Entry<String, String> entry : rawMembers.entrySet()) {
+            Guild guild = RubiconBot.getShardManager().getGuildById(entry.getKey());
+            TextChannel textChannel = RubiconBot.getShardManager().getTextChannelById(entry.getValue());
             RubiconGuild.fromGuild(guild).closePortal();
 
-            if (RubiconBot.getShardManager().getGuildById(guild.getId()) != null && RubiconBot.getShardManager().getTextChannelById(textChannel.getId()) != null) {
+            if (textChannel != null) {
                 if (guild.getSelfMember().hasPermission(textChannel, Permission.MANAGE_CHANNEL))
                     textChannel.getManager().setTopic("Closed").queue();
+                SafeMessage.sendMessage(textChannel, EmbedUtil.error("Portal closed!", reason).build());
             }
         }
-        RubiconGuild.fromGuild(getRootGuild()).closePortal();
         dbPortal.delete().run(rethink.connection);
     }
 
@@ -107,7 +126,7 @@ public class PortalImpl implements Portal {
             if (nullCheck(guild, textChannel))
                 continue;
 
-            if(channelExclude.equals(textChannel.getId()))
+            if (channelExclude.equals(textChannel.getId()))
                 continue;
 
             RubiconGuild rubiconGuild = RubiconGuild.fromGuild(guild);
@@ -180,12 +199,12 @@ public class PortalImpl implements Portal {
     }
 
     private boolean nullCheck(Guild guild, TextChannel textChannel) {
-        if (RubiconBot.getShardManager().getGuildById(guild.getId()) == null || RubiconBot.getShardManager().getTextChannelById(textChannel.getId()) == null) {
+        if (guild.getId() == null || textChannel == null) {
             RubiconGuild.fromGuild(guild).closePortal();
             removeGuild(guild.getId());
 
             if (rawMembers.size() == 0) {
-                delete();
+                delete("You were the last members.");
             }
             return true;
         }
@@ -193,24 +212,11 @@ public class PortalImpl implements Portal {
     }
 
     @Override
-    public void changeOwnership() {
-        HashMap<Guild, Channel> members = getMembers();
-        for (Map.Entry entry : members.entrySet()) {
-            Guild guild = (Guild) entry.getKey();
-            TextChannel textChannel = (TextChannel) entry.getValue();
-            if (nullCheck(guild, textChannel))
-                continue;
-            dbPortal.update(rethink.rethinkDB.hashMap("root_guild", guild.getId()).with("root_channel", textChannel.getId())).run(rethink.connection);
-            removeGuild(guild.getId());
-            RubiconGuild.fromGuild(getRootGuild()).closePortal();
-            return;
-        }
-    }
-
-    @Override
     public boolean containsChannel(Channel channel) {
-        if (getMembers().values().contains(channel) || getRootChannel().equals(channel))
+        try {
+            return getMembers().values().contains(channel) || getRootChannel().equals(channel);
+        } catch (NullPointerException e) {
             return true;
-        return false;
+        }
     }
 }

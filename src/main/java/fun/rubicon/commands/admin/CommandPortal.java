@@ -10,6 +10,7 @@ import fun.rubicon.features.portal.PortalManager;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
+import fun.rubicon.util.Logger;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
@@ -106,13 +107,7 @@ public class CommandPortal extends CommandHandler {
 
         portal.removeGuild(invocation.getGuild().getId());
         rubiconGuild.closePortal();
-        if(portal.getMembers().size() == 0) {
-            portal.broadcastSystemMessage(new EmbedBuilder().setColor(Colors.COLOR_ERROR).setDescription(invocation.getGuild().getName() + " left the portal. Closing portal.").build());
-            portal.delete();
-        } else {
-            portal.broadcastSystemMessage(new EmbedBuilder().setColor(Colors.COLOR_ERROR).setDescription(invocation.getGuild().getName() + " left the portal").build());
-        }
-        return message(success("Portal closed!", "Successfully closed the portal."));
+        return null;
     }
 
     private Message createPortal(CommandManager.ParsedCommandInvocation invocation) {
@@ -154,7 +149,7 @@ public class CommandPortal extends CommandHandler {
 
         EmbedBuilder embed2 = new EmbedBuilder();
         embed2.setColor(Colors.COLOR_PRIMARY);
-        embed2.setDescription(String.format("Connected to **%s**", invocation.getGuild().getName(), invocation.getGuild().getId()));
+        embed2.setDescription(String.format("Connected to **%s**", invocation.getGuild().getName(), rootGuild.getId()));
         embed2.setThumbnail(invocation.getGuild().getIconUrl());
         embed2.addField("Id", invocation.getGuild().getId(), true);
         embed2.setDescription(String.format("Connected to **%s**", rootGuild.getName(), rootGuild.getId()));

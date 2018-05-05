@@ -12,14 +12,20 @@ public class PortalMessageListener extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-        if(event.getAuthor().isFake() || event.getAuthor().isBot() || event.getAuthor().equals(RubiconBot.getSelfUser()))
+        if (event.getAuthor().isFake() || event.getAuthor().isBot() || event.getAuthor().equals(RubiconBot.getSelfUser()))
             return;
         RubiconGuild rubiconGuild = RubiconGuild.fromGuild(event.getGuild());
 
-        if(rubiconGuild.hasPortal()) {
+        if (rubiconGuild.hasPortal()) {
+            if(event.getMessage().getContentDisplay().startsWith(rubiconGuild.getPrefix()))
+                return;
             PortalManager portalManager = new PortalManager();
             Portal portal = portalManager.getPortalByOwner(rubiconGuild.getPortalRoot());
-            if(portal.containsChannel(event.getChannel())) {
+            if(portal == null) {
+                rubiconGuild.closePortal();
+                return;
+            }
+            if (portal.containsChannel(event.getChannel())) {
                 portal.broadcast(event.getChannel().getId(), event.getMessage().getContentDisplay(), event.getAuthor().getName(), event.getAuthor().getAvatarUrl(), event.getGuild().getName());
             }
         }
