@@ -50,7 +50,7 @@ public class CommandPremium extends CommandHandler {
                 Colors.COLOR_SECONDARY
         );
         if ((author.isPremium())) {
-            em.setDescription(invocation.translate("command.premium.until")+" " + author.formatExpiryDate());
+            em.setDescription(invocation.translate("command.premium.until")+" " + author.formatExpiryDate().replace("%",""));
         } else {
             em.setDescription(invocation.translate("command.premium.nopremium"));
         }
@@ -62,7 +62,7 @@ public class CommandPremium extends CommandHandler {
                return createHelpMessage();
             case "buy":
                 if ((author.isPremium())) {
-                    return message(EmbedUtil.info(invocation.translate("command.premium.already.title"), invocation.translate("command.premium.until")+" " + author.getPremiumExpiryDate()));
+                    return message(EmbedUtil.info(invocation.translate("command.premium.already.title"), invocation.translate("command.premium.until")+" " + author.formatExpiryDate().replace("%","")));
                 }
                 long userMoney = author.getMoney();
                 if (userMoney - PriceList.PREMIUM.getPrice() >= 0) {
@@ -74,8 +74,7 @@ public class CommandPremium extends CommandHandler {
                     return message(EmbedUtil.error(invocation.translate("command.premium.money.title"), String.format(invocation.translate("command.premium.money.desc"),PriceList.PREMIUM.getPrice(),userMoney)));
                 }
             case "add":
-                if (userPermissions.hasPermissionNode("premium.modify")) {
-                    System.out.println(1);
+                if (userPermissions.isBotAuthor()) {
                     List<User> users = invocation.getMessage().getMentionedUsers();
                     if (users.size() == 0) {
                         return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.premium.modify.error.title"), invocation.translate("command.premium.modify.error.desc")));
@@ -93,7 +92,7 @@ public class CommandPremium extends CommandHandler {
                     }
                 }
             case "remove":
-                if (userPermissions.hasPermissionNode("premium.modify")) {
+                if (userPermissions.isBotAuthor()) {
                     List<User> users = invocation.getMessage().getMentionedUsers();
                     if (users.size() == 0) {
                         return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.premium.modify.error.title"), invocation.translate("command.premium.modify.error.desc")));

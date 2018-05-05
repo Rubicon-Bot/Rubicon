@@ -35,6 +35,8 @@ public class CommandAscii extends CommandHandler {
         Response response;
         try {
             response = new OkHttpClient().newCall(req).execute();
+            if(response.body().string().toCharArray().length > 1990)
+                return createHelpMessage(invocation);
             SafeMessage.sendMessage(invocation.getTextChannel(), "```fix\n" + response.body().string() + "```");
         } catch (IOException e) {
             e.printStackTrace();

@@ -13,7 +13,7 @@ public class RoleDeleteListener extends ListenerAdapter {
     public void onRoleDelete(RoleDeleteEvent event) {
         RubiconGuild rubiconGuild = RubiconGuild.fromGuild(event.getGuild());
         if(rubiconGuild.hasAutoroleEnabled()) {
-            if(event.getRole().getIdLong() == rubiconGuild.getAutorole())
+            if(event.getRole().getId().equals(rubiconGuild.getAutorole()))
                 rubiconGuild.disableAutorole();
         }
     }
