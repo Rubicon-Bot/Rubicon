@@ -1,4 +1,4 @@
-package fun.rubicon.commands.admin;
+package fun.rubicon.commands.settings;
 
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
@@ -16,7 +16,7 @@ import net.dv8tion.jda.core.entities.Role;
 public class CommandAutorole extends CommandHandler {
 
     public CommandAutorole() {
-        super(new String[]{"autorole"}, CommandCategory.ADMIN, new PermissionRequirements("autorole", false, false), "Automatically adds a role to new users.", "set <@role>\ndisable\ninfo");
+        super(new String[]{"autorole"}, CommandCategory.SETTINGS, new PermissionRequirements("autorole", false, false), "Automatically adds a role to new users.", "set <@role>\ndisable\ninfo");
     }
 
     @Override

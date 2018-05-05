@@ -56,15 +56,14 @@ public class PermissionCommandHandler extends CommandHandler {
             String subCommand = invocation.getArgs()[0];
 
             if (subCommand.equalsIgnoreCase("show-discord-permissions") || subCommand.equalsIgnoreCase("discord-permissions") || subCommand.equalsIgnoreCase("dp")) {
-                StringBuilder discordPermissions = new StringBuilder("— `ID`  `Name`\n");
+                StringBuilder discordPermissions = new StringBuilder("— `ID`  `" + invocation.translate("command.perm.dp.name") + "\n");
                 for (net.dv8tion.jda.core.Permission permission : net.dv8tion.jda.core.Permission.values())
                     discordPermissions.append("  \u2022 `").append(String.format("%02d", permission.getOffset())).append("`  ").append(permission.getName()).append("\n");
-                return message(info("List of discord permissions", discordPermissions.toString()));
+                return message(info(invocation.translate("command.perm.dp.title"), discordPermissions.toString()));
             }
 
             if (invocation.getArgs().length < 2)
-                return message(error("Missing arguments", "Some parameters seem to be missing. Use `" +
-                        invocation.getPrefix() + invocation.getCommandInvocation() + "` for usage information."));
+                return createHelpMessage();
 
             User mentionedUser = null;
             Role mentionedRole = null;
@@ -83,7 +82,7 @@ public class PermissionCommandHandler extends CommandHandler {
             else
                 target = mentionedRole == null ? new PermissionTarget(invocation.getGuild(), PermissionTarget.Type.USER, mentionedUser.getIdLong()) : new PermissionTarget(invocation.getGuild(), PermissionTarget.Type.ROLE, mentionedRole.getIdLong());
             if (!target.exists())
-                return message(error("Target does not exit", "`" + target.toString() + "` is not on this server!"));
+                return message(error(invocation.translate("command.perm.misstarget.title"), "`" + target.toString() + "` " + invocation.translate("command.perm.misstarget.desc")));
 
             if (subCommand.equalsIgnoreCase("list")) {
                 //Check Permissions
@@ -116,44 +115,66 @@ public class PermissionCommandHandler extends CommandHandler {
                 }
                 EmbedBuilder listBuilder = new EmbedBuilder();
                 listBuilder.setColor(Colors.COLOR_SECONDARY);
-                listBuilder.setTitle(":information_source: Permission list");
-                listBuilder.setDescription("Permissions of " + target.toString());
-                listBuilder.addField("Allowed Permissions", allowedPermissionString.toString(), true);
-                listBuilder.addField("Denied Permissions", deniedPermissionString.toString(), true);
+                listBuilder.setTitle(":information_source: " + invocation.translate("command.perm.list.title"));
+                listBuilder.setDescription(invocation.translate("command.perm.list.desc") + " " + target.toString());
+                listBuilder.addField(invocation.translate("command.perm.list.allowed"), allowedPermissionString.toString(), true);
+                listBuilder.addField(invocation.translate("command.perm.list.denied"), deniedPermissionString.toString(), true);
                 return message(listBuilder);
             }
 
             if (invocation.getArgs().length < 3)
-                return message(error("Missing arguments", "Some parameters seem to be missing. Use `" +
-                        invocation.getPrefix() + invocation.getCommandInvocation() + "` for usage information."));
+                return createHelpMessage();
             if (!MODIFY_PERMISSIONS.coveredBy(userPermissions))
                 return message(no_permissions());
 
             String permissionString = invocation.getArgs()[2];
 
             if (subCommand.equalsIgnoreCase("allow") || subCommand.equalsIgnoreCase("add")) {
+                Permission permission = Permission.parse(permissionString);
+                if (RubiconBot.sGetPermissionManager().hasPermission(target, permission, true)) {
+                    for (Permission p : RubiconBot.sGetPermissionManager().getPermissions(target)) {
+                        if(p.getPermissionString().contains(permissionString)) {
+                            if (!p.isNegated()) {
+                                return message(error(invocation.translate("command.perm.exist.title"), String.format(invocation.translate("command.perm.exist.desc"),
+                                        Permission.parse(permissionString).getPermissionString(), target.toString(), invocation.getPrefix() + invocation.getCommandInvocation() + " list " + (targetString))));
+                            } else {
+                                RubiconBot.sGetPermissionManager().removePermission(target, permission.setNegated(true));
+                                return message(success(invocation.translate("command.perm.updated.title"), String.format(invocation.translate("command.perm.allow.desc"), permissionString, target.toString())));
+                            }
+                        }
+                    }
+                } else {
+                    RubiconBot.sGetPermissionManager().addPermission(target, Permission.parse(permissionString));
+                    return message(success(invocation.translate("command.perm.updated.title"), String.format(invocation.translate("command.perm.allow.desc"), permissionString, target.toString())));
+                }
                 // Check Permissions
                 return RubiconBot.sGetPermissionManager().addPermission(target, Permission.parse(permissionString))
-                        ? message(success("Updated permissions", "Successfully allowed `" +
-                        permissionString + "` for `" + target.toString() + "`."))
-                        : message(error("Entry already exists", "There already is a `" +
-                        Permission.parse(permissionString).getPermissionString() + "` entry for `" +
-                        target.toString() + "` on this guild. Use `" + invocation.getPrefix() +
-                        invocation.getCommandInvocation() + " list " + (targetString) +
-                        "` to get a list of permission entries for this target."));
+                        ? message(success(invocation.translate("command.perm.updated.title"), String.format(invocation.translate("command.perm.allow.desc"), permissionString, target.toString())))
+                        : message(error(invocation.translate("command.perm.exist.title"), String.format(invocation.translate("command.perm.exist.desc"),
+                        Permission.parse(permissionString).getPermissionString(), target.toString(), invocation.getPrefix() + invocation.getCommandInvocation() + " list " + (targetString))));
+
             } else if (subCommand.equalsIgnoreCase("deny") || subCommand.equalsIgnoreCase("remove")) {
-                if (!RubiconBot.sGetPermissionManager().removePermission(target, Permission.parse(permissionString)))
+                Permission permission = Permission.parse(permissionString);
+                if (RubiconBot.sGetPermissionManager().hasPermission(target, permission, true)) {
+                    for (Permission p : RubiconBot.sGetPermissionManager().getPermissions(target)) {
+                        if(p.getPermissionString().contains(permissionString)) {
+                            if (!p.isNegated()) {
+                                RubiconBot.sGetPermissionManager().removePermission(target, permission);
+                                return message(success(invocation.translate("command.perm.updated.title"), String.format(invocation.translate("command.perm.denied.desc"), permissionString, target.toString())));
+                            } else {
+                                return message(error(invocation.translate("command.perm.exist.title"), String.format(invocation.translate("command.perm.exist.desc"),
+                                        Permission.parse(permissionString).getPermissionString(), target.toString(), invocation.getPrefix() + invocation.getCommandInvocation() + " list " + (targetString))));
+                            }
+                        }
+                    }
+                } else {
                     RubiconBot.sGetPermissionManager().addPermission(target, Permission.parse("!" + permissionString));
-                return message(success("Updated permissions", "Successfully denied `" +
-                        permissionString + "` for `" + target.toString() + "`."));
+                    return message(success(invocation.translate("command.perm.updated.title"), String.format(invocation.translate("command.perm.denied.desc"), permissionString, target.toString())));
+                }
             }
             return null;
-        } catch (
-                IllegalArgumentException e)
-
-        {
-            return message(error("Invalid arguments", e.getMessage() + " Use `" +
-                    invocation.getPrefix() + invocation.getCommandInvocation() + "` for a " + "command manual."));
+        } catch (IllegalArgumentException e) {
+            return createHelpMessage();
         }
     }
 

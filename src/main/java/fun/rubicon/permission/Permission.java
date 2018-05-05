@@ -17,7 +17,7 @@ public class Permission {
     public static final char NEGATION_CHARACTER = '!';
 
     private final String permissionString;
-    private final boolean negated;
+    private boolean negated;
 
     /**
      * Constructs a Permission object.
@@ -42,6 +42,11 @@ public class Permission {
      */
     public boolean isNegated() {
         return negated;
+    }
+
+    public Permission setNegated(boolean negated) {
+        this.negated = negated;
+        return this;
     }
 
     @Override

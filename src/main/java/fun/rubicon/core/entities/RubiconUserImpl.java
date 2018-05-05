@@ -99,7 +99,11 @@ public abstract class RubiconUserImpl extends RethinkHelper {
     }
 
     public boolean isAFK() {
-        return !getAFKState().equals("");
+        try {
+            return !getAFKState().equals("");
+        } catch (NullPointerException e) {
+            return false;
+        }
     }
 
     public Date getPremiumExpiryDate() {

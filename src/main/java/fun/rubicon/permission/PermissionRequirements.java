@@ -37,28 +37,27 @@ public class PermissionRequirements {
      */
     public boolean coveredBy(UserPermissions userPermissions) {
         // bot authors have all permissions
-        if (userPermissions.isBotAuthor()) {
+        if (userPermissions.isBotAuthor())
             return true;
-        }
 
         // author exclusive permissions are not accessible for other users
-        if (isAuthorExclusive) {
+        if (isAuthorExclusive)
             return false;
-        }
 
         // server owner has all perms on his server
-        if (userPermissions.isServerOwner()) {
+        if (userPermissions.isServerOwner())
             return true;
-        }
 
-        Permission effectiveEntry = userPermissions.getEffectivePermissionEntry(null, requiredPermissionNode, "*");
-        if (effectiveEntry == null) {
-            // defaults
-            return isDefault;
-        } else {
-            // check permission
-            return !effectiveEntry.isNegated();
-        }
+        if(userPermissions.hasPermissionNode("!" + requiredPermissionNode))
+            return false;
+        if(isDefault)
+            return true;
+
+        if(userPermissions.hasPermissionNode(requiredPermissionNode))
+            return true;
+        if(userPermissions.hasPermissionNode(requiredPermissionNode))
+            return true;
+        return false;
     }
 
     /**

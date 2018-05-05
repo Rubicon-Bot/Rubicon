@@ -39,7 +39,7 @@ public class CommandEval extends CommandHandler {
         try {
             se.eval("var imports = new JavaImporter(" +
                     "java.nio.file," +
-                    "Packages.net.dv8tion.jda.core.Permission," +
+                    "Packages.net.dv8tion.jda.core.RubiconPermission," +
                     "Packages.net.dv8tion.jda.core," +
                     "java.lang," +
                     "java.lang.management," +

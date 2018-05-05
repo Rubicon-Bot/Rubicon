@@ -123,7 +123,7 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
     }
 
     public void clearQueue() {
-        trackQueue = new LinkedList<>();
+        trackQueue.clear();
         savePlayer();
     }
 
