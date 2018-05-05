@@ -29,11 +29,10 @@ public class GameAnimator {
             Game.playing("rubicon.fun"),
             Game.watching("twitter.com/realRubicon"),
             Game.playing("Version: " + Info.BOT_VERSION),
-            Game.watching("Rubiteam <3"),
             Game.watching("New Translations"),
             Game.playing("translate.rubicon.fun"),
-            Game.watching("Unicorns flying in the sky"),
-            Game.listening("for patreons http://donate.rucb.co")
+            Game.listening("donate.rucb.co"),
+            Game.watching("github.com/Rubicon-Bot")
     };
     private int currentGame = 0;
 

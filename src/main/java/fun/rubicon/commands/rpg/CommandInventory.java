@@ -32,7 +32,7 @@ public class CommandInventory extends CommandHandler {
         embed.setAuthor(invocation.getAuthor().getName() + invocation.translate("command.inv.title"), null, invocation.getAuthor().getAvatarUrl());
         embed.setDescription(invocation.translate("command.inv.total") + ": " + inventory.getSlotCount() + "\n" +
                 invocation.translate("command.inv.free") + ": " + inventory.getFreeSpace() + "\n" +
-                invocation.translate("command.inv.used") + "Used Slots: " + items.size());
+                invocation.translate("command.inv.used") + items.size());
         embed.addField(invocation.translate("command.inv.helmet"), inventory.getHelmet().getRpgItem().getDisplayName(), true);
         embed.addField(invocation.translate("command.inv.chest"), inventory.getChest().getRpgItem().getDisplayName(), true);
         embed.addBlankField(true);
@@ -44,7 +44,6 @@ public class CommandInventory extends CommandHandler {
             for (RPGInventoryItem item : items) {
                 slotString.append(item.getAmount() + " x " + item.getRpgItem().getDisplayName() + "\n");
             }
-            embed.addBlankField(true);
             embed.addField(invocation.translate("command.inv.items"), slotString.toString(), false);
         } else
             embed.addField(invocation.translate("command.inv.items"), "Empty", false);

@@ -62,6 +62,10 @@ public class UserPermissions {
         this(user, null);
     }
 
+    public boolean hasPermissionNode(String permission) {
+        return RubiconBot.sGetPermissionManager().hasPermission(new PermissionTarget(getDiscordMember()), Permission.parse(permission), false);
+    }
+
     /**
      * Convenience method returning the corresponding user, if available.
      *
@@ -119,86 +123,6 @@ public class UserPermissions {
     public boolean isServerOwner() {
         Member member = getDiscordMember();
         return member != null && member.isOwner();
-    }
-
-    /**
-     * @return all effective permissions.
-     * @see #hasPermissionNode(String) for permission checks.
-     */
-    public List<Permission> getEffectivePermissions() {
-        PermissionManager manager = RubiconBot.sGetPermissionManager();
-        List<Permission> effectivePermissions = new ArrayList<>();
-        for (PermissionTarget target : getPermissionTargets(null))
-            for (Permission targetPermission : manager.getPermissions(target))
-                // only add to effective if there is no equal permission string yet.
-                if (effectivePermissions.stream()
-                        .noneMatch(effectivePermission -> effectivePermission.equalsIgnoreNegation(targetPermission)))
-                    effectivePermissions.add(targetPermission);
-        return effectivePermissions;
-    }
-
-    /**
-     * @param requiredPermissionNode the required permission node.
-     * @return whether memberPermissionNodes contains requiredPermissionNode.
-     */
-    public boolean hasPermissionNode(String requiredPermissionNode) {
-        return hasPermission(null, requiredPermissionNode);
-    }
-
-    /**
-     * @param context                used to check discord permissions in a channel.
-     * @param requiredPermissionNode the required permission node.
-     * @return whether memberPermissionNodes contains requiredPermissionNode.
-     */
-    public boolean hasPermission(Channel context, String requiredPermissionNode) {
-        Permission permission = getEffectivePermissionEntry(context, requiredPermissionNode);
-        // negated -> false (does not have perm), not negated -> true (has perm)
-        return permission != null && !permission.isNegated();
-    }
-
-    /**
-     * Iterates through all {@link PermissionTarget PermissionTargets} and returns the effective {@link Permission} entry.
-     *
-     * @param context                used to check discord permissions in a channel.
-     * @param requiredPermissionNodes the permission(s) to query.
-     * @return the effect
-     */
-    public Permission getEffectivePermissionEntry(Channel context, String... requiredPermissionNodes) {
-        PermissionManager permissionManager = RubiconBot.sGetPermissionManager();
-        // check permissions
-        List<PermissionTarget> permissionTargets = getPermissionTargets(context);
-        for (int i = 0; i < permissionTargets.size(); i++) {
-            for(String requiredPermissionNode : requiredPermissionNodes) {
-                Permission permission = permissionManager.getPermission(permissionTargets.get(i), requiredPermissionNode);
-                if (permission != null)
-                    return permission;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param context used to check discord permissions in a channel.
-     * @return all {@link PermissionTarget PermissionTargets} that apply on this user in the order they should be
-     * checked.
-     */
-    public List<PermissionTarget> getPermissionTargets(Channel context) {
-        List<PermissionTarget> targets = new ArrayList<>();
-        if (isMember()) {
-            Member member = getDiscordMember();
-
-            // add user target
-            targets.add(new PermissionTarget(member));
-
-            // add discord permission targets
-            for (net.dv8tion.jda.core.Permission permission : context == null ? member.getPermissions() : member.getPermissions(context))
-                targets.add(new PermissionTarget(member.getGuild(), permission));
-
-            // add role targets
-            List<Role> roleList = member.getRoles(); // member roles sorted from highest to lowest
-            roleList.forEach(role -> targets.add(new PermissionTarget(role))); // add all roles
-        }
-        return targets;
     }
 
     /**

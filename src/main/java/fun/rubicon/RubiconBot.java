@@ -12,7 +12,7 @@ import de.foryasee.httprequest.RequestHeader;
 import de.foryasee.httprequest.RequestResponse;
 import de.foryasee.httprequest.RequestType;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.commands.admin.CommandAutorole;
+import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.botowner.*;
 import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
@@ -31,6 +31,7 @@ import fun.rubicon.core.rpg.RPGItemRegistry;
 import fun.rubicon.core.translation.TranslationManager;
 import fun.rubicon.features.poll.PollManager;
 import fun.rubicon.features.poll.PunishmentManager;
+import fun.rubicon.features.portal.PortalMessageListener;
 import fun.rubicon.features.verification.VerificationCommandHandler;
 import fun.rubicon.features.verification.VerificationLoader;
 import fun.rubicon.listener.AutochannelListener;
@@ -78,11 +79,12 @@ import java.util.stream.Collectors;
  * @author tr808axm, ForYaSee
  */
 public class RubiconBot {
+
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"log_webhook", "token", "playingStatus", "dbl_token", "discord_pw_token", "gif_token", "google_token", "rethink_host", "rethink_port", "rethink_db", "rethink_user", "rethink_password","fortnite_key"};
+    private static final String[] CONFIG_KEYS = {"log_webhook", "token", "playingStatus", "dbl_token", "discord_pw_token", "gif_token", "google_token", "rethink_host", "rethink_port", "rethink_db", "rethink_user", "rethink_password", "rethink_host2", "rethink_port2", "rethink_host3", "rethink_port3", "fortnite_key"};
     private static RubiconBot instance;
     private final Configuration configuration;
-    private final Rethink rethink;
+    private static Rethink rethink;
     private final GameAnimator gameAnimator;
     private final CommandManager commandManager;
     private final PermissionManager permissionManager;
@@ -137,14 +139,7 @@ public class RubiconBot {
         if(!configuration.has("beta"))
             configuration.set("beta",0);
         Logger.enableWebhooks(configuration.getString("log_webhook"));
-        rethink = new Rethink(
-                configuration.getString("rethink_host"),
-                configuration.getInt("rethink_port"),
-                configuration.getString("rethink_db"),
-                configuration.getString("rethink_user"),
-                configuration.getString("rethink_password")
-        );
-        rethink.connect();
+        connectRethink();
         RethinkUtil.createDefaults(rethink);
 
         SHARD_COUNT = generateShardCount();
@@ -192,7 +187,7 @@ public class RubiconBot {
 
         //Admin
         commandManager.registerCommandHandlers(
-                new CommandAutorole()
+                new CommandPortal()
         );
 
         // Settings
@@ -201,8 +196,9 @@ public class RubiconBot {
                 new CommandLeaveMessage(),
                 new CommandAutochannel(),
                 new CommandJoinImage(),
+                new CommandAutorole()
                 new CommandRanks()
-        );
+                );
 
         // Fun
         commandManager.registerCommandHandlers(
@@ -229,6 +225,7 @@ public class RubiconBot {
                 new CommandBio(),
                 new CommandInvite(),
                 new CommandSay(),
+                new CommandUptime(),
                 new CommandUserinfo(),
                 new CommandMoney(),
                 new CommandStatistics(),
@@ -266,6 +263,7 @@ public class RubiconBot {
                 new CommandSearch(),
                 new CommandServerInfo(),
                 new CommandRemindMe()
+                new CommandLeet()
         );
 
         //Music
@@ -337,7 +335,8 @@ public class RubiconBot {
                 new LavalinkManager(),
                 new LavalinkManager(),
                 new VerificationListener(),
-                new SetupListener()
+                new SetupListener(),
+                new PortalMessageListener()
         );
         try {
             shardManager = builder.build();
@@ -485,6 +484,17 @@ public class RubiconBot {
 
     public static Rethink getRethink() {
         return instance == null ? null : instance.rethink;
+    }
+
+    public static void connectRethink() {
+        rethink = new Rethink(
+                instance.configuration.getString("rethink_host"),
+                instance.configuration.getInt("rethink_port"),
+                instance.configuration.getString("rethink_db"),
+                instance.configuration.getString("rethink_user"),
+                instance.configuration.getString("rethink_password")
+        );
+        rethink.connect();
     }
 
     public static RPGItemRegistry getRPGItemRegistry() {

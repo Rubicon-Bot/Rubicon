@@ -58,7 +58,6 @@ public class RubiconMember extends RubiconUserImpl{
         return Long.valueOf(getLong(retrieve(), "points")).intValue();
     }
 
-
     public RubiconMember mute() {
         rethink.db.table("punishments").insert(rethink.rethinkDB.array(
                 rethink.rethinkDB.hashMap("guildId", guild.getId())
