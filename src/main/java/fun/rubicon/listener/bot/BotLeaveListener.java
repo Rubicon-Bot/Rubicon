@@ -25,7 +25,7 @@ public class BotLeaveListener extends ListenerAdapter {
         rubiconGuild.disableAutorole();
         rubiconGuild.disableJoinImages();
 
-        for (long id : rubiconGuild.getAutochannels()) {
+        for (String id : rubiconGuild.getAutochannels()) {
             rubiconGuild.deleteAutochannel(id);
         }
         for (Member member : event.getGuild().getMembers()) {

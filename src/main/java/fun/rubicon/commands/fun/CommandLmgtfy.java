@@ -18,6 +18,9 @@ public class CommandLmgtfy extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) throws UnsupportedEncodingException {
+        if(invocation.getArgs().length<1)
+            return createHelpMessage(invocation);
+
         return new MessageBuilder("http://lmgtfy.com/?iie=1&q=" + URLEncoder.encode(invocation.getArgsString(), "UTF-8")).build();
     }
 }

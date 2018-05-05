@@ -23,11 +23,14 @@ public class CommandAutorole extends CommandHandler {
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
         RubiconGuild rubiconGuild = RubiconGuild.fromGuild(invocation.getGuild());
 
-        if (invocation.getArgs().length == 0 || invocation.getArgs().length == 1 && invocation.getArgs()[0].equalsIgnoreCase("info")) {
+        if(invocation.getArgs().length<1)
+           return createHelpMessage(invocation);
+
+        if (invocation.getArgs().length == 1 && invocation.getArgs()[0].equalsIgnoreCase("info")) {
             if (!rubiconGuild.hasAutoroleEnabled()) {
                 return EmbedUtil.message(EmbedUtil.info(invocation.translate("command.autorole.info.not.title"), invocation.translate("command.autorole.info.not.description")));
             }
-            long roleId = rubiconGuild.getAutorole();
+            String roleId = rubiconGuild.getAutorole();
             Role role = invocation.getGuild().getRoleById(roleId);
             if (role == null) {
                 rubiconGuild.disableAutorole();
@@ -50,7 +53,7 @@ public class CommandAutorole extends CommandHandler {
                 if (!invocation.getGuild().getSelfMember().canInteract(role)) {
                     return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.autorole.set.error.rc.title"), invocation.translate("command.autorole.set.error.rc.description")));
                 }
-                rubiconGuild.setAutorole(role.getIdLong());
+                rubiconGuild.setAutorole(role.getId());
                 return EmbedUtil.message(EmbedUtil.success(invocation.translate("command.autorole.set.title"), invocation.translate("command.autorole.set.description").replace("%role%", role.getAsMention())));
             }
             if (invocation.getArgs().length == 2) {
@@ -62,7 +65,7 @@ public class CommandAutorole extends CommandHandler {
                     if (!invocation.getGuild().getSelfMember().canInteract(role)) {
                         return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.autorole.set.error.rc.title"), invocation.translate("command.autorole.set.error.rc.description")));
                     }
-                    rubiconGuild.setAutorole(role.getIdLong());
+                    rubiconGuild.setAutorole(role.getId());
                     return EmbedUtil.message(EmbedUtil.success(invocation.translate("command.autorole.set.title"), invocation.translate("command.autorole.set.description").replace("%role%", role.getAsMention())));
                 } else
                     return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.autorole.set.nf.title"), invocation.translate("command.autorole.set.nf.description")));

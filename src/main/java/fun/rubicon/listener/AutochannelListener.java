@@ -7,6 +7,7 @@
 package fun.rubicon.listener;
 
 import fun.rubicon.core.entities.RubiconGuild;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -25,7 +26,7 @@ public class AutochannelListener extends ListenerAdapter {
     public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
         try {
             VoiceChannel voiceChannel = event.getChannelJoined();
-            if (isAutochannel(event.getGuild(), voiceChannel.getIdLong())) {
+            if (isAutochannel(event.getGuild(), voiceChannel.getId())) {
                 if (hasPermissions(event.getGuild())) {
                     VoiceChannel newChannel = (VoiceChannel) event.getGuild().getController().createCopyOfChannel(voiceChannel).setName(voiceChannel.getName() + " [AC]").complete();
                     event.getGuild().getController().moveVoiceMember(event.getMember(), newChannel).queue();
@@ -40,7 +41,7 @@ public class AutochannelListener extends ListenerAdapter {
     public void onGuildVoiceMove(GuildVoiceMoveEvent event) {
         try {
             VoiceChannel voiceChannel = event.getChannelJoined();
-            if (isAutochannel(event.getGuild(), voiceChannel.getIdLong())) {
+            if (isAutochannel(event.getGuild(), voiceChannel.getId())) {
                 if (hasPermissions(event.getGuild())) {
                     VoiceChannel newChannel = (VoiceChannel) event.getGuild().getController().createCopyOfChannel(voiceChannel).setName(voiceChannel.getName() + " [AC]").complete();
                     event.getGuild().getController().moveVoiceMember(event.getMember(), newChannel).queue();
@@ -78,8 +79,8 @@ public class AutochannelListener extends ListenerAdapter {
         return selfMember.getPermissions().contains(Permission.MANAGE_CHANNEL);
     }
 
-    private boolean isAutochannel(Guild guild, long channelId) {
+    private boolean isAutochannel(Guild guild, String channelId) {
         RubiconGuild rubiconGuild = RubiconGuild.fromGuild(guild);
-        return rubiconGuild.getAutochannels().contains(channelId);
+        return rubiconGuild.isAutochannel(channelId);
     }
 }
