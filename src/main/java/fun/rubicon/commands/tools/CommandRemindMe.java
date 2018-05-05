@@ -13,7 +13,7 @@ import fun.rubicon.util.StringUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
-        import java.util.Date;
+import java.util.Date;
 
 /**
  * @author Schlaubi / Michael Rittmeister
@@ -21,30 +21,30 @@ import net.dv8tion.jda.core.entities.Message;
 
 public class CommandRemindMe extends CommandHandler {
     public CommandRemindMe() {
-        super(new String[] {"remind", "reminder", "remindme"}, CommandCategory.TOOLS, new PermissionRequirements("remind", false, true), "I will remind you!", "<time> <message>/canel");
+        super(new String[]{"remind", "reminder", "remindme"}, CommandCategory.TOOLS, new PermissionRequirements("remind", false, true), "I will remind you!", "<time> <message>/canel");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
         String[] args = invocation.getArgs();
-        if(args.length == 0)
+        if (args.length == 0)
             return createHelpMessage();
         RubiconRemind remind = new RubiconRemind(invocation.getAuthor());
-        switch (args[0]){
+        switch (args[0]) {
             case "cancel":
-                if(!remind.exists())
+                if (!remind.exists())
                     return message(error(invocation.translate("command.remind.noreminder.title"), invocation.translate("command.remind.noreminder.description")));
                 remind.cancel();
                 SafeMessage.sendMessage(invocation.getTextChannel(), message(success(invocation.translate("command.remind.cancelled.title"), invocation.translate("command.remind.canceled.description"))));
                 break;
             case "info":
-                if(!remind.exists())
+                if (!remind.exists())
                     return message(error(invocation.translate("command.remind.noreminder.title"), invocation.translate("command.remind.noreminder.description")));
                 SafeMessage.sendMessage(invocation.getTextChannel(), formatReminder(remind.getAuthor().getName() + "'s Reminder", remind).build(), 7);
                 break;
             default:
                 Date expiry = StringUtil.parseDate(args[0]);
-                if(expiry == null)
+                if (expiry == null)
                     return message(error(invocation.translate("general.punishment.invalidnumber.title"), invocation.translate("general.punishment.invalidnumber.description")));
                 remind = new RubiconRemind(invocation.getAuthor(), expiry, invocation.getArgsString().replace(args[0], ""));
                 SafeMessage.sendMessage(invocation.getTextChannel(), formatReminder("Created reminder", remind).build());
@@ -53,7 +53,7 @@ public class CommandRemindMe extends CommandHandler {
         return null;
     }
 
-    private EmbedBuilder formatReminder(String title, RubiconRemind remind){
+    private EmbedBuilder formatReminder(String title, RubiconRemind remind) {
         EmbedBuilder emb = new EmbedBuilder();
         emb.setTitle(title);
         emb.setDescription(String.format(TranslationUtil.translate(remind.getAuthor(), "reminder.embed.description"), remind.getRemindMessage()));

@@ -228,11 +228,12 @@ public class RubiconBot {
                 new CommandUserinfo(),
                 new CommandMoney(),
                 new CommandStatistics(),
-                new CommandYtSearch(),
+                new CommandYTSearch(),
                 new CommandPremium(),
                 new CommandKey(),
                 new CommandPing(),
-                new CommandPermissionCheck()
+                new CommandPermissionCheck(),
+                new CommandProfile()
         );
 
         //Moderation
@@ -262,6 +263,7 @@ public class RubiconBot {
                 new CommandServerInfo(),
                 new CommandRemindMe(),
                 new CommandLeet()
+                //new CommandGiveaway()
         );
 
         //Music
