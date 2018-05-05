@@ -8,6 +8,7 @@ package fun.rubicon.listener.bot;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.tools.CommandYouTube;
+import fun.rubicon.core.entities.RubiconRemind;
 import fun.rubicon.util.BotListHandler;
 
 /**
@@ -31,5 +32,7 @@ public class AllShardsLoadedEvent {
         new CommandYouTube.YouTubeChecker(RubiconBot.getShardManager().getGuilds());
         //Load verification cache
         RubiconBot.getVerificationLoader().loadVerificationCache();
+        //Load all reminders
+        RubiconRemind.loadReminders();
     }
 }

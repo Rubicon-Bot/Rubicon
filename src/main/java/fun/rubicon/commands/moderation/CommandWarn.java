@@ -16,6 +16,7 @@ import fun.rubicon.util.DateUtil;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 
@@ -28,7 +29,7 @@ import java.util.Map;
 
 public class CommandWarn extends CommandHandler {
     public CommandWarn() {
-        super(new String[] {"warn", "warns"}, CommandCategory.MODERATION, new PermissionRequirements("warn", false,false), "Easily warn users", "<@User> <reason>\nlist <@User>\n <@User> <index> (Use rc!warn list to get warns of a user.)\npunishment (Setup punishments for an speciefied amount of warns");
+        super(new String[] {"warn", "warns"}, CommandCategory.MODERATION, new PermissionRequirements("warn", false,false), "Easily warn users", "<@User> <reason>\nlist <@User>\nclear <@User> \nremove <@User> <index> (Use rc!warn list to get warns of a user.)\npunishment (Setup punishments for an speciefied amount of warns");
     }
 
     private Rethink rethink = RubiconBot.getRethink();
@@ -40,11 +41,20 @@ public class CommandWarn extends CommandHandler {
             return createHelpMessage();
         RubiconMember member;
         switch (args[0]){
+            case "clear":
+                if(message.getMentionedUsers().isEmpty())
+                    return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.warn.nouser.title"), invocation.translate("command.warn.nouser.description")));
+                member = RubiconMember.fromMember(message.getMentionedMembers().get(0));
+                if(!member.hasWarns())
+                    return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.warn.list.nowarns.title"), invocation.translate("command.warn.list.nowarns.description")));
+                member.clearWarns();
+                SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.success(invocation.translate("command.warn.clear.cleared.title"), invocation.translate("command.warn.clear.cleared.description"))));
+                break;
             case "unwarn":
             case "remove":
                 if(message.getMentionedUsers().isEmpty())
                     return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.warn.nouser.title"), invocation.translate("command.warn.nouser.description")));
-                if(args.length < 2)
+                if(args.length < 3)
                     return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.warn.noid.title"), invocation.translate("command.warn.noid.description")));
                 args = invocation.getArgsString().replace("@", "").replace(invocation.getMessage().getMentionedMembers().get(0).getEffectiveName(), "a").split(" ");
                 member = RubiconMember.fromMember(message.getMentionedMembers().get(0));
@@ -110,6 +120,11 @@ public class CommandWarn extends CommandHandler {
                 .setDescription(warnList.toString());
     }
 
+    private boolean punishmentExists(int amount, Guild guild){
+        Cursor cursor = rethink.db.table("warn_punishments").filter(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("amount", String.valueOf(amount))).run(rethink.connection);
+        return !cursor.toList().isEmpty();
+    }
+
     private void deletePunishment(CommandManager.ParsedCommandInvocation invocation) {
         String id = invocation.getArgs()[2];
         if(!doesPunishmentExists(id)){
@@ -167,6 +182,14 @@ public class CommandWarn extends CommandHandler {
                             SafeMessage.sendMessage(setupChannel, setupMessage(translate("warns.setup.failed.title"), translate("warns.setup.step3.failed.description"), Colors.COLOR_ERROR).build());
                             return;
                         }
+                        if (amount == 0){
+                            SafeMessage.sendMessage(setupChannel, setupMessage(translate("warns.setup.failed.title"), translate("warn.setup.step0.null"), Colors.COLOR_ERROR).build(), 2);
+                            return;
+                        }
+                        if(punishmentExists(amount, guild)){
+                            SafeMessage.sendMessage(setupChannel, setupMessage(translate("warns.setup.failed.title"), translate("warn.setup.step0.exists"), Colors.COLOR_ERROR).build(), 2);
+                            return;
+                        }
                         settings.amount = amount;
                         infoMessage.editMessage(setupMessage(translate("warns.setup.step1.info.title"), translate("warns.setup.step1.info.description"), Colors.COLOR_SECONDARY).build()).queue();
                         break;
@@ -175,7 +198,7 @@ public class CommandWarn extends CommandHandler {
                         try {
                             type = PunishmentType.valueOf(invokeMsg.getContentDisplay().toUpperCase());
                         } catch (IllegalArgumentException e){
-                            SafeMessage.sendMessage(setupChannel, setupMessage(translate("warns.setup.failed.title"), translate("warns.setup.step1.failed.description"), Colors.COLOR_ERROR).build());
+                            SafeMessage.sendMessage(setupChannel, setupMessage(translate("warns.setup.failed.title"), translate("warns.setup.step1.failed.description"), Colors.COLOR_ERROR).build(), 2);
                             return;
                         }
                         settings.type = type;
@@ -194,7 +217,7 @@ public class CommandWarn extends CommandHandler {
                         try {
                             length = Integer.parseInt(invokeMsg.getContentDisplay());
                         } catch (NumberFormatException e){
-                            SafeMessage.sendMessage(setupChannel, setupMessage(translate("warns.setup.failed.title"), translate("warns.setup.step3.failed.description"), Colors.COLOR_ERROR).build());
+                            SafeMessage.sendMessage(setupChannel, setupMessage(translate("warns.setup.failed.title"), translate("warns.setup.step3.failed.description"), Colors.COLOR_ERROR).build(), 2);
                             return;
                         }
                         settings.lenth = length;

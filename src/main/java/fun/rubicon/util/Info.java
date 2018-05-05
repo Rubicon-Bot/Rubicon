@@ -32,7 +32,6 @@ public class Info {
             ////264048760580079616L, // Schlaubi
             //137253345336229889L, // lucsoft
             137263174675070976L,  // tr808axm
-            235395943619493888L
     };
 
     public final static Long[] COMMUNITY_STAFF_TEAM = {

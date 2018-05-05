@@ -18,24 +18,26 @@ import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.*;
 import fun.rubicon.commands.music.*;
-import fun.rubicon.commands.music.CommandClearQueue;
-import fun.rubicon.commands.botowner.CommandInvMod;
 import fun.rubicon.commands.rpg.CommandInventory;
 import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
+import fun.rubicon.commands.tools.CommandSearch;
 import fun.rubicon.commands.tools.CommandYouTube;
 import fun.rubicon.core.GameAnimator;
+import fun.rubicon.core.entities.RubiconRemind;
 import fun.rubicon.core.music.GuildMusicPlayerManager;
 import fun.rubicon.core.music.LavalinkManager;
 import fun.rubicon.core.rpg.RPGItemRegistry;
 import fun.rubicon.core.translation.TranslationManager;
-import fun.rubicon.commands.botowner.CommandEval;
 import fun.rubicon.features.poll.PollManager;
 import fun.rubicon.features.poll.PunishmentManager;
 import fun.rubicon.features.portal.PortalMessageListener;
 import fun.rubicon.features.verification.VerificationCommandHandler;
 import fun.rubicon.features.verification.VerificationLoader;
-import fun.rubicon.listener.*;
+import fun.rubicon.listener.AutochannelListener;
+import fun.rubicon.listener.GeneralMessageListener;
+import fun.rubicon.listener.GeneralReactionListener;
+import fun.rubicon.listener.UserMentionListener;
 import fun.rubicon.listener.bot.BotJoinListener;
 import fun.rubicon.listener.bot.BotLeaveListener;
 import fun.rubicon.listener.bot.SelfMentionListener;
@@ -59,6 +61,7 @@ import net.dv8tion.jda.bot.sharding.ShardManager;
 import net.dv8tion.jda.core.JDAInfo;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
 import org.json.JSONObject;
 
@@ -67,6 +70,8 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Rubicon-bot's main class. Initializes all components.
@@ -76,7 +81,7 @@ import java.util.Date;
 public class RubiconBot {
 
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"log_webhook", "token", "playingStatus", "dbl_token", "discord_pw_token", "gif_token", "google_token", "rethink_host", "rethink_port", "rethink_db", "rethink_user", "rethink_password", "rethink_host2", "rethink_port2", "rethink_host3", "rethink_port3"};
+    private static final String[] CONFIG_KEYS = {"log_webhook", "token", "playingStatus", "dbl_token", "discord_pw_token", "gif_token", "google_token", "rethink_host", "rethink_port", "rethink_db", "rethink_user", "rethink_password", "rethink_host2", "rethink_port2", "rethink_host3", "rethink_port3", "fortnite_key"};
     private static RubiconBot instance;
     private final Configuration configuration;
     private static Rethink rethink;
@@ -130,6 +135,9 @@ public class RubiconBot {
                 configuration.set(configKey, input);
             }
         }
+        //Deactivate Beta if not active
+        if(!configuration.has("beta"))
+            configuration.set("beta",0);
         Logger.enableWebhooks(configuration.getString("log_webhook"));
         connectRethink();
         RethinkUtil.createDefaults(rethink);
@@ -160,6 +168,7 @@ public class RubiconBot {
 
         gameAnimator.start();
         shardManager.setStatus(OnlineStatus.ONLINE);
+
         Logger.info("Started!");
     }
 
@@ -172,7 +181,8 @@ public class RubiconBot {
                 new CommandBotplay(),
                 new CommandDisco(),
                 new CommandTest(),
-                new CommandInvMod()
+                new CommandInvMod(),
+                new CommandBeta()
         );
 
         //Admin
@@ -187,6 +197,7 @@ public class RubiconBot {
                 new CommandAutochannel(),
                 new CommandJoinImage(),
                 new CommandAutorole()
+                new CommandRanks()
                 );
 
         // Fun
@@ -198,7 +209,11 @@ public class RubiconBot {
                 new CommandRip(),
                 new CommandMedal(),
                 new CommandRoadSign(),
-                new CommandWeddingSign()
+                new CommandWeddingSign(),
+                new CommandDice(),
+                new CommandQR()
+                new CommandFortnite()
+                new CommandOverwatch(),
         );
 
         //General
@@ -214,10 +229,12 @@ public class RubiconBot {
                 new CommandUserinfo(),
                 new CommandMoney(),
                 new CommandStatistics(),
-                new CommandSearch(),
+                new CommandUptime(),
+                new CommandYTSearch(),
                 new CommandPremium(),
                 new CommandKey(),
-                new CommandPing()
+                new CommandPing(),
+                new CommandPermissionCheck()
         );
 
         //Moderation
@@ -226,6 +243,11 @@ public class RubiconBot {
                 new CommandUnban(),
                 new CommandMoveall(),
                 new CommandWarn(),
+                new CommandClear()
+        );
+
+        //Punishments
+        punishmentManager.registerPunishmentHandlers(
                 new CommandMute(),
                 new CommandBan()
         );
@@ -235,7 +257,12 @@ public class RubiconBot {
                 new CommandPoll(),
                 new CommandShort(),
                 new CommandYouTube(),
+                new CommandNick(),
                 new VerificationCommandHandler(),
+                new CommandChoose(),
+                new CommandSearch(),
+                new CommandServerInfo(),
+                new CommandRemindMe()
                 new CommandLeet()
         );
 
@@ -418,6 +445,13 @@ public class RubiconBot {
      */
     public static TranslationManager sGetTranslations() {
         return instance == null ? null : instance.translationManager;
+    }
+
+    /**
+     * @return List<Guild> of Guilds by name
+     */
+    public static List<Guild> getGuildsByName(String name, boolean ignoreCase) {
+        return ignoreCase ? getShardManager().getGuilds().stream().filter(guild -> guild.getName().equalsIgnoreCase(name)).collect(Collectors.toList()) : getShardManager().getGuilds().stream().filter(guild -> guild.getName().equals(name)).collect(Collectors.toList());
     }
 
     public static boolean allShardsInitialised() {

@@ -27,8 +27,9 @@ public class RethinkUtil {
             "keys",
             "warn_punishments",
             "warns",
-            "portal_settings",
+            "reminders"
             "portals"
+            "portal_settings",
     };
 
     public static void createDefaults(Rethink rethink) {

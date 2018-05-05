@@ -6,27 +6,50 @@
 
 package fun.rubicon.listener.bot;
 
+import com.rethinkdb.gen.ast.ReqlExpr;
+import com.rethinkdb.net.Cursor;
+import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.core.entities.RubiconMember;
 import fun.rubicon.util.BotListHandler;
 import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.events.ReconnectedEvent;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+
+import java.util.*;
 
 /**
  * @author Yannick Seeger / ForYaSee
  */
 public class BotJoinListener extends ListenerAdapter {
 
+    public static HashMap<String, Thread> betaGuilds = new HashMap<>();
+
     @Override
     public void onGuildJoin(GuildJoinEvent event) {
         //Database Inserts
         RubiconGuild.fromGuild(event.getGuild());
-        for (Member member: event.getGuild().getMembers()) {
+        for (Member member : event.getGuild().getMembers()) {
             new RubiconMember(member);
         }
-
         BotListHandler.postStats(false);
+        if (RubiconBot.getConfiguration().getInt("beta") == 1) {
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                   Cursor cursor = RubiconBot.getRethink().db.table("guilds").filter(RubiconBot.getRethink().rethinkDB.hashMap("guildId",event.getGuild().getId())).run(RubiconBot.getRethink().connection);
+                    List l = cursor.toList();
+                    if(l.size()>0){
+                        Map map = (Map) l.get(0);
+                        if(map.get("beta") ==null)
+                            event.getGuild().leave().complete();
+                    }
+                }
+            },30000);
+            User owner = event.getGuild().getOwner().getUser();
+            owner.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Hey "+owner.getAsMention()+" ,\nRubicon is currently in **BETA MODE**. If you have a beta key, you can redeem it with `rc!redeem <yourkey>`.").queue());
+
+        }
     }
 }
