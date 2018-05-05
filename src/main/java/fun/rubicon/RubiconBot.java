@@ -24,7 +24,6 @@ import fun.rubicon.commands.tools.*;
 import fun.rubicon.commands.tools.CommandSearch;
 import fun.rubicon.commands.tools.CommandYouTube;
 import fun.rubicon.core.GameAnimator;
-import fun.rubicon.core.entities.RubiconRemind;
 import fun.rubicon.core.music.GuildMusicPlayerManager;
 import fun.rubicon.core.music.LavalinkManager;
 import fun.rubicon.core.rpg.RPGItemRegistry;
@@ -136,8 +135,8 @@ public class RubiconBot {
             }
         }
         //Deactivate Beta if not active
-        if(!configuration.has("beta"))
-            configuration.set("beta",0);
+        if (!configuration.has("beta"))
+            configuration.set("beta", 0);
         Logger.enableWebhooks(configuration.getString("log_webhook"));
         connectRethink();
         RethinkUtil.createDefaults(rethink);
@@ -196,9 +195,9 @@ public class RubiconBot {
                 new CommandLeaveMessage(),
                 new CommandAutochannel(),
                 new CommandJoinImage(),
-                new CommandAutorole()
+                new CommandAutorole(),
                 new CommandRanks()
-                );
+        );
 
         // Fun
         commandManager.registerCommandHandlers(
@@ -211,9 +210,9 @@ public class RubiconBot {
                 new CommandRoadSign(),
                 new CommandWeddingSign(),
                 new CommandDice(),
-                new CommandQR()
-                new CommandFortnite()
-                new CommandOverwatch(),
+                new CommandQR(),
+                new CommandFortnite(),
+                new CommandOverwatch()
         );
 
         //General
@@ -229,8 +228,7 @@ public class RubiconBot {
                 new CommandUserinfo(),
                 new CommandMoney(),
                 new CommandStatistics(),
-                new CommandUptime(),
-                new CommandYTSearch(),
+                new CommandYtSearch(),
                 new CommandPremium(),
                 new CommandKey(),
                 new CommandPing(),
@@ -262,7 +260,7 @@ public class RubiconBot {
                 new CommandChoose(),
                 new CommandSearch(),
                 new CommandServerInfo(),
-                new CommandRemindMe()
+                new CommandRemindMe(),
                 new CommandLeet()
         );
 

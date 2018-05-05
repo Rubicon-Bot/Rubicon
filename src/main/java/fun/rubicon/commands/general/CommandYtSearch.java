@@ -29,9 +29,9 @@ import java.util.Date;
  * Licensed under the GPL-3.0 license.
  * The full license text is available in the LICENSE file provided with this project.
  */
-public class CommandYTSearch extends CommandHandler {
+public class CommandYtSearch extends CommandHandler {
 
-    public CommandYTSearch() {
+    public CommandYtSearch() {
         super(new String[]{"ytsearch"}, CommandCategory.GENERAL, new PermissionRequirements("search", false, true), "Search something", "<Search-Term>");
     }
 
