@@ -11,6 +11,7 @@ import fun.rubicon.core.ImageEditor;
 import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.core.entities.RubiconMember;
 import fun.rubicon.util.Logger;
+import fun.rubicon.util.BotListHandler;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Role;
@@ -33,6 +34,8 @@ public class MemberJoinListener extends ListenerAdapter {
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         RubiconGuild rubiconGuild = RubiconGuild.fromGuild(event.getGuild());
         RubiconMember.fromMember(event.getMember());
+
+        BotListHandler.postRubiconFunUserCounts(false);
 
         new Thread(() -> {
             if (rubiconGuild.hasJoinMessagesEnabled()) {
