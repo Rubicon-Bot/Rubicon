@@ -17,14 +17,14 @@ import java.util.concurrent.TimeUnit;
 
 public class SafeMessage {
     public static void sendMessage(TextChannel textChannel, Message message) {
-        if (hasPermissions(textChannel))
+        if (hasPermissions(textChannel) && message.getContentRaw().toCharArray().length<1999)
            send(textChannel, message);
     }
 
     public static void sendMessage(TextChannel textChannel, Message message, int deleteTime) {
         try {
-            if (hasPermissions(textChannel))
-                send(textChannel, message);
+            if (hasPermissions(textChannel) && message.getContentRaw().toCharArray().length<1999)
+                send(textChannel, message).delete().queueAfter(deleteTime,TimeUnit.SECONDS);
         } catch (Exception e) {
             // Ignored
         }
@@ -32,18 +32,18 @@ public class SafeMessage {
 
 
     public static Message sendMessageBlocking(TextChannel textChannel, Message message) {
-        if (hasPermissions(textChannel))
+        if (hasPermissions(textChannel) && message.getContentRaw().toCharArray().length<1999)
             send(textChannel, message);
         return null;
     }
 
     public static void sendMessage(TextChannel textChannel, String message) {
-        if (hasPermissions(textChannel))
+        if (hasPermissions(textChannel) && message.toCharArray().length<1999)
             send(textChannel, new MessageBuilder().setContent(message).build());
     }
 
     public static void sendMessage(TextChannel textChannel, String message, int deleteTime) {
-        if (hasPermissions(textChannel) && hasDeletePermission(textChannel))
+        if (hasPermissions(textChannel) && hasDeletePermission(textChannel) && message.toCharArray().length<1999)
             send(textChannel, new MessageBuilder().setContent(message).build()).delete().queueAfter(deleteTime, TimeUnit.SECONDS);
         else if (hasPermissions(textChannel))
             send(textChannel, new MessageBuilder().setContent(message).build());
@@ -63,7 +63,7 @@ public class SafeMessage {
     }
 
     public static Message sendMessageBlocking(TextChannel textChannel, String message) {
-        if (hasPermissions(textChannel))
+        if (hasPermissions(textChannel) && message.toCharArray().length<1999)
             return send(textChannel, new MessageBuilder().setContent(message).build());
         return null;
     }
@@ -109,7 +109,7 @@ public class SafeMessage {
             string.append("\n").append("_").append(embed.getFooter().getText()).append("_");
         String out = string.toString();
         if(string.length() > 1024)
-            out = "This message is to longer than 1024 chars, please give me `MESSAGE_EMBED_LINKS` permission and try again";
+            out = "This message is longer than 1024 chars, please give me `MESSAGE_EMBED_LINKS` permission and try again";
         return out;
     }
 
