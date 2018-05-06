@@ -21,7 +21,7 @@ import java.util.Date;
 
 public class CommandRemindMe extends CommandHandler {
     public CommandRemindMe() {
-        super(new String[]{"remind", "reminder", "remindme"}, CommandCategory.TOOLS, new PermissionRequirements("remind", false, true), "I will remind you!", "<time> <message>/canel");
+        super(new String[]{"remind", "reminder", "remindme"}, CommandCategory.TOOLS, new PermissionRequirements("remind", false, true), "I will remind you!", "<time> <message>/cancel");
     }
 
     @Override
