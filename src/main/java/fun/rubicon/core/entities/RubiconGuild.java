@@ -123,9 +123,11 @@ public class RubiconGuild extends RethinkHelper {
             return mute;
         }
         guild.getTextChannels().forEach(tc -> {
-            if (tc.getPermissionOverride(mute) != null) return;
-            PermissionOverride override = tc.createPermissionOverride(mute).complete();
-            override.getManager().deny(Permission.MESSAGE_WRITE).queue();
+            if (guild.getSelfMember().hasPermission(tc, Permission.MANAGE_PERMISSIONS)) {
+                if (tc.getPermissionOverride(mute) != null) return;
+                PermissionOverride override = tc.createPermissionOverride(mute).complete();
+                override.getManager().deny(Permission.MESSAGE_WRITE).queue();
+            }
         });
         return mute;
     }
