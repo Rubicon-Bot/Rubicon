@@ -17,7 +17,7 @@ public class PunishmentListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberRoleRemove(GuildMemberRoleRemoveEvent event) {
-        if(event.getRoles().contains(RubiconGuild.fromGuild(event.getGuild()).getMutedRole())){
+        if(event.getRoles().stream().parallel().anyMatch(r -> r.getName().equals("rubicon-muted"))){
             RubiconMember.fromMember(event.getMember()).unmute(false);
         }
     }
