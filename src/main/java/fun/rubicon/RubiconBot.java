@@ -259,7 +259,7 @@ public class RubiconBot {
                 new CommandNick(),
                 new VerificationCommandHandler(),
                 new CommandChoose(),
-                new CommandSearch(),
+                new fun.rubicon.commands.tools.CommandSearch(),
                 new CommandServerInfo(),
                 new CommandRemindMe(),
                 new CommandLeet()

@@ -113,13 +113,13 @@ public class RubiconGuild extends RethinkHelper {
     public Role getMutedRole() {
         if (!guild.getRolesByName("rubicon-muted", false).isEmpty())
             return guild.getRolesByName("rubicon-muted", false).get(0);
-        if (!guild.getSelfMember().hasPermission(Permission.MANAGE_ROLES)) {
-            guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: I can't create roles so you can't use mute feature! Please give me `MANAGE_ROLES` RubiconPermission").queue();
+        if (!guild.getSelfMember().hasPermission(Permission.MANAGE_ROLES, Permission.MANAGE_PERMISSIONS)) {
+            guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: I can't create roles so you can't use mute feature! Please give me `MANAGE_ROLES` and `MANAGE_PERMISSIONS` Permission").queue();
             return null;
         }
         Role mute = guild.getController().createRole().setName("rubicon-muted").complete();
-        if (!guild.getSelfMember().hasPermission(Permission.MANAGE_CHANNEL)) {
-            guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: I can't manage channels so you can't use mute feature! Please give me `MANAGE_CHANNELS` RubiconPermission").queue();
+        if (!guild.getSelfMember().hasPermission(Permission.MANAGE_CHANNEL, Permission.MANAGE_PERMISSIONS)) {
+            guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: I can't manage channels so you can't use mute feature! Please give me ``MANAGE_ROLES` and `MANAGE_PERMISSIONS` Permission").queue();
             return mute;
         }
         guild.getTextChannels().forEach(tc -> {
@@ -192,8 +192,7 @@ public class RubiconGuild extends RethinkHelper {
         List<?> list = cursor.toList();
         if (list.isEmpty())
             return new ArrayList<>();
-        List<String> channels = ((HashMap<String, List<String>>) list.get(0)).get("channels");
-        return channels;
+        return ((HashMap<String, List<String>>) list.get(0)).get("channels");
     }
 
     private boolean autochannelEntryExist() {
