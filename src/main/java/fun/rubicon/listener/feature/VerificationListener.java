@@ -40,7 +40,7 @@ public class VerificationListener extends ListenerAdapter {
                 event.getGuild().getController().addRolesToMember(event.getMember(), role).queue();
                 String verifiedText = ((String) getDatabaseValue(rubiconGuild.getGuild(), "verifiedText")).replace("%user%", event.getUser().getAsMention()).replace("%guild%", event.getGuild().getName());
                 event.getChannel().getMessageById(event.getMessageId()).complete().editMessage(verifiedText).complete().delete().queueAfter(10, TimeUnit.SECONDS);
-                rethink.db.table("verification_users").filter(rethink.rethinkDB.hashMap("guildId", event.getGuild().getId()).with("userId", event.getUser().getId())).delete().run(rethink.connection);
+                rethink.db.table("verification_users").filter(rethink.rethinkDB.hashMap("guildId", event.getGuild().getId()).with("userId", event.getUser().getId())).delete().run(rethink.getConnection());
             }
         }
     }
@@ -76,7 +76,7 @@ public class VerificationListener extends ListenerAdapter {
                 }, expiry);
             }
             userStorage.put(event.getMember(), verifyMsg);
-            rethink.db.table("verification_users").insert(rethink.rethinkDB.hashMap("guildId", event.getGuild().getId()).with("userId", event.getUser().getId()).with("messageId", verifyMsg.getId()).with("expiry", expiry == null ? 1L : expiry.getTime())).run(rethink.connection);
+            rethink.db.table("verification_users").insert(rethink.rethinkDB.hashMap("guildId", event.getGuild().getId()).with("userId", event.getUser().getId()).with("messageId", verifyMsg.getId()).with("expiry", expiry == null ? 1L : expiry.getTime())).run(rethink.getConnection());
         }
     }
 
@@ -98,7 +98,7 @@ public class VerificationListener extends ListenerAdapter {
     }
 
     private String getDatabaseValue(Guild guild, String key){
-        Cursor cursor = rethink.db.table("verification_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection);
+        Cursor cursor = rethink.db.table("verification_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection());
         Map map = ((Map) ((Object) cursor.toList().get(0)));
         return (String) map.get(key);
     }

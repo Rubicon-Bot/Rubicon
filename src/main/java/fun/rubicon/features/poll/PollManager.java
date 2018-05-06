@@ -25,7 +25,7 @@ public class PollManager {
 
     public synchronized void loadPolls(){
         new Thread(() -> {
-            Cursor cursor = rethink.db.table("votes").run(rethink.connection);
+            Cursor cursor = rethink.db.table("votes").run(rethink.getConnection());
             for(Object obj : cursor){
                 Map map = (Map) obj;
                 Guild guild = RubiconBot.getShardManager().getGuildById((String) map.get("guild"));
@@ -54,7 +54,7 @@ public class PollManager {
     }
 
     public boolean pollExists(Guild guild){
-        Cursor cursor = rethink.db.table("votes").filter(rethink.rethinkDB.hashMap("guild", guild.getId())).run(rethink.connection);
+        Cursor cursor = rethink.db.table("votes").filter(rethink.rethinkDB.hashMap("guild", guild.getId())).run(rethink.getConnection());
         return !cursor.toList().isEmpty();
     }
 

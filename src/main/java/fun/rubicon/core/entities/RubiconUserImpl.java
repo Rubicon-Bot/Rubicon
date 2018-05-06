@@ -42,7 +42,7 @@ public abstract class RubiconUserImpl extends RethinkHelper {
     }
 
     public void setBio(String bio) {
-        dbUser.update(rethink.rethinkDB.hashMap("bio", bio)).run(rethink.connection);
+        dbUser.update(rethink.rethinkDB.hashMap("bio", bio)).run(rethink.getConnection());
     }
 
     public String getBio() {
@@ -51,7 +51,7 @@ public abstract class RubiconUserImpl extends RethinkHelper {
     }
 
     public void setMoney(long amount) {
-        dbUser.update(rethink.rethinkDB.hashMap("money", amount)).run(rethink.connection);
+        dbUser.update(rethink.rethinkDB.hashMap("money", amount)).run(rethink.getConnection());
     }
 
     public long getMoney() {
@@ -68,7 +68,7 @@ public abstract class RubiconUserImpl extends RethinkHelper {
     }
 
     public void setPremium(long time) {
-        dbUser.update(rethink.rethinkDB.hashMap("premium", time)).run(rethink.connection);
+        dbUser.update(rethink.rethinkDB.hashMap("premium", time)).run(rethink.getConnection());
     }
 
     public long getPremiumRaw() {
@@ -80,12 +80,12 @@ public abstract class RubiconUserImpl extends RethinkHelper {
         if (getPremiumRaw() > new Date().getTime())
             return true;
         else
-            dbUser.update(rethink.rethinkDB.hashMap("premium", 0)).run(rethink.connection);
+            dbUser.update(rethink.rethinkDB.hashMap("premium", 0)).run(rethink.getConnection());
         return false;
     }
 
     public void setLanguage(String languageKey) {
-        dbUser.update(rethink.rethinkDB.hashMap("language", languageKey)).run(rethink.connection);
+        dbUser.update(rethink.rethinkDB.hashMap("language", languageKey)).run(rethink.getConnection());
     }
 
     public String getLanguage() {
@@ -95,7 +95,7 @@ public abstract class RubiconUserImpl extends RethinkHelper {
 
 
     public void setAFKState(String afk) {
-        dbUser.update(rethink.rethinkDB.hashMap("afk", afk)).run(rethink.connection);
+        dbUser.update(rethink.rethinkDB.hashMap("afk", afk)).run(rethink.getConnection());
     }
 
     public String getAFKState() {
@@ -125,7 +125,7 @@ public abstract class RubiconUserImpl extends RethinkHelper {
     }
 
     public void unban(Guild guild) {
-        rethink.db.table("punishments").filter(rethink.rethinkDB.hashMap("userId", user.getId()).with("guildId", guild.getId()).with("type", "ban")).delete().run(rethink.connection);
+        rethink.db.table("punishments").filter(rethink.rethinkDB.hashMap("userId", user.getId()).with("guildId", guild.getId()).with("type", "ban")).delete().run(rethink.getConnection());
 
         if (guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
             guild.getController().unban(user).queue();
@@ -144,8 +144,8 @@ public abstract class RubiconUserImpl extends RethinkHelper {
     public void saveMusicPlaylist(HashMap<String, List<String>> list) {
         if(list == null)
             return;
-        dbUser.update(rethink.rethinkDB.hashMap("playlists", null)).run(rethink.connection);
-        dbUser.update(rethink.rethinkDB.hashMap("playlists", list)).run(rethink.connection);
+        dbUser.update(rethink.rethinkDB.hashMap("playlists", null)).run(rethink.getConnection());
+        dbUser.update(rethink.rethinkDB.hashMap("playlists", list)).run(rethink.getConnection());
     }
 
     public HashMap<String, List<String>> getMusicPlaylists() {
@@ -161,15 +161,15 @@ public abstract class RubiconUserImpl extends RethinkHelper {
     private void createIfNotExist() {
         if (exist())
             return;
-        rethink.db.table("users").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("userId", user.getId()))).run(rethink.connection);
+        rethink.db.table("users").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("userId", user.getId()))).run(rethink.getConnection());
     }
 
     public void delete() {
-        dbUser.delete().run(rethink.connection);
+        dbUser.delete().run(rethink.getConnection());
     }
 
     private Cursor retrieve() {
-        return dbUser.run(rethink.connection);
+        return dbUser.run(rethink.getConnection());
     }
 
     public static RubiconUser fromUser(User user) {

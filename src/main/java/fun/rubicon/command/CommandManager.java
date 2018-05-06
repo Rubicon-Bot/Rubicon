@@ -64,17 +64,16 @@ public class CommandManager extends ListenerAdapter {
         super.onMessageReceived(event);
         //Auto Rethink Connecter
         try {
-            Cursor cursor = RubiconBot.getRethink().db.table("guilds").run(RubiconBot.getRethink().connection);
+            Cursor cursor = RubiconBot.getRethink().db.table("lavanodes").run(RubiconBot.getRethink().getConnection());
         } catch (Exception e) {
             Rethink.reanimate();
             return;
         }
         //Check Database Entries
         if(event.getChannelType().isGuild()) {
-            RubiconGuild.fromGuild(event.getGuild());
-            RubiconMember.fromMember(event.getMember());
+            //RubiconGuild.fromGuild(event.getGuild());
+            //RubiconMember.fromMember(event.getMember());//TODO
         }
-
         ParsedCommandInvocation commandInvocation = parse(event.getMessage());
         if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake() && !event.isWebhookMessage()) {
             call(commandInvocation);

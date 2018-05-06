@@ -43,7 +43,7 @@ public class RubiconGiveaway {
      * @param user The giveaway's user
      */
     public RubiconGiveaway(User user) {
-        Cursor cursor = rethink.db.table("giveaways").filter(rethink.rethinkDB.hashMap("userId", user.getId())).run(rethink.connection);
+        Cursor cursor = rethink.db.table("giveaways").filter(rethink.rethinkDB.hashMap("userId", user.getId())).run(rethink.getConnection());
         List list = cursor.toList();
         if (list.isEmpty())
             return;
@@ -66,7 +66,7 @@ public class RubiconGiveaway {
      * @param msg The giveaway's messageId
      */
     public RubiconGiveaway(String msg) {
-        Cursor cursor = rethink.db.table("giveaways").filter(rethink.rethinkDB.hashMap("messageId", msg)).run(rethink.connection);
+        Cursor cursor = rethink.db.table("giveaways").filter(rethink.rethinkDB.hashMap("messageId", msg)).run(rethink.getConnection());
         List list = cursor.toList();
         if (list.isEmpty())
             return;
@@ -103,7 +103,7 @@ public class RubiconGiveaway {
         this.messageId = msg.getId();
         msg.addReaction("\uD83C\uDFC6").complete();
 
-        rethink.db.table("giveaways").insert(rethink.rethinkDB.hashMap("userId", this.author.getId()).with("expirationDate", String.valueOf(this.expirationDate.getTime())).with("prize", this.prize).with("guildId", guildId).with("users", users).with("channelId", channelId).with("messageId", messageId).with("winnerCount", String.valueOf(winnerCount))).run(rethink.connection);
+        rethink.db.table("giveaways").insert(rethink.rethinkDB.hashMap("userId", this.author.getId()).with("expirationDate", String.valueOf(this.expirationDate.getTime())).with("prize", this.prize).with("guildId", guildId).with("users", users).with("channelId", channelId).with("messageId", messageId).with("winnerCount", String.valueOf(winnerCount))).run(rethink.getConnection());
         schedule();
     }
 
@@ -150,7 +150,7 @@ public class RubiconGiveaway {
 
     private RubiconGiveaway addUser(User user) {
         this.users.add(user.getId());
-        rethink.db.table("giveaways").filter(rethink.rethinkDB.hashMap("userId", this.author.getId())).update(rethink.rethinkDB.hashMap("users", this.users)).run(rethink.connection);
+        rethink.db.table("giveaways").filter(rethink.rethinkDB.hashMap("userId", this.author.getId())).update(rethink.rethinkDB.hashMap("users", this.users)).run(rethink.getConnection());
         return this;
     }
 
@@ -164,7 +164,7 @@ public class RubiconGiveaway {
     }
 
     public void delete() {
-        rethink.db.table("giveaways").filter(rethink.rethinkDB.hashMap("userId", author.getId())).delete().run(rethink.connection);
+        rethink.db.table("giveaways").filter(rethink.rethinkDB.hashMap("userId", author.getId())).delete().run(rethink.getConnection());
         timerStorage.remove(author);
     }
 
@@ -203,7 +203,7 @@ public class RubiconGiveaway {
 
     public static void loadGiveaways() {
         new Thread(() -> {
-            Cursor cursor = RubiconBot.getRethink().db.table("giveaways").run(RubiconBot.getRethink().connection);
+            Cursor cursor = RubiconBot.getRethink().db.table("giveaways").run(RubiconBot.getRethink().getConnection());
             for (Object obj : cursor) {
                 Map map = (Map) obj;
                 User user = RubiconBot.getShardManager().getUserById((String) map.get("userId"));

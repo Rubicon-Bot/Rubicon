@@ -34,7 +34,7 @@ public class RPGInventory extends RethinkHelper {
     }
 
     public int getSlotCount() {
-        return Math.toIntExact(getLong(dbInv.run(rethink.connection), "slotcount"));
+        return Math.toIntExact(getLong(dbInv.run(rethink.getConnection()), "slotcount"));
     }
 
     public void addItem(RPGInventoryItem item) {
@@ -48,7 +48,7 @@ public class RPGInventory extends RethinkHelper {
         } else {
             items.add(item);
         }
-        dbInv.update(rethink.rethinkDB.hashMap("slots", convertItemsListToStringList(items))).run(rethink.connection);
+        dbInv.update(rethink.rethinkDB.hashMap("slots", convertItemsListToStringList(items))).run(rethink.getConnection());
     }
 
     public void removeItem(RPGInventoryItem item) {
@@ -59,7 +59,7 @@ public class RPGInventory extends RethinkHelper {
         RPGInventoryItem invItem = getInventoryItemByItem(items, item.getRpgItem());
         invItem.remove(item.getAmount());
         items = replaceRPGItemFromList(items, invItem);
-        dbInv.update(rethink.rethinkDB.hashMap("slots", convertItemsListToStringList(items))).run(rethink.connection);
+        dbInv.update(rethink.rethinkDB.hashMap("slots", convertItemsListToStringList(items))).run(rethink.getConnection());
     }
 
     private List<RPGInventoryItem> replaceRPGItemFromList(List<RPGInventoryItem> items, RPGInventoryItem newItem) {
@@ -113,7 +113,7 @@ public class RPGInventory extends RethinkHelper {
 
     public List<RPGInventoryItem> getItems() {
         List<RPGInventoryItem> items = new ArrayList<>();
-        Cursor cursor = dbInv.run(rethink.connection);
+        Cursor cursor = dbInv.run(rethink.getConnection());
         for (Object obj : cursor) {
             Map map = (Map) obj;
             List<?> list = (List<?>) map.get("slots");
@@ -125,31 +125,31 @@ public class RPGInventory extends RethinkHelper {
     }
 
     public RPGInventoryItem getHelmet() {
-        return new RPGInventoryItem(getString(dbInv.run(rethink.connection), "a_helmet"));
+        return new RPGInventoryItem(getString(dbInv.run(rethink.getConnection()), "a_helmet"));
     }
 
     public RPGInventoryItem getChest() {
-        return new RPGInventoryItem(getString(dbInv.run(rethink.connection), "a_chest"));
+        return new RPGInventoryItem(getString(dbInv.run(rethink.getConnection()), "a_chest"));
     }
 
     public RPGInventoryItem getPants() {
-        return new RPGInventoryItem(getString(dbInv.run(rethink.connection), "a_pants"));
+        return new RPGInventoryItem(getString(dbInv.run(rethink.getConnection()), "a_pants"));
     }
 
     public RPGInventoryItem getShoes() {
-        return new RPGInventoryItem(getString(dbInv.run(rethink.connection), "a_shoes"));
+        return new RPGInventoryItem(getString(dbInv.run(rethink.getConnection()), "a_shoes"));
     }
 
     public RPGInventoryItem getWeapon() {
-        return new RPGInventoryItem(getString(dbInv.run(rethink.connection), "weapon"));
+        return new RPGInventoryItem(getString(dbInv.run(rethink.getConnection()), "weapon"));
     }
 
     public RPGInventoryItem getTool() {
-        return new RPGInventoryItem(getString(dbInv.run(rethink.connection), "tool"));
+        return new RPGInventoryItem(getString(dbInv.run(rethink.getConnection()), "tool"));
     }
 
     public boolean exist() {
-        return exist(dbInv.run(rethink.connection));
+        return exist(dbInv.run(rethink.getConnection()));
     }
 
     public void createInventoryIfNotExist() {
@@ -165,7 +165,7 @@ public class RPGInventory extends RethinkHelper {
                         .with("a_shoes", new RPGInventoryItem(0, 0).toString())
                         .with("weapon", new RPGInventoryItem(0, 0).toString())
                         .with("tool", new RPGInventoryItem(0, 0).toString())
-                )).run(rethink.connection);
+                )).run(rethink.getConnection());
     }
 
     public static RPGInventory fromUser(User user) {

@@ -65,7 +65,7 @@ public class CommandBan extends CommandHandler implements PunishmentHandler {
 
     @Override
     public void loadPunishments() {
-        Cursor cursor = RubiconBot.getRethink().db.table("punishments").filter(RubiconBot.getRethink().rethinkDB.hashMap("type", "ban")).run(RubiconBot.getRethink().connection);
+        Cursor cursor = RubiconBot.getRethink().db.table("punishments").filter(RubiconBot.getRethink().rethinkDB.hashMap("type", "ban")).run(RubiconBot.getRethink().getConnection());
         for (Object obj : cursor) {
             Map map = (Map) obj;
             RubiconUser user = RubiconUser.fromUser(RubiconBot.getShardManager().getUserById((long) map.get("userId")));

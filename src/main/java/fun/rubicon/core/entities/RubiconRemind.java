@@ -28,7 +28,7 @@ public class RubiconRemind {
      * @param user The reminder's user
      */
     public RubiconRemind(User user) {
-        Cursor cursor = rethink.db.table("reminders").filter(rethink.rethinkDB.hashMap("userId", user.getId())).run(rethink.connection);
+        Cursor cursor = rethink.db.table("reminders").filter(rethink.rethinkDB.hashMap("userId", user.getId())).run(rethink.getConnection());
         List list = cursor.toList();
         if (list.isEmpty())
             return;
@@ -51,7 +51,7 @@ public class RubiconRemind {
         this.author = author;
         this.remindDate = remindDate;
         this.remindMessage = remindMessage;
-        rethink.db.table("reminders").insert(rethink.rethinkDB.hashMap("userId", this.author.getId()).with("remindDate", String.valueOf(this.remindDate.getTime())).with("remindMessage", this.remindMessage)).run(rethink.connection);
+        rethink.db.table("reminders").insert(rethink.rethinkDB.hashMap("userId", this.author.getId()).with("remindDate", String.valueOf(this.remindDate.getTime())).with("remindMessage", this.remindMessage)).run(rethink.getConnection());
         schedule();
     }
 
@@ -77,7 +77,7 @@ public class RubiconRemind {
     }
 
     public void delete() {
-        rethink.db.table("reminders").filter(rethink.rethinkDB.hashMap("userId", author.getId())).delete().run(rethink.connection);
+        rethink.db.table("reminders").filter(rethink.rethinkDB.hashMap("userId", author.getId())).delete().run(rethink.getConnection());
         timerStorage.remove(author);
     }
 
@@ -95,7 +95,7 @@ public class RubiconRemind {
 
     public static void loadReminders() {
         new Thread(() -> {
-            Cursor cursor = RubiconBot.getRethink().db.table("reminders").run(RubiconBot.getRethink().connection);
+            Cursor cursor = RubiconBot.getRethink().db.table("reminders").run(RubiconBot.getRethink().getConnection());
             for (Object obj : cursor) {
                 Map map = (Map) obj;
                 User user = RubiconBot.getShardManager().getUserById((String) map.get("userId"));
