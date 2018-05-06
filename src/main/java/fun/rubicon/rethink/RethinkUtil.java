@@ -30,6 +30,7 @@ public class RethinkUtil {
             "reminders",
             "portals",
             "portal_settings",
+            "giveaways",
             "portal_invites",
     };
 

@@ -50,7 +50,7 @@ public class CommandAutochannel extends CommandHandler {
                 StringBuilder stringBuilder = new StringBuilder();
                 if(rubiconGuild.getAutochannels().isEmpty())
                     stringBuilder.append(invocation.translate("command.autochannel.list.no"));
-                for (long id : rubiconGuild.getAutochannels()) {
+                for (String id : rubiconGuild.getAutochannels()) {
                     try {
                         VoiceChannel channel = invocation.getJDA().getVoiceChannelById(id);
                         if (channel == null)
@@ -122,18 +122,18 @@ public class CommandAutochannel extends CommandHandler {
             return;
         VoiceChannel channel = search.channels.get(emote);
         if (search.remove) {
-            if(!RubiconGuild.fromGuild(event.getGuild()).getAutochannels().contains(channel.getIdLong())) {
+            if(!RubiconGuild.fromGuild(event.getGuild()).getAutochannels().contains(channel.getId())) {
                 SafeMessage.sendMessage(event.getTextChannel(), EmbedUtil.message(EmbedUtil.error(search.language.getString("command.autochannel.already.removed.title"), search.language.getString("command.autochannel.already.removed.description"))));
                 return;
             }
-            RubiconGuild.fromGuild(event.getGuild()).deleteAutochannel(channel.getIdLong());
+            RubiconGuild.fromGuild(event.getGuild()).deleteAutochannel(channel.getId());
             SafeMessage.sendMessage(search.message.getTextChannel(), EmbedUtil.message(EmbedUtil.success(search.language.getString("command.autochannel.search.remove.title"), search.language.getString("command.autochannel.search.remove.description").replaceFirst("%channel%", "`" + channel.getName() + "`"))));
         } else {
-            if(RubiconGuild.fromGuild(event.getGuild()).getAutochannels().contains(channel.getIdLong())) {
+            if(RubiconGuild.fromGuild(event.getGuild()).getAutochannels().contains(channel.getId())) {
                 SafeMessage.sendMessage(event.getTextChannel(), EmbedUtil.message(EmbedUtil.error(search.language.getString("command.autochannel.already.added.title"), search.language.getString("command.autochannel.already.added.description"))));
                 return;
             }
-            RubiconGuild.fromGuild(event.getGuild()).addAutochannel(channel.getIdLong());
+            RubiconGuild.fromGuild(event.getGuild()).addAutochannel(channel.getId());
             SafeMessage.sendMessage(search.message.getTextChannel(), EmbedUtil.message(EmbedUtil.success(search.language.getString("command.autochannel.added.title"), search.language.getString("command.autochannel.added.description").replaceFirst("%channel%", "`" + channel.getName() + "`"))));
         }
         if (PermissionUtil.canManageMessages(event.getMember(), event.getTextChannel()))
@@ -147,12 +147,12 @@ public class CommandAutochannel extends CommandHandler {
             ChannelSearch search = createChannelSearch(foundChannels, invocation, false);
             searches.put(invocation.getGuild(), search);
         } else if(foundChannels.size() == 1){
-            if(RubiconGuild.fromGuild(invocation.getGuild()).getAutochannels().contains(foundChannels.get(0).getIdLong())) {
+            if(RubiconGuild.fromGuild(invocation.getGuild()).getAutochannels().contains(foundChannels.get(0).getId())) {
                 SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.autochannel.already.added.title"), invocation.translate("command.autochannel.already.added.description"))));
                 return;
             }
             VoiceChannel channel = foundChannels.get(0);
-            RubiconGuild.fromGuild(invocation.getGuild()).addAutochannel(channel.getIdLong());
+            RubiconGuild.fromGuild(invocation.getGuild()).addAutochannel(channel.getId());
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.success(invocation.translate("command.autochannel.added.title"), invocation.translate("command.autochannel.added.description").replaceFirst("%channel%", "`" + channel.getName() + "`"))));
         } else {
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.autochannel.add.title"), invocation.translate("command.autochannel.add.description"))));
@@ -167,12 +167,12 @@ public class CommandAutochannel extends CommandHandler {
             ChannelSearch search = createChannelSearch(foundChannels, invocation);
             searches.put(invocation.getGuild(), search);
         } else if(foundChannels.size() == 1){
-            if(!RubiconGuild.fromGuild(invocation.getGuild()).getAutochannels().contains(foundChannels.get(0).getIdLong())) {
+            if(!RubiconGuild.fromGuild(invocation.getGuild()).getAutochannels().contains(foundChannels.get(0).getId())) {
                 SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.autochannel.already.removed.title"), invocation.translate("command.autochannel.already.removed.description"))));
                 return;
             }
             VoiceChannel channel = foundChannels.get(0);
-            rubiconGuild.deleteAutochannel(channel.getIdLong());
+            rubiconGuild.deleteAutochannel(channel.getId());
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.success(invocation.translate("command.autochannel.added.title"), invocation.translate("command.autochannel.added.description").replaceFirst("%channel%", "`" + channel.getName() + "`"))));
         } else {
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.autochannel.add.title"), invocation.translate("command.autochannel.add.description"))));

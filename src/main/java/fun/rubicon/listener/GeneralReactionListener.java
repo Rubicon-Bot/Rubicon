@@ -7,6 +7,7 @@
 package fun.rubicon.listener;
 
 import fun.rubicon.commands.settings.CommandAutochannel;
+import fun.rubicon.core.entities.RubiconGiveaway;
 import fun.rubicon.core.music.GuildMusicPlayer;
 import fun.rubicon.core.music.QueueMessage;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
@@ -21,6 +22,7 @@ public class GeneralReactionListener extends ListenerAdapter {
     public void onMessageReactionAdd(MessageReactionAddEvent event) {
         // Start in new Thread to prevent blocking
         new Thread(() -> CommandAutochannel.handleReaction(event)).start();
-        new Thread(() -> QueueMessage.handleReaction(event));
+        new Thread(() -> QueueMessage.handleReaction(event)).start();
+        new Thread(() -> RubiconGiveaway.handleReaction(event)).start();
     }
 }

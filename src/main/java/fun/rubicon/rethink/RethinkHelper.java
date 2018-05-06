@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public abstract class RethinkHelper {
 
-    public static String getString(Cursor cursor, String key) {
+    protected static String getString(Cursor cursor, String key) {
         Map map = parse(cursor);
         if (map == null) {
             return null;
@@ -27,7 +27,7 @@ public abstract class RethinkHelper {
         return res != null && (boolean) res;
     }
 
-    public static int getInt(Cursor cursor, String key) {
+    protected static int getInt(Cursor cursor, String key) {
         Map map = parse(cursor);
         if (map == null)
             return 0;
@@ -35,11 +35,11 @@ public abstract class RethinkHelper {
         return res == null ? 0 : (int) res;
     }
 
-    public static boolean exist(Cursor cursor) {
+    protected static boolean exist(Cursor cursor) {
         return cursor.toList().size() != 0;
     }
 
-    public static long getLong(Cursor cursor, String key) {
+    protected static long getLong(Cursor cursor, String key) {
         Map map = parse(cursor);
         if (map == null)
             return 0;
@@ -47,7 +47,7 @@ public abstract class RethinkHelper {
         return res == null ? 0 : (long) res;
     }
 
-    private static Map parse(Cursor cursor) {
+    protected static Map parse(Cursor cursor) {
         List list = cursor.toList();
         if(list.size() == 0)
             return null;
