@@ -9,11 +9,18 @@ package fun.rubicon.command;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
-import fun.rubicon.util.*;
+import fun.rubicon.util.Colors;
+import fun.rubicon.util.EmbedUtil;
+import fun.rubicon.util.Info;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Message;
+
+import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Handles a command.
@@ -63,45 +70,53 @@ public abstract class CommandHandler extends EmbedUtil {
      * @return a response that will be sent and deleted by the caller.
      */
     public Message call(CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
+        if (Cooldown.has(parsedCommandInvocation.getAuthor().getId()))
+            return null;
+
         if (disabled) {
             return new MessageBuilder().setEmbed(info(parsedCommandInvocation.translate("command.disabled"), parsedCommandInvocation.translate("command.disabled.description")).build()).build();
         }
         UserPermissions userPermissions = new UserPermissions(parsedCommandInvocation.getMessage().getAuthor(),
                 parsedCommandInvocation.getMessage().getGuild());
         //Check for Rubicon Permissions
-        if (!parsedCommandInvocation.getGuild().getMember(RubiconBot.getSelfUser()).hasPermission(Permission.MESSAGE_EMBED_LINKS)) {
-            if (parsedCommandInvocation.getGuild().getMember(RubiconBot.getSelfUser()).hasPermission(parsedCommandInvocation.getTextChannel(),Permission.MESSAGE_WRITE)) {
-                SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), parsedCommandInvocation.translate("permissions.links"));
-            } else {
-                try {
-                    parsedCommandInvocation.getAuthor().openPrivateChannel().complete().sendMessage(parsedCommandInvocation.translate("permissions.links")).queue();
-                } catch (Exception ignored) {
-                }
+        if (!parsedCommandInvocation.getGuild().getMember(RubiconBot.getSelfUser()).hasPermission(parsedCommandInvocation.getTextChannel(), Permission.MESSAGE_WRITE)) {
+            try {
+                parsedCommandInvocation.getAuthor().openPrivateChannel().complete().sendMessage(parsedCommandInvocation.translate("permissions.write")).queue();
+            } catch (Exception ignored) {
             }
         }
-            // check permission
-            if (permissionRequirements.coveredBy(userPermissions)) {
-                // execute command
-                try {
-                    return execute(parsedCommandInvocation, userPermissions);
-                } catch (Exception e) { // catch exceptions in command and provide an answer
-                    Logger.error("Unknown error during the execution of the '" + parsedCommandInvocation.getCommandInvocation() + "' command. ");
-                    Logger.error(e);
-                    return new MessageBuilder().setEmbed(new EmbedBuilder()
-                            .setAuthor(parsedCommandInvocation.translate("error.internal"), null, RubiconBot.getSelfUser().getEffectiveAvatarUrl())
-                            .setDescription(parsedCommandInvocation.translate("error.internal.description")+" ```" + e.getMessage() + "```")
-                            .setColor(Colors.COLOR_ERROR)
-                            .setFooter(RubiconBot.getNewTimestamp(), null)
-                            .build()).build();
+        // check permission
+        if (permissionRequirements.coveredBy(userPermissions)) {
+            // execute command
+            try {
+                if (!Cooldown.has(parsedCommandInvocation.getAuthor().getId())) {
+                    Cooldown.add(parsedCommandInvocation.getAuthor().getId());
+                    new Timer().schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            Cooldown.remove(parsedCommandInvocation.getAuthor().getId());
+                        }
+                    }, 1000);
                 }
-            } else
-                // respond with 'no-permission'-message
+                return execute(parsedCommandInvocation, userPermissions);
+            } catch (Exception e) { // catch exceptions in command and provide an answer
+                Logger.error("Unknown error during the execution of the '" + parsedCommandInvocation.getCommandInvocation() + "' command. ");
+                Logger.error(e);
                 return new MessageBuilder().setEmbed(new EmbedBuilder()
-                        .setAuthor(parsedCommandInvocation.translate("permissions"), null, RubiconBot.getSelfUser().getEffectiveAvatarUrl())
-                        .setDescription(parsedCommandInvocation.translate("permissions.description"))
-                        .setColor(Colors.COLOR_NO_PERMISSION)
+                        .setAuthor(parsedCommandInvocation.translate("error.internal"), null, RubiconBot.getSelfUser().getEffectiveAvatarUrl())
+                        .setDescription(parsedCommandInvocation.translate("error.internal.description") + " ```" + e.getMessage() + "```")
+                        .setColor(Colors.COLOR_ERROR)
                         .setFooter(RubiconBot.getNewTimestamp(), null)
                         .build()).build();
+            }
+        } else
+            // respond with 'no-permission'-message
+            return new MessageBuilder().setEmbed(new EmbedBuilder()
+                    .setAuthor(parsedCommandInvocation.translate("permissions"), null, RubiconBot.getSelfUser().getEffectiveAvatarUrl())
+                    .setDescription(parsedCommandInvocation.translate("permissions.description"))
+                    .setColor(Colors.COLOR_NO_PERMISSION)
+                    .setFooter(RubiconBot.getNewTimestamp(), null)
+                    .build()).build();
     }
 
     /**
@@ -219,5 +234,27 @@ public abstract class CommandHandler extends EmbedUtil {
                 .addField("Usage", usage.toString(), false));
     }
 
+    private static class Cooldown {
+        /**
+         * Cooldown for CommandCooldown
+         */
+        public static ArrayList<String> ids = new ArrayList<>();
+
+        public static boolean has(String id) {
+            if (ids.contains(id)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        public static void add(String id) {
+            ids.add(id);
+        }
+
+        public static void remove(String id) {
+            ids.remove(id);
+        }
+    }
 
 }

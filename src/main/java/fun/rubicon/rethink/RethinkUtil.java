@@ -31,6 +31,7 @@ public class RethinkUtil {
             "portals",
             "portal_settings",
             "votes"
+            "giveaways"
     };
 
     public static void createDefaults(Rethink rethink) {

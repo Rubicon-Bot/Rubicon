@@ -36,7 +36,7 @@ public class BotLeaveListener extends ListenerAdapter {
             rubiconGuild.closePortal();
         }
 
-        for (long id : rubiconGuild.getAutochannels()) {
+        for (String id : rubiconGuild.getAutochannels()) {
             rubiconGuild.deleteAutochannel(id);
         }
         for (Member member : event.getGuild().getMembers()) {

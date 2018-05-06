@@ -7,6 +7,7 @@
 package fun.rubicon.util;
 
 import fun.rubicon.RubiconBot;
+import net.dv8tion.jda.core.entities.User;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -36,7 +37,47 @@ public class BotListHandler {
             postBDF(silent);
         else Logger.warning("No botsfordiscord.com Token found! Skipping Stats Posting.");
 
+        if (!RubiconBot.getConfiguration().getString("rubiconfun_token").isEmpty())
+            postRubiconFunGuildCount(silent);
+        else Logger.warning("No rubicon.fun Token found! Skipping Stats posting.");
+    }
 
+    private static void postRubiconFunGuildCount(boolean silent) {
+        int guildCount = RubiconBot.getShardManager().getGuilds().size();
+        try {
+            new OkHttpClient().newCall(new Request.Builder()
+                    .url("https://rubicon.fun/api/v1/?action=updateGuildCount" +
+                            "&token=" + RubiconBot.getConfiguration().getString("rubiconfun_token") +
+                            "&value=" + guildCount)
+                    .get()
+                    .build()).execute().close();
+        } catch (IOException e) {
+            if (!silent)
+                Logger.error(e);
+        }
+    }
+
+    public static void postRubiconFunUserCounts(boolean silent) {
+        int totalUserCount = RubiconBot.getShardManager().getUsers().size();
+        long botUserCount = RubiconBot.getShardManager().getUsers().stream().filter(User::isBot).count();
+        long actualUserCount = totalUserCount - botUserCount;
+        try {
+            new OkHttpClient().newCall(new Request.Builder()
+                    .url("https://rubicon.fun/api/v1/?action=updateUserCount" +
+                            "&token=" + RubiconBot.getConfiguration().getString("rubiconfun_token") +
+                            "&value=" + actualUserCount)
+                    .get()
+                    .build()).execute().close();
+            new OkHttpClient().newCall(new Request.Builder()
+                    .url("https://rubicon.fun/api/v1/?action=updateBotCount" +
+                            "&token=" + RubiconBot.getConfiguration().getString("rubiconfun_token") +
+                            "&value=" + botUserCount)
+                    .get()
+                    .build()).execute().close();
+        } catch (IOException e) {
+            if (!silent)
+                Logger.error(e);
+        }
     }
 
     private static void postBDF(boolean silent) {
