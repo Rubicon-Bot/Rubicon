@@ -1,6 +1,7 @@
 package fun.rubicon.rethink;
 
 import com.rethinkdb.net.Cursor;
+import fun.rubicon.util.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,7 @@ public abstract class RethinkHelper {
             return null;
         }
         Object res = map.get(key);
-        return res == null ? null : (String) res;
+        return res == null ? null : String.valueOf(res);
     }
 
     public static boolean getBoolean(Cursor cursor, String key) {
@@ -36,7 +37,7 @@ public abstract class RethinkHelper {
     }
 
     protected static boolean exist(Cursor cursor) {
-        return cursor.toList().size() != 0;
+        return !cursor.toList().isEmpty();
     }
 
     protected static long getLong(Cursor cursor, String key) {
