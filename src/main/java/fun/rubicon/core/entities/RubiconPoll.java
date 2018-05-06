@@ -1,7 +1,7 @@
 package fun.rubicon.core.entities;
 
 import fun.rubicon.RubiconBot;
-import fun.rubicon.commands.tools.CommandPoll;
+import fun.rubicon.rethink.Rethink;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -17,6 +17,8 @@ import java.util.List;
  * @license GNU General Public License v3.0
  */
 public class RubiconPoll implements Serializable{
+    Rethink rethink = RubiconBot.getRethink();
+
     /*The id of the poll creator*/
     private String creator;
     /*The guild of the poll*/
@@ -42,12 +44,6 @@ public class RubiconPoll implements Serializable{
 
     public List<String> getAnswers() {
         return answers;
-    }
-
-    public List<Message> getPollMessages(Guild guild) {
-        List<Message> messages = new ArrayList<>();
-        this.pollmsgs.forEach((m, c) -> messages.add(guild.getTextChannelById(c).getMessageById(m).complete()));
-        return messages;
     }
 
     public HashMap<String, String> getPollmsgs() {
@@ -90,6 +86,17 @@ public class RubiconPoll implements Serializable{
         this.pollmsgs.put(message.getId(), message.getTextChannel().getId());
     }
 
+    public RubiconPoll(Member creator, String heading, List<String> answers, HashMap<String, String> pollmsgs, HashMap<String, Integer> votes, HashMap<String, Integer> reacts, Guild guild){
+        this.creator = creator.getUser().getId();
+        this.heading = heading;
+        this.answers = answers;
+        this.pollmsgs = pollmsgs;
+        this.votes = votes;
+        this.reacts =reacts;
+        this.guild = guild.getId();
+
+    }
+
     public static RubiconPoll createPoll(String heading, List<String> answers, Message message, HashMap<String, Integer> emotes){
         RubiconPoll poll = new RubiconPoll(message.getMember(), heading, answers, message, message.getGuild());
         poll.reacts.putAll(emotes);
@@ -98,33 +105,14 @@ public class RubiconPoll implements Serializable{
     }
 
     public RubiconPoll savePoll(){
-        File folder = new File("data/votes/");
-        if(!folder.exists())
-            folder.mkdirs();
-        File saveFile= new File("data/votes/" + guild + ".dat");
-        if(saveFile.exists())
-            saveFile.delete();
-        if(!saveFile.exists()) {
-            try {
-                saveFile.createNewFile();
-                FileOutputStream fos = new FileOutputStream(saveFile);
-                ObjectOutputStream oos = new ObjectOutputStream(fos);
-                oos.writeObject(this);
-                oos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return this;
+        /*Delete old poll*/
+        delete();
+        rethink.db.table("votes").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("creator", creator).with("heading", heading).with("answers", answers).with("pollmsgs", pollmsgs).with("votes", votes).with("reacts", reacts).with("guild", guild))).run(rethink.connection);        return this;
     }
 
     public boolean delete(){
-        File folder = new File("data/votes/");
-        if(!folder.exists())
-            folder.mkdirs();
-        File saveFile= new File("data/votes/" + guild + ".dat");
-        RubiconBot.getPollManager().getPolls().remove(RubiconBot.getShardManager().getGuildById(getGuild()));
-        return saveFile.delete();
+        rethink.db.table("votes").filter(rethink.rethinkDB.hashMap("guild", guild)).delete().run(rethink.connection);
+        return true;
     }
 
     public void updateMessages(Guild guild, EmbedBuilder message){
@@ -134,6 +122,12 @@ public class RubiconPoll implements Serializable{
                 pollmsg.editMessage(message.build()).queue();
             } catch (Exception ignored) { }
         });
+    }
+
+    public List<Message> getPollMessages(Guild guild) {
+        List<Message> messages = new ArrayList<>();
+        this.pollmsgs.forEach((m, c) -> messages.add(guild.getTextChannelById(c).getMessageById(m).complete()));
+        return messages;
     }
 
 }

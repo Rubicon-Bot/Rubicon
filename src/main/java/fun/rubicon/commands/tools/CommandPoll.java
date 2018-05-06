@@ -211,7 +211,7 @@ public class CommandPoll extends CommandHandler implements Serializable {
 
         RubiconPoll poll = pollManager.getPollByGuild(message.getGuild());
 
-        if (message.getAuthor().equals(poll.getCreator(message.getGuild()))) {
+        if (message.getMember().equals(poll.getCreator(message.getGuild()))) {
             message.getTextChannel().sendMessage(EmbedUtil.error(parsedCommandInvocation.translate("command.poll.close.noperms.title"), parsedCommandInvocation.translate("command.poll.close.noperms.description")).build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
             return;
         }

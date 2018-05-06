@@ -24,12 +24,12 @@ public class VoteListener extends ListenerAdapter{
 
     @Override
     public void onMessageDelete(MessageDeleteEvent event) {
-        new Thread(() -> handleaMessageDeletion(event), "PollMessageDeleteHandler-" + event.getMessageId()).start();
+        new Thread(() -> handleMessageDeletion(event), "PollMessageDeleteHandler-" + event.getMessageId()).start();
     }
 
     @Override
     public void onMessageReactionRemove(MessageReactionRemoveEvent event) {
-        new Thread(() -> handleReactenRemove(event), "PollReactionRemoveHandler-" + event.getMessageId()).start();
+        new Thread(() -> handleReactionRemove(event), "PollReactionRemoveHandler-" + event.getMessageId()).start();
     }
     
     private void handleMessageReaction(MessageReactionAddEvent event){
@@ -48,12 +48,12 @@ public class VoteListener extends ListenerAdapter{
         }
         String emoji = event.getReactionEmote().getName();
         event.getReaction().removeReaction(event.getUser()).queue();
-        poll.getVotes().put(event.getReactionEmote().getId(), poll.getReacts().get(emoji));
+        poll.getVotes().put(event.getUser().getId(), poll.getReacts().get(emoji));
         poll.updateMessages(event.getGuild(), CommandPoll.getParsedPoll(poll, event.getGuild()));
         pollManager.replacePoll(poll, guild);
     }
     
-    private void handleaMessageDeletion(MessageDeleteEvent event){
+    private void handleMessageDeletion(MessageDeleteEvent event){
         if(!pollManager.pollExists(event.getGuild())) return;
         RubiconPoll poll = pollManager.getPollByGuild(event.getGuild());
         if(!poll.isPollmsg(event.getMessageId())) return;
@@ -61,7 +61,7 @@ public class VoteListener extends ListenerAdapter{
         pollManager.replacePoll(poll, event.getGuild());
     }
     
-    private void handleReactenRemove(MessageReactionRemoveEvent event){
+    private void handleReactionRemove(MessageReactionRemoveEvent event){
         try {
             if (!pollManager.pollExists(event.getGuild())) return;
             RubiconPoll poll = pollManager.getPollByGuild(event.getGuild());

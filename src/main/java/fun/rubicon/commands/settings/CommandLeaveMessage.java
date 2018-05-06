@@ -23,10 +23,10 @@ public class CommandLeaveMessage extends CommandHandler {
 
     public CommandLeaveMessage() {
         super(new String[]{"leavemessage", "leavemessages", "leavemsg"}, CommandCategory.SETTINGS, new PermissionRequirements("leavemessage", false, false), "Enables/Disables automated messages if a user leaves your server.",
-                "set <#channel> <message> | Enabled the leavemessages. / Use %user% for the username, %server% for the servername and %count% for the new member count.\n" +
-                        "channel <#channel> | Sets a new channel. / Only if leavemessages are enabled.\n" +
-                        "message <message> | Use %user% for the username, %server% for the servername and %count% for the new member count. / Only if leavemessages are enabled.\n" +
-                        "disable | Disables the leavemessages.");
+                "set <#channel> <message>\n" +
+                        "channel <#channel> \n" +
+                        "message <message> \n" +
+                        "disable");
     }
 
     @Override

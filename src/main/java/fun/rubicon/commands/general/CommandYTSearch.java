@@ -39,7 +39,8 @@ public class CommandYTSearch extends CommandHandler {
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
         if (invocation.getArgs().length < 1)
             return createHelpMessage(invocation);
-
+        if(!RubiconBot.getConfiguration().has("google_token"))
+            return message(EmbedUtil.error(invocation.translate("command.ytsearch.nfound"), invocation.translate("command.ytsearch.nfound.description")));
         String query = invocation.getArgsString();
         HttpRequestBuilder builder = new HttpRequestBuilder("https://www.googleapis.com/youtube/v3/search", RequestType.GET)
                 .setRequestHeader(new RequestHeader().addField("User-Agent", "RubiconBot (https://github.com/Rubicon-Bot/Rubicon)"))

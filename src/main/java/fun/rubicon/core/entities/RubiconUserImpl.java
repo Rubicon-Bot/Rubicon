@@ -46,7 +46,8 @@ public abstract class RubiconUserImpl extends RethinkHelper {
     }
 
     public String getBio() {
-        return getString(retrieve(), "bio");
+        Map map = (Map) retrieve().toList().get(0);
+        return (String) map.get("bio");
     }
 
     public void setMoney(long amount) {
@@ -54,7 +55,8 @@ public abstract class RubiconUserImpl extends RethinkHelper {
     }
 
     public long getMoney() {
-        return getLong(retrieve(), "money");
+        Map map = (Map) retrieve().toList().get(0);
+        return (long) map.get("money");
     }
 
     public void addMoney(long amount) {
@@ -70,8 +72,9 @@ public abstract class RubiconUserImpl extends RethinkHelper {
     }
 
     public long getPremiumRaw() {
-        return getLong(retrieve(), "premium");
-    }
+        Map map = (Map) retrieve().toList().get(0);
+        return (long) map.get("premium");
+   }
 
     public boolean isPremium() {
         if (getPremiumRaw() > new Date().getTime())
@@ -86,7 +89,8 @@ public abstract class RubiconUserImpl extends RethinkHelper {
     }
 
     public String getLanguage() {
-        return getString(retrieve(), "language");
+        Map map = (Map) retrieve().toList().get(0);
+        return (String) map.get("language");
     }
 
 
@@ -95,7 +99,8 @@ public abstract class RubiconUserImpl extends RethinkHelper {
     }
 
     public String getAFKState() {
-        return getString(retrieve(), "afk");
+        Map map = (Map) retrieve().toList().get(0);
+        return (String) map.get("afk");
     }
 
     public boolean isAFK() {
