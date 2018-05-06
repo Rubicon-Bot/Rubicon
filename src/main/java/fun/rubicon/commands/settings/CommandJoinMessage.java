@@ -49,7 +49,7 @@ public class CommandJoinMessage extends CommandHandler {
                 return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.joinmessage.wrongArgument"), invocation.translate("command.joinmessage.error.channel")));
             TextChannel channel = invocation.getMessage().getMentionedChannels().get(0);
             String text = invocation.getArgsString().replaceFirst("set #" + channel.getName() + " ", "");
-            rubiconGuild.setJoinMessage(text, channel.getIdLong());
+            rubiconGuild.setJoinMessage(text, channel.getId());
             return EmbedUtil.message(EmbedUtil.success(invocation.translate("command.joinmessage.enabled.title"), invocation.translate("command.joinmessage.enabled.description").replaceFirst("%channel%", channel.getAsMention()).replaceFirst("%message%", String.format("`%s`", text))));
         }
         if (invocation.getArgs()[0].equalsIgnoreCase("channel")) {
@@ -58,7 +58,7 @@ public class CommandJoinMessage extends CommandHandler {
                 return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.joinmessage.ne.title"), invocation.translate("command.joinmessage.ne.description").replaceFirst("%command%", String.format("`%shelp joinmessage`", invocation.getPrefix()))));
             if (invocation.getMessage().getMentionedChannels().size() != 1)
                 return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.joinmessage.wrongArgument"), invocation.translate("command.joinmessage.error.channel")));
-            rubiconGuild.setJoinMessage(invocation.getMessage().getMentionedChannels().get(0).getIdLong());
+            rubiconGuild.setJoinMessageChannel(invocation.getMessage().getMentionedChannels().get(0).getId());
             return EmbedUtil.message(EmbedUtil.success(invocation.translate("command.joinmessage.channel.title"), invocation.translate("command.joinmessage.channel.description").replaceFirst("%channel%", invocation.getMessage().getMentionedChannels().get(0).getAsMention())));
         }
         if (invocation.getArgs()[0].equalsIgnoreCase("message")) {
@@ -73,15 +73,15 @@ public class CommandJoinMessage extends CommandHandler {
     }
 
     public static class JoinMessage {
-        private final long channelId;
+        private final String channelId;
         private final String message;
 
-        public JoinMessage(long channelId, String message) {
+        public JoinMessage(String channelId, String message) {
             this.channelId = channelId;
             this.message = message;
         }
 
-        public long getChannelId() {
+        public String getChannelId() {
             return channelId;
         }
 

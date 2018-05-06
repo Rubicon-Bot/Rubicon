@@ -27,12 +27,12 @@ public class TextChannelDeleteListener extends ListenerAdapter {
         RubiconGuild rubiconGuild = RubiconGuild.fromGuild(event.getGuild());
 
         if(rubiconGuild.hasJoinMessagesEnabled()) {
-            if(event.getChannel().getIdLong() == rubiconGuild.getJoinMessage().getChannelId()) {
+            if(event.getChannel().getId().equals(rubiconGuild.getJoinMessage().getChannelId())) {
                 rubiconGuild.deleteJoinMessage();
             }
         }
         if(rubiconGuild.hasLeaveMessagesEnabled()) {
-            if(event.getChannel().getIdLong() == rubiconGuild.getLeaveMessage().getChannelId()) {
+            if(event.getChannel().getId().equals(rubiconGuild.getLeaveMessage().getChannelId())) {
                 rubiconGuild.deleteLeaveMessage();
             }
         }

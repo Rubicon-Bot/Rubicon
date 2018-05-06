@@ -2,6 +2,7 @@ package fun.rubicon.features.portal;
 
 import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
+import fun.rubicon.features.portal.impl.PortalImpl;
 import fun.rubicon.rethink.Rethink;
 
 import java.util.HashMap;

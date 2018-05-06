@@ -34,10 +34,10 @@ public class Rethink {
 
     public void connect() {
         try {
-            if(failedConnection > 1 && failedConnection <= 5) {
+            if (failedConnection > 1 && failedConnection <= 5) {
                 host = RubiconBot.getConfiguration().getString("rethink_host" + failedConnection);
                 port = RubiconBot.getConfiguration().getInt("rethink_port" + failedConnection);
-            } else if(failedConnection > 5) {
+            } else if (failedConnection > 5) {
                 Logger.error("Can't connect to rethinkdb. Shutdown....");
                 System.exit(1);
             }

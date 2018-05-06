@@ -1,10 +1,11 @@
-package fun.rubicon.features.portal;
+package fun.rubicon.features.portal.impl;
 
 import com.rethinkdb.gen.ast.Filter;
 import com.rethinkdb.gen.ast.Table;
 import com.sun.security.auth.callback.TextCallbackHandler;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.RubiconGuild;
+import fun.rubicon.features.portal.Portal;
 import fun.rubicon.rethink.Rethink;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
@@ -72,29 +73,34 @@ public class PortalImpl implements Portal {
             try {
                 map.put(RubiconBot.getShardManager().getGuildById((String) entry.getKey()), RubiconBot.getShardManager().getTextChannelById((String) entry.getValue()));
             } catch (Exception ignored) {
-                Logger.error(ignored);
             }
         }
         return map;
     }
 
     @Override
-    public void addGuild(String guildId, String channelId) {
+    public void addGuild(String guildId, String channelId, String servername) {
         rawMembers.put(guildId, channelId);
         dbPortal.update(rethink.rethinkDB.hashMap("members", rawMembers)).run(rethink.connection);
+        if (servername != null)
+            broadcastSystemMessage(EmbedUtil.success("Server joined!", String.format("`%s` joined the portal.", servername)).build());
     }
 
     @Override
     public void removeGuild(String guildId) {
-        if(guildId.equals(rawRootGuild)) {
+        if (guildId.equals(rawRootGuild)) {
             delete("The portal owner closed the portal");
             return;
         }
         rawMembers.remove(guildId);
-        dbPortal.update(rethink.rethinkDB.hashMap("members", rawMembers)).run(rethink.connection);
-        Logger.debug("scurr");
-        if(rawMembers.size() == 0)
+        table.update(rethink.rethinkDB.hashMap("members", null)).run(rethink.connection);
+        table.update(rethink.rethinkDB.hashMap("members", rawMembers)).run(rethink.connection);
+        if (rawMembers.size() == 0)
             delete("You were the last member.");
+        else if(rawMembers.size() == 1)
+            setPortalTopic("Connected to " + getMembers().size() + " server");
+        else
+            setPortalTopic("Connected to " + getMembers().size() + " servers");
     }
 
     @Override
@@ -118,8 +124,8 @@ public class PortalImpl implements Portal {
     public void broadcast(String channelExclude, String message, String username, String avatarUrl, String guildName) {
         Map<Guild, Channel> members = getMembers();
         members.put(getRootGuild(), getRootChannel());
-
         for (Map.Entry entry : members.entrySet()) {
+            // Logger.debug(entry.toString());
             Guild guild = (Guild) entry.getKey();
             TextChannel textChannel = (TextChannel) entry.getValue();
 
@@ -137,7 +143,7 @@ public class PortalImpl implements Portal {
 
             if (!guild.getSelfMember().hasPermission(textChannel, Permission.MANAGE_WEBHOOKS)) {
                 sendEmbedMessage(textChannel, message, username, avatarUrl, guildName);
-                return;
+                continue;
             }
 
             Webhook webhook = null;
@@ -157,7 +163,11 @@ public class PortalImpl implements Portal {
             messageBuilder.setAvatarUrl(avatarUrl);
             messageBuilder.setUsername(username);
             messageBuilder.setContent(message.replace("@here", "@ here").replace("@everyone", "@ everyone"));
-            client.send(messageBuilder.build());
+            try {
+                client.send(messageBuilder.build());
+            } catch (Exception ignored) {
+                //Empty Message
+            }
             client.close();
         }
     }
@@ -187,6 +197,7 @@ public class PortalImpl implements Portal {
     @Override
     public void setPortalTopic(String topic) {
         HashMap<Guild, Channel> members = getMembers();
+        members.put(getRootGuild(), getRootChannel());
         String content = topic.replace("%membercount%", members.size() + "");
         for (Map.Entry entry : members.entrySet()) {
             Guild guild = (Guild) entry.getKey();
