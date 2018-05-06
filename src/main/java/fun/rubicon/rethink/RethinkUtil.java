@@ -31,7 +31,7 @@ public class RethinkUtil {
             "portals",
             "portal_settings",
             "votes",
-            "giveaways"
+            "giveaways",
             "giveaways",
             "portal_invites",
     };
