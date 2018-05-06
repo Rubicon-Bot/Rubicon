@@ -108,7 +108,6 @@ public class CommandPortal extends CommandHandler {
         }
         PortalInvite portalInvite = null;
         for (PortalInvite invite : invites) {
-            Logger.debug(invite.getSender() + " " + guild.getId());
             if (invite.getSender().equals(guild.getId())) {
                 portalInvite = invite;
                 break;
@@ -122,11 +121,10 @@ public class CommandPortal extends CommandHandler {
         TextChannel portalChannel;
         List<TextChannel> resChannelList = invocation.getGuild().getTextChannelsByName("rubicon-portal", true);
         if (resChannelList.isEmpty()) {
-            if (!guild.getSelfMember().hasPermission(Permission.MANAGE_CHANNEL)) {
-                portalInvite.delete();
+            if (!invocation.getGuild().getSelfMember().hasPermission(Permission.MANAGE_CHANNEL)) {
                 return message(error("Missing permissions!", "I need the `MANAGE_CHANNELS` permissions."));
             } else {
-                portalChannel = (TextChannel) guild.getController().createTextChannel("rubicon-portal").complete();
+                portalChannel = (TextChannel) invocation.getGuild().getController().createTextChannel("rubicon-portal").complete();
             }
         } else
             portalChannel = resChannelList.get(0);
@@ -135,9 +133,25 @@ public class CommandPortal extends CommandHandler {
             Portal portal = portalManager.getPortalByOwner(senderGuild.getPortalRoot());
             portal.addGuild(invocation.getGuild().getId(), portalChannel.getId(), invocation.getGuild().getName());
             receiverGuild.setPortal(senderGuild.getPortalRoot());
+            portal.setPortalTopic("Connected to " + portal.getMembers().size() + " servers");
             portalInvite.delete();
         } else {
+            TextChannel otherChannel;
+            List<TextChannel> otherResChannelList = guild.getTextChannelsByName("rubicon-portal", true);
+            if (otherResChannelList.isEmpty()) {
+                if (!guild.getSelfMember().hasPermission(Permission.MANAGE_CHANNEL)) {
+                    return message(error("Missing permissions!", "I can't create a portal channel on the other server."));
+                } else {
+                    otherChannel = (TextChannel) guild.getController().createTextChannel("rubicon-portal").complete();
+                }
+            } else
+                otherChannel = otherResChannelList.get(0);
 
+            Portal portal = portalManager.createPortal(invocation.getGuild().getId(), portalChannel.getId());
+            portal.addGuild(guild.getId(), otherChannel.getId(), null);
+            RubiconGuild.fromGuild(invocation.getGuild()).setPortal(invocation.getGuild().getId());
+            RubiconGuild.fromGuild(guild).setPortal(invocation.getGuild().getId());
+            sendPortalCreatedMessages(invocation.getGuild(), guild, portalChannel, otherChannel);
         }
         return null;
     }
@@ -212,7 +226,7 @@ public class CommandPortal extends CommandHandler {
 
         portal.removeGuild(invocation.getGuild().getId());
         rubiconGuild.closePortal();
-        return null;
+        return message(success("Closed Portal!", "Successfully closed your portal."));
     }
 
     private Message createPortal(CommandManager.ParsedCommandInvocation invocation) {
@@ -245,39 +259,42 @@ public class CommandPortal extends CommandHandler {
         portal.addGuild(invocation.getGuild().getId(), portalChannel.getId(), null);
         rubiconGuild.setPortal(rootGuild.getId());
         RubiconGuild.fromGuild(rootGuild).setPortal(rootGuild.getId());
-        EmbedBuilder embed1 = new EmbedBuilder();
-        embed1.setColor(Colors.COLOR_PRIMARY);
-        embed1.setDescription(String.format("Connected to %s", invocation.getGuild().getName(), invocation.getGuild().getId()));
-        embed1.setThumbnail(invocation.getGuild().getIconUrl());
-        embed1.addField("Id", invocation.getGuild().getId(), true);
-        Message rMsg = SafeMessage.sendMessageBlocking(rootChannel, embed1.build());
+        sendPortalCreatedMessages(rootGuild, invocation.getGuild(), rootChannel, portalChannel);
+        return null;
+    }
 
-        EmbedBuilder embed2 = new EmbedBuilder();
-        embed2.setColor(Colors.COLOR_PRIMARY);
-        embed2.setDescription(String.format("Connected to **%s**", invocation.getGuild().getName(), rootGuild.getId()));
-        embed2.setThumbnail(invocation.getGuild().getIconUrl());
-        embed2.addField("Id", invocation.getGuild().getId(), true);
-        embed2.setDescription(String.format("Connected to **%s**", rootGuild.getName(), rootGuild.getId()));
-        embed2.setThumbnail(rootGuild.getIconUrl());
-        Message mMsg = SafeMessage.sendMessageBlocking(portalChannel, embed2.build());
+    private void sendPortalCreatedMessages(Guild root, Guild guild, TextChannel rootChannel, TextChannel channel) {
+        EmbedBuilder rootEmbed = new EmbedBuilder();
+        rootEmbed.setColor(Colors.COLOR_PRIMARY);
+        rootEmbed.setDescription(String.format("Connected to %s", guild.getName()));
+        rootEmbed.setThumbnail(guild.getIconUrl());
+        rootEmbed.addField("Id", guild.getId(), true);
+        Message rMsg = SafeMessage.sendMessageBlocking(rootChannel, rootEmbed.build());
 
-        if (rootGuild.getSelfMember().hasPermission(rootChannel, Permission.MESSAGE_MANAGE)) {
+        EmbedBuilder embed = new EmbedBuilder();
+        embed.setColor(Colors.COLOR_PRIMARY);
+        embed.setThumbnail(root.getIconUrl());
+        embed.addField("Id", root.getId(), true);
+        embed.setDescription(String.format("Connected to **%s**", root.getName()));
+        embed.setThumbnail(root.getIconUrl());
+        Message mMsg = SafeMessage.sendMessageBlocking(channel, embed.build());
+
+        if (root.getSelfMember().hasPermission(rootChannel, Permission.MESSAGE_MANAGE)) {
             try {
                 rMsg.pin().queue();
             } catch (NullPointerException ignored) {
             }
         }
-        if (rootGuild.getSelfMember().hasPermission(rootChannel, Permission.MANAGE_CHANNEL))
-            rootChannel.getManager().setTopic("Portal: Connected to " + invocation.getGuild().getName()).queue();
+        if (root.getSelfMember().hasPermission(rootChannel, Permission.MANAGE_CHANNEL))
+            rootChannel.getManager().setTopic("Portal: Connected to " + guild.getName()).queue();
 
-        if (self.hasPermission(portalChannel, Permission.MESSAGE_MANAGE)) {
+        if (guild.getSelfMember().hasPermission(channel, Permission.MESSAGE_MANAGE)) {
             try {
                 mMsg.pin().queue();
             } catch (NullPointerException ignored) {
             }
         }
-        if (invocation.getSelfMember().hasPermission(portalChannel, Permission.MANAGE_CHANNEL))
-            portalChannel.getManager().setTopic("Portal: Connected to " + rootGuild.getName()).queue();
-        return null;
+        if (guild.getSelfMember().hasPermission(channel, Permission.MANAGE_CHANNEL))
+            channel.getManager().setTopic("Portal: Connected to " + root.getName()).queue();
     }
 }

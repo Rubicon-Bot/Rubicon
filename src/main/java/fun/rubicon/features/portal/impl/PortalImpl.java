@@ -93,7 +93,8 @@ public class PortalImpl implements Portal {
             return;
         }
         rawMembers.remove(guildId);
-        dbPortal.update(rethink.rethinkDB.hashMap("members", rawMembers)).run(rethink.connection);
+        table.update(rethink.rethinkDB.hashMap("members", null)).run(rethink.connection);
+        table.update(rethink.rethinkDB.hashMap("members", rawMembers)).run(rethink.connection);
         if (rawMembers.size() == 0)
             delete("You were the last member.");
     }
@@ -192,6 +193,7 @@ public class PortalImpl implements Portal {
     @Override
     public void setPortalTopic(String topic) {
         HashMap<Guild, Channel> members = getMembers();
+        members.put(getRootGuild(), getRootChannel());
         String content = topic.replace("%membercount%", members.size() + "");
         for (Map.Entry entry : members.entrySet()) {
             Guild guild = (Guild) entry.getKey();
