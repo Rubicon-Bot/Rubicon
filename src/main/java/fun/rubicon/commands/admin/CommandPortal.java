@@ -223,7 +223,9 @@ public class CommandPortal extends CommandHandler {
             rubiconGuild.closePortal();
             return message(success("Closed Portal!", "Successfully closed the portal."));
         }
-
+        TextChannel channel = (TextChannel) portal.getMembers().get(invocation.getGuild());
+        if(channel != null && invocation.getSelfMember().hasPermission(channel, Permission.MANAGE_CHANNEL))
+            channel.getManager().setTopic("Closed").queue();
         portal.removeGuild(invocation.getGuild().getId());
         rubiconGuild.closePortal();
         return message(success("Closed Portal!", "Successfully closed your portal."));
