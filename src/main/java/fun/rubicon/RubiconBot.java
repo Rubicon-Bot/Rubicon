@@ -286,9 +286,9 @@ public class RubiconBot {
         );
 
         //RPG
-        commandManager.registerCommandHandlers(
+        /*commandManager.registerCommandHandlers(
                 new CommandInventory()
-        );
+        );*/
     }
 
     /**

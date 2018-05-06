@@ -112,13 +112,13 @@ public class CommandHelp extends CommandHandler {
                 listFun.append("`").append(commandHandler.getInvocationAliases()[0]).append("` ");
             }
         }
-        StringBuilder listRpg = new StringBuilder();
+        /*StringBuilder listRpg = new StringBuilder();
         for (CommandHandler commandHandler : filteredCommandList) {
             if (commandHandler.getCategory() == CommandCategory.RPG && !alreadyAdded.contains(commandHandler.getInvocationAliases()[0])) {
                 alreadyAdded.add(commandHandler.getInvocationAliases()[0]);
                 listFun.append("`").append(commandHandler.getInvocationAliases()[0]).append("` ");
             }
-        }
+        }*/
 
         builder.setTitle(":information_source: " + invocation.translate("command.help.list.title"));
         builder.setDescription(invocation.translate("command.help.list.description").replaceAll("%help_command%", invocation.getPrefix() + "help <command>").replaceAll("%website%", "[rubicon.fun](https://rubicon.fun)"));
@@ -133,7 +133,7 @@ public class CommandHelp extends CommandHandler {
         builder.addField(invocation.translate("command.help.list.category.settings"), listSettings.toString(), false);
         builder.addField(invocation.translate("command.help.list.category.tools"), listTools.toString(), false);
         builder.addField(invocation.translate("command.help.list.category.fun"), listFun.toString(), false);
-        builder.addField(invocation.translate("command.help.list.category.rpg") + "(Early Development)", listRpg.toString(), false);
+        //builder.addField(invocation.translate("command.help.list.category.rpg") + "(Early Development)", listRpg.toString(), false);
         return builder;
     }
 }
