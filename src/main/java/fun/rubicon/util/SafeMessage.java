@@ -33,7 +33,7 @@ public class SafeMessage {
 
     public static Message sendMessageBlocking(TextChannel textChannel, Message message) {
         if (hasPermissions(textChannel) && message.getContentRaw().toCharArray().length<1999)
-            send(textChannel, message);
+            return send(textChannel, message);
         return null;
     }
 

@@ -210,7 +210,8 @@ public class RubiconBot {
                 new CommandDice(),
                 new CommandQR(),
                 new CommandFortnite(),
-                new CommandOverwatch()
+                new CommandOverwatch(),
+                new CommandMinecraft()
         );
 
         //General
@@ -259,7 +260,7 @@ public class RubiconBot {
                 new CommandNick(),
                 new VerificationCommandHandler(),
                 new CommandChoose(),
-                new CommandSearch(),
+                new fun.rubicon.commands.tools.CommandSearch(),
                 new CommandServerInfo(),
                 new CommandRemindMe(),
                 new CommandLeet()
