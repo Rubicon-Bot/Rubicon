@@ -41,6 +41,8 @@ public class Info {
             170821070004158464L, //Dlenny
             272397639855898624L  //Noooope
     };
+    public static final long SUPPORT_ROLE = 442431704112562186L;
+    public static final long BUG_ROLE = 442431609099255809L;
 
     public static Date lastRestart;
 }

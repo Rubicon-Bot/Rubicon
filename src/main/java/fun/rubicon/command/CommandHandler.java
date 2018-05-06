@@ -9,7 +9,10 @@ package fun.rubicon.command;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
-import fun.rubicon.util.*;
+import fun.rubicon.util.Colors;
+import fun.rubicon.util.EmbedUtil;
+import fun.rubicon.util.Info;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
@@ -76,14 +79,10 @@ public abstract class CommandHandler extends EmbedUtil {
         UserPermissions userPermissions = new UserPermissions(parsedCommandInvocation.getMessage().getAuthor(),
                 parsedCommandInvocation.getMessage().getGuild());
         //Check for Rubicon Permissions
-        if (!parsedCommandInvocation.getGuild().getMember(RubiconBot.getSelfUser()).hasPermission(Permission.MESSAGE_EMBED_LINKS)) {
-            if (parsedCommandInvocation.getGuild().getMember(RubiconBot.getSelfUser()).hasPermission(parsedCommandInvocation.getTextChannel(), Permission.MESSAGE_WRITE)) {
-                SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), parsedCommandInvocation.translate("permissions.links"));
-            } else {
-                try {
-                    parsedCommandInvocation.getAuthor().openPrivateChannel().complete().sendMessage(parsedCommandInvocation.translate("permissions.links")).queue();
-                } catch (Exception ignored) {
-                }
+        if (!parsedCommandInvocation.getGuild().getMember(RubiconBot.getSelfUser()).hasPermission(parsedCommandInvocation.getTextChannel(), Permission.MESSAGE_WRITE)) {
+            try {
+                parsedCommandInvocation.getAuthor().openPrivateChannel().complete().sendMessage(parsedCommandInvocation.translate("permissions.write")).queue();
+            } catch (Exception ignored) {
             }
         }
         // check permission
