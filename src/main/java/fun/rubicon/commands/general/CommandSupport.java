@@ -31,6 +31,8 @@ public class CommandSupport extends CommandHandler {
             return createHelpMessage(invocation);
         String reason = invocation.getArgsString();
         Invite i = null;
+        if(!RubiconBot.getConfiguration().has("supporthook"))
+            return null;
         if (invocation.getGuild().getMember(RubiconBot.getSelfUser()).hasPermission(invocation.getTextChannel(), Permission.CREATE_INSTANT_INVITE))
             i = invocation.getTextChannel().createInvite().complete();
         WebhookClientBuilder builder = new WebhookClientBuilder(RubiconBot.getConfiguration().getString("supporthook"));

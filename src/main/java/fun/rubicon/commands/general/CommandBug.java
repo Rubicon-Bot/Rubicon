@@ -31,6 +31,8 @@ import net.dv8tion.jda.webhook.WebhookMessageBuilder;
         Invite i = null;
         if (invocation.getGuild().getMember(RubiconBot.getSelfUser()).hasPermission(invocation.getTextChannel(), Permission.CREATE_INSTANT_INVITE))
             i = invocation.getTextChannel().createInvite().complete();
+        if(!RubiconBot.getConfiguration().has("supporthook"))
+            return null;
         WebhookClientBuilder builder = new WebhookClientBuilder(RubiconBot.getConfiguration().getString("supporthook"));
         WebhookClient client = builder.build();
         String invite = i == null ? "No invite could be Provided" : i.getURL();
