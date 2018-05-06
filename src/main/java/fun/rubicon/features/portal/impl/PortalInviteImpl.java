@@ -18,7 +18,7 @@ public class PortalInviteImpl implements PortalInvite {
 
     @Override
     public void delete() {
-        RubiconBot.getRethink().db.table("portal_invites").filter(RubiconBot.getRethink().rethinkDB.hashMap("sender", sender).with("receiver", receiver)).run(RubiconBot.getRethink().connection);
+        RubiconBot.getRethink().db.table("portal_invites").filter(RubiconBot.getRethink().rethinkDB.hashMap("sender", sender).with("receiver", receiver)).run(RubiconBot.getRethink().getConnection());
     }
 
     @Override

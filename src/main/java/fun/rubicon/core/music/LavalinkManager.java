@@ -80,7 +80,7 @@ public class LavalinkManager implements EventListener {
     private List<LavalinkNode> loadNodes() {
         List<LavalinkNode> nodes = new ArrayList<>();
 
-        Cursor cursor = RubiconBot.getRethink().db.table("lavanodes").run(RubiconBot.getRethink().connection);
+        Cursor cursor = RubiconBot.getRethink().db.table("lavanodes").run(RubiconBot.getRethink().getConnection());
         for (Object obj : cursor) {
             Map map = (Map) obj;
             try {

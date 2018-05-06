@@ -56,7 +56,7 @@ public class CommandYouTube extends CommandHandler {
             return EmbedUtil.message(EmbedUtil.noPremium());
         if (invocation.getMessage().getMentionedChannels().isEmpty())
             return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.yt.mention.title"), invocation.translate("command.yt.mention.description")));
-        Cursor cursor = RubiconBot.getRethink().db.table("youtube").filter(RubiconBot.getRethink().rethinkDB.hashMap("guildId", invocation.getGuild().getId())).run(RubiconBot.getRethink().connection);
+        Cursor cursor = RubiconBot.getRethink().db.table("youtube").filter(RubiconBot.getRethink().rethinkDB.hashMap("guildId", invocation.getGuild().getId())).run(RubiconBot.getRethink().getConnection());
         List l = cursor.toList();
         if (l.size() > 1) {
             String cretor = invocation.getArgs()[1].replace(" ", "");
@@ -64,7 +64,7 @@ public class CommandYouTube extends CommandHandler {
                     ) {
                 Map map = (Map) item;
                 if (map.get("youcreator").toString().equalsIgnoreCase(cretor)) {
-                    RubiconBot.getRethink().db.table("youtube").filter(RubiconBot.getRethink().rethinkDB.hashMap("youcreator", map.get("youcreator"))).delete().run(RubiconBot.getRethink().connection);
+                    RubiconBot.getRethink().db.table("youtube").filter(RubiconBot.getRethink().rethinkDB.hashMap("youcreator", map.get("youcreator"))).delete().run(RubiconBot.getRethink().getConnection());
                     return SafeMessage.sendMessageBlocking(invocation.getTextChannel(), new EmbedBuilder().setColor(Color.RED).setDescription(invocation.translate("command.yt.delete") + map.get("youcreator").toString()).build());
                 }
 
@@ -113,7 +113,7 @@ public class CommandYouTube extends CommandHandler {
         String[] strings = getUrlTitle(holder.creator);
         if (!strings[0].equals("") && !strings[1].equals("")) {
             SafeMessage.sendMessage(holder.channel, description.replace("%url%", strings[0]).replace("%title%", strings[1]));
-            RubiconBot.getRethink().db.table("youtube").filter(RubiconBot.getRethink().rethinkDB.hashMap("guildId", holder.textChannel.getGuild().getId())).update(RubiconBot.getRethink().rethinkDB.hashMap("lastvideo", strings[0])).run(RubiconBot.getRethink().connection);
+            RubiconBot.getRethink().db.table("youtube").filter(RubiconBot.getRethink().rethinkDB.hashMap("guildId", holder.textChannel.getGuild().getId())).update(RubiconBot.getRethink().rethinkDB.hashMap("lastvideo", strings[0])).run(RubiconBot.getRethink().getConnection());
         }
         holder.delete();
         event.getMessage().delete().queue();
@@ -213,7 +213,7 @@ public class CommandYouTube extends CommandHandler {
             public void run() {
                 for (Guild guild :
                         guildList) {
-                    Cursor cursor = rethink.db.table("youtube").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection);
+                    Cursor cursor = rethink.db.table("youtube").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection());
                     List l = cursor.toList();
                     if (l.size() < 1) {
                         continue;
@@ -225,7 +225,7 @@ public class CommandYouTube extends CommandHandler {
                         String[] strings = getUrlTitle(creator);
                         if (!strings[0].equals(oldURI)) {
                             SafeMessage.sendMessage(guild.getTextChannelById(map.get("youchannel").toString()), map.get("youmsg").toString().replace("%url%", strings[0]).replace("%title%", strings[1]));
-                            RubiconBot.getRethink().db.table("youtube").filter(RubiconBot.getRethink().rethinkDB.hashMap("youcreator", map.get("youcreator"))).update(RubiconBot.getRethink().rethinkDB.hashMap("lastvideo", strings[0])).run(RubiconBot.getRethink().connection);
+                            RubiconBot.getRethink().db.table("youtube").filter(RubiconBot.getRethink().rethinkDB.hashMap("youcreator", map.get("youcreator"))).update(RubiconBot.getRethink().rethinkDB.hashMap("lastvideo", strings[0])).run(RubiconBot.getRethink().getConnection());
                         }
                     }
                 }
