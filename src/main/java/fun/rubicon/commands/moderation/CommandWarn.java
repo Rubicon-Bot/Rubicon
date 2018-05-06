@@ -97,8 +97,9 @@ public class CommandWarn extends CommandHandler {
                  if(args.length < 2)
                      return EmbedUtil.message(EmbedUtil.error());
                  args = invocation.getArgsString().replace("@", "").replace(invocation.getMessage().getMentionedMembers().get(0).getEffectiveName(), "a").split(" ");
-                 String reason = args[1];
+                 System.out.println(args[0]);
                  member = RubiconMember.fromMember(invocation.getMessage().getMentionedMembers().get(0));
+                 String reason = invocation.getArgsString().replace("@", "").replace(member.getMember().getEffectiveName(), "");
                  member.warn(reason, invocation.getMember());
                  SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.success(invocation.translate("command.warn.warned.title"), String.format(invocation.translate("command.warn.warned.description"), member.getUser().getAsMention(), reason)).build());
                  SafeMessage.sendMessage(invocation.getTextChannel(), new EmbedBuilder().setColor(Colors.COLOR_ERROR).setTitle(member.translate("warnembed.title")).setDescription(String.format(member.translate("warnembed.description"), member.getUser().getAsMention(), reason)).setFooter(String.format(member.translate("warnembed.footer"), member.getWarnCount()), member.getUser().getAvatarUrl()).build());
