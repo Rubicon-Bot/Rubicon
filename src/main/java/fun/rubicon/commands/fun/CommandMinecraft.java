@@ -35,11 +35,11 @@ public class CommandMinecraft extends CommandHandler {
     }
 
     private void commandPlayer(String[] args, CommandManager.ParsedCommandInvocation parsedCommandInvocation) {
-        Message message = SafeMessage.sendMessageBlocking(parsedCommandInvocation.getTextChannel(), new MessageBuilder().setEmbed(EmbedUtil.info("Fetching", "Fetching player's uuid").build()).build());
+        Message message = SafeMessage.sendMessageBlocking(parsedCommandInvocation.getTextChannel(), new MessageBuilder().setEmbed(EmbedUtil.info(parsedCommandInvocation.translate("command.minecraft.fetching.title"), parsedCommandInvocation.translate("command.minecraft.fetching.description")).build()).build());
         String uuid = mojang.fetchUUID(args[0]);
         if (uuid == null) {
             message.delete().queue();
-            SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), EmbedUtil.error("Error while UUID fetching", "Unable to find players UUID").build(), 6);
+            SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), EmbedUtil.error(parsedCommandInvocation.translate("command.minecraft.fetcherror.title"), parsedCommandInvocation.translate("command.minecraft.fetcherror.description")).build(), 6);
             return;
         }
         MinecraftUtil.MinecraftPlayer player = mojang.fromUUID(uuid);
