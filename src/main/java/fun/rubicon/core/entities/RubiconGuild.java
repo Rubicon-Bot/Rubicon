@@ -335,9 +335,7 @@ public class RubiconGuild extends RethinkHelper {
     public List<Role> getRanks() {
         checkRanks();
         List<Role> roles = new ArrayList<>();
-        getRankIDs().forEach(id -> {
-            roles.add(guild.getRoleById(id));
-        });
+        getRankIDs().forEach(id -> roles.add(guild.getRoleById(id)));
         return roles;
     }
 
