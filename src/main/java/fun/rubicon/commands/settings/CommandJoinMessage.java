@@ -25,7 +25,7 @@ public class CommandJoinMessage extends CommandHandler {
         super(new String[]{"joinmessage", "joinmessages", "joinmsg"}, CommandCategory.SETTINGS, new PermissionRequirements("joinmessage", false, false), "Enables/Disables automated messages if a user joins your server.",
                 "set <#channel> <message> | Enabled the joinmessages. / Use %user% for the user as mention, %server% for the servername and %count% for the new member count.\n" +
                         "channel <#channel> | Sets a new channel. / Only if joinmessages are enabled.\n" +
-                        "message <message> | Use %user% for the user as mention, %server% for the servername and %count% for the new member count. / Only if joinmessages are enabled.\n" +
+                        "message <message> | Use %user% for the user as mention, %guild% for the servername and %count% for the new member count. / Only if joinmessages are enabled.\n" +
                         "disable | Disables the joinmessages.");
     }
 
