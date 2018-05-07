@@ -15,6 +15,7 @@ import fun.rubicon.core.entities.cache.RubiconUserCache;
 import fun.rubicon.core.translation.TranslationUtil;
 import fun.rubicon.rethink.Rethink;
 import fun.rubicon.rethink.RethinkHelper;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
@@ -32,7 +33,7 @@ public abstract class RubiconUserImpl extends RethinkHelper {
     protected User user = null;
     private String userId = null;
     private String bio = null;
-    private int money = 0;
+    private long money = 0;
     private long premium = 0;
     private String language = null;
     private String afk = null;
@@ -44,7 +45,7 @@ public abstract class RubiconUserImpl extends RethinkHelper {
 
     private static RubiconUserCache userCache = new RubiconUserCache();
 
-    public RubiconUserImpl(User user, String bio, int money, long premium, String language, String afk, HashMap<String, List<String>> playlists) {
+    public RubiconUserImpl(User user, String bio, long money, long premium, String language, String afk, HashMap<String, List<String>> playlists) {
         this.user = user;
         this.userId = user.getId();
         this.bio = bio;
@@ -66,7 +67,7 @@ public abstract class RubiconUserImpl extends RethinkHelper {
         if(map == null)
             return;
         this.bio = map.containsKey("bio") ? (String) map.get("bio") : "No bio set.";
-        this.money = map.containsKey("money") ? (Integer) map.get("money") : 0;
+        this.money = map.containsKey("money") ? (Long) map.get("money") : 0;
         this.premium = map.containsKey("premium") ? (Long) map.get("premium") : 0;
         this.language = map.containsKey("language") ? (String) map.get("language") : "en-US";
         this.afk = map.containsKey("afk") ? (String) map.get("afk") : null;
@@ -95,21 +96,21 @@ public abstract class RubiconUserImpl extends RethinkHelper {
         return bio;
     }
 
-    public void setMoney(int amount) {
+    public void setMoney(long amount) {
         this.money = amount;
         update();
         dbUser.update(rethink.rethinkDB.hashMap("money", amount)).run(rethink.getConnection());
     }
 
-    public int getMoney() {
+    public long getMoney() {
         return money;
     }
 
-    public void addMoney(int amount) {
+    public void addMoney(long amount) {
         setMoney(getMoney() + amount);
     }
 
-    public void removeMoney(int amount) {
+    public void removeMoney(long amount) {
         setMoney(getMoney() - amount);
     }
 
@@ -217,8 +218,12 @@ public abstract class RubiconUserImpl extends RethinkHelper {
 
     public static RubiconUser fromUser(User user) {
         RubiconUser rubiconUser = userCache.getUser(user);
-        if (rubiconUser == null)
-            return rubiconUser.create();
+        try {
+            if (rubiconUser == null)
+                return rubiconUser.create();
+        } catch (NullPointerException e) {
+            Logger.error(e);
+        }
         return rubiconUser;
     }
 
