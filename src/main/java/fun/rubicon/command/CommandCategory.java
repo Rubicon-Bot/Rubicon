@@ -1,5 +1,8 @@
 package fun.rubicon.command;
 
+import lombok.Getter;
+import lombok.AllArgsConstructor;
+
 /**
  * Rubicon Discord bot
  *
@@ -8,7 +11,8 @@ package fun.rubicon.command;
  * @license MIT License <http://rubicon.fun/license>
  * @package fun.rubicon.command
  */
-
+@Getter
+@AllArgsConstructor
 public enum CommandCategory {
 
     TEST("test", "Test"),
@@ -22,19 +26,7 @@ public enum CommandCategory {
     SETTINGS("settings", "Settings"),
     MUSIC("music", "Music");
 
-    private String id;
-    private String displayname;
+    private final String id;
+    private final String displayname;
 
-    CommandCategory(String id, String displayname) {
-        this.id = id;
-        this.displayname = displayname;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getDisplayname() {
-        return displayname;
-    }
 }

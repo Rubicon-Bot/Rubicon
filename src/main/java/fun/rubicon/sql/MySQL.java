@@ -88,8 +88,7 @@ public class MySQL {
      * @return Value of the given key
      */
     public String getString(String table, String key, String where, String wherevalue) {
-        try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM ? WHERE ?=?");
+        try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM ? WHERE ?=?")){
             ps.setString(1, table);
             ps.setString(2, where);
             ps.setString(3, wherevalue);
@@ -112,8 +111,7 @@ public class MySQL {
      * @return null
      */
     public MySQL setString(String table, String key, String value, String where, String wherevalue) {
-        try {
-            PreparedStatement ps = connection.prepareStatement("UPDATE ? SET ?=? WHERE ?=?");
+        try (PreparedStatement ps = connection.prepareStatement("UPDATE ? SET ?=? WHERE ?=?")){
             ps.setString(1, table);
             ps.setString(2, key);
             ps.setString(3, value);
