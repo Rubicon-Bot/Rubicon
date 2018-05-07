@@ -33,7 +33,7 @@ public class CommandInfo extends CommandHandler {
         embedBuilder.setColor(Colors.COLOR_SECONDARY);
         embedBuilder.setAuthor(Info.BOT_NAME + invocation.translate("command.info.title"), "https://rubicon.fun", RubiconBot.getSelfUser().getEffectiveAvatarUrl());
 
-        StringBuilder devsString = new StringBuilder();
+        StringBuilder devsString = new StringBuilder().append("\n");
         for (long authorId : Info.BOT_AUTHOR_IDS) {
             User authorUser = RubiconBot.getShardManager().getUserById(authorId);
             if (authorUser == null)

@@ -11,6 +11,7 @@ import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.exceptions.ErrorResponseException;
 
@@ -247,7 +248,10 @@ public class CommandPoll extends CommandHandler implements Serializable {
         String heading = content.get(0);
         List<String> answers = new ArrayList<>(content.subList(1, content.size()));
 
-
+        if(!parsedCommandInvocation.getSelfMember().hasPermission(parsedCommandInvocation.getTextChannel(), Permission.MESSAGE_ADD_REACTION)) {
+            SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), parsedCommandInvocation.translate("error.noreactionperm"));
+            return;
+        }
         Message pollmessage = channel.sendMessage(new EmbedBuilder().setDescription(parsedCommandInvocation.translate("command.poll.create.creating")).setColor(Color.cyan).build()).complete();
 
         HashMap<String, Integer> reactions = new HashMap<>();

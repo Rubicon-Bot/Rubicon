@@ -14,7 +14,6 @@ import fun.rubicon.commands.settings.CommandLeaveMessage;
 import fun.rubicon.rethink.Rethink;
 import fun.rubicon.rethink.RethinkHelper;
 import fun.rubicon.util.Info;
-import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.PermissionOverride;
@@ -350,7 +349,7 @@ public class RubiconGuild extends RethinkHelper {
         List<String> idList = new ArrayList<>();
         Cursor cursor = rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection());
         Map map = (Map) cursor.toList().get(0);
-        return ((List<List<String>>) map.get("ranks")).get(0);
+        return ((List<String>) map.get("ranks"));
     }
 
     public List<Role> getRanks() {
@@ -397,11 +396,11 @@ public class RubiconGuild extends RethinkHelper {
     }
 
     private void updateRanks(List<String> idList) {
-        rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(rethink.rethinkDB.hashMap("ranks", rethink.rethinkDB.array(idList))).run(rethink.getConnection());
+        rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(rethink.rethinkDB.hashMap("ranks", idList)).run(rethink.getConnection());
     }
 
     public void deletePoll(){
-        rethink.db.table("votes").filter(rethink.rethinkDB.hashMap("guild", guild.getId())).delete().run(rethink.getConnection());
+        RubiconBot.getPollManager().deletePoll(guild.getId());
     }
 
     public static RubiconGuild fromGuild(Guild guild) {
