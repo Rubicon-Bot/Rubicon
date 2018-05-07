@@ -6,6 +6,7 @@
 
 package fun.rubicon.listener.member;
 
+import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.settings.CommandJoinMessage;
 import fun.rubicon.core.ImageEditor;
 import fun.rubicon.core.entities.RubiconGuild;
@@ -34,8 +35,8 @@ public class MemberJoinListener extends ListenerAdapter {
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         RubiconGuild rubiconGuild = RubiconGuild.fromGuild(event.getGuild());
         RubiconMember.fromMember(event.getMember());
-
-        BotListHandler.postRubiconFunUserCounts(false);
+        if (!RubiconBot.getConfiguration().getString("rubiconfun_token").isEmpty())
+            BotListHandler.postRubiconFunUserCounts(false);
 
         new Thread(() -> {
             if (rubiconGuild.hasJoinMessagesEnabled()) {
@@ -43,7 +44,7 @@ public class MemberJoinListener extends ListenerAdapter {
                     CommandJoinMessage.JoinMessage joinMessage = rubiconGuild.getJoinMessage();
                     SafeMessage.sendMessage(event.getJDA().getTextChannelById(joinMessage.getChannelId()), joinMessage.getMessage()
                             .replace("%user%", event.getMember().getAsMention())
-                            .replace("%server%", event.getGuild().getName())
+                            .replace("%guild%", event.getGuild().getName())
                             .replace("%count%", event.getGuild().getMembers().size() + ""));
                 } catch (Exception e) {
                     rubiconGuild.deleteJoinMessage();
