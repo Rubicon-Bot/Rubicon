@@ -32,6 +32,7 @@ public class GameAnimator {
             Game.watching("New Translations"),
             Game.playing("translate.rubicon.fun"),
             Game.listening("donate.rucb.co"),
+            Game.watching("zap.rubicon.fun"),
             Game.watching("github.com/Rubicon-Bot")
     };
     private int currentGame = 0;
