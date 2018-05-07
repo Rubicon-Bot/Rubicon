@@ -125,7 +125,7 @@ public class VerificationSetupRequest extends ReactionSetupRequest {
         VerificationCommandHandler.guildList.remove(guild);
         SafeMessage.sendMessage(setupChannel, TranslationUtil.translate(author, "verification.setup.finish"));
         Rethink rethink = RubiconBot.getRethink();
-        rethink.db.table("verification_settings").insert(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("channelId", settings.channel.getId()).with("roleId", settings.role.getId()).with("emote", settings.emote.getId() != null ? settings.emote.getId() : settings.emote.getName()).with("welcomeText", settings.verifytext).with("verifiedText", settings.verifiedtext).with("kickTime", String.valueOf(settings.kicktime)).with("kickText", settings.kicktext)).run(rethink.connection);
+        rethink.db.table("verification_settings").insert(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("channelId", settings.channel.getId()).with("roleId", settings.role.getId()).with("emote", settings.emote.getId() != null ? settings.emote.getId() : settings.emote.getName()).with("welcomeText", settings.verifytext).with("verifiedText", settings.verifiedtext).with("kickTime", String.valueOf(settings.kicktime)).with("kickText", settings.kicktext)).run(rethink.getConnection());
     }
 
     @Override

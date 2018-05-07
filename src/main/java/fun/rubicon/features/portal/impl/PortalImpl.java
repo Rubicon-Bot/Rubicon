@@ -81,7 +81,7 @@ public class PortalImpl implements Portal {
     @Override
     public void addGuild(String guildId, String channelId, String servername) {
         rawMembers.put(guildId, channelId);
-        dbPortal.update(rethink.rethinkDB.hashMap("members", rawMembers)).run(rethink.connection);
+        dbPortal.update(rethink.rethinkDB.hashMap("members", rawMembers)).run(rethink.getConnection());
         if (servername != null)
             broadcastSystemMessage(EmbedUtil.success("Server joined!", String.format("`%s` joined the portal.", servername)).build());
     }
@@ -93,8 +93,8 @@ public class PortalImpl implements Portal {
             return;
         }
         rawMembers.remove(guildId);
-        table.update(rethink.rethinkDB.hashMap("members", null)).run(rethink.connection);
-        table.update(rethink.rethinkDB.hashMap("members", rawMembers)).run(rethink.connection);
+        table.update(rethink.rethinkDB.hashMap("members", null)).run(rethink.getConnection());
+        table.update(rethink.rethinkDB.hashMap("members", rawMembers)).run(rethink.getConnection());
         if (rawMembers.size() == 0)
             delete("You were the last member.");
         else if(rawMembers.size() == 1)
@@ -117,7 +117,7 @@ public class PortalImpl implements Portal {
                 SafeMessage.sendMessage(textChannel, EmbedUtil.error("Portal closed!", reason).build());
             }
         }
-        dbPortal.delete().run(rethink.connection);
+        dbPortal.delete().run(rethink.getConnection());
     }
 
     @Override

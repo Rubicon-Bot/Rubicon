@@ -91,7 +91,7 @@ public class PermissionManager extends RethinkHelper {
                 rethink.rethinkDB.hashMap("guildId", target.getGuild().getId())
                         .with("type", String.valueOf(target.getType().getIdentifier()))
                         .with("id", String.valueOf(target.getId()))
-        ).run(rethink.connection);
+        ).run(rethink.getConnection());
         try {
             Map<?, ?> map = (Map<?, ?>) cursor.toList().get(0);
             List<String> rawList = (List<String>) map.get("permissions");
@@ -111,16 +111,16 @@ public class PermissionManager extends RethinkHelper {
         if (getPermissions(target).size() == 0) {
             table.filter(rethink.rethinkDB.hashMap("guildId", target.getGuild().getId())
                     .with("type", String.valueOf(target.getType().getIdentifier()))
-                    .with("id", String.valueOf(target.getId()))).delete().run(rethink.connection);//TODO Do this better
+                    .with("id", String.valueOf(target.getId()))).delete().run(rethink.getConnection());//TODO Do this better
             table.insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("guildId", target.getGuild().getId())
                     .with("type", String.valueOf(target.getType().getIdentifier()))
                     .with("id", String.valueOf(target.getId()))
-                    .with("permissions", res))).run(rethink.connection);
+                    .with("permissions", res))).run(rethink.getConnection());
         } else {
             table.filter(rethink.rethinkDB.hashMap("guildId", target.getGuild().getId())
                     .with("type", String.valueOf(target.getType().getIdentifier()))
                     .with("id", String.valueOf(target.getId()))).update(
-                    rethink.rethinkDB.hashMap("permissions", res)).run(rethink.connection);
+                    rethink.rethinkDB.hashMap("permissions", res)).run(rethink.getConnection());
         }
     }
 }
