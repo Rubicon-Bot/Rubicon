@@ -32,7 +32,7 @@ public class VerificationSetupRequest extends ReactionSetupRequest {
 
     public static void createVerificationSetupRequest(CommandManager.ParsedCommandInvocation invocation) {
         if(!invocation.getSelfMember().hasPermission(invocation.getTextChannel(), Permission.MESSAGE_ADD_REACTION)) {
-            SafeMessage.sendMessage(invocation.getTextChannel(), invocation.translate("verification.setup.error.noreactionperm"));
+            SafeMessage.sendMessage(invocation.getTextChannel(), invocation.translate("error.noreactionperm"));
             return;
         }
         Message msg = SafeMessage.sendMessageBlocking(invocation.getTextChannel(), TranslationUtil.translate(invocation.getAuthor(), "verification.setup.step0"));
