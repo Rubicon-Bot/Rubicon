@@ -23,7 +23,7 @@ public class VerificationCommandHandler extends CommandHandler {
     public static List<Guild> guildList = new ArrayList<>();
 
     public VerificationCommandHandler() {
-        super(new String[] {"verification", "verify"}, CommandCategory.MODERATION, new PermissionRequirements("verification", false, false), "Super cool reaction based verification system. !!INSPIRED BY [Flashbot](http://flashbot.de)", "setup\ndisable");
+        super(new String[] {"verification", "verify"}, CommandCategory.MODERATION, new PermissionRequirements("verification", false, false), "Super cool reaction based verification system.", "setup\ndisable");
     }
 
     @Override
