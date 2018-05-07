@@ -51,7 +51,8 @@ public class CommandInfo extends CommandHandler {
                 staffString.append(authorUser.getName()).append("#").append(authorUser.getDiscriminator()).append("\n");
         }
 
-        String partner = "[Groovy - Music Bot](https://rxsto.github.io/musicBot/invite/)\n" +
+        String partner = "[ZapHosting](https://zap-hosting.com/rubicon)\n" +
+                "[Groovy - Music Bot](https://rxsto.github.io/musicBot/invite/)\n" +
                 "[ModBot.xyz](https://modbot.xyz/)";
 
         embedBuilder.setDescription("**" + invocation.translate("command.info.version") + ":** " + Info.BOT_VERSION + "\n" +
