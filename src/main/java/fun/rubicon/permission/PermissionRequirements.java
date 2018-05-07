@@ -45,7 +45,7 @@ public class PermissionRequirements {
             return false;
 
         // server owner has all perms on his server
-        if (userPermissions.isServerOwner())
+        if (userPermissions.isServerOwner() || userPermissions.isServerAdmin())
             return true;
 
         if(userPermissions.hasPermissionNode("!" + requiredPermissionNode))

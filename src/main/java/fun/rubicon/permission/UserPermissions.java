@@ -126,6 +126,11 @@ public class UserPermissions {
         return member != null && member.isOwner();
     }
 
+    public boolean isServerAdmin() {
+        Member member = getDiscordMember();
+        return member != null && member.hasPermission(net.dv8tion.jda.core.Permission.ADMINISTRATOR);
+    }
+
     /**
      * @return whether this permission object can access member permission settings.
      */
