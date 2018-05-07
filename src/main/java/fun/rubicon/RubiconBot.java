@@ -286,9 +286,9 @@ public class RubiconBot {
         );
 
         //RPG
-        commandManager.registerCommandHandlers(
+        /*commandManager.registerCommandHandlers(
                 new CommandInventory()
-        );
+        );*/
     }
 
     /**
@@ -333,7 +333,6 @@ public class RubiconBot {
                 new PunishmentListener(),
                 new GeneralMessageListener(),
                 new RoleDeleteListener(),
-                new LavalinkManager(),
                 new LavalinkManager(),
                 new VerificationListener(),
                 new SetupListener(),

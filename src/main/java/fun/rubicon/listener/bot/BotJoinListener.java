@@ -36,7 +36,7 @@ public class BotJoinListener extends ListenerAdapter {
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
-                   Cursor cursor = RubiconBot.getRethink().db.table("guilds").filter(RubiconBot.getRethink().rethinkDB.hashMap("guildId",event.getGuild().getId())).run(RubiconBot.getRethink().connection);
+                   Cursor cursor = RubiconBot.getRethink().db.table("guilds").filter(RubiconBot.getRethink().rethinkDB.hashMap("guildId",event.getGuild().getId())).run(RubiconBot.getRethink().getConnection());
                     List l = cursor.toList();
                     if(l.size()>0){
                         Map map = (Map) l.get(0);

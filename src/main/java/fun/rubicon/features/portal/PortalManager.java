@@ -2,6 +2,7 @@ package fun.rubicon.features.portal;
 
 import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
+import fun.rubicon.features.portal.impl.PortalImpl;
 import fun.rubicon.rethink.Rethink;
 
 import java.util.HashMap;
@@ -19,7 +20,7 @@ public class PortalManager {
     }
 
     public String getSearchingGuild(String exclude) {
-        Cursor cursor = rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("portal", "SEARCH")).run(rethink.connection);
+        Cursor cursor = rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("portal", "SEARCH")).run(rethink.getConnection());
         List<HashMap> list = cursor.toList();
         for (HashMap<String, Object> map : list) {
             String id = (String) map.get("guildId");
@@ -35,12 +36,12 @@ public class PortalManager {
                 .with("root_channel", rootChannelId)
                 .with("members",
                         rethink.rethinkDB.hashMap()
-                ))).run(rethink.connection);
+                ))).run(rethink.getConnection());
         return getPortalByOwner(rootGuildId);
     }
 
     public Portal getPortalByOwner(String guildId) {
-        Cursor cursor = rethink.db.table("portals").filter(rethink.rethinkDB.hashMap("root_guild", guildId)).run(rethink.connection);
+        Cursor cursor = rethink.db.table("portals").filter(rethink.rethinkDB.hashMap("root_guild", guildId)).run(rethink.getConnection());
         List<HashMap<String, ?>> list = cursor.toList();
         if(list.isEmpty())
             return null;

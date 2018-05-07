@@ -23,10 +23,10 @@ public class CommandLeaveMessage extends CommandHandler {
 
     public CommandLeaveMessage() {
         super(new String[]{"leavemessage", "leavemessages", "leavemsg"}, CommandCategory.SETTINGS, new PermissionRequirements("leavemessage", false, false), "Enables/Disables automated messages if a user leaves your server.",
-                "set <#channel> <message> | Enabled the leavemessages. / Use %user% for the username, %server% for the servername and %count% for the new member count.\n" +
-                        "channel <#channel> | Sets a new channel. / Only if leavemessages are enabled.\n" +
-                        "message <message> | Use %user% for the username, %server% for the servername and %count% for the new member count. / Only if leavemessages are enabled.\n" +
-                        "disable | Disables the leavemessages.");
+                "set <#channel> <message>\n" +
+                        "channel <#channel> \n" +
+                        "message <message> \n" +
+                        "disable");
     }
 
     @Override
@@ -49,7 +49,7 @@ public class CommandLeaveMessage extends CommandHandler {
                 return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leavemessage.wrongArgument"), invocation.translate("command.leavemessage.error.channel")));
             TextChannel channel = invocation.getMessage().getMentionedChannels().get(0);
             String text = invocation.getArgsString().replaceFirst("set #" + channel.getName() + " ", "");
-            rubiconGuild.setLeaveMessage(text, channel.getIdLong());
+            rubiconGuild.setLeaveMessage(text, channel.getId());
             return EmbedUtil.message(EmbedUtil.success(invocation.translate("command.leavemessage.enabled.title"), invocation.translate("command.leavemessage.enabled.description").replaceFirst("%channel%", channel.getAsMention()).replaceFirst("%message%", String.format("`%s`", text))));
         }
         if (invocation.getArgs()[0].equalsIgnoreCase("channel")) {
@@ -58,7 +58,7 @@ public class CommandLeaveMessage extends CommandHandler {
                 return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leavemessage.ne.title"), invocation.translate("command.leavemessage.ne.description").replaceFirst("%command%", String.format("`%shelp leavemessage`", invocation.getPrefix()))));
             if (invocation.getMessage().getMentionedChannels().size() != 1)
                 return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.leavemessage.wrongArgument"), invocation.translate("command.leavemessage.error.channel")));
-            rubiconGuild.setLeaveMessage(invocation.getMessage().getMentionedChannels().get(0).getIdLong());
+            rubiconGuild.setLeaveMessageChannel(invocation.getMessage().getMentionedChannels().get(0).getId());
             return EmbedUtil.message(EmbedUtil.success(invocation.translate("command.leavemessage.channel.title"), invocation.translate("command.leavemessage.channel.description").replaceFirst("%channel%", invocation.getMessage().getMentionedChannels().get(0).getAsMention())));
         }
         if (invocation.getArgs()[0].equalsIgnoreCase("message")) {
@@ -73,15 +73,15 @@ public class CommandLeaveMessage extends CommandHandler {
     }
 
     public static class LeaveMessage {
-        private final long channelId;
-        private final String message;
+        private final String channelId;
+        private String message;
 
-        public LeaveMessage(long channelId, String message) {
+        public LeaveMessage(String channelId, String message) {
             this.channelId = channelId;
             this.message = message;
         }
 
-        public long getChannelId() {
+        public String getChannelId() {
             return channelId;
         }
 

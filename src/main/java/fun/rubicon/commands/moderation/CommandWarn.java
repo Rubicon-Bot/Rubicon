@@ -109,7 +109,7 @@ public class CommandWarn extends CommandHandler {
     }
 
     private boolean doesPunishmentExists(String id){
-        Cursor cursor = rethink.db.table("warn_punishments").filter(rethink.rethinkDB.hashMap("id", id)).run(rethink.connection);
+        Cursor cursor = rethink.db.table("warn_punishments").filter(rethink.rethinkDB.hashMap("id", id)).run(rethink.getConnection());
         return !cursor.toList().isEmpty();
     }
 
@@ -122,7 +122,7 @@ public class CommandWarn extends CommandHandler {
     }
 
     private boolean punishmentExists(int amount, Guild guild){
-        Cursor cursor = rethink.db.table("warn_punishments").filter(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("amount", String.valueOf(amount))).run(rethink.connection);
+        Cursor cursor = rethink.db.table("warn_punishments").filter(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("amount", String.valueOf(amount))).run(rethink.getConnection());
         return !cursor.toList().isEmpty();
     }
 
@@ -132,7 +132,7 @@ public class CommandWarn extends CommandHandler {
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.warn.punishment.notfound.title"), invocation.translate("command.warn.punishment.notfound.description"))), 5);
             return;
         }
-        rethink.db.table("warn_punishments").filter(rethink.rethinkDB.hashMap("id", id)).delete().run(rethink.connection);
+        rethink.db.table("warn_punishments").filter(rethink.rethinkDB.hashMap("id", id)).delete().run(rethink.getConnection());
         SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.success(invocation.translate("command.warn.punishment.deleted.title"), invocation.translate("command.warn.punishment.deleted.description"))), 5);
     }
 
@@ -142,7 +142,7 @@ public class CommandWarn extends CommandHandler {
     }
 
     private EmbedBuilder getPunishmentList(CommandManager.ParsedCommandInvocation invocation){
-        Cursor cursor = rethink.db.table("warn_punishments").filter(rethink.rethinkDB.hashMap("guildId", invocation.getGuild().getId())).run(rethink.connection);
+        Cursor cursor = rethink.db.table("warn_punishments").filter(rethink.rethinkDB.hashMap("guildId", invocation.getGuild().getId())).run(rethink.getConnection());
         List list = cursor.toList();
         if(list.isEmpty())
             return new EmbedBuilder().setTitle("No punishments").setDescription("You haven't configured any warn punishments").setColor(Colors.COLOR_ERROR);
@@ -231,7 +231,7 @@ public class CommandWarn extends CommandHandler {
         private void finish(){
             infoMessage.editMessage(setupMessage(translate("warns.setup.finish.title"), translate("warns.setup.finish.description"), Colors.COLOR_SECONDARY).build()).queue();
             unregister();
-            rethink.db.table("warn_punishments").insert(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("type", settings.type.toString()).with("length", settings.lenth).with("message", settings.message).with("amount", String.valueOf(settings.amount))).run(rethink.connection);
+            rethink.db.table("warn_punishments").insert(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("type", settings.type.toString()).with("length", settings.lenth).with("message", settings.message).with("amount", String.valueOf(settings.amount))).run(rethink.getConnection());
 
         }
 

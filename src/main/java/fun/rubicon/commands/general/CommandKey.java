@@ -41,8 +41,8 @@ public class CommandKey extends CommandHandler {
                         return message(no_permissions());
                     switch (invocation.getArgs()[1]) {
                         case "premium":
-                            RubiconBot.getRethink().db.table("keys").insert(RubiconBot.getRethink().rethinkDB.hashMap("type", "premium").with("date", String.valueOf(creationDate)).with("creator", invocation.getAuthor().getId())).run(RubiconBot.getRethink().connection);
-                            Cursor cursor = RubiconBot.getRethink().db.table("keys").filter(RubiconBot.getRethink().rethinkDB.hashMap("date", String.valueOf(creationDate))).run(RubiconBot.getRethink().connection);
+                            RubiconBot.getRethink().db.table("keys").insert(RubiconBot.getRethink().rethinkDB.hashMap("type", "premium").with("date", String.valueOf(creationDate)).with("creator", invocation.getAuthor().getId())).run(RubiconBot.getRethink().getConnection());
+                            Cursor cursor = RubiconBot.getRethink().db.table("keys").filter(RubiconBot.getRethink().rethinkDB.hashMap("date", String.valueOf(creationDate))).run(RubiconBot.getRethink().getConnection());
                             List l = cursor.toList();
                             Map map = (Map) l.get(0);
                             try {
@@ -52,8 +52,8 @@ public class CommandKey extends CommandHandler {
                             }
                             break;
                         case "beta":
-                            RubiconBot.getRethink().db.table("keys").insert(RubiconBot.getRethink().rethinkDB.hashMap("type", "beta").with("date", String.valueOf(creationDate)).with("creator", invocation.getAuthor().getId())).run(RubiconBot.getRethink().connection);
-                            Cursor cursor1 = RubiconBot.getRethink().db.table("keys").filter(RubiconBot.getRethink().rethinkDB.hashMap("date", String.valueOf(creationDate))).run(RubiconBot.getRethink().connection);
+                            RubiconBot.getRethink().db.table("keys").insert(RubiconBot.getRethink().rethinkDB.hashMap("type", "beta").with("date", String.valueOf(creationDate)).with("creator", invocation.getAuthor().getId())).run(RubiconBot.getRethink().getConnection());
+                            Cursor cursor1 = RubiconBot.getRethink().db.table("keys").filter(RubiconBot.getRethink().rethinkDB.hashMap("date", String.valueOf(creationDate))).run(RubiconBot.getRethink().getConnection());
                             List l1 = cursor1.toList();
                             Map map1 = (Map) l1.get(0);
                             try {
@@ -68,18 +68,18 @@ public class CommandKey extends CommandHandler {
                     return createHelpMessage(invocation);
                 break;
             default:
-                Cursor cursor = RubiconBot.getRethink().db.table("keys").filter(RubiconBot.getRethink().rethinkDB.hashMap("id", invocation.getArgs()[0])).run(RubiconBot.getRethink().connection);
+                Cursor cursor = RubiconBot.getRethink().db.table("keys").filter(RubiconBot.getRethink().rethinkDB.hashMap("id", invocation.getArgs()[0])).run(RubiconBot.getRethink().getConnection());
                 List l = cursor.toList();
                 if (l.size() == 1) {
                     Map map = (Map) l.get(0);
                     switch (String.valueOf(map.get("type"))) {
                         case "premium":
                             RubiconUser.fromUser(invocation.getAuthor()).setPremium(CommandPremium.PREMIUM_TIME);
-                            RubiconBot.getRethink().db.table("keys").filter(RubiconBot.getRethink().rethinkDB.hashMap("id", invocation.getArgs()[0])).delete().run(RubiconBot.getRethink().connection);
+                            RubiconBot.getRethink().db.table("keys").filter(RubiconBot.getRethink().rethinkDB.hashMap("id", invocation.getArgs()[0])).delete().run(RubiconBot.getRethink().getConnection());
                             return message(success(invocation.translate("command.key.redeem"), invocation.translate("command.key.redeem.premium")));
                         case "beta":
                             RubiconGuild.fromGuild(invocation.getGuild()).setBeta(true);
-                            RubiconBot.getRethink().db.table("keys").filter(RubiconBot.getRethink().rethinkDB.hashMap("id", invocation.getArgs()[0])).delete().run(RubiconBot.getRethink().connection);
+                            RubiconBot.getRethink().db.table("keys").filter(RubiconBot.getRethink().rethinkDB.hashMap("id", invocation.getArgs()[0])).delete().run(RubiconBot.getRethink().getConnection());
                             return message(success(invocation.translate("command.key.redeem"), invocation.translate("command.key.redeem.beta")));
                         default:
                             return message(error(invocation.translate("command.key.type.title"), invocation.translate("command.key.type.description")));

@@ -65,7 +65,7 @@ public class CommandMute extends CommandHandler implements PunishmentHandler {
 
     @Override
     public void loadPunishments() {
-        Cursor cursor = RubiconBot.getRethink().db.table("punishments").filter(RubiconBot.getRethink().rethinkDB.hashMap("type", "mute")).run(RubiconBot.getRethink().connection);
+        Cursor cursor = RubiconBot.getRethink().db.table("punishments").filter(RubiconBot.getRethink().rethinkDB.hashMap("type", "mute")).run(RubiconBot.getRethink().getConnection());
         for (Object obj : cursor) {
             Map map = (Map) obj;
             if ((long) map.get("expiry") == 1L) return;

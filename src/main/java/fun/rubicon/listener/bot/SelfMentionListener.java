@@ -17,7 +17,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 public class SelfMentionListener extends ListenerAdapter {
 
-    private final String[] RUBICON_EMOJIS = {"\uD83D\uDEE0", "\uD83C\uDDF7", "\uD83C\uDDFA", "\uD83C\uDDE7", "\uD83C\uDDEE", "\uD83C\uDDE8", "\uD83C\uDDF4", "\uD83C\uDDF3"};
+    private final String[] RUBICON_EMOJIS = {"\uD83C\uDDF7", "\uD83C\uDDFA", "\uD83C\uDDE7", "\uD83C\uDDEE", "\uD83C\uDDE8", "\uD83C\uDDF4", "\uD83C\uDDF3"};
 
 
     @Override
@@ -31,7 +31,7 @@ public class SelfMentionListener extends ListenerAdapter {
                             new EmbedBuilder()
                                     .setColor(Colors.COLOR_SECONDARY)
                                     .setAuthor(event.getJDA().getSelfUser().getName(), null, event.getJDA().getSelfUser().getAvatarUrl())
-                                    .setDescription("Hey, I am Rubicon and here to help **you**!\n**WARNING**: Canary build!! This build is not finished")
+                                    .setDescription("Hey, I am Rubicon and here to help **you**!\n")
                                     .addField("**Prefix**", "`" + guild.getPrefix() + "`", false)
                                     .addField("**Documentation**", "[rubicon.fun](https://rubicon.fun)", false)
                                     .build()

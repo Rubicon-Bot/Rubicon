@@ -48,7 +48,7 @@ public class RubiconGuild extends RethinkHelper {
     }
 
     public void setPrefix(String prefix) {
-        dbGuild.update(rethink.rethinkDB.hashMap("prefix", prefix)).run(rethink.connection);
+        dbGuild.update(rethink.rethinkDB.hashMap("prefix", prefix)).run(rethink.getConnection());
     }
 
     public String getPrefix() {
@@ -57,57 +57,67 @@ public class RubiconGuild extends RethinkHelper {
     }
 
     public void deleteMuteSettings() {
-        rethink.db.table("mutesettings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection);
+        rethink.db.table("mutesettings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection());
     }
 
     public boolean hasJoinMessagesEnabled() {
-        return exist(rethink.db.table("joinmessages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection));
+        return exist(rethink.db.table("joinmessages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection()));
     }
 
-    public void setJoinMessage(String text, long channelId) {
-        rethink.db.table("joinmessages").insert(
-                rethink.rethinkDB.array(
-                        rethink.rethinkDB.hashMap("guildId", guild.getId())
-                                .with("message", text)
-                                .with("channel", channelId)
-                )).run(rethink.connection);
+    public void setJoinMessage(String text, String channelId) {
+        if (!hasJoinMessagesEnabled())
+            rethink.db.table("joinmessages").insert(
+                    rethink.rethinkDB.array(
+                            rethink.rethinkDB.hashMap("guildId", guild.getId())
+                                    .with("message", text)
+                                    .with("channel", channelId)
+                    )).run(rethink.getConnection());
+        else
+            rethink.db.table("joinmessages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(
+                    rethink.rethinkDB.hashMap("message", text)
+                            .with("channel", channelId)
+            ).run(rethink.getConnection());
     }
 
     public CommandJoinMessage.JoinMessage getJoinMessage() {
-        Cursor cursor = rethink.db.table("joinmessages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection);
-        String message = getString(cursor, "message");
-        long channel = getLong(cursor, "channel");
+        Cursor cursor = rethink.db.table("joinmessages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection());
+        List<Map<String, String>> list = cursor.toList();
+        if (list.size() == 0)
+            return null;
+        Map map = list.get(0);
+        String message = (String) map.get("message");
+        String channel = (String) map.get("channel");
         return new CommandJoinMessage.JoinMessage(channel, message);
     }
 
     public void setJoinMessage(String text) {
-        rethink.db.table("joinmessages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(rethink.rethinkDB.hashMap("message", text)).run(rethink.connection);
+        rethink.db.table("joinmessages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(rethink.rethinkDB.hashMap("message", text)).run(rethink.getConnection());
     }
 
-    public void setJoinMessage(long channel) {
-        rethink.db.table("joinmessages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(rethink.rethinkDB.hashMap("channel", channel)).run(rethink.connection);
+    public void setJoinMessageChannel(String channel) {
+        rethink.db.table("joinmessages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(rethink.rethinkDB.hashMap("channel", channel)).run(rethink.getConnection());
 
     }
 
     public void deleteJoinMessage() {
-        rethink.db.table("joinmessages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).delete().run(rethink.connection);
+        rethink.db.table("joinmessages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).delete().run(rethink.getConnection());
     }
 
 
     public void enableJoinImages(String channelId) {
-        rethink.db.table("joinimages").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("channel", channelId))).run(rethink.connection);
+        rethink.db.table("joinimages").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("channel", channelId))).run(rethink.getConnection());
     }
 
     public void disableJoinImages() {
-        rethink.db.table("joinimages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).delete().run(rethink.connection);
+        rethink.db.table("joinimages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).delete().run(rethink.getConnection());
     }
 
     public boolean hasJoinImagesEnabled() {
-        return exist(rethink.db.table("joinimages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection));
+        return exist(rethink.db.table("joinimages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection()));
     }
 
     public String getJoinImageChannel() {
-        return getString(rethink.db.table("joinimages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection), "channel");
+        return getString(rethink.db.table("joinimages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection()), "channel");
     }
 
     public Role getMutedRole() {
@@ -123,44 +133,56 @@ public class RubiconGuild extends RethinkHelper {
             return mute;
         }
         guild.getTextChannels().forEach(tc -> {
-            if (tc.getPermissionOverride(mute) != null) return;
-            PermissionOverride override = tc.createPermissionOverride(mute).complete();
-            override.getManager().deny(Permission.MESSAGE_WRITE).queue();
+            if (guild.getSelfMember().hasPermission(tc, Permission.MANAGE_PERMISSIONS)) {
+                if (tc.getPermissionOverride(mute) != null) return;
+                PermissionOverride override = tc.createPermissionOverride(mute).complete();
+                override.getManager().deny(Permission.MESSAGE_WRITE).queue();
+            }
         });
         return mute;
     }
 
     public boolean hasLeaveMessagesEnabled() {
-        return exist(rethink.db.table("leavemessages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection));
+        return exist(rethink.db.table("leavemessages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection()));
     }
 
-    public void setLeaveMessage(String text, long channelId) {
-        rethink.db.table("leavemessages").insert(
-                rethink.rethinkDB.array(
-                        rethink.rethinkDB.hashMap("guildId", guild.getId())
-                                .with("message", text)
-                                .with("channel", channelId)
-                )).run(rethink.connection);
+    public void setLeaveMessage(String text, String channelId) {
+        if (!hasLeaveMessagesEnabled())
+            rethink.db.table("leavemessages").insert(
+                    rethink.rethinkDB.array(
+                            rethink.rethinkDB.hashMap("guildId", guild.getId())
+                                    .with("message", text)
+                                    .with("channel", channelId)
+                    )).run(rethink.getConnection());
+        else
+            rethink.db.table("leavemessages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(
+                            rethink.rethinkDB.hashMap("message", text)
+                                    .with("channel", channelId)
+                    ).run(rethink.getConnection());
     }
 
     public CommandLeaveMessage.LeaveMessage getLeaveMessage() {
-        Cursor cursor = rethink.db.table("leavemessages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection);
-        String message = getString(cursor, "message");
-        long channel = getLong(cursor, "channel");
+        Cursor cursor = rethink.db.table("leavemessages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection());
+        List<Map<String, String>> list = cursor.toList();
+        if (list.size() == 0)
+            return null;
+        Map map = list.get(0);
+        String message = (String) map.get("message");
+        String channel = (String) map.get("channel");
         return new CommandLeaveMessage.LeaveMessage(channel, message);
     }
 
     public void setLeaveMessage(String text) {
-        rethink.db.table("leavemessages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(rethink.rethinkDB.hashMap("message", text)).run(rethink.connection);
+        rethink.db.table("leavemessages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(rethink.rethinkDB.hashMap("message", text)).run(rethink.getConnection());
     }
 
-    public void setLeaveMessage(long channel) {
-        rethink.db.table("joinmessages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(rethink.rethinkDB.hashMap("channel", channel)).run(rethink.connection);
+    public void setLeaveMessageChannel(String channel) {
+        rethink.db.table("joinmessages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(rethink.rethinkDB.hashMap("channel", channel)).run(rethink.getConnection());
 
     }
 
     public void deleteLeaveMessage() {
-        rethink.db.table("leavemessages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).delete().run(rethink.connection);
+        rethink.db.table("leavemessages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).delete().run(rethink.getConnection());
     }
 
     public boolean isAutochannel(String channelId) {
@@ -173,7 +195,7 @@ public class RubiconGuild extends RethinkHelper {
         if (autochannelEntryExist())
             updateAutochannels(oldIds);
         else
-            rethink.db.table("autochannels").insert(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("channels", oldIds)).run(rethink.connection);
+            rethink.db.table("autochannels").insert(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("channels", oldIds)).run(rethink.getConnection());
     }
 
     public void deleteAutochannel(String channelId) {
@@ -183,12 +205,12 @@ public class RubiconGuild extends RethinkHelper {
     }
 
     private void updateAutochannels(List<String> list) {
-        rethink.db.table("autochannels").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(rethink.rethinkDB.hashMap("channels", list)).run(rethink.connection);
+        rethink.db.table("autochannels").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(rethink.rethinkDB.hashMap("channels", list)).run(rethink.getConnection());
 
     }
 
     public List<String> getAutochannels() {
-        Cursor cursor = rethink.db.table("autochannels").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection);
+        Cursor cursor = rethink.db.table("autochannels").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection());
         List<?> list = cursor.toList();
         if (list.isEmpty())
             return new ArrayList<>();
@@ -196,7 +218,7 @@ public class RubiconGuild extends RethinkHelper {
     }
 
     private boolean autochannelEntryExist() {
-        Cursor cursor = rethink.db.table("autochannels").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection);
+        Cursor cursor = rethink.db.table("autochannels").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection());
         return cursor.toList().size() > 0;
     }
 
@@ -204,50 +226,50 @@ public class RubiconGuild extends RethinkHelper {
     public void setAutorole(String roleId) {
         if (hasAutoroleEnabled())
             disableAutorole();
-        rethink.db.table("autoroles").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("role", roleId))).run(rethink.connection);
+        rethink.db.table("autoroles").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("role", roleId))).run(rethink.getConnection());
     }
 
     public String getAutorole() {
-        return getString(rethink.db.table("autoroles").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection), "role");
+        return getString(rethink.db.table("autoroles").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection()), "role");
     }
 
     public boolean hasAutoroleEnabled() {
-        return exist(rethink.db.table("autoroles").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection));
+        return exist(rethink.db.table("autoroles").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection()));
     }
 
     public void disableAutorole() {
-        rethink.db.table("autoroles").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).delete().run(rethink.connection);
+        rethink.db.table("autoroles").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).delete().run(rethink.getConnection());
     }
 
     private Cursor retrieve() {
-        return dbGuild.run(rethink.connection);
+        return dbGuild.run(rethink.getConnection());
     }
 
     public boolean isVerificationEnabled() {
-        Cursor cursor = rethink.db.table("verification_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection);
+        Cursor cursor = rethink.db.table("verification_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection());
         return cursor.toList().size() >= 1;
     }
 
     public void disableVerification() {
-        rethink.db.table("verification_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).delete().run(rethink.connection);
+        rethink.db.table("verification_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).delete().run(rethink.getConnection());
     }
 
     public TextChannel getVerificationChannel() {
-        Cursor cursor = rethink.db.table("verification_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection);
+        Cursor cursor = rethink.db.table("verification_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection());
         Map map = (Map) cursor.toList().get(0);
         String channelId = (String) map.get("channelId");
         return guild.getTextChannelById(channelId);
     }
 
     public Role getVerificationRole() {
-        Cursor cursor = rethink.db.table("verification_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection);
+        Cursor cursor = rethink.db.table("verification_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection());
         Map map = (Map) cursor.toList().get(0);
         String channelId = (String) map.get("roleId");
         return guild.getRoleById(channelId);
     }
 
     public String getVerificationKickText() {
-        Cursor cursor = rethink.db.table("verification_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection);
+        Cursor cursor = rethink.db.table("verification_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection());
         Map map = (Map) cursor.toList().get(0);
         return (String) map.get("kickText");
     }
@@ -257,7 +279,7 @@ public class RubiconGuild extends RethinkHelper {
     }
 
     public void setPortal(String rootGuildId) {
-        dbGuild.update(rethink.rethinkDB.hashMap("portal", rootGuildId)).run(rethink.connection);
+        dbGuild.update(rethink.rethinkDB.hashMap("portal", rootGuildId)).run(rethink.getConnection());
     }
 
     public String getPortalRoot() {
@@ -265,40 +287,39 @@ public class RubiconGuild extends RethinkHelper {
     }
 
     public void closePortal() {
-        dbGuild.update(rethink.rethinkDB.hashMap("portal", null)).run(rethink.connection);
-    }
-
-    public boolean isSearchingPortalPartner() {
-        String res = getString(retrieve(), "portal");
-        return res != null && res.equals("SEARCH");
+        dbGuild.update(rethink.rethinkDB.hashMap("portal", null)).run(rethink.getConnection());
     }
 
     public void setPortalEmbeds(boolean state) {
         rethink.db.table("portal_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId()))
-                .update(rethink.rethinkDB.hashMap("embeds", state)).run(rethink.connection);
+                .update(rethink.rethinkDB.hashMap("embeds", state)).run(rethink.getConnection());
     }
 
     public void setPortalInvites(boolean state) {
         rethink.db.table("portal_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId()))
-                .update(rethink.rethinkDB.hashMap("invites", state)).run(rethink.connection);
+                .update(rethink.rethinkDB.hashMap("invites", state)).run(rethink.getConnection());
+    }
+
+    public boolean allowsPortalInvites() {
+        return getBoolean(rethink.db.table("portal_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection()), "invites");
     }
 
     public boolean hasPortalEmbedsEnables() {
-        return getBoolean(rethink.db.table("portal_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection), "embeds");
+        return getBoolean(rethink.db.table("portal_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection()), "embeds");
     }
 
     public void deletePortalSettings() {
-        rethink.db.table("portal_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).delete().run(rethink.connection);
+        rethink.db.table("portal_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).delete().run(rethink.getConnection());
     }
 
     private void createPortalSettingsOfNotExist() {
-        Cursor cursor = rethink.db.table("portal_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection);
+        Cursor cursor = rethink.db.table("portal_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection());
         if (cursor.toList().size() == 0)
-            rethink.db.table("portal_settings").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("guildId", guild.getId()))).run(rethink.connection);
+            rethink.db.table("portal_settings").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("invites", true))).run(rethink.getConnection());
     }
 
     public void delete() {
-        dbGuild.delete().run(rethink.connection);
+        dbGuild.delete().run(rethink.getConnection());
         deletePortalSettings();
     }
 
@@ -309,25 +330,25 @@ public class RubiconGuild extends RethinkHelper {
     private void createIfNotExist() {
         if (exist())
             return;
-        rethink.db.table("guilds").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("guildId", guild.getId()))).run(rethink.connection);
+        rethink.db.table("guilds").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("guildId", guild.getId()))).run(rethink.getConnection());
     }
 
     public boolean isBeta() {
-        Cursor cursor = rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection);
+        Cursor cursor = rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection());
         Map map = (Map) cursor.toList().get(0);
         return map.get("beta") != null;
     }
 
     public void setBeta(boolean state) {
         if (state) {
-            rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(rethink.rethinkDB.hashMap("beta", 1)).run(rethink.connection);
+            rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(rethink.rethinkDB.hashMap("beta", 1)).run(rethink.getConnection());
         } else
-            rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(rethink.rethinkDB.hashMap("beta", null)).run(rethink.connection);
+            rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(rethink.rethinkDB.hashMap("beta", null)).run(rethink.getConnection());
     }
 
     private List<String> getRankIDs() {
         List<String> idList = new ArrayList<>();
-        Cursor cursor = rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.connection);
+        Cursor cursor = rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection());
         Map map = (Map) cursor.toList().get(0);
         return ((List<List<String>>) map.get("ranks")).get(0);
     }
@@ -351,8 +372,6 @@ public class RubiconGuild extends RethinkHelper {
     }
 
     public boolean isRank(Role role) {
-        Logger.debug(getRankIDs().toString());
-        Logger.debug(role.getId());
         return getRankIDs().contains(role.getId());
     }
 
@@ -378,11 +397,11 @@ public class RubiconGuild extends RethinkHelper {
     }
 
     private void updateRanks(List<String> idList) {
-        rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(rethink.rethinkDB.hashMap("ranks", rethink.rethinkDB.array(idList))).run(rethink.connection);
+        rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(rethink.rethinkDB.hashMap("ranks", rethink.rethinkDB.array(idList))).run(rethink.getConnection());
     }
 
     public void deletePoll(){
-        rethink.db.table("votes").filter(rethink.rethinkDB.hashMap("guild", guild.getId())).delete().run(rethink.connection);
+        rethink.db.table("votes").filter(rethink.rethinkDB.hashMap("guild", guild.getId())).delete().run(rethink.getConnection());
     }
 
     public static RubiconGuild fromGuild(Guild guild) {

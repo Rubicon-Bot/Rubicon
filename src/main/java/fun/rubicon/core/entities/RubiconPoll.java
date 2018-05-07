@@ -107,11 +107,11 @@ public class RubiconPoll implements Serializable{
     public RubiconPoll savePoll(){
         /*Delete old poll*/
         delete();
-        rethink.db.table("votes").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("creator", creator).with("heading", heading).with("answers", answers).with("pollmsgs", pollmsgs).with("votes", votes).with("reacts", reacts).with("guild", guild))).run(rethink.connection);        return this;
+        rethink.db.table("votes").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("creator", creator).with("heading", heading).with("answers", answers).with("pollmsgs", pollmsgs).with("votes", votes).with("reacts", reacts).with("guild", guild))).run(rethink.getConnection());        return this;
     }
 
     public boolean delete(){
-        rethink.db.table("votes").filter(rethink.rethinkDB.hashMap("guild", guild)).delete().run(rethink.connection);
+        rethink.db.table("votes").filter(rethink.rethinkDB.hashMap("guild", guild)).delete().run(rethink.getConnection());
         return true;
     }
 

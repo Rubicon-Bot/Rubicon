@@ -25,7 +25,7 @@ public class VerificationLoader {
 
     public void loadVerificationCache(){
         new Thread(() -> {
-        Cursor cursor = RubiconBot.getRethink().db.table("verification_users").run(RubiconBot.getRethink().connection);
+        Cursor cursor = RubiconBot.getRethink().db.table("verification_users").run(RubiconBot.getRethink().getConnection());
         for(Object obj : cursor){
             Map map = (Map) obj;
             Guild guild = RubiconBot.getShardManager().getGuildById((String) map.get("guildId"));
@@ -44,12 +44,12 @@ public class VerificationLoader {
                                 member.getUser().openPrivateChannel().complete().sendMessage(rubiconGuild.getVerificationKickText().replace("%user%", member.getUser().getAsMention()).replace("%guild%", guild.getName()).replace("%invite%", rubiconGuild.getVerificationChannel().createInvite().setMaxUses(1).complete().getURL())).queue();
                                 guild.getController().kick(member).reason("Rules not accepted").queue();
                             }
-                            rethink.db.table("verification_users").filter(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("userId", member.getUser().getId())).delete().run(rethink.connection);
+                            rethink.db.table("verification_users").filter(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("userId", member.getUser().getId())).delete().run(rethink.getConnection());
                         } catch (Exception ignored) { }
                     }
                 }, new Date((long) map.get("expiry")));
             } else {
-                rethink.db.table("verification_users").filter(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("userId", member.getUser().getId())).delete().run(rethink.connection);
+                rethink.db.table("verification_users").filter(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("userId", member.getUser().getId())).delete().run(rethink.getConnection());
             }
         }
         }, "VerificationCacheLoadingThread").start();
