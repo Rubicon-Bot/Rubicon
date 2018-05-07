@@ -158,7 +158,9 @@ public abstract class RubiconUserImpl extends RethinkHelper {
 
     public boolean isAFK() {
         try {
-            return getAFKState() == null || !getAFKState().equals("");
+            if(getAFKState() == null)
+                return false;
+            return !getAFKState().equals("");
         } catch (NullPointerException e) {
             return false;
         }
