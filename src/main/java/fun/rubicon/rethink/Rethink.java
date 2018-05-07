@@ -43,7 +43,7 @@ public class Rethink {
                 System.exit(1);
             }
             RethinkConnectionPoolBuilder builder = new RethinkConnectionPoolBuilder();
-            builder.hostname(host).port(port).username(user).password(password).maxConnections(10);
+            builder.hostname(host).port(port).username(user).password(password).maxConnections(50);
             pool = builder.build();
             connection = pool.getConnection();
             db = rethinkDB.db(dbName);
