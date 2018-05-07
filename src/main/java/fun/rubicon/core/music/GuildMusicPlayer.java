@@ -389,6 +389,7 @@ public class GuildMusicPlayer extends MusicPlayer {
         embedBuilder.addField(invocation.translate("command.play.loadTrack.title"), t.name, true);
         embedBuilder.addField(invocation.translate("command.play.loadTrack.author"), t.author, true);
         embedBuilder.addField(invocation.translate("command.play.loadTrack.duration"), t.isStream ? invocation.translate("command.play.loadTrack.stream") : getTimestamp(t.duration), false);
+        embedBuilder.setThumbnail(new YouTubeVideo(t.url).getThumbnail());
         embedBuilder.setColor(Colors.COLOR_SECONDARY);
 
         SafeMessage.sendMessage(invocation.getTextChannel(), embedBuilder.build(), 30);
@@ -437,6 +438,7 @@ public class GuildMusicPlayer extends MusicPlayer {
         embedBuilder.addField(TranslationUtil.translate(event.getAuthor(), "command.play.loadTrack.author"), trackData.author, true);
         embedBuilder.addField(TranslationUtil.translate(event.getAuthor(), "command.play.loadTrack.duration"), trackData.isStream ? TranslationUtil.translate(event.getAuthor(), "command.play.loadTrack.stream") : getTimestamp(trackData.duration), false);
         embedBuilder.setColor(Colors.COLOR_PRIMARY);
+        embedBuilder.setThumbnail(new YouTubeVideo(trackData.url).getThumbnail());
         SafeMessage.sendMessage(event.getTextChannel(), embedBuilder.build());
         storage.get(0).getMessage().delete().queue();
         musicChoose.remove(storage.get(0));
