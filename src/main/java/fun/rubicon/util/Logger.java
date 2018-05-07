@@ -165,6 +165,7 @@ public class Logger {
         return logFile;
     }
 
+
     public enum LoggerLevel {
         INFO, DEBUG, ERROR, THROWABLE, WARNING
     }
