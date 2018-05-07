@@ -8,6 +8,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandManager;
+import fun.rubicon.core.entities.YouTubeVideo;
 import fun.rubicon.core.translation.TranslationUtil;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
@@ -140,6 +141,7 @@ public class GuildMusicPlayer extends MusicPlayer {
                         embedBuilder.addField(invocation.translate("command.play.loadTrack.title"), trackData.name, true);
                         embedBuilder.addField(invocation.translate("command.play.loadTrack.author"), trackData.author, true);
                         embedBuilder.addField(invocation.translate("command.play.loadTrack.duration"), trackData.isStream ? invocation.translate("command.play.loadTrack.stream") : getTimestamp(trackData.duration), false);
+                        embedBuilder.setThumbnail(new YouTubeVideo(trackData.url).getThumbnail());
                         embedBuilder.setColor(Colors.COLOR_PRIMARY);
                         SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(embedBuilder));
                     }
@@ -153,6 +155,7 @@ public class GuildMusicPlayer extends MusicPlayer {
                     embedBuilder.addField(invocation.translate("command.play.loadTrack.title"), trackData.name, true);
                     embedBuilder.addField(invocation.translate("command.play.loadTrack.author"), trackData.author, true);
                     embedBuilder.addField(invocation.translate("command.play.loadTrack.duration"), trackData.isStream ? invocation.translate("command.play.loadTrack.stream") : getTimestamp(trackData.duration), false);
+                    embedBuilder.setThumbnail(new YouTubeVideo(trackData.url).getThumbnail());
                     embedBuilder.setColor(Colors.COLOR_PRIMARY);
                     SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(embedBuilder));
                 }

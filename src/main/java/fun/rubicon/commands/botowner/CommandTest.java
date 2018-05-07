@@ -3,6 +3,7 @@ package fun.rubicon.commands.botowner;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
+import fun.rubicon.core.entities.YouTubeVideo;
 import fun.rubicon.core.rpg.inventory.RPGInventory;
 import fun.rubicon.core.rpg.inventory.RPGInventoryItem;
 import fun.rubicon.permission.PermissionRequirements;
@@ -20,7 +21,7 @@ public class CommandTest extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
-        RPGInventory inventory = RPGInventory.fromUser(invocation.getAuthor());
+        /*RPGInventory inventory = RPGInventory.fromUser(invocation.getAuthor());
         if(invocation.getArgs().length != 3)
             return createHelpMessage();
         switch (invocation.getArgs()[0]) {
@@ -30,7 +31,7 @@ public class CommandTest extends CommandHandler {
             case "remove":
                 inventory.addItem(new RPGInventoryItem(Integer.parseInt(invocation.getArgs()[1]), Integer.parseInt(invocation.getArgs()[2])));
                 return message(success("Removed", "Successfully removed item."));
-        }
+        }*/
         return null;
     }
 }
