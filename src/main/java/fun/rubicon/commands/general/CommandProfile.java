@@ -48,7 +48,7 @@ import java.util.Arrays;
 
     private void generateProfile(Member member, TextChannel textChannel) {
         User user = member.getUser();
-        RubiconUser rubiconUser = new RubiconUser(user);
+        RubiconUser rubiconUser = RubiconUser.fromUser(user);
 
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setColor(Colors.COLOR_PRIMARY);

@@ -9,6 +9,7 @@ package fun.rubicon.core.entities;
 import com.rethinkdb.gen.ast.Filter;
 import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
+import fun.rubicon.core.entities.impl.RubiconUserImpl;
 import fun.rubicon.core.translation.TranslationUtil;
 import fun.rubicon.rethink.Rethink;
 import fun.rubicon.util.StringUtil;
@@ -22,7 +23,7 @@ import java.util.*;
 /**
  * @author Yannick Seeger / ForYaSee, Michael Rittmeister / Schlaubi
  */
-public class RubiconMember extends RubiconUserImpl{
+public class RubiconMember extends RubiconUserImpl {
 
     private Member member;
     private Guild guild;
@@ -30,7 +31,7 @@ public class RubiconMember extends RubiconUserImpl{
     private final Filter dbMember;
 
     public RubiconMember(Member member) {
-        super(member.getUser());
+        super(RubiconUser.fromUser(member.getUser()));
         this.member = member;
         this.guild = member.getGuild();
         this.rethink = RubiconBot.getRethink();
