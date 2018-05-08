@@ -33,7 +33,7 @@ public abstract class RubiconUserImpl extends RethinkHelper {
     protected User user = null;
     private String userId = null;
     private String bio = null;
-    private int money = 0;
+    private long money = 0;
     private long premium = 0;
     private String language = null;
     private String afk = null;
@@ -45,7 +45,7 @@ public abstract class RubiconUserImpl extends RethinkHelper {
 
     private static RubiconUserCache userCache = new RubiconUserCache();
 
-    public RubiconUserImpl(User user, String bio, int money, long premium, String language, String afk, HashMap<String, List<String>> playlists) {
+    public RubiconUserImpl(User user, String bio, long money, long premium, String language, String afk, HashMap<String, List<String>> playlists) {
         this.user = user;
         this.userId = user.getId();
         this.bio = bio;
@@ -96,21 +96,21 @@ public abstract class RubiconUserImpl extends RethinkHelper {
         return bio;
     }
 
-    public void setMoney(int amount) {
+    public void setMoney(long amount) {
         this.money = amount;
         update();
         dbUser.update(rethink.rethinkDB.hashMap("money", amount)).run(rethink.getConnection());
     }
 
-    public int getMoney() {
+    public long getMoney() {
         return money;
     }
 
-    public void addMoney(int amount) {
+    public void addMoney(long amount) {
         setMoney(getMoney() + amount);
     }
 
-    public void removeMoney(int amount) {
+    public void removeMoney(long amount) {
         setMoney(getMoney() - amount);
     }
 
