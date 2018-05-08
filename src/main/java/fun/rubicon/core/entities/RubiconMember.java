@@ -31,7 +31,7 @@ public class RubiconMember extends RubiconUserImpl {
     private final Filter dbMember;
 
     public RubiconMember(Member member) {
-        super(RubiconUser.getUserCache().getUser(member.getUser()));
+        super(RubiconUser.fromUser(member.getUser()));
         this.member = member;
         this.guild = member.getGuild();
         this.rethink = RubiconBot.getRethink();
