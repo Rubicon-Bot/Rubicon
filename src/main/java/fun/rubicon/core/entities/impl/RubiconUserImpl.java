@@ -67,7 +67,7 @@ public abstract class RubiconUserImpl extends RethinkHelper {
         if(map == null)
             return;
         this.bio = map.containsKey("bio") ? (String) map.get("bio") : "No bio set.";
-        this.money = map.containsKey("money") ? (Integer) map.get("money") : 0;
+        this.money = map.containsKey("money") ? (Long) map.get("money") : 0;
         this.premium = map.containsKey("premium") ? (Long) map.get("premium") : 0;
         this.language = map.containsKey("language") ? (String) map.get("language") : "en-US";
         this.afk = map.containsKey("afk") ? (String) map.get("afk") : null;
