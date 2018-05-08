@@ -64,7 +64,7 @@ public class CommandPremium extends CommandHandler {
                 if ((author.isPremium())) {
                     return message(EmbedUtil.info(invocation.translate("command.premium.already.title"), invocation.translate("command.premium.until")+" " + author.formatExpiryDate().replace("%","")));
                 }
-                long userMoney = author.getMoney();
+                int userMoney = author.getMoney();
                 if (userMoney - PriceList.PREMIUM.getPrice() >= 0) {
                     author.setPremium(PREMIUM_TIME);
                     author.setMoney(userMoney - PriceList.PREMIUM.getPrice());

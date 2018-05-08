@@ -11,9 +11,11 @@ import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.settings.CommandJoinMessage;
 import fun.rubicon.commands.settings.CommandLeaveMessage;
+import fun.rubicon.core.entities.cache.RubiconGuildCache;
 import fun.rubicon.rethink.Rethink;
 import fun.rubicon.rethink.RethinkHelper;
 import fun.rubicon.util.Info;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.PermissionOverride;
@@ -28,18 +30,39 @@ import java.util.Map;
 /**
  * @author Yannick Seeger / ForYaSee
  */
-public class RubiconGuild extends RethinkHelper {
+public class RubiconGuild extends RubiconGuildCache {
 
+
+    private String prefix;
     private Guild guild;
     private Rethink rethink;
-    private final Filter dbGuild;
+    private Filter dbGuild;
 
-    public RubiconGuild(Guild guild) {
+    private static RubiconGuildCache cache = new RubiconGuildCache();
+
+    public RubiconGuild() {
+        createPortalSettingsOfNotExist();
+    }
+
+    public RubiconGuild(Guild guild, String prefix) {
+        this.prefix = prefix;
         this.guild = guild;
+
+        initRethink();
+    }
+
+    public RubiconGuild(Guild guild, HashMap<String, ?> map) {
+        this.guild = guild;
+        if(map == null)
+            return;
+        prefix = map.containsKey("prefix") ? (String) map.get("prefix") : Info.BOT_DEFAULT_PREFIX;
+
+        initRethink();
+    }
+
+    private void initRethink() {
         this.rethink = RubiconBot.getRethink();
         dbGuild = rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId()));
-        createIfNotExist();
-        createPortalSettingsOfNotExist();
     }
 
     public Guild getGuild() {
@@ -47,12 +70,13 @@ public class RubiconGuild extends RethinkHelper {
     }
 
     public void setPrefix(String prefix) {
+        this.prefix = prefix;
         dbGuild.update(rethink.rethinkDB.hashMap("prefix", prefix)).run(rethink.getConnection());
+        cache.update(guild.getId(), this);
     }
 
     public String getPrefix() {
-        String prefix = getString(retrieve(), "prefix");
-        return prefix == null ? Info.BOT_DEFAULT_PREFIX : prefix;
+        return prefix;
     }
 
     public void deleteMuteSettings() {
@@ -155,9 +179,9 @@ public class RubiconGuild extends RethinkHelper {
                     )).run(rethink.getConnection());
         else
             rethink.db.table("leavemessages").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(
-                            rethink.rethinkDB.hashMap("message", text)
-                                    .with("channel", channelId)
-                    ).run(rethink.getConnection());
+                    rethink.rethinkDB.hashMap("message", text)
+                            .with("channel", channelId)
+            ).run(rethink.getConnection());
     }
 
     public CommandLeaveMessage.LeaveMessage getLeaveMessage() {
@@ -317,21 +341,6 @@ public class RubiconGuild extends RethinkHelper {
             rethink.db.table("portal_settings").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("invites", true))).run(rethink.getConnection());
     }
 
-    public void delete() {
-        dbGuild.delete().run(rethink.getConnection());
-        deletePortalSettings();
-    }
-
-    private boolean exist() {
-        return retrieve().toList().size() != 0;
-    }
-
-    private void createIfNotExist() {
-        if (exist())
-            return;
-        rethink.db.table("guilds").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("guildId", guild.getId()))).run(rethink.getConnection());
-    }
-
     public boolean isBeta() {
         Cursor cursor = rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection());
         Map map = (Map) cursor.toList().get(0);
@@ -346,7 +355,6 @@ public class RubiconGuild extends RethinkHelper {
     }
 
     private List<String> getRankIDs() {
-        List<String> idList = new ArrayList<>();
         Cursor cursor = rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection());
         Map map = (Map) cursor.toList().get(0);
         return ((List<String>) map.get("ranks"));
@@ -399,11 +407,54 @@ public class RubiconGuild extends RethinkHelper {
         rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(rethink.rethinkDB.hashMap("ranks", idList)).run(rethink.getConnection());
     }
 
-    public void deletePoll(){
-        RubiconBot.getPollManager().deletePoll(guild.getId());
+    public void delete() {
+        dbGuild.delete().run(rethink.getConnection());
+        deletePortalSettings();
+        cache.remove(guild.getId());
+    }
+
+    public RubiconGuild create() {
+        rethink.db.table("guilds").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("guildId", guild.getId()))).run(rethink.getConnection());
+        return new RubiconGuild(guild, "rc!");
     }
 
     public static RubiconGuild fromGuild(Guild guild) {
-        return new RubiconGuild(guild);
+        RubiconGuild rubiconGuild = cache.getGuild(guild);
+        try {
+            if (rubiconGuild == null)
+                return rubiconGuild.create();
+        } catch (NullPointerException e) {
+
+        }
+        return rubiconGuild;
+    }
+
+    /* RETHINK HELPER*/
+    protected static String getString(Cursor cursor, String key) {
+        Map map = parse(cursor);
+        if (map == null) {
+            return null;
+        }
+        Object res = map.get(key);
+        return res == null ? null : String.valueOf(res);
+    }
+
+    public static boolean getBoolean(Cursor cursor, String key) {
+        Map map = parse(cursor);
+        if (map == null)
+            return false;
+        Object res = map.get(key);
+        return res != null && (boolean) res;
+    }
+
+    protected static boolean exist(Cursor cursor) {
+        return !cursor.toList().isEmpty();
+    }
+
+    protected static Map parse(Cursor cursor) {
+        List list = cursor.toList();
+        if (list.size() == 0)
+            return null;
+        return (Map) list.get(0);
     }
 }
