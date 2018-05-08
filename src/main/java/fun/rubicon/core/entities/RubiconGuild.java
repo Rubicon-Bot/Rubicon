@@ -346,7 +346,6 @@ public class RubiconGuild extends RethinkHelper {
     }
 
     private List<String> getRankIDs() {
-        List<String> idList = new ArrayList<>();
         Cursor cursor = rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection());
         Map map = (Map) cursor.toList().get(0);
         return ((List<String>) map.get("ranks"));

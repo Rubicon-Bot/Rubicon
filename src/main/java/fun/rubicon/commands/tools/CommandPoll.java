@@ -220,14 +220,6 @@ public class CommandPoll extends CommandHandler implements Serializable {
         channel.sendMessage(getParsedPoll(poll, message.getGuild(), parsedCommandInvocation).build()).queue();
         message.getTextChannel().sendMessage(EmbedUtil.success(parsedCommandInvocation.translate("command.poll.close.closed.title"), String.format(parsedCommandInvocation.translate("command.poll.close.closed.description"), author.getAsMention())).build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
         try {
-            poll.getPollmsgs().forEach((m, c) -> {
-                Message pollmsg = message.getGuild().getTextChannelById(c).getMessageById(m).complete();
-                pollmsg.editMessage(getParsedPoll(poll, message.getGuild(), parsedCommandInvocation).build()).queue();
-            });
-        } catch (ErrorResponseException e) {
-            //This is an empty Catch Block
-        }
-        try {
             poll.getPollMessages(parsedCommandInvocation.getMessage().getGuild()).forEach(m -> m.delete().queue());
         } catch (Exception ignored) {
 
