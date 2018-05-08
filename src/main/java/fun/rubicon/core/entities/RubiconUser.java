@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class RubiconUser extends RubiconUserImpl {
 
-    public RubiconUser(User user, String bio, int money, long premium, String language, String afk, HashMap<String, List<String>> playlists) {
+    public RubiconUser(User user, String bio, long money, long premium, String language, String afk, HashMap<String, List<String>> playlists) {
         super(user, bio, money, premium, language, afk, playlists);
     }
 
