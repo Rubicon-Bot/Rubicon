@@ -41,7 +41,7 @@ public class RethinkUtil {
         for (String table : tables) {
             try {
                 rethink.db.tableCreate(table).run(rethink.getConnection());
-                rethink.db.table(table).reconfigure().optArg("shards", 4).optArg("replicas", 1).run(rethink.getConnection());
+                rethink.db.table(table).reconfigure().optArg("shards", 3).optArg("replicas", 1).run(rethink.getConnection());
                 rethink.db.table(table).optArg("read_mode", "outdated").run(rethink.getConnection());
                 rethink.db.table(table).update(rethink.rethinkDB.hashMap("durability", "soft")).run(rethink.getConnection());
             } catch (ReqlOpFailedError ignored) {
