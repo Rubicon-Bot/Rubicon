@@ -40,7 +40,7 @@ public class CommandPremium extends CommandHandler {
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
         String[] args = invocation.getArgs();
-        RubiconUser author = new RubiconUser(invocation.getAuthor());
+        RubiconUser author = RubiconUser.fromUser(invocation.getAuthor());
         if(args.length == 0) {
             EmbedBuilder em = new EmbedBuilder();
         em.setAuthor(

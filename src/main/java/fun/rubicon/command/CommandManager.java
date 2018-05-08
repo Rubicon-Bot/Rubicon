@@ -182,7 +182,7 @@ public class CommandManager extends ListenerAdapter {
             this.jda = message.getJDA();
             this.argsString = message.getContentDisplay().replace(prefix + invocationCommand + " ", "");
 
-            RubiconGuild.fromGuild(message.getGuild());
+            //RubiconGuild.fromGuild(message.getGuild());
             RubiconMember.fromMember(message.getMember());
 
             this.defaultResourceBundle = RubiconBot.sGetTranslations().getDefaultTranslationLocale().getResourceBundle();

@@ -4,14 +4,18 @@
  * The full license text is available in the LICENSE file provided with this project.
  */
 
-package fun.rubicon.core.entities;
+package fun.rubicon.core.entities.impl;
 
 import com.rethinkdb.gen.ast.Filter;
+import com.rethinkdb.gen.ast.Table;
 import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
+import fun.rubicon.core.entities.RubiconUser;
+import fun.rubicon.core.entities.cache.RubiconUserCache;
 import fun.rubicon.core.translation.TranslationUtil;
-import fun.rubicon.rethink.RethinkHelper;
 import fun.rubicon.rethink.Rethink;
+import fun.rubicon.rethink.RethinkHelper;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
@@ -26,37 +30,80 @@ import java.util.Map;
  */
 public abstract class RubiconUserImpl extends RethinkHelper {
 
-    protected User user;
-    private Rethink rethink;
-    private final Filter dbUser;
+    protected User user = null;
+    private String userId = null;
+    private String bio = null;
+    private long money = 0;
+    private long premium = 0;
+    private String language = null;
+    private String afk = null;
+    private HashMap<String, List<String>> playlists = null;
 
-    RubiconUserImpl(User user) {
+    public Rethink rethink;
+    private Table table;
+    private Filter dbUser;
+
+    private static RubiconUserCache userCache = new RubiconUserCache();
+
+    public RubiconUserImpl(User user, String bio, long money, long premium, String language, String afk, HashMap<String, List<String>> playlists) {
         this.user = user;
-        this.rethink = RubiconBot.getRethink();
-        dbUser = rethink.db.table("users").filter(rethink.rethinkDB.hashMap("userId", user.getId()));
-        createIfNotExist();
+        this.userId = user.getId();
+        this.bio = bio;
+        this.money = money;
+        this.premium = premium;
+        this.language = language;
+        this.afk = afk;
+        this.playlists = playlists;
+
+        initRethink();
     }
 
-    public User getUser() {
-        return user;
+    public RubiconUserImpl(RubiconUser rubiconUser) {
+        this(rubiconUser.user, rubiconUser.getBio(), rubiconUser.getMoney(), rubiconUser.getPremiumRaw(), rubiconUser.getLanguage(), rubiconUser.getAFKState(), rubiconUser.getMusicPlaylists());
+    }
+
+    public RubiconUserImpl(User user, HashMap<String, ?> map) {
+        this.user = user;
+        if(map == null)
+            return;
+        this.bio = map.containsKey("bio") ? (String) map.get("bio") : "No bio set.";
+        this.money = map.containsKey("money") ? (Long) map.get("money") : 0;
+        this.premium = map.containsKey("premium") ? (Long) map.get("premium") : 0;
+        this.language = map.containsKey("language") ? (String) map.get("language") : "en-US";
+        this.afk = map.containsKey("afk") ? (String) map.get("afk") : null;
+        this.playlists = map.containsKey("playlists") ? (HashMap<String, List<String>>) map.get("playlists") : new HashMap<>();
+        initRethink();
+    }
+
+    private void initRethink() {
+        rethink = RubiconBot.getRethink();
+        table = rethink.db.table("users");
+        dbUser = table.filter(rethink.rethinkDB.hashMap("userId", userId));
+    }
+
+    public RubiconUser create() {
+        table.insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("userId", userId))).run(rethink.getConnection());
+        return new RubiconUser(user, "No bio set.", 0, 0, "en-US", null, null);
     }
 
     public void setBio(String bio) {
+        this.bio = bio;
+        update();
         dbUser.update(rethink.rethinkDB.hashMap("bio", bio)).run(rethink.getConnection());
     }
 
     public String getBio() {
-        Map map = (Map) retrieve().toList().get(0);
-        return (String) map.get("bio");
+        return bio;
     }
 
     public void setMoney(long amount) {
+        this.money = amount;
+        update();
         dbUser.update(rethink.rethinkDB.hashMap("money", amount)).run(rethink.getConnection());
     }
 
     public long getMoney() {
-        Map map = (Map) retrieve().toList().get(0);
-        return (long) map.get("money");
+        return money;
     }
 
     public void addMoney(long amount) {
@@ -68,43 +115,51 @@ public abstract class RubiconUserImpl extends RethinkHelper {
     }
 
     public void setPremium(long time) {
+        this.premium = time;
+        update();
         dbUser.update(rethink.rethinkDB.hashMap("premium", time)).run(rethink.getConnection());
     }
 
     public long getPremiumRaw() {
-        Map map = (Map) retrieve().toList().get(0);
-        return (long) map.get("premium");
-   }
+        return premium;
+    }
 
     public boolean isPremium() {
         if (getPremiumRaw() > new Date().getTime())
             return true;
         else
-            dbUser.update(rethink.rethinkDB.hashMap("premium", 0)).run(rethink.getConnection());
+            setPremium(0);
         return false;
     }
 
     public void setLanguage(String languageKey) {
+        this.language = languageKey;
+        update();
         dbUser.update(rethink.rethinkDB.hashMap("language", languageKey)).run(rethink.getConnection());
     }
 
     public String getLanguage() {
-        Map map = (Map) retrieve().toList().get(0);
-        return (String) map.get("language");
+        return language;
     }
 
+    private void update() {
+        userCache.update(userId, this);
+    }
 
     public void setAFKState(String afk) {
+        this.afk = afk;
+        update();
         dbUser.update(rethink.rethinkDB.hashMap("afk", afk)).run(rethink.getConnection());
     }
 
     public String getAFKState() {
-        Map map = (Map) retrieve().toList().get(0);
-        return (String) map.get("afk");
+        return afk;
     }
 
     public boolean isAFK() {
         try {
+            if(getAFKState() == null)
+                return false;
             return !getAFKState().equals("");
         } catch (NullPointerException e) {
             return false;
@@ -144,35 +199,37 @@ public abstract class RubiconUserImpl extends RethinkHelper {
     public void saveMusicPlaylist(HashMap<String, List<String>> list) {
         if(list == null)
             return;
+        playlists = list;
+        update();
         dbUser.update(rethink.rethinkDB.hashMap("playlists", null)).run(rethink.getConnection());
         dbUser.update(rethink.rethinkDB.hashMap("playlists", list)).run(rethink.getConnection());
     }
 
     public HashMap<String, List<String>> getMusicPlaylists() {
-        Cursor cursor = retrieve();
-        HashMap<?, ?> root = (HashMap<?, ?>) cursor.toList().get(0);
-        return (HashMap<String, List<String>>) root.get("playlists");
-    }
-
-    private boolean exist() {
-        return exist(retrieve());
-    }
-
-    private void createIfNotExist() {
-        if (exist())
-            return;
-        rethink.db.table("users").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("userId", user.getId()))).run(rethink.getConnection());
+        return playlists;
     }
 
     public void delete() {
         dbUser.delete().run(rethink.getConnection());
+        userCache.remove(userId);
     }
 
-    private Cursor retrieve() {
-        return dbUser.run(rethink.getConnection());
+    public User getUser() {
+        return user;
     }
 
     public static RubiconUser fromUser(User user) {
-        return new RubiconUser(user);
+        RubiconUser rubiconUser = userCache.getUser(user);
+        try {
+            if (rubiconUser == null)
+                return rubiconUser.create();
+        } catch (NullPointerException e) {
+            Logger.error(e);
+        }
+        return rubiconUser;
+    }
+
+    public static RubiconUserCache getUserCache() {
+        return userCache;
     }
 }

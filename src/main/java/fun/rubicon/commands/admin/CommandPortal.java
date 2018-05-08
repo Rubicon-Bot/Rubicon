@@ -12,18 +12,12 @@ import fun.rubicon.features.portal.PortalManager;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
-import fun.rubicon.util.EmbedUtil;
-import fun.rubicon.util.Logger;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.*;
 
-import javax.sound.sampled.Port;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -54,7 +48,7 @@ public class CommandPortal extends CommandHandler {
                 case "create":
                     return createPortal(invocation);
                 case "info":
-                    break;
+                    return createInfo(invocation);
                 case "close":
                     return closePortal(invocation);
                 case "invites":
@@ -92,6 +86,31 @@ public class CommandPortal extends CommandHandler {
             }
         }
         return createHelpMessage();
+    }
+
+    private Message createInfo(CommandManager.ParsedCommandInvocation invocation) {
+        RubiconGuild guild = new RubiconGuild(invocation.getGuild());
+        if (!guild.hasPortal() || guild.getPortalRoot().equals("SEARCH"))
+            return message(error(invocation.translate("command.portal.noportal"), invocation.translate("command.portal.noportal.description")));
+        Portal portal = portalManager.getPortalByOwner(guild.getPortalRoot());
+        HashMap<Guild, Channel> members = portal.getMembers();
+        members.put(portal.getRootGuild(),portal.getRootChannel());
+
+        EmbedBuilder eb = new EmbedBuilder()
+                .setColor(Colors.COLOR_SECONDARY)
+                .setAuthor("Portal Info", null, guild.getGuild().getIconUrl() == null ? RubiconBot.getSelfUser().getAvatarUrl() : guild.getGuild().getIconUrl());
+        StringBuilder guildString = new StringBuilder();
+        StringBuilder ownerString = new StringBuilder();
+        for (Guild g : members.keySet()) {
+            guildString.append(g.getName() + "\n");
+            ownerString.append(g.getOwner().getUser().getName() + "#" + g.getOwner().getUser().getDiscriminator() + "\n");
+        }
+        eb
+                .addField("**Servers**", guildString.toString(), true)
+                .addField("**Owners**", ownerString.toString(), true)
+                .setFooter("Portal Owner: " + portal.getRootGuild().getName(), null);
+        return message(eb);
+
     }
 
     private Message accept(CommandManager.ParsedCommandInvocation invocation) {
@@ -133,7 +152,7 @@ public class CommandPortal extends CommandHandler {
             Portal portal = portalManager.getPortalByOwner(senderGuild.getPortalRoot());
             portal.addGuild(invocation.getGuild().getId(), portalChannel.getId(), invocation.getGuild().getName());
             receiverGuild.setPortal(senderGuild.getPortalRoot());
-            portal.setPortalTopic(String.format(invocation.translate("command.portal.topic"),portal.getMembers().size()));
+            portal.setPortalTopic(String.format(invocation.translate("command.portal.topic"), portal.getMembers().size()));
             portalInvite.delete();
         } else {
             TextChannel otherChannel;
@@ -183,7 +202,7 @@ public class CommandPortal extends CommandHandler {
         } catch (Exception e) {
             return message(error(invocation.translate("command.portal.ownermessage"), invocation.translate("command.portal.ownermessage.description")));
         }
-        return message(success(invocation.translate("command.portal.send"), String.format(invocation.translate("command.portal.send.description"),guildSearch)));
+        return message(success(invocation.translate("command.portal.send"), String.format(invocation.translate("command.portal.send.description"), guildSearch)));
     }
 
     private Message sendInvites(CommandManager.ParsedCommandInvocation invocation) {
@@ -224,7 +243,7 @@ public class CommandPortal extends CommandHandler {
             return message(success(invocation.translate("command.portal.closed"), invocation.translate("command.portal.closed.self")));
         }
         TextChannel channel = (TextChannel) portal.getMembers().get(invocation.getGuild());
-        if(channel != null && invocation.getSelfMember().hasPermission(channel, Permission.MANAGE_CHANNEL))
+        if (channel != null && invocation.getSelfMember().hasPermission(channel, Permission.MANAGE_CHANNEL))
             channel.getManager().setTopic("Closed").queue();
         portal.removeGuild(invocation.getGuild().getId());
         rubiconGuild.closePortal();
