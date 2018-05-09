@@ -53,9 +53,10 @@ public class RubiconGuild extends RubiconGuildCache {
 
     public RubiconGuild(Guild guild, HashMap<String, ?> map) {
         this.guild = guild;
-        if(map == null)
-            return;
-        prefix = map.containsKey("prefix") ? (String) map.get("prefix") : Info.BOT_DEFAULT_PREFIX;
+        if (map == null) {
+            prefix = Info.BOT_DEFAULT_PREFIX;
+        } else
+            prefix = map.containsKey("prefix") ? (String) map.get("prefix") : Info.BOT_DEFAULT_PREFIX;
 
         initRethink();
     }
@@ -278,10 +279,14 @@ public class RubiconGuild extends RubiconGuildCache {
     }
 
     public TextChannel getVerificationChannel() {
-        Cursor cursor = rethink.db.table("verification_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection());
-        Map map = (Map) cursor.toList().get(0);
-        String channelId = (String) map.get("channelId");
-        return guild.getTextChannelById(channelId);
+        try {
+            Cursor cursor = rethink.db.table("verification_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection());
+            Map map = (Map) cursor.toList().get(0);
+            String channelId = (String) map.get("channelId");
+            return guild.getTextChannelById(channelId);
+        } catch (IndexOutOfBoundsException e) {
+            return null;
+        }
     }
 
     public Role getVerificationRole() {
@@ -413,19 +418,15 @@ public class RubiconGuild extends RubiconGuildCache {
         cache.remove(guild.getId());
     }
 
-    public RubiconGuild create() {
-        rethink.db.table("guilds").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("guildId", guild.getId()))).run(rethink.getConnection());
+    private static RubiconGuild create(Guild guild) {
+        RubiconBot.getRethink().db.table("guilds").insert(RubiconBot.getRethink().rethinkDB.array(RubiconBot.getRethink().rethinkDB.hashMap("guildId", guild.getId()))).run(RubiconBot.getRethink().getConnection());
         return new RubiconGuild(guild, "rc!");
     }
 
     public static RubiconGuild fromGuild(Guild guild) {
         RubiconGuild rubiconGuild = cache.getGuild(guild);
-        try {
-            if (rubiconGuild == null)
-                return rubiconGuild.create();
-        } catch (NullPointerException e) {
-
-        }
+        if (rubiconGuild == null)
+            return create(guild);
         return rubiconGuild;
     }
 

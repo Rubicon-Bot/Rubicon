@@ -81,18 +81,22 @@ public class BotListHandler {
     }
 
     private static void postBDF(boolean silent) {
-        JSONObject json = new JSONObject().put("server_count", RubiconBot.getShardManager().getGuilds().size());
-        RequestBody bfdbody = RequestBody.create(MediaType.parse("application/json"), json.toString());
-        Request bdfreq = new Request.Builder()
-                .addHeader("Authorization", RubiconBot.getConfiguration().getString("botsfordiscordtoken"))
-                .url("https://botsfordiscord.com/api/v1/bots/" + RubiconBot.getShardManager().getApplicationInfo().getJDA().getSelfUser().getId())
-                .post(bfdbody)
-                .build();
         try {
-            new OkHttpClient().newCall(bdfreq).execute().close();
-        } catch (IOException e) {
-            if (!silent)
-                Logger.error(e);
+            JSONObject json = new JSONObject().put("server_count", RubiconBot.getShardManager().getGuilds().size());
+            RequestBody bfdbody = RequestBody.create(MediaType.parse("application/json"), json.toString());
+            Request bdfreq = new Request.Builder()
+                    .addHeader("Authorization", RubiconBot.getConfiguration().getString("botsfordiscordtoken"))
+                    .url("https://botsfordiscord.com/api/v1/bots/" + RubiconBot.getShardManager().getApplicationInfo().getJDA().getSelfUser().getId())
+                    .post(bfdbody)
+                    .build();
+            try {
+                new OkHttpClient().newCall(bdfreq).execute().close();
+            } catch (IOException e) {
+                if (!silent)
+                    Logger.error(e);
+            }
+        } catch (NullPointerException e) {
+            Logger.error("BotListHandler - BDF: null");
         }
     }
 

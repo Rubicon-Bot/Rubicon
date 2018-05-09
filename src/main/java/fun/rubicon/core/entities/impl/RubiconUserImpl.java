@@ -19,6 +19,7 @@ import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -64,8 +65,14 @@ public abstract class RubiconUserImpl extends RethinkHelper {
 
     public RubiconUserImpl(User user, HashMap<String, ?> map) {
         this.user = user;
-        if(map == null)
-            return;
+        if (map == null) {
+            bio = "No bio set.";
+            money = 0;
+            premium = 0;
+            language = "en-US";
+            afk = null;
+            playlists = null;
+        }
         this.bio = map.containsKey("bio") ? (String) map.get("bio") : "No bio set.";
         this.money = map.containsKey("money") ? (Long) map.get("money") : 0;
         this.premium = map.containsKey("premium") ? (Long) map.get("premium") : 0;
@@ -79,11 +86,6 @@ public abstract class RubiconUserImpl extends RethinkHelper {
         rethink = RubiconBot.getRethink();
         table = rethink.db.table("users");
         dbUser = table.filter(rethink.rethinkDB.hashMap("userId", userId));
-    }
-
-    public RubiconUser create() {
-        table.insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("userId", userId))).run(rethink.getConnection());
-        return new RubiconUser(user, "No bio set.", 0, 0, "en-US", null, null);
     }
 
     public void setBio(String bio) {
@@ -158,7 +160,7 @@ public abstract class RubiconUserImpl extends RethinkHelper {
 
     public boolean isAFK() {
         try {
-            if(getAFKState() == null)
+            if (getAFKState() == null)
                 return false;
             return !getAFKState().equals("");
         } catch (NullPointerException e) {
@@ -190,14 +192,14 @@ public abstract class RubiconUserImpl extends RethinkHelper {
 
     public void saveMusicPlaylist(List<String> links, String name) {
         HashMap<String, List<String>> pl = getMusicPlaylists();
-        if(pl == null)
+        if (pl == null)
             pl = new HashMap<>();
         pl.put(name, links);
         saveMusicPlaylist(pl);
     }
 
     public void saveMusicPlaylist(HashMap<String, List<String>> list) {
-        if(list == null)
+        if (list == null)
             return;
         playlists = list;
         update();
@@ -214,18 +216,19 @@ public abstract class RubiconUserImpl extends RethinkHelper {
         userCache.remove(userId);
     }
 
+    private static RubiconUser create(User user) {
+        RubiconBot.getRethink().db.table("users").insert(RubiconBot.getRethink().rethinkDB.array(RubiconBot.getRethink().rethinkDB.hashMap("userId", user.getId()))).run(RubiconBot.getRethink().getConnection());
+        return new RubiconUser(user, "No bio set.", 0, 0, "en-US", null, null);
+    }
+
     public User getUser() {
         return user;
     }
 
     public static RubiconUser fromUser(User user) {
         RubiconUser rubiconUser = userCache.getUser(user);
-        try {
-            if (rubiconUser == null)
-                return rubiconUser.create();
-        } catch (NullPointerException e) {
-
-        }
+        if (rubiconUser == null)
+            return create(user);
         return rubiconUser;
     }
 
