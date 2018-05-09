@@ -62,7 +62,7 @@ public class CommandManager extends ListenerAdapter {
         if (!RubiconBot.allShardsInitialised() || event.isFromType(ChannelType.PRIVATE) || event.getAuthor().isBot() || event.getAuthor().isFake())
             return;
         super.onMessageReceived(event);
-        //Auto Rethink Connecter
+        //Auto Rethink Connector
         try {
             Cursor cursor = RubiconBot.getRethink().db.table("lavanodes").run(RubiconBot.getRethink().getConnection());
         } catch (Exception e) {
@@ -71,8 +71,8 @@ public class CommandManager extends ListenerAdapter {
         }
         //Check Database Entries
         if(event.getChannelType().isGuild()) {
-            //RubiconGuild.fromGuild(event.getGuild());
-            //RubiconMember.fromMember(event.getMember());//TODO
+            RubiconGuild.fromGuild(event.getGuild());
+            RubiconMember.fromMember(event.getMember());
         }
         ParsedCommandInvocation commandInvocation = parse(event.getMessage());
         if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake() && !event.isWebhookMessage()) {
