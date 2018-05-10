@@ -1,6 +1,5 @@
 package fun.rubicon.core.music;
 
-import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.permission.UserPermissions;
 import net.dv8tion.jda.core.entities.Guild;

@@ -94,7 +94,7 @@ public class CommandPortal extends CommandHandler {
             return message(error(invocation.translate("command.portal.noportal"), invocation.translate("command.portal.noportal.description")));
         Portal portal = portalManager.getPortalByOwner(guild.getPortalRoot());
         HashMap<Guild, Channel> members = portal.getMembers();
-        members.put(portal.getRootGuild(),portal.getRootChannel());
+        members.put(portal.getRootGuild(), portal.getRootChannel());
 
         EmbedBuilder eb = new EmbedBuilder()
                 .setColor(Colors.COLOR_SECONDARY)

@@ -17,18 +17,18 @@ public class BitlyAPI {
 
     private String token;
 
-    public BitlyAPI(String apitoken){
+    public BitlyAPI(String apitoken) {
         this.token = apitoken;
     }
 
     /**
      * Short a URL with rucb.co
+     *
      * @param longurl URL that should be shortn
      * @return The shortened URL
      * @throws IllegalArgumentException if the long URI was invalid.
      * @throws HTTPException            if the bit.ly API returns a response code unlike 200 'OK'.
      * @throws RuntimeException         if the http request threw an unknown error.
-     *
      */
     public String shortURL(String longurl) throws RuntimeException {
         String SHORT_API_URL = API_BASE_URL + "/shorten";
@@ -37,15 +37,15 @@ public class BitlyAPI {
                 .addParameter("longurl", longurl)
                 .addParameter("format", "json");
         RequestResponse result;
-        try{
+        try {
             result = req.sendRequest();
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException("An error ocurred while fetching API response");
         }
         JSONObject response = new JSONObject(result.getResponseMessage());
-        if(response.getString("status_txt").equals("INVALID_URI"))
+        if (response.getString("status_txt").equals("INVALID_URI"))
             throw new IllegalArgumentException("The provided URL '" + longurl + "' is not valid");
-        if(response.getInt("status_code") == 400)
+        if (response.getInt("status_code") == 400)
             throw new HTTPException(response.getInt("status_code"));
         Logger.debug(result.getResponseMessage());
         return response.getJSONObject("data").getString("url");

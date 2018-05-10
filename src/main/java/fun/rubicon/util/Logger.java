@@ -10,7 +10,6 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.webhook.WebhookClient;
 import net.dv8tion.jda.webhook.WebhookClientBuilder;
 
-import java.awt.*;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.time.Instant;

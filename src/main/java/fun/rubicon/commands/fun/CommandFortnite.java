@@ -7,7 +7,6 @@ import fun.rubicon.command.CommandManager;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
-import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import okhttp3.OkHttpClient;
@@ -38,7 +37,7 @@ public class CommandFortnite extends CommandHandler {
                 .header("TRN-Api-Key", RubiconBot.getConfiguration().getString("fortnite_key")).build();
         try {
             Response response = new OkHttpClient().newCall(request).execute();
-            if(response.code() != 200)
+            if (response.code() != 200)
                 return message(error(invocation.translate("command.fortnite.error"), invocation.translate("command.fortnite.error.description")));
             JSONObject root = new JSONObject(response.body().string());
             if (root.has("error"))
@@ -50,7 +49,7 @@ public class CommandFortnite extends CommandHandler {
             String kd = (String) ((JSONObject) lifetime.get(11)).get("value");
 
             EmbedBuilder eb = new EmbedBuilder()
-                    .setAuthor(invocation.getArgs()[1],null,"https://data.lucsoft.de/uploads/trhasdfcftuawdfjzwefuigzef.png")
+                    .setAuthor(invocation.getArgs()[1], null, "https://data.lucsoft.de/uploads/trhasdfcftuawdfjzwefuigzef.png")
                     .addField(invocation.translate("command.fortnite.matches"), matches, true)
                     .addField(invocation.translate("command.fortnite.wins"), wins, true)
                     .addField(invocation.translate("command.fortnite.kills"), kills, true)

@@ -73,7 +73,7 @@ public class CommandPlaylist extends CommandHandler {
             if (rubiconUser.isPremium())
                 if (rubiconUser.getMusicPlaylists() != null)
                     if (rubiconUser.getMusicPlaylists().size() >= 10)
-                        return message(error(invocation.translate("command.money.give.selferror.title"),invocation.translate("command.playlist.maximum")));
+                        return message(error(invocation.translate("command.money.give.selferror.title"), invocation.translate("command.playlist.maximum")));
             List<String> uriQueue = new ArrayList<>();
             for (AudioTrack track : rawQueue) {
                 if (track == null)

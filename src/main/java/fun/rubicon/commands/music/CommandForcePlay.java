@@ -5,7 +5,6 @@ import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.core.entities.RubiconMember;
-import fun.rubicon.core.music.GuildMusicPlayer;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
@@ -23,7 +22,7 @@ public class CommandForcePlay extends CommandHandler {
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
         RubiconMember member = RubiconMember.fromMember(invocation.getMember());
-        if(!member.isPremium())
+        if (!member.isPremium())
             return EmbedUtil.message(EmbedUtil.noPremium());
         RubiconBot.getGuildMusicPlayerManager().getAndCreatePlayer(invocation, userPermissions).forcePlay();
         return null;

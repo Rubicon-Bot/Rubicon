@@ -2,7 +2,6 @@ package fun.rubicon.core.translation;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.util.Logger;
-import net.dv8tion.jda.core.entities.IMentionable;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.User;
 
@@ -17,11 +16,12 @@ public class TranslationUtil {
     public static String translate(User user, String key) {
         return translateRaw(user, key);
     }
+
     public static String translate(Member user, String key) {
         return translateRaw(user.getUser(), key);
     }
 
-    private static String translateRaw(User user, String key){
+    private static String translateRaw(User user, String key) {
         assert RubiconBot.sGetTranslations() != null;
         ResourceBundle defaultResourceBundle = RubiconBot.sGetTranslations().getDefaultTranslationLocale().getResourceBundle();
         String entry;

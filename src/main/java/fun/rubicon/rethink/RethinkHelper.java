@@ -1,7 +1,6 @@
 package fun.rubicon.rethink;
 
 import com.rethinkdb.net.Cursor;
-import fun.rubicon.util.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -50,7 +49,7 @@ public abstract class RethinkHelper {
 
     protected static Map parse(Cursor cursor) {
         List list = cursor.toList();
-        if(list.size() == 0)
+        if (list.size() == 0)
             return null;
         return (Map) list.get(0);
     }

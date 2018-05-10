@@ -11,10 +11,14 @@ import fun.rubicon.core.entities.RubiconUser;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.User;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Manages translation bundles.
+ *
  * @author tr808axm
  */
 public class TranslationManager {
@@ -63,8 +67,8 @@ public class TranslationManager {
     }
 
     public TranslationLocale getTranslationLocaleByLocale(Locale locale) {
-        for(TranslationLocale translationLocale : translationLocaleList)
-            if(translationLocale.getLocale().equals(locale))
+        for (TranslationLocale translationLocale : translationLocaleList)
+            if (translationLocale.getLocale().equals(locale))
                 return translationLocale;
         return null;
     }

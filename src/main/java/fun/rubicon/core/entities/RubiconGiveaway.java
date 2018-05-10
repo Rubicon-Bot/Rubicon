@@ -108,15 +108,14 @@ public class RubiconGiveaway {
     }
 
 
-
     public static void handleReaction(MessageReactionAddEvent event) {
-        if(event.getUser().isBot()) return;
-        if(!event.getReactionEmote().getName().equals("\uD83C\uDFC6"))
+        if (event.getUser().isBot()) return;
+        if (!event.getReactionEmote().getName().equals("\uD83C\uDFC6"))
             return;
         RubiconGiveaway giveaway = new RubiconGiveaway(event.getMessageId());
-        if(!giveaway.isExists()) return;
-        if(giveaway.hasUser(event.getUser())) return;
-        if(giveaway.getAuthor().equals(event.getUser())) return;
+        if (!giveaway.isExists()) return;
+        if (giveaway.hasUser(event.getUser())) return;
+        if (giveaway.getAuthor().equals(event.getUser())) return;
         giveaway.addUser(event.getUser());
         event.getUser().openPrivateChannel().complete().sendMessage("Du nicht dumm bist #YODA").queue();
 
@@ -129,14 +128,14 @@ public class RubiconGiveaway {
             public void run() {
                 users = new RubiconGiveaway(author).getUsers();
                 EmbedBuilder msg = EmbedUtil.error();
-                if(users.isEmpty())
+                if (users.isEmpty())
                     msg = EmbedUtil.error();
                 StringBuilder userNames = new StringBuilder();
-                for(int i = 0; i< winnerCount; i++){
+                for (int i = 0; i < winnerCount; i++) {
                     User user = RubiconBot.getShardManager().getUserById(users.get(ThreadLocalRandom.current().nextInt(users.size())));
-                    if(!users.isEmpty())
+                    if (!users.isEmpty())
                         userNames.append(user.getName()).append(", ");
-                    if(!userNames.toString().equals(""))
+                    if (!userNames.toString().equals(""))
                         userNames.replace(userNames.lastIndexOf(","), userNames.lastIndexOf(",") + 1, "");
                     msg = EmbedUtil.info("WINNER", userNames.toString() + " has won `" + prize + "` from " + author.getAsMention());
                 }
