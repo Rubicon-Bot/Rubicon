@@ -52,7 +52,7 @@ public class CommandGiveaway extends CommandHandler {
                     return message(error(invocation.translate("general.punishment.invalidnumber.title"), invocation.translate("general.punishment.invalidnumber.description")));
                 int winnerCount = 1;
                 String price = invocation.getArgsString().replace(args[0], "");
-                if(args.length >= 2) {
+                if(args.length > 2) {
                     try {
                         winnerCount = Integer.parseInt(args[1]);
                         price = price.replace(args[1], "");
@@ -70,7 +70,7 @@ public class CommandGiveaway extends CommandHandler {
     public static EmbedBuilder formatGiveaway(RubiconGiveaway giveaway) {
         return new EmbedBuilder()
                 .setColor(Colors.COLOR_PRIMARY)
-                .setDescription("Price : `" + giveaway.getPrize() + "`")
-                .setFooter(DateUtil.formatDate(giveaway.getExpirationDate(), TranslationUtil.translate(giveaway.getAuthor(), "date.format")), null);
+                .setDescription(String.format(TranslationUtil.translate(giveaway.getAuthor(), "giveaway.description"), giveaway.getPrize()))
+                .setFooter(String.format(TranslationUtil.translate(giveaway.getAuthor(), "giveaway.footer"), giveaway.getUsers().size(),DateUtil.formatDate(giveaway.getExpirationDate(), TranslationUtil.translate(giveaway.getAuthor(), "date.format"))), null);
     }
 }

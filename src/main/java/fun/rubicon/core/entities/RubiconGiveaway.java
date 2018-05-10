@@ -97,7 +97,7 @@ public class RubiconGiveaway {
         this.expirationDate = expirationDate;
         this.prize = prize;
         this.users = new ArrayList<>();
-        this.guildId = channel.getId();
+        this.guildId = channel.getGuild().getId();
         this.channelId = channel.getId();
         this.winnerCount = winnerCount;
         Message msg = SafeMessage.sendMessageBlocking(channel, CommandGiveaway.formatGiveaway(this).setTitle("Giveaway Created").build());
@@ -119,7 +119,7 @@ public class RubiconGiveaway {
         if(giveaway.hasUser(event.getUser())) return;
         //if(giveaway.getAuthor().equals(event.getUser())) return;
         giveaway.addUser(event.getUser());
-        event.getUser().openPrivateChannel().complete().sendMessage("Du nicht dumm bist #YODA").queue();
+        giveaway.updateMessage();
 
     }
 
@@ -133,6 +133,7 @@ public class RubiconGiveaway {
                 if(users.isEmpty())
                     msg = EmbedUtil.error(TranslationUtil.translate(author, "giveaway.nowinner.title"), TranslationUtil.translate(author, "giveaway.nowinner.description"));
                 else {
+                    int winners = 0;
                     StringBuilder userNames = new StringBuilder();
                     for (int i = 0; i < winnerCount; i++) {
                         if(users.isEmpty())
@@ -140,10 +141,14 @@ public class RubiconGiveaway {
                         User user = RubiconBot.getShardManager().getUserById(users.get(ThreadLocalRandom.current().nextInt(users.size())));
                         users.remove(user.getId());
                         userNames.append(user.getName()).append(", ");
+                        winners++;
                     }
                     if (!userNames.toString().equals(""))
                         userNames.replace(userNames.lastIndexOf(","), userNames.lastIndexOf(",") + 1, "");
-                    msg = EmbedUtil.info("WINNER", userNames.toString() + " has won `" + prize + "` from " + author.getAsMention());
+                    if(winners > 1)
+                        msg = EmbedUtil.info(TranslationUtil.translate(author, "giveaway.won.title"), String.format(TranslationUtil.translate(author, "giveaway.won.multiple"), userNames.toString(), prize, author.getAsMention()));
+                    else
+                        msg = EmbedUtil.info(TranslationUtil.translate(author, "giveaway.won.title"), String.format(TranslationUtil.translate(author, "giveaway.won.single"), userNames.toString(), prize, author.getAsMention()));
                 }
                 SafeMessage.sendMessage(RubiconBot.getShardManager().getTextChannelById(getChannelId()), msg.build());
                 delete();
@@ -169,6 +174,14 @@ public class RubiconGiveaway {
     public void delete() {
         rethink.db.table("giveaways").filter(rethink.rethinkDB.hashMap("userId", author.getId())).delete().run(rethink.getConnection());
         timerStorage.remove(author);
+    }
+
+    private void updateMessage(){
+        if(getMessage() == null) {
+            delete();
+            return;
+        }
+        getMessage().editMessage(CommandGiveaway.formatGiveaway(this).setTitle("Giveaway").build()).queue();
     }
 
     public static HashMap<User, Timer> getTimerStorage() {
@@ -214,5 +227,9 @@ public class RubiconGiveaway {
                 new RubiconGiveaway(user).schedule();
             }
         }, "RemindLoaderThread").start();
+    }
+
+    public Message getMessage(){
+        return RubiconBot.getShardManager().getGuildById(guildId).getTextChannelById(channelId).getMessageById(messageId).complete();
     }
 }
