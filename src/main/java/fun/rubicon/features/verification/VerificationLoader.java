@@ -32,7 +32,12 @@ public class VerificationLoader {
             RubiconGuild rubiconGuild = RubiconGuild.fromGuild(guild);
             Member member = guild.getMemberById((String) map.get("userId"));
             if(member == null) continue;
-            userStorage.put(member, rubiconGuild.getVerificationChannel().getMessageById((String) map.get("messageId")).complete());
+            try {
+                userStorage.put(member, rubiconGuild.getVerificationChannel().getMessageById((String) map.get("messageId")).complete());
+            } catch (NullPointerException ignored) {
+                //Channel is null
+                continue;
+            }
             Rethink rethink = RubiconBot.getRethink();
             if((long) map.get("expiry") != 1L){
                 new Timer().schedule(new TimerTask() {

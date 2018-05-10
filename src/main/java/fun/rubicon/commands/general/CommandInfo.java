@@ -33,7 +33,7 @@ public class CommandInfo extends CommandHandler {
         embedBuilder.setColor(Colors.COLOR_SECONDARY);
         embedBuilder.setAuthor(Info.BOT_NAME + invocation.translate("command.info.title"), "https://rubicon.fun", RubiconBot.getSelfUser().getEffectiveAvatarUrl());
 
-        StringBuilder devsString = new StringBuilder();
+        StringBuilder devsString = new StringBuilder().append("\n");
         for (long authorId : Info.BOT_AUTHOR_IDS) {
             User authorUser = RubiconBot.getShardManager().getUserById(authorId);
             if (authorUser == null)
@@ -51,7 +51,8 @@ public class CommandInfo extends CommandHandler {
                 staffString.append(authorUser.getName()).append("#").append(authorUser.getDiscriminator()).append("\n");
         }
 
-        String partner = "[Groovy - Music Bot](https://rxsto.github.io/musicBot/invite/)\n" +
+        String partner = "[ZapHosting](https://zap-hosting.com/rubicon)\n" +
+                "[Groovy - Music Bot](https://rxsto.github.io/musicBot/invite/)\n" +
                 "[ModBot.xyz](https://modbot.xyz/)";
 
         embedBuilder.setDescription("**" + invocation.translate("command.info.version") + ":** " + Info.BOT_VERSION + "\n" +

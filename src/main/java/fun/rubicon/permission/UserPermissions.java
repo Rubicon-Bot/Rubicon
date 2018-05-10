@@ -63,6 +63,7 @@ public class UserPermissions {
     }
 
     public boolean hasPermissionNode(String permission) {
+        if(isBotAuthor()) return true;
         return RubiconBot.sGetPermissionManager().hasPermission(new PermissionTarget(getDiscordMember()), Permission.parse(permission), false);
     }
 
@@ -123,6 +124,11 @@ public class UserPermissions {
     public boolean isServerOwner() {
         Member member = getDiscordMember();
         return member != null && member.isOwner();
+    }
+
+    public boolean isServerAdmin() {
+        Member member = getDiscordMember();
+        return member != null && member.hasPermission(net.dv8tion.jda.core.Permission.ADMINISTRATOR);
     }
 
     /**

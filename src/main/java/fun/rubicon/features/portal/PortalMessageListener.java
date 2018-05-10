@@ -2,6 +2,7 @@ package fun.rubicon.features.portal;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.RubiconGuild;
+import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -15,7 +16,6 @@ public class PortalMessageListener extends ListenerAdapter {
         if (event.getAuthor().isFake() || event.getAuthor().isBot() || event.getAuthor().equals(RubiconBot.getSelfUser()))
             return;
         RubiconGuild rubiconGuild = RubiconGuild.fromGuild(event.getGuild());
-
         if (rubiconGuild.hasPortal()) {
             if(event.getMessage().getContentDisplay().startsWith(rubiconGuild.getPrefix()))
                 return;

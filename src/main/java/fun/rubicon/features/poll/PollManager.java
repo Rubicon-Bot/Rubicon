@@ -30,7 +30,7 @@ public class PollManager {
                 Map map = (Map) obj;
                 Guild guild = RubiconBot.getShardManager().getGuildById((String) map.get("guild"));
                 if(guild == null) {
-                    RubiconGuild.fromGuild(guild).deletePoll();
+                    deletePoll((String) map.get("guild"));
                     continue;
                 }
                 Member member = guild.getMemberById((String) map.get("creator"));
@@ -62,6 +62,11 @@ public class PollManager {
         getPolls().replace(guild, poll);
         poll.savePoll();
     }
+
+    public void deletePoll(String guildId){
+        rethink.db.table("votes").filter(rethink.rethinkDB.hashMap("guild", guildId)).delete().run(rethink.getConnection());
+    }
+
 
 
 }

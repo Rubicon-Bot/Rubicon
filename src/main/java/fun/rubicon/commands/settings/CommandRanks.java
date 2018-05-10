@@ -44,6 +44,8 @@ public class CommandRanks extends CommandHandler {
                     return message(error(invocation.translate("command.ranks.noperm.title"), invocation.translate("command.ranks.noperm.user.description")));
                 if (!invocation.getSelfMember().hasPermission(Permission.MANAGE_ROLES))
                     return message(error(invocation.translate("command.ranks.noperm.title"), invocation.translate("command.ranks.noperm.bot.description")));
+                if(!userPermissions.hasPermissionNode("command.ranks.manage"))
+                    return message(error(invocation.translate("command.ranks.noperm.manage.title"), invocation.translate("command.ranks.noperm.manage.description")));
                 Role rank = getOrCreateRole(args[1], guild.getGuild(), member);
                 if(rank == null)
                     return message(error(invocation.translate("command.ranks.noperm.role.title"), invocation.translate("command.ranks.noperm.role.description")));

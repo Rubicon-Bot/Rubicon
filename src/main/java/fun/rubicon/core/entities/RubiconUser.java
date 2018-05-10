@@ -6,18 +6,22 @@
 
 package fun.rubicon.core.entities;
 
+import fun.rubicon.core.entities.impl.RubiconUserImpl;
 import net.dv8tion.jda.core.entities.User;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author Yannick Seeger / ForYaSee
  */
 public class RubiconUser extends RubiconUserImpl {
 
-    /*
-     *  If you want to add new methods, add them in RubiconUserImpl
-     */
+    public RubiconUser(User user, String bio, long money, long premium, String language, String afk, HashMap<String, List<String>> playlists) {
+        super(user, bio, money, premium, language, afk, playlists);
+    }
 
-    public RubiconUser(User user) {
-        super(user);
+    public RubiconUser(User user, HashMap<String, ?> map) {
+        super(user, map);
     }
 }
