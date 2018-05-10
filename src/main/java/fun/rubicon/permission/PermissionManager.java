@@ -11,6 +11,8 @@ import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.rethink.Rethink;
 import fun.rubicon.rethink.RethinkHelper;
+import fun.rubicon.util.Logger;
+import net.dv8tion.jda.core.entities.Member;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -59,6 +61,11 @@ public class PermissionManager extends RethinkHelper {
      */
     public boolean hasPermission(PermissionTarget target, Permission permission, boolean ignoreNegation) {
         List<Permission> permissions = getPermissions(target);
+        if(target.getUser() != null && target.getGuild() != null) {
+            Member member = target.getGuild().getMember(target.getUser());
+            if(member.isOwner() || member.hasPermission(net.dv8tion.jda.core.Permission.ADMINISTRATOR))
+                return true;
+        }
         if (permissions.contains(permission))
             return true;
         if (!ignoreNegation)
