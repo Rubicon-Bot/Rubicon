@@ -7,12 +7,8 @@ import fun.rubicon.core.entities.RubiconGiveaway;
 import fun.rubicon.core.translation.TranslationUtil;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
-import fun.rubicon.util.Colors;
-import fun.rubicon.util.DateUtil;
-import fun.rubicon.util.SafeMessage;
-import fun.rubicon.util.StringUtil;
+import fun.rubicon.util.*;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Emote;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 
@@ -26,7 +22,7 @@ import java.util.Date;
 public class CommandGiveaway extends CommandHandler {
 
     public CommandGiveaway() {
-        super(new String[]{"giveaway"}, CommandCategory.TOOLS, new PermissionRequirements("giveaway", false, true), "Creates an automated giveaway users can take part in by reacting.", "<time> <prize>");
+        super(new String[]{"giveaway"}, CommandCategory.TOOLS, new PermissionRequirements("giveaway", false, true), "Creates an automated giveaway users can take part in by reacting.", "<time> [WINNER AMOUNT] <prize>");
     }
 
     @Override
@@ -54,7 +50,17 @@ public class CommandGiveaway extends CommandHandler {
                 Date expiry = StringUtil.parseDate(args[0]);
                 if (expiry == null)
                     return message(error(invocation.translate("general.punishment.invalidnumber.title"), invocation.translate("general.punishment.invalidnumber.description")));
-                giveaway = new RubiconGiveaway(invocation.getAuthor(), expiry, invocation.getArgsString().replace(args[0], ""), invocation.getTextChannel(), 1);
+                int winnerCount = 1;
+                String price = invocation.getArgsString().replace(args[0], "");
+                if(args.length >= 2) {
+                    try {
+                        winnerCount = Integer.parseInt(args[1]);
+                        price = price.replace(args[1], "");
+                    } catch (NumberFormatException e) {
+                        return message(error(invocation.translate("command.mute.invalidnumber.title"), invocation.translate("command.mute.invalidnumber.description")));
+                    }
+                }
+                giveaway = new RubiconGiveaway(invocation.getAuthor(), expiry, price, invocation.getTextChannel(), winnerCount);
                 break;
         }
         return null;

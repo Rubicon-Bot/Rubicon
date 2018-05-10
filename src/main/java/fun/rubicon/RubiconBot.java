@@ -18,7 +18,6 @@ import fun.rubicon.commands.fun.*;
 import fun.rubicon.commands.general.*;
 import fun.rubicon.commands.moderation.*;
 import fun.rubicon.commands.music.*;
-import fun.rubicon.commands.rpg.CommandInventory;
 import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.GameAnimator;
@@ -263,8 +262,8 @@ public class RubiconBot {
                 new fun.rubicon.commands.tools.CommandSearch(),
                 new CommandServerInfo(),
                 new CommandRemindMe(),
-                new CommandLeet()
-                //new CommandGiveaway()
+                new CommandLeet(),
+                new CommandGiveaway()
         );
 
         //Music
@@ -483,7 +482,7 @@ public class RubiconBot {
     }
 
     public static Rethink getRethink() {
-        return instance == null ? null : instance.rethink;
+        return instance == null ? null : rethink;
     }
 
     public static void connectRethink() {
