@@ -34,7 +34,7 @@ public abstract class RubiconUserImpl extends RethinkHelper {
     private long money = 0;
     private long premium = 0;
     private String language = null;
-    private String afk = null;
+    private String afk = "";
     private HashMap<String, List<String>> playlists = null;
 
     public Rethink rethink;
@@ -67,14 +67,14 @@ public abstract class RubiconUserImpl extends RethinkHelper {
             money = 0;
             premium = 0;
             language = "en-US";
-            afk = null;
+            afk = "";
             playlists = null;
         }
         this.bio = map.containsKey("bio") ? (String) map.get("bio") : "No bio set.";
         this.money = map.containsKey("money") ? (Long) map.get("money") : 0;
         this.premium = map.containsKey("premium") ? (Long) map.get("premium") : 0;
         this.language = map.containsKey("language") ? (String) map.get("language") : "en-US";
-        this.afk = map.containsKey("afk") ? (String) map.get("afk") : null;
+        this.afk = map.containsKey("afk") ? (String) map.get("afk") : "";
         this.playlists = map.containsKey("playlists") ? (HashMap<String, List<String>>) map.get("playlists") : new HashMap<>();
         initRethink();
     }

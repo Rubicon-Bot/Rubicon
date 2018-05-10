@@ -10,6 +10,7 @@ import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.core.entities.RubiconMember;
+import fun.rubicon.core.entities.RubiconUser;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
@@ -27,7 +28,9 @@ public class CommandAFK extends CommandHandler {
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
         if (invocation.getArgs().length == 0) {
-            return createHelpMessage(invocation);
+            RubiconUser rubiconUser = RubiconUser.fromUser(invocation.getAuthor());
+
+            return message(info(invocation.translate("command.afk.current"), (rubiconUser.getAFKState()).equals("") ? invocation.translate("command.afk.disable.error.title") : rubiconUser.getAFKState()).setFooter(invocation.getAuthor().getName(),invocation.getAuthor().getEffectiveAvatarUrl()));
         } else if (invocation.getArgs().length == 1) {
             if (invocation.getArgs()[0].equalsIgnoreCase("disable")) {
                 return disable(invocation);
