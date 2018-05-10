@@ -41,12 +41,14 @@ public abstract class MusicPlayer extends AudioEventAdapterWrapped implements Au
 
     public void play(AudioTrack track) {
         if (track == null) {
+            Logger.debug("track is null in MusicPlayer.java method play");
             if (isStayingInChannel())
                 return;
             else
                 closeAudioConnection();
             return;
         }
+        Logger.debug("track is being played and unpaused if needed");
         if (player.isPaused())
             player.setPaused(false);
         player.playTrack(track);
