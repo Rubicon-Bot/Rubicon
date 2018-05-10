@@ -242,7 +242,8 @@ public class RubiconBot {
                 new CommandUnban(),
                 new CommandMoveall(),
                 new CommandWarn(),
-                new CommandClear()
+                new CommandClear(),
+                new CommandPunishment()
         );
 
         //Punishments

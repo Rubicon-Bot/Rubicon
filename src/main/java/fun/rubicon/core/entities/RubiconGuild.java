@@ -405,4 +405,26 @@ public class RubiconGuild extends RethinkHelper {
     public static RubiconGuild fromGuild(Guild guild) {
         return new RubiconGuild(guild);
     }
+
+    public void setPunishmentLoggingChannel(TextChannel channel) {
+        rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(rethink.rethinkDB.hashMap("punishmentLogChannel", channel.getId())).run(rethink.getConnection());
+    }
+
+    public void disablePunishmentLogging(){
+        rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).update(rethink.rethinkDB.hashMap("punishmentLogChannel", null)).run(rethink.getConnection());
+    }
+
+    private String getPunishmentLogChannelRaw(){
+        Cursor cursor = rethink.db.table("guilds").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection());
+        Map map = (Map) cursor.toList().get(0);
+        return (String) map.get("punishmentLogChannel");
+    }
+
+    public boolean usePunishmentLogs(){
+        return getPunishmentLogChannelRaw() != null && !getPunishmentLogChannelRaw().equals("0");
+    }
+
+    public TextChannel getPunishmentLogChannel(){
+        return guild.getTextChannelById(getPunishmentLogChannelRaw());
+    }
 }
