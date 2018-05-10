@@ -262,8 +262,8 @@ public class RubiconBot {
                 new fun.rubicon.commands.tools.CommandSearch(),
                 new CommandServerInfo(),
                 new CommandRemindMe(),
-                new CommandLeet()
-                //new CommandGiveaway()
+                new CommandLeet(),
+                new CommandGiveaway()
         );
 
         //Music

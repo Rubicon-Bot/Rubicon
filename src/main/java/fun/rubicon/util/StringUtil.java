@@ -29,15 +29,17 @@ public class StringUtil {
         int amount = parseInt(date);
         if (amount == 0) return null;
         if (date.contains("d"))
-            cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH) + amount);
+            cal.add(Calendar.DAY_OF_MONTH, amount);
         else if (date.contains("m"))
-            cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE) + amount);
+            cal.add(Calendar.MINUTE, amount);
         else if (date.contains("y"))
-            cal.set(Calendar.YEAR, cal.get(Calendar.YEAR) + amount);
+            cal.add(Calendar.YEAR, amount);
         else if (date.contains("M"))
-            cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) + amount);
+            cal.add(Calendar.MONTH, amount);
         else if (date.contains("h"))
-            cal.set(Calendar.HOUR_OF_DAY, cal.get(Calendar.HOUR_OF_DAY) + amount);
+            cal.add(Calendar.HOUR_OF_DAY, amount);
+        else if(date.contains("s"))
+            cal.add(Calendar.SECOND, amount);
         else
             return null;
         return cal.getTime();
