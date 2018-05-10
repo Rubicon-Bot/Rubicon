@@ -25,7 +25,7 @@ import java.util.List;
 
 public class CommandRanks extends CommandHandler {
     public CommandRanks() {
-        super(new String[]{"ranks", "rank"}, CommandCategory.SETTINGS, new PermissionRequirements("ranks", false, true), "Get ranks on your server", "<role1> <role2> <role3> \ncreate\ndelete\nlist");
+        super(new String[]{"ranks", "rank"}, CommandCategory.SETTINGS, new PermissionRequirements("ranks", false, true), "Get ranks on your server", "<role1> <role2> <role3> \ncreate <RoleName>\ndelete <@RoleName>\nlist");
     }
 
     @Override
@@ -40,6 +40,8 @@ public class CommandRanks extends CommandHandler {
         switch (args[0]) {
             case "create":
             case "add":
+                if (args.length < 2)
+                    return createHelpMessage(invocation);
                 if (!invocation.getMember().hasPermission(Permission.MANAGE_ROLES))
                     return message(error(invocation.translate("command.ranks.noperm.title"), invocation.translate("command.ranks.noperm.user.description")));
                 if (!invocation.getSelfMember().hasPermission(Permission.MANAGE_ROLES))
@@ -58,7 +60,7 @@ public class CommandRanks extends CommandHandler {
                 if (!userPermissions.hasPermissionNode("command.ranks.manage"))
                     return message(error(invocation.translate("command.ranks.noperm.manage.title"), invocation.translate("command.ranks.noperm.manage.description")));
                 if (message.getMentionedRoles().isEmpty())
-                    return message(error(invocation.translate("command.ranks.nomention.title"), invocation.translate("command.ranks.nomention.bot.description")));
+                    return message(error(invocation.translate("command.ranks.nomention.title"), invocation.translate("command.ranks.nomention.description")));
                 Role role = message.getMentionedRoles().get(0);
                 if (!guild.isRank(role))
                     return message(error(invocation.translate("command.ranks.notarank.title"), invocation.translate("command.ranks.notarank.description")));
@@ -100,7 +102,8 @@ public class CommandRanks extends CommandHandler {
                 });
                 EmbedBuilder emb = new EmbedBuilder()
                         .setColor(Colors.COLOR_PRIMARY)
-                        .setTitle(invocation.translate("command.ranks.embed.title"));
+                        .setTitle(invocation.translate("command.ranks.embed.title"))
+                        .setFooter(String.format(invocation.translate("command.ranks.footer"), invocation.getAuthor().getName() + "#" + invocation.getAuthor().getDiscriminator()), invocation.getAuthor().getEffectiveAvatarUrl());
                 if (!toRemoveRoles.isEmpty()) {
                     guild.getGuild().getController().removeRolesFromMember(member, toRemoveRoles).queue();
                     removedRoles.replace(removedRoles.lastIndexOf(","), removedRoles.lastIndexOf(",") + 1, "");
