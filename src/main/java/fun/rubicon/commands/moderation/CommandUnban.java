@@ -13,9 +13,9 @@ import net.dv8tion.jda.core.entities.Message;
  * @author Michael Rittmeister / Schlaubi
  * @license GNU General Public License v3.0
  */
-public class CommandUnban extends CommandHandler{
+public class CommandUnban extends CommandHandler {
     public CommandUnban() {
-        super(new String[] {"unban"}, CommandCategory.MODERATION, new PermissionRequirements("unban", false, false), "Unban members", "");
+        super(new String[]{"unban"}, CommandCategory.MODERATION, new PermissionRequirements("unban", false, false), "Unban members", "");
     }
 
     @Override

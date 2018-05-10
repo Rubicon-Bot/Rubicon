@@ -30,19 +30,19 @@ public class CommandMoney extends CommandHandler {
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
         RubiconMember rubiconMember = RubiconMember.fromMember(invocation.getMember());
 
-        if(invocation.getArgs().length == 0) {
+        if (invocation.getArgs().length == 0) {
             return EmbedUtil.message(EmbedUtil.info("Rubys", invocation.translate("command.money.info").replace("%amount%", String.valueOf(rubiconMember.getMoney()))));
         }
         PermissionRequirements ownerRequirements = new PermissionRequirements("money.modify", true, false);
-        if(!ownerRequirements.coveredBy(userPermissions)) {
+        if (!ownerRequirements.coveredBy(userPermissions)) {
             return EmbedUtil.message(EmbedUtil.no_permissions());
         }
 
-        if(invocation.getArgs().length < 3 || invocation.getMessage().getMentionedUsers().size() != 1) {
+        if (invocation.getArgs().length < 3 || invocation.getMessage().getMentionedUsers().size() != 1) {
             return createHelpMessage();
         }
 
-        if(!StringUtil.isNumeric(invocation.getArgs()[1])) {
+        if (!StringUtil.isNumeric(invocation.getArgs()[1])) {
             return EmbedUtil.message(EmbedUtil.error("No number!", "Your entered argument is not a number."));
         }
         int amount = Integer.parseInt(invocation.getArgs()[1]);

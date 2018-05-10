@@ -11,7 +11,6 @@ import fun.rubicon.commands.settings.CommandLeaveMessage;
 import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.core.entities.RubiconMember;
 import fun.rubicon.util.BotListHandler;
-import fun.rubicon.util.Logger;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;

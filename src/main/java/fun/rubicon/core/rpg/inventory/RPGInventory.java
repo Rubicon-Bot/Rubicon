@@ -7,7 +7,6 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.core.rpg.RPGItem;
 import fun.rubicon.rethink.Rethink;
 import fun.rubicon.rethink.RethinkHelper;
-import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.User;
 
 import java.util.ArrayList;

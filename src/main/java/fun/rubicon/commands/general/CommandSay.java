@@ -13,7 +13,6 @@ import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
-import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 
@@ -28,16 +27,16 @@ public class CommandSay extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
-        if(invocation.getArgs().length < 2)
+        if (invocation.getArgs().length < 2)
             return createHelpMessage();
-        if(invocation.getMessage().getMentionedChannels().size() == 0)
+        if (invocation.getMessage().getMentionedChannels().size() == 0)
             return createHelpMessage();
 
         TextChannel textChannel = invocation.getMessage().getMentionedChannels().get(0);
-        if(!invocation.getSelfMember().hasPermission(textChannel, Permission.MESSAGE_WRITE))
+        if (!invocation.getSelfMember().hasPermission(textChannel, Permission.MESSAGE_WRITE))
             return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.say.noperms.self.title") + "!", invocation.translate("command.say.noperms.self.description")));
 
-        if(!invocation.getMember().hasPermission(textChannel, Permission.MESSAGE_WRITE))
+        if (!invocation.getMember().hasPermission(textChannel, Permission.MESSAGE_WRITE))
             return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.say.noperms.author.title") + "!", invocation.translate("command.say.noperms.author.description")));
 
         String sayText = invocation.getArgsString().replaceFirst("#" + textChannel.getName(), "");

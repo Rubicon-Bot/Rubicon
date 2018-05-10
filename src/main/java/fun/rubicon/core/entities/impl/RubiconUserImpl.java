@@ -8,14 +8,12 @@ package fun.rubicon.core.entities.impl;
 
 import com.rethinkdb.gen.ast.Filter;
 import com.rethinkdb.gen.ast.Table;
-import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.RubiconUser;
 import fun.rubicon.core.entities.cache.RubiconUserCache;
 import fun.rubicon.core.translation.TranslationUtil;
 import fun.rubicon.rethink.Rethink;
 import fun.rubicon.rethink.RethinkHelper;
-import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
@@ -24,7 +22,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Yannick Seeger / ForYaSee
