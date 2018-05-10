@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-
 public class CommandClear extends CommandHandler {
     public CommandClear() {
         super(new String[]{"clear", "prune"}, CommandCategory.MODERATION, new PermissionRequirements("clear", false, false), "Deletes message", "<count> [@User]");

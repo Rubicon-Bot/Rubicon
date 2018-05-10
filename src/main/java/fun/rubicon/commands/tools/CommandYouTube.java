@@ -11,7 +11,6 @@ import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.rethink.Rethink;
 import fun.rubicon.util.EmbedUtil;
-import fun.rubicon.util.Logger;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
@@ -30,9 +29,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
-import static fun.rubicon.util.EmbedUtil.error;
-import static fun.rubicon.util.EmbedUtil.message;
-
 /*
  * Copyright (c) 2018  Rubicon Bot Development Team
  * Licensed under the GPL-3.0 license.
@@ -44,7 +40,7 @@ public class CommandYouTube extends CommandHandler {
     private static HashMap<Long, AnnounceHolder> announceMap = new HashMap<>();
 
     public CommandYouTube() {
-        super(new String[]{"youtube","yt"}, CommandCategory.TOOLS, new PermissionRequirements("youtube", false, false), "Announce your newest YouTube Videos! **Delete it by reentering the Same Values again**", "<#channel> <YouTube Channel ID>");
+        super(new String[]{"youtube", "yt"}, CommandCategory.TOOLS, new PermissionRequirements("youtube", false, false), "Announce your newest YouTube Videos! **Delete it by reentering the Same Values again**", "<#channel> <YouTube Channel ID>");
 
     }
 

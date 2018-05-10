@@ -1,6 +1,5 @@
 package fun.rubicon.commands.botowner;
 
-import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
@@ -8,9 +7,6 @@ import fun.rubicon.command.CommandManager;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import net.dv8tion.jda.core.entities.Message;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Leon Kappes / Lee
@@ -25,15 +21,15 @@ public class CommandBeta extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
-            int state = RubiconBot.getConfiguration().getInt("beta");
-            switch (state) {
-                case 1:
-                    RubiconBot.getConfiguration().set("beta",0);
-                    return message(success("Success", "Beta is now Deactivated!"));
-                default:
-                    RubiconBot.getConfiguration().set("beta",1);
-                    return message(success("Success","Beta is now Activated!"));
-            }
+        int state = RubiconBot.getConfiguration().getInt("beta");
+        switch (state) {
+            case 1:
+                RubiconBot.getConfiguration().set("beta", 0);
+                return message(success("Success", "Beta is now Deactivated!"));
+            default:
+                RubiconBot.getConfiguration().set("beta", 1);
+                return message(success("Success", "Beta is now Activated!"));
+        }
 
     }
 

@@ -26,17 +26,19 @@ public class VerificationListener extends ListenerAdapter {
     private HashMap<Member, Message> userStorage = RubiconBot.getVerificationLoader().getUserStorage();
 
 
-
     @Override
     public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event) {
-        if(event.getUser().isBot() || event.getUser().isFake()) return;
+        if (event.getUser().isBot() || event.getUser().isFake()) return;
         RubiconGuild rubiconGuild = RubiconGuild.fromGuild(event.getGuild());
-        if(rubiconGuild.isVerificationEnabled()){
-            if(!userStorage.containsKey(event.getMember())) return;
-            if(event.getMessageId().equals(userStorage.get(event.getMember()).getId())){
-                if(!checkEmote(event)) return;
+        if (rubiconGuild.isVerificationEnabled()) {
+            if (!userStorage.containsKey(event.getMember())) return;
+            if (event.getMessageId().equals(userStorage.get(event.getMember()).getId())) {
+                if (!checkEmote(event)) return;
                 Role role = event.getGuild().getRoleById(getDatabaseValue(event.getGuild(), "roleId"));
-                if(!event.getGuild().getSelfMember().canInteract(role) || !event.getGuild().getSelfMember().hasPermission(Permission.MANAGE_ROLES)) { event.getGuild().getOwner().getUser().openPrivateChannel().complete().sendMessage("Verification error: Rubicon has no permission to interact with " + role.getAsMention()).queue(); return; }
+                if (!event.getGuild().getSelfMember().canInteract(role) || !event.getGuild().getSelfMember().hasPermission(Permission.MANAGE_ROLES)) {
+                    event.getGuild().getOwner().getUser().openPrivateChannel().complete().sendMessage("Verification error: Rubicon has no permission to interact with " + role.getAsMention()).queue();
+                    return;
+                }
                 event.getGuild().getController().addRolesToMember(event.getMember(), role).queue();
                 String verifiedText = ((String) getDatabaseValue(rubiconGuild.getGuild(), "verifiedText")).replace("%user%", event.getUser().getAsMention()).replace("%guild%", event.getGuild().getName());
                 event.getChannel().getMessageById(event.getMessageId()).complete().editMessage(verifiedText).complete().delete().queueAfter(10, TimeUnit.SECONDS);
@@ -48,27 +50,34 @@ public class VerificationListener extends ListenerAdapter {
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         RubiconGuild rubiconGuild = RubiconGuild.fromGuild(event.getGuild());
-        if(rubiconGuild.isVerificationEnabled()){
+        if (rubiconGuild.isVerificationEnabled()) {
             TextChannel verifyChannel = event.getGuild().getTextChannelById((String) getDatabaseValue(rubiconGuild.getGuild(), "channelId"));
-            if(verifyChannel == null) return;
+            if (verifyChannel == null) return;
             String welcomeText = ((String) getDatabaseValue(rubiconGuild.getGuild(), "welcomeText")).replace("%user%", event.getUser().getAsMention()).replace("%guild%", event.getGuild().getName());
             String emoteRaw = (String) getDatabaseValue(rubiconGuild.getGuild(), "emote");
-            Message verifyMsg  = SafeMessage.sendMessageBlocking(verifyChannel, welcomeText);
+            Message verifyMsg = SafeMessage.sendMessageBlocking(verifyChannel, welcomeText);
             Date expiry = null;
-            if(isEmojiCustom(event.getGuild(), emoteRaw))
+            if (isEmojiCustom(event.getGuild(), emoteRaw))
                 verifyMsg.addReaction(event.getGuild().getEmoteById(emoteRaw)).queue();
             else {
                 verifyMsg.addReaction(emoteRaw).queue();
             }
-            if(!getDatabaseValue(event.getGuild(), "kickTime").equals("0")){
-                if(!event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) { event.getGuild().getOwner().getUser().openPrivateChannel().complete().sendMessage("Verification error: Rubicon has no permission to kick users").queue(); return; }
-                if(!event.getGuild().getSelfMember().canInteract(event.getMember())) { event.getGuild().getOwner().getUser().openPrivateChannel().complete().sendMessage("Verification error: Rubicon has no permission to kick " + event.getMember().getAsMention()).queue(); return; }
+            if (!getDatabaseValue(event.getGuild(), "kickTime").equals("0")) {
+                if (!event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
+                    event.getGuild().getOwner().getUser().openPrivateChannel().complete().sendMessage("Verification error: Rubicon has no permission to kick users").queue();
+                    return;
+                }
+                if (!event.getGuild().getSelfMember().canInteract(event.getMember())) {
+                    event.getGuild().getOwner().getUser().openPrivateChannel().complete().sendMessage("Verification error: Rubicon has no permission to kick " + event.getMember().getAsMention()).queue();
+                    return;
+                }
                 expiry = getExpiry(Integer.parseInt(getDatabaseValue(event.getGuild(), "kickTime")));
                 new Timer().schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        if(event.getMember().getRoles().contains(event.getGuild().getRoleById(getDatabaseValue(event.getGuild(), "roleId")))) return;
-                        if(rubiconGuild.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS, Permission.CREATE_INSTANT_INVITE)){
+                        if (event.getMember().getRoles().contains(event.getGuild().getRoleById(getDatabaseValue(event.getGuild(), "roleId"))))
+                            return;
+                        if (rubiconGuild.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS, Permission.CREATE_INSTANT_INVITE)) {
                             event.getUser().openPrivateChannel().complete().sendMessage(getDatabaseValue(event.getGuild(), "kickText").replace("%user%", event.getUser().getAsMention()).replace("%guild%", event.getGuild().getName()).replace("%invite%", getInviteURL(event.getGuild()))).queue();
                             event.getGuild().getController().kick(event.getMember()).reason("Rules not accepted").queue();
                         }
@@ -80,39 +89,39 @@ public class VerificationListener extends ListenerAdapter {
         }
     }
 
-    private boolean isEmojiCustom(Guild guild, String id){
+    private boolean isEmojiCustom(Guild guild, String id) {
         try {
             return guild.getEmoteById(id) != null;
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             return false;
         }
     }
 
-    private boolean checkEmote(GuildMessageReactionAddEvent event){
+    private boolean checkEmote(GuildMessageReactionAddEvent event) {
         String emoteRaw = getDatabaseValue(event.getGuild(), "emote");
-        if(event.getReactionEmote().getId() != null){
+        if (event.getReactionEmote().getId() != null) {
             return emoteRaw.equals(event.getReactionEmote().getId());
         } else {
             return emoteRaw.equals(event.getReactionEmote().getName());
         }
     }
 
-    private String getDatabaseValue(Guild guild, String key){
+    private String getDatabaseValue(Guild guild, String key) {
         Cursor cursor = rethink.db.table("verification_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection());
         Map map = ((Map) ((Object) cursor.toList().get(0)));
         return (String) map.get(key);
     }
 
-    private Date getExpiry(int minutes){
+    private Date getExpiry(int minutes) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE) + minutes);
         return cal.getTime();
     }
 
-    private String getInviteURL(Guild guild){
+    private String getInviteURL(Guild guild) {
         TextChannel channel = guild.getTextChannelById(getDatabaseValue(guild, "channelId"));
-        if(!guild.getSelfMember().hasPermission(channel, Permission.CREATE_INSTANT_INVITE))
+        if (!guild.getSelfMember().hasPermission(channel, Permission.CREATE_INSTANT_INVITE))
             return "No permission";
         return channel.createInvite().setMaxUses(1).complete().getURL();
     }

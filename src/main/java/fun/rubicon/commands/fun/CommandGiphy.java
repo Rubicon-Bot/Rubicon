@@ -16,9 +16,6 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 
-import static fun.rubicon.util.EmbedUtil.error;
-import static fun.rubicon.util.EmbedUtil.message;
-
 /*
  * Copyright (c) 2018  Rubicon Bot Development Team
  * Licensed under the GPL-3.0 license.

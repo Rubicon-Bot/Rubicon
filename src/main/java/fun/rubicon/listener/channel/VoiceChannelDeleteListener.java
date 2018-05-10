@@ -17,7 +17,7 @@ public class VoiceChannelDeleteListener extends ListenerAdapter {
 
     @Override
     public void onVoiceChannelDelete(VoiceChannelDeleteEvent event) {
-        if(RubiconGuild.fromGuild(event.getGuild()).getAutochannels().contains(event.getChannel().getId())) {
+        if (RubiconGuild.fromGuild(event.getGuild()).getAutochannels().contains(event.getChannel().getId())) {
             RubiconGuild.fromGuild(event.getGuild()).deleteAutochannel(event.getChannel().getId());
         }
     }

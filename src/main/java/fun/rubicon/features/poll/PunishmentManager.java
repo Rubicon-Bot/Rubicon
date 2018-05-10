@@ -15,19 +15,19 @@ public class PunishmentManager {
 
     private HashMap<Member, Long> muteCache = new HashMap<>();
 
-    public void registerPunishmentHandler(PunishmentHandler handler){
+    public void registerPunishmentHandler(PunishmentHandler handler) {
         RubiconBot.getCommandManager().registerCommandHandler((CommandHandler) handler);
         punishmentHandlers.add(handler);
     }
 
-    public void registerPunishmentHandlers(PunishmentHandler... handlers){
+    public void registerPunishmentHandlers(PunishmentHandler... handlers) {
         Collections.addAll(punishmentHandlers, handlers);
-        for(PunishmentHandler handler : handlers){
+        for (PunishmentHandler handler : handlers) {
             RubiconBot.getCommandManager().registerCommandHandler((CommandHandler) handler);
         }
     }
 
-    public void loadPunishments(){
+    public void loadPunishments() {
         punishmentHandlers.forEach(PunishmentHandler::loadPunishments);
     }
 

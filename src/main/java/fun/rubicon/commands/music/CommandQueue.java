@@ -15,7 +15,7 @@ import net.dv8tion.jda.core.entities.Message;
 
 public class CommandQueue extends CommandHandler {
     public CommandQueue() {
-        super(new String[] {"queue"}, CommandCategory.MUSIC, new PermissionRequirements("queue", false, true), "See the beautiful queue", "<page>");
+        super(new String[]{"queue"}, CommandCategory.MUSIC, new PermissionRequirements("queue", false, true), "See the beautiful queue", "<page>");
     }
 
     @Override

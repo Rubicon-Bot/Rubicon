@@ -18,7 +18,7 @@ import java.util.Date;
  * Licensed under the GPL-3.0 license.
  * The full license text is available in the LICENSE file provided with this project.
  */
-public class CommandUptime extends CommandHandler{
+public class CommandUptime extends CommandHandler {
 
     private String getTime(Date date, String pattern) {
         return new SimpleDateFormat(pattern).format(date);
@@ -42,7 +42,7 @@ public class CommandUptime extends CommandHandler{
 
 
     public CommandUptime() {
-        super(new String[]{"uptime"}, CommandCategory.GENERAL, new PermissionRequirements("uptime", false, true),"Get the Uptime of the Bot", "", false);
+        super(new String[]{"uptime"}, CommandCategory.GENERAL, new PermissionRequirements("uptime", false, true), "Get the Uptime of the Bot", "", false);
     }
 
     @Override

@@ -5,13 +5,10 @@ import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
-import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -41,7 +38,7 @@ public class CommandRip extends CommandHandler {
                 + "&top3=" + (content.length() > 25 ? URLEncoder.encode(content.substring(25, Math.min(50, content.length())), StandardCharsets.UTF_8.toString()) : "")
                 + "&top4=" + (content.length() > 50 ? URLEncoder.encode(content.substring(50, Math.min(75, content.length())), StandardCharsets.UTF_8.toString()) : "");
         InputStream inputStream = new URL(tombstoneUrl).openStream();
-        if(invocation.getMember().hasPermission(invocation.getTextChannel(), Permission.MESSAGE_ATTACH_FILES)) {
+        if (invocation.getMember().hasPermission(invocation.getTextChannel(), Permission.MESSAGE_ATTACH_FILES)) {
             invocation.getTextChannel().sendFile(inputStream, "RIP.png").queue();
         }
         return null;

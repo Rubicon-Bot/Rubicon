@@ -17,7 +17,7 @@ public class LanguageUtil {
         try {
             return language.getString(key);
         } catch (Exception e) {
-            return  defaultLanguage.getString(key);
+            return defaultLanguage.getString(key);
         }
     }
 }

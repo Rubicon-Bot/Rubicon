@@ -28,20 +28,27 @@ public abstract class SetupRequest {
 
     public abstract void abort();
 
-    public static void register(SetupRequest req){
+    public static void register(SetupRequest req) {
         RubiconBot.getSetupManager().requestStorage.put(req.author.getUser().getId(), req);
     }
 
-    public void unregister(){
-        abort(); RubiconBot.getSetupManager().requestStorage.remove(author.getUser().getId(), this); infoMessage.delete().queueAfter(5, TimeUnit.SECONDS);
+    public void unregister() {
+        abort();
+        RubiconBot.getSetupManager().requestStorage.remove(author.getUser().getId(), this);
+        infoMessage.delete().queueAfter(5, TimeUnit.SECONDS);
     }
 
-    public void update() { this.step++; RubiconBot.getSetupManager().requestStorage.replace(infoMessage.getId(), this); }
+    public void update() {
+        this.step++;
+        RubiconBot.getSetupManager().requestStorage.replace(infoMessage.getId(), this);
+    }
 
     public String translate(String key) {
         return TranslationUtil.translate(author, key);
     }
 
-    public EmbedBuilder setupMessage(String title, String desc, Color color){ return new EmbedBuilder().setTitle(title).setDescription(desc).setColor(color).setFooter(translate("verification.setup.footer"), author.getUser().getAvatarUrl()); }
+    public EmbedBuilder setupMessage(String title, String desc, Color color) {
+        return new EmbedBuilder().setTitle(title).setDescription(desc).setColor(color).setFooter(translate("verification.setup.footer"), author.getUser().getAvatarUrl());
+    }
 
 }

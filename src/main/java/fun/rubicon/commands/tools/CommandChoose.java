@@ -16,13 +16,13 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class CommandChoose extends CommandHandler {
     public CommandChoose() {
-        super(new String[] {"choose"}, CommandCategory.TOOLS, new PermissionRequirements("choose", false, true), "Choose an option", "<option1> <option2> [option3] ...");
+        super(new String[]{"choose"}, CommandCategory.TOOLS, new PermissionRequirements("choose", false, true), "Choose an option", "<option1> <option2> [option3] ...");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) throws Exception {
         String[] args = invocation.getArgs();
-        if(args.length < 2)
+        if (args.length < 2)
             return createHelpMessage();
         int option = ThreadLocalRandom.current().nextInt(args.length);
         return message(EmbedUtil.success(invocation.translate("command.choose.chosen.title"), String.format(invocation.translate("command.choose.chosen.description"), args[option])));

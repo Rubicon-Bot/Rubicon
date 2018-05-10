@@ -53,9 +53,9 @@ public class MemberJoinListener extends ListenerAdapter {
         }).start();
 
         new Thread(() -> {
-            if(rubiconGuild.hasAutoroleEnabled()) {
+            if (rubiconGuild.hasAutoroleEnabled()) {
                 Role role = event.getGuild().getRoleById(rubiconGuild.getAutorole());
-                if(role == null || !event.getGuild().getSelfMember().canInteract(role)) {
+                if (role == null || !event.getGuild().getSelfMember().canInteract(role)) {
                     rubiconGuild.disableAutorole();
                     return;
                 }
@@ -64,19 +64,19 @@ public class MemberJoinListener extends ListenerAdapter {
         }).start();
 
         new Thread(() -> {
-            if(!rubiconGuild.hasJoinImagesEnabled())
+            if (!rubiconGuild.hasJoinImagesEnabled())
                 return;
             TextChannel channel = rubiconGuild.getGuild().getTextChannelById(rubiconGuild.getJoinImageChannel());
-            if(channel == null) {
+            if (channel == null) {
                 rubiconGuild.disableJoinImages();
                 return;
             }
-            if(!event.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE) || !event.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_ATTACH_FILES)) {
+            if (!event.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE) || !event.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_ATTACH_FILES)) {
                 rubiconGuild.disableJoinImages();
                 return;
             }
             try {
-                if(event.getUser().getAvatarUrl() == null)
+                if (event.getUser().getAvatarUrl() == null)
                     return;
                 BufferedImage image = ImageIO.read(new URL("https://lordlee.de/pexels-photo.jpg").openStream());
                 ImageEditor imageEditor = new ImageEditor(image);

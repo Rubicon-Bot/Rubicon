@@ -9,6 +9,7 @@ import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Message;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -27,18 +28,18 @@ public class CommandDisco extends CommandHandler {
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
-        if(invocation.getArgs().length == 0)
+        if (invocation.getArgs().length == 0)
             return createHelpMessage();
         String command = invocation.getArgs()[0];
-        if(command.equalsIgnoreCase("on")) {
-            if(enabled)
+        if (command.equalsIgnoreCase("on")) {
+            if (enabled)
                 return EmbedUtil.message(EmbedUtil.error("Already enabled!", "You cannot enable the disco twice."));
             OnlineStatus[] statuses = {OnlineStatus.ONLINE, OnlineStatus.DO_NOT_DISTURB, OnlineStatus.IDLE};
             timer = new Timer();
             timer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
-                    if(current == statuses.length)
+                    if (current == statuses.length)
                         current = 0;
                     RubiconBot.getShardManager().setStatus(statuses[current]);
                     current++;
@@ -46,8 +47,8 @@ public class CommandDisco extends CommandHandler {
             }, 0, 1000);
             enabled = true;
             return EmbedUtil.message(EmbedUtil.success("Enabled Disco!", "Successfully enabled disco."));
-        } else if(command.equalsIgnoreCase("off")) {
-            if(enabled) {
+        } else if (command.equalsIgnoreCase("off")) {
+            if (enabled) {
                 timer.cancel();
                 RubiconBot.getShardManager().setStatus(OnlineStatus.ONLINE);
                 enabled = false;

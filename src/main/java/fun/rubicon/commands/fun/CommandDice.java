@@ -16,7 +16,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class CommandDice extends CommandHandler {
     public CommandDice() {
-        super(new String[] {"dice"}, CommandCategory.FUN, new PermissionRequirements("dice", false, true), "Roll a dice", "[max]");
+        super(new String[]{"dice"}, CommandCategory.FUN, new PermissionRequirements("dice", false, true), "Roll a dice", "[max]");
     }
 
     @Override
@@ -24,16 +24,16 @@ public class CommandDice extends CommandHandler {
         int max = 6;
         int min = 1;
         String[] args = invocation.getArgs();
-        if(args.length >= 1){
+        if (args.length >= 1) {
             try {
                 max = Integer.parseInt(args[0]);
-            } catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.dice.invalidnumber.title"), invocation.translate("command.dice.invalidnumber.description")));
             }
         }
 
-        if(max<=1){
-            return message(error(invocation.translate("command.dice.invalidmin.title"),invocation.translate("command.dice.invalidmin.description")));
+        if (max <= 1) {
+            return message(error(invocation.translate("command.dice.invalidmin.title"), invocation.translate("command.dice.invalidmin.description")));
         }
 
         int random = ThreadLocalRandom.current().nextInt(min, max);

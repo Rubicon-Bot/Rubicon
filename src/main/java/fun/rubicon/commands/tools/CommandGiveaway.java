@@ -12,7 +12,6 @@ import fun.rubicon.util.DateUtil;
 import fun.rubicon.util.SafeMessage;
 import fun.rubicon.util.StringUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Emote;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 

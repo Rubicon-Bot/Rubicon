@@ -38,7 +38,7 @@ public class CommandLeet extends CommandHandler {
                 .replace("T", "7").replace("t", "7")
                 .replace("Z", "z");
 
-        if(text.length() > 1024)
+        if (text.length() > 1024)
             return createHelpMessage();
         SafeMessage.sendMessage(invocation.getTextChannel(), new EmbedBuilder().addField("Plain", invocation.getArgsString(), false).addField("1337", text, false).setColor(Colors.COLOR_SECONDARY).build());
         return null;

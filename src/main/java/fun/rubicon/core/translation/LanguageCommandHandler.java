@@ -17,8 +17,6 @@ import net.dv8tion.jda.core.entities.Message;
 
 import java.util.Locale;
 
-import static fun.rubicon.util.EmbedUtil.*;
-
 public class LanguageCommandHandler extends CommandHandler {
     private final TranslationManager translationManager;
 

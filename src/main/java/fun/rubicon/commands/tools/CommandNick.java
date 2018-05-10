@@ -30,7 +30,7 @@ public class CommandNick extends CommandHandler {
         Member selfMember = invocation.getSelfMember();
         String nickname;
         StringBuilder builder = new StringBuilder();
-        if(args.length == 0)
+        if (args.length == 0)
             return createHelpMessage();
         if (msg.getMentionedMembers().isEmpty()) {
             victim = invocation.getMember();

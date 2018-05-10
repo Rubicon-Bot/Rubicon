@@ -25,17 +25,18 @@ public class BotListHandler {
             return;
         }
 
-        if (!RubiconBot.getConfiguration().getString("discord_pw_token").isEmpty())
+        if (!RubiconBot.getConfiguration().getString("dbl_token").isEmpty())
             postDBL(silent);
         else Logger.warning("No discordbots.org Token found! Skipping Stats Posting.");
 
-        if (!RubiconBot.getConfiguration().getString("dbl_token").isEmpty())
+        if (!RubiconBot.getConfiguration().getString("discord_pw_token").isEmpty())
             postDPW(silent);
         else Logger.warning("No bots.discord.pw Token found! Skipping Stats Posting.");
 
-        if (!RubiconBot.getConfiguration().getString("dbl_token").isEmpty())
+        //TODO: Botlist has closed?
+        /*if (!RubiconBot.getConfiguration().getString("dbl_token").isEmpty())
             postBDF(silent);
-        else Logger.warning("No botsfordiscord.com Token found! Skipping Stats Posting.");
+        else Logger.warning("No botsfordiscord.com Token found! Skipping Stats Posting.");*/
 
         if (!RubiconBot.getConfiguration().getString("rubiconfun_token").isEmpty())
             postRubiconFunGuildCount(silent);

@@ -1,4 +1,5 @@
 package fun.rubicon.commands.general;
+
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
@@ -17,12 +18,13 @@ import net.dv8tion.jda.webhook.WebhookMessageBuilder;
  * @author Leon Kappes / Lee
  * @copyright RubiconBot Dev Team 2018
  * @License GPL-3.0 License <http://rubicon.fun/license>
- */public class CommandBug extends CommandHandler {
+ */
+public class CommandBug extends CommandHandler {
 
-    public CommandBug(){
-        super(new String[]{"bug"}, CommandCategory.GENERAL,new PermissionRequirements("bug",false,true),"Report a Bug to the Developers","<Bug Description>");
+    public CommandBug() {
+        super(new String[]{"bug"}, CommandCategory.GENERAL, new PermissionRequirements("bug", false, true), "Report a Bug to the Developers", "<Bug Description>");
     }
-    
+
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
         if (invocation.getArgs().length < 1)
@@ -31,7 +33,7 @@ import net.dv8tion.jda.webhook.WebhookMessageBuilder;
         Invite i = null;
         if (invocation.getGuild().getMember(RubiconBot.getSelfUser()).hasPermission(invocation.getTextChannel(), Permission.CREATE_INSTANT_INVITE))
             i = invocation.getTextChannel().createInvite().complete();
-        if(!RubiconBot.getConfiguration().has("supporthook"))
+        if (!RubiconBot.getConfiguration().has("supporthook"))
             return null;
         WebhookClientBuilder builder = new WebhookClientBuilder(RubiconBot.getConfiguration().getString("supporthook"));
         WebhookClient client = builder.build();

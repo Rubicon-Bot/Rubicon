@@ -17,7 +17,7 @@ public class PunishmentListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberRoleRemove(GuildMemberRoleRemoveEvent event) {
-        if(event.getRoles().stream().parallel().anyMatch(r -> r.getName().equals("rubicon-muted"))){
+        if (event.getRoles().stream().parallel().anyMatch(r -> r.getName().equals("rubicon-muted"))) {
             RubiconMember.fromMember(event.getMember()).unmute(false);
         }
     }
@@ -25,9 +25,9 @@ public class PunishmentListener extends ListenerAdapter {
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         RubiconMember member = RubiconMember.fromMember(event.getMember());
-        if(member.isMuted()){
+        if (member.isMuted()) {
             Role muted = RubiconGuild.fromGuild(event.getGuild()).getMutedRole();
-            if(!event.getGuild().getSelfMember().canInteract(muted) || !event.getGuild().getSelfMember().hasPermission(Permission.MANAGE_ROLES) || !event.getGuild().getSelfMember().canInteract(member.getMember())) {
+            if (!event.getGuild().getSelfMember().canInteract(muted) || !event.getGuild().getSelfMember().hasPermission(Permission.MANAGE_ROLES) || !event.getGuild().getSelfMember().canInteract(member.getMember())) {
                 event.getGuild().getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: Unable to interact with rubicon muted role! Please move `Rubicon` role above `rubicon-muted` role and give Rubicon the `MANAGE_ROLES` permission").queue();
                 return;
             }
@@ -37,9 +37,9 @@ public class PunishmentListener extends ListenerAdapter {
 
     @Override
     public void onRoleDelete(RoleDeleteEvent event) {
-        if(event.getRole().getName().equals("rubicon-muted")) {
+        if (event.getRole().getName().equals("rubicon-muted")) {
             RubiconBot.getPunishmentManager().getMuteCache().keySet().forEach(m -> {
-                if(m.getGuild().equals(event.getGuild()))
+                if (m.getGuild().equals(event.getGuild()))
                     RubiconMember.fromMember(m).unmute(false);
             });
         }
