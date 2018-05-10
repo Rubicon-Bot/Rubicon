@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static fun.rubicon.util.EmbedUtil.*;
-
 /**
  * Handles the 'permission' command which interfaces the permissions system in a discord command.
  *
@@ -133,7 +131,7 @@ public class PermissionCommandHandler extends CommandHandler {
                 Permission permission = Permission.parse(permissionString);
                 if (RubiconBot.sGetPermissionManager().hasPermission(target, permission, true)) {
                     for (Permission p : RubiconBot.sGetPermissionManager().getPermissions(target)) {
-                        if(p.getPermissionString().contains(permissionString)) {
+                        if (p.getPermissionString().contains(permissionString)) {
                             if (!p.isNegated()) {
                                 return message(error(invocation.translate("command.perm.exist.title"), String.format(invocation.translate("command.perm.exist.desc"),
                                         Permission.parse(permissionString).getPermissionString(), target.toString(), invocation.getPrefix() + invocation.getCommandInvocation() + " list " + (targetString))));
@@ -157,7 +155,7 @@ public class PermissionCommandHandler extends CommandHandler {
                 Permission permission = Permission.parse(permissionString);
                 if (RubiconBot.sGetPermissionManager().hasPermission(target, permission, true)) {
                     for (Permission p : RubiconBot.sGetPermissionManager().getPermissions(target)) {
-                        if(p.getPermissionString().contains(permissionString)) {
+                        if (p.getPermissionString().contains(permissionString)) {
                             if (!p.isNegated()) {
                                 RubiconBot.sGetPermissionManager().removePermission(target, permission);
                                 return message(success(invocation.translate("command.perm.updated.title"), String.format(invocation.translate("command.perm.denied.desc"), permissionString, target.toString())));

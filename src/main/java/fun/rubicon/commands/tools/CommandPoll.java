@@ -248,7 +248,7 @@ public class CommandPoll extends CommandHandler implements Serializable {
         String heading = content.get(0);
         List<String> answers = new ArrayList<>(content.subList(1, content.size()));
 
-        if(!parsedCommandInvocation.getSelfMember().hasPermission(parsedCommandInvocation.getTextChannel(), Permission.MESSAGE_ADD_REACTION)) {
+        if (!parsedCommandInvocation.getSelfMember().hasPermission(parsedCommandInvocation.getTextChannel(), Permission.MESSAGE_ADD_REACTION)) {
             SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), parsedCommandInvocation.translate("error.noreactionperm"));
             return;
         }

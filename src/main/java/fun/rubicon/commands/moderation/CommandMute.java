@@ -9,7 +9,10 @@ import fun.rubicon.core.entities.RubiconMember;
 import fun.rubicon.features.poll.PunishmentHandler;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
-import fun.rubicon.util.*;
+import fun.rubicon.util.DateUtil;
+import fun.rubicon.util.EmbedUtil;
+import fun.rubicon.util.Info;
+import fun.rubicon.util.StringUtil;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -71,8 +74,8 @@ public class CommandMute extends CommandHandler implements PunishmentHandler {
             if ((long) map.get("expiry") == 1L) return;
             RubiconMember member;
             try {
-               member = RubiconMember.fromMember(RubiconBot.getShardManager().getGuildById((String) map.get("guildId")).getMemberById((String) map.get("userId")));
-            }catch (Exception ignored){
+                member = RubiconMember.fromMember(RubiconBot.getShardManager().getGuildById((String) map.get("guildId")).getMemberById((String) map.get("userId")));
+            } catch (Exception ignored) {
                 continue;
             }
             RubiconBot.getPunishmentManager().getMuteCache().put(member.getMember(), (long) map.get("expiry"));

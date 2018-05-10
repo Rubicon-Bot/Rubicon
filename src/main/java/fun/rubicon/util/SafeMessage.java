@@ -17,14 +17,14 @@ import java.util.concurrent.TimeUnit;
 
 public class SafeMessage {
     public static void sendMessage(TextChannel textChannel, Message message) {
-        if (hasPermissions(textChannel) && message.getContentRaw().toCharArray().length<1999)
-           send(textChannel, message);
+        if (hasPermissions(textChannel) && message.getContentRaw().toCharArray().length < 1999)
+            send(textChannel, message);
     }
 
     public static void sendMessage(TextChannel textChannel, Message message, int deleteTime) {
         try {
-            if (hasPermissions(textChannel) && message.getContentRaw().toCharArray().length<1999)
-                send(textChannel, message).delete().queueAfter(deleteTime,TimeUnit.SECONDS);
+            if (hasPermissions(textChannel) && message.getContentRaw().toCharArray().length < 1999)
+                send(textChannel, message).delete().queueAfter(deleteTime, TimeUnit.SECONDS);
         } catch (Exception e) {
             // Ignored
         }
@@ -32,18 +32,18 @@ public class SafeMessage {
 
 
     public static Message sendMessageBlocking(TextChannel textChannel, Message message) {
-        if (hasPermissions(textChannel) && message.getContentRaw().toCharArray().length<1999)
+        if (hasPermissions(textChannel) && message.getContentRaw().toCharArray().length < 1999)
             return send(textChannel, message);
         return null;
     }
 
     public static void sendMessage(TextChannel textChannel, String message) {
-        if (hasPermissions(textChannel) && message.toCharArray().length<1999)
+        if (hasPermissions(textChannel) && message.toCharArray().length < 1999)
             send(textChannel, new MessageBuilder().setContent(message).build());
     }
 
     public static void sendMessage(TextChannel textChannel, String message, int deleteTime) {
-        if (hasPermissions(textChannel) && hasDeletePermission(textChannel) && message.toCharArray().length<1999)
+        if (hasPermissions(textChannel) && hasDeletePermission(textChannel) && message.toCharArray().length < 1999)
             send(textChannel, new MessageBuilder().setContent(message).build()).delete().queueAfter(deleteTime, TimeUnit.SECONDS);
         else if (hasPermissions(textChannel))
             send(textChannel, new MessageBuilder().setContent(message).build());
@@ -63,7 +63,7 @@ public class SafeMessage {
     }
 
     public static Message sendMessageBlocking(TextChannel textChannel, String message) {
-        if (hasPermissions(textChannel) && message.toCharArray().length<1999)
+        if (hasPermissions(textChannel) && message.toCharArray().length < 1999)
             return send(textChannel, new MessageBuilder().setContent(message).build());
         return null;
     }
@@ -79,36 +79,37 @@ public class SafeMessage {
         return channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_READ);
     }
 
-    private static boolean hasEmbedPermissions(TextChannel channel){
+    private static boolean hasEmbedPermissions(TextChannel channel) {
         return channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_EMBED_LINKS);
     }
 
-    private static Message send(TextChannel textChannel, Message msg){
-        if(!hasEmbedPermissions(textChannel) && !msg.getEmbeds().isEmpty())
+    private static Message send(TextChannel textChannel, Message msg) {
+        if (!hasEmbedPermissions(textChannel) && !msg.getEmbeds().isEmpty())
             return textChannel.sendMessage(formatEmbed(msg.getEmbeds().get(0))).complete();
         else
             return textChannel.sendMessage(msg).complete();
     }
-    private static Message send(TextChannel textChannel, MessageEmbed msg){
-        if(!hasEmbedPermissions(textChannel))
+
+    private static Message send(TextChannel textChannel, MessageEmbed msg) {
+        if (!hasEmbedPermissions(textChannel))
             return textChannel.sendMessage(formatEmbed(msg)).complete();
         else
             return textChannel.sendMessage(msg).complete();
     }
 
-    private static String formatEmbed(MessageEmbed embed){
+    private static String formatEmbed(MessageEmbed embed) {
         StringBuilder string = new StringBuilder();
-        if(embed.getTitle() != null)
+        if (embed.getTitle() != null)
             string.append("**__").append(embed.getTitle()).append("__**").append("\n");
-        if(embed.getDescription() != null)
+        if (embed.getDescription() != null)
             string.append(embed.getDescription());
         embed.getFields().forEach(field -> {
             string.append("**__").append(field.getName()).append("__**\n").append(field.getValue()).append("\n");
         });
-        if(embed.getFooter() != null)
+        if (embed.getFooter() != null)
             string.append("\n").append("_").append(embed.getFooter().getText()).append("_");
         String out = string.toString();
-        if(string.length() > 1024)
+        if (string.length() > 1024)
             out = "This message is longer than 1024 chars, please give me `MESSAGE_EMBED_LINKS` permission and try again";
         return out;
     }
@@ -118,12 +119,12 @@ public class SafeMessage {
     }
 
     public static void sendFile(TextChannel channel, Message message, InputStream image) {
-        if(hasPermissions(channel))
+        if (hasPermissions(channel))
             channel.sendFile(image, "file.png", message).queue();
     }
 
     public static Message sendFileBlocking(TextChannel channel, Message message, InputStream image) {
-        if(hasPermissions(channel))
+        if (hasPermissions(channel))
             return channel.sendFile(image, "file.png", message).complete();
         return null;
     }

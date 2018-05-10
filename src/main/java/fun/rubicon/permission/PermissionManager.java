@@ -11,7 +11,6 @@ import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.rethink.Rethink;
 import fun.rubicon.rethink.RethinkHelper;
-import fun.rubicon.util.Logger;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

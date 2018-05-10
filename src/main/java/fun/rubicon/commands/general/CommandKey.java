@@ -37,7 +37,7 @@ public class CommandKey extends CommandHandler {
             case "gen":
             case "generate":
                 if (invocation.getArgs().length >= 2) {
-                    if(!userPermissions.isBotAuthor())
+                    if (!userPermissions.isBotAuthor())
                         return message(no_permissions());
                     switch (invocation.getArgs()[1]) {
                         case "premium":

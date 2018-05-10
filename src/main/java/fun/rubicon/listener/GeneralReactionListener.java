@@ -8,7 +8,6 @@ package fun.rubicon.listener;
 
 import fun.rubicon.commands.settings.CommandAutochannel;
 import fun.rubicon.core.entities.RubiconGiveaway;
-import fun.rubicon.core.music.GuildMusicPlayer;
 import fun.rubicon.core.music.QueueMessage;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;

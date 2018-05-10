@@ -23,7 +23,10 @@ import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.managers.AudioManager;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.stream.Collectors;
 
 /**
@@ -77,7 +80,7 @@ public class GuildMusicPlayer extends MusicPlayer {
 
     private void joinChannel() {
         if (!invocation.getSelfMember().hasPermission(invocation.getMember().getVoiceState().getChannel(), Permission.VOICE_CONNECT)) {
-            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.success(invocation.translate("command.join.bot.notconnectperms."), invocation.translate("command.join.bot.notconnectperms.description"))), 30);
+            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.join.bot.notconnectperms.title"), invocation.translate("command.join.bot.notconnectperms.description"))), 30);
             return;
         }
         RubiconBot.getLavalinkManager().createConnection(invocation.getMember().getVoiceState().getChannel());

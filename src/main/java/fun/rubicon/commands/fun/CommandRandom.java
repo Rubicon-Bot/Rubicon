@@ -37,7 +37,7 @@ public class CommandRandom extends CommandHandler {
         if (!StringUtil.isNumeric(invocation.getArgs()[1])) {
             return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.random.error.numeric.title"), invocation.translate("command.random.error.numeric.description")));
         }
-        if(Integer.parseInt(invocation.getArgs()[0])>Integer.parseInt(invocation.getArgs()[1]))
+        if (Integer.parseInt(invocation.getArgs()[0]) > Integer.parseInt(invocation.getArgs()[1]))
             return createHelpMessage(invocation);
         int iArgs[] = {Integer.parseInt(invocation.getArgs()[0]), Integer.parseInt(invocation.getArgs()[1])};
         int rand = generateRandom(iArgs[0], iArgs[1]);

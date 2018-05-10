@@ -13,14 +13,19 @@ import fun.rubicon.core.entities.RubiconMember;
 import fun.rubicon.core.entities.RubiconUser;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.rethink.Rethink;
-import fun.rubicon.util.*;
+import fun.rubicon.util.Info;
+import fun.rubicon.util.Logger;
+import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 /**
  * Maintains command invocation associations.
@@ -70,7 +75,7 @@ public class CommandManager extends ListenerAdapter {
             return;
         }
         //Check Database Entries
-        if(event.getChannelType().isGuild()) {
+        if (event.getChannelType().isGuild()) {
             RubiconGuild.fromGuild(event.getGuild());
             RubiconMember.fromMember(event.getMember());
         }

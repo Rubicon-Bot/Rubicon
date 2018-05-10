@@ -6,18 +6,13 @@ import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
-import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Message;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import javax.swing.*;
 import java.text.MessageFormat;
-
-import static fun.rubicon.util.EmbedUtil.message;
 
 /**
  * Rubicon Discord bot
@@ -30,7 +25,7 @@ import static fun.rubicon.util.EmbedUtil.message;
 public class CommandEval extends CommandHandler {
 
     public CommandEval() {
-        super(new String[]{"eval","ausführen"}, CommandCategory.BOT_OWNER, new PermissionRequirements("eval", true, false), "Just Eval. Nothing to see here.", "Ähhm Nothing");
+        super(new String[]{"eval", "ausführen"}, CommandCategory.BOT_OWNER, new PermissionRequirements("eval", true, false), "Just Eval. Nothing to see here.", "Ähhm Nothing");
     }
 
     @Override
@@ -60,7 +55,7 @@ public class CommandEval extends CommandHandler {
 
         String modified_msg = String.join(" ", parsedCommandInvocation.getArgs())
                 .replace("getToken", "getTextChannelById(channel.getId()).sendMessage(\"UnsupportedOperationException(\\\"Nice try m8!\\\")\").queue");
-            modified_msg = modified_msg.replaceAll("#", "().");
+        modified_msg = modified_msg.replaceAll("#", "().");
 
         try {
             Object out = se.eval(
@@ -83,4 +78,4 @@ public class CommandEval extends CommandHandler {
         }
         return null;
     }
-    }
+}

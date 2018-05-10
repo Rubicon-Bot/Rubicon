@@ -2,14 +2,12 @@ package fun.rubicon.features.portal.impl;
 
 import com.rethinkdb.gen.ast.Filter;
 import com.rethinkdb.gen.ast.Table;
-import com.sun.security.auth.callback.TextCallbackHandler;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.features.portal.Portal;
 import fun.rubicon.rethink.Rethink;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
-import fun.rubicon.util.Logger;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
@@ -19,7 +17,6 @@ import net.dv8tion.jda.webhook.WebhookClientBuilder;
 import net.dv8tion.jda.webhook.WebhookMessageBuilder;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -97,7 +94,7 @@ public class PortalImpl implements Portal {
         table.update(rethink.rethinkDB.hashMap("members", rawMembers)).run(rethink.getConnection());
         if (rawMembers.size() == 0)
             delete("You were the last member.");
-        else if(rawMembers.size() == 1)
+        else if (rawMembers.size() == 1)
             setPortalTopic("Connected to " + getMembers().size() + " server");
         else
             setPortalTopic("Connected to " + getMembers().size() + " servers");

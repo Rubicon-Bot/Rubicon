@@ -15,7 +15,7 @@ import net.dv8tion.jda.core.entities.Message;
 
 public class CommandPause extends CommandHandler {
     public CommandPause() {
-        super(new String[] {"pause"}, CommandCategory.MUSIC, new PermissionRequirements("pause", false, true), "Stop the current track and start it again with rc!resume I know that is magic", "");
+        super(new String[]{"pause"}, CommandCategory.MUSIC, new PermissionRequirements("pause", false, true), "Stop the current track and start it again with rc!resume I know that is magic", "");
     }
 
     @Override

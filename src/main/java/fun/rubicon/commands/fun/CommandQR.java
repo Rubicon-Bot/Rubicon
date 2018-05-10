@@ -19,12 +19,12 @@ import java.net.URL;
 
 public class CommandQR extends CommandHandler {
     public CommandQR() {
-        super(new String[] {"qr", "qrcode"}, CommandCategory.FUN, new PermissionRequirements("qr", false, true), "Easily generate QR codes (If your code does not work please report this to Google, they have made the api", "<text>");
+        super(new String[]{"qr", "qrcode"}, CommandCategory.FUN, new PermissionRequirements("qr", false, true), "Easily generate QR codes (If your code does not work please report this to Google, they have made the api", "<text>");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
-        if(invocation.getArgs().length == 0)
+        if (invocation.getArgs().length == 0)
             return createHelpMessage();
         InputStream image = null;
         try {

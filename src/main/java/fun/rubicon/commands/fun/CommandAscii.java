@@ -14,8 +14,6 @@ import okhttp3.Response;
 
 import java.io.IOException;
 
-import static fun.rubicon.util.EmbedUtil.message;
-
 /*
  * Copyright (c) 2018  Rubicon Bot Development Team
  * Licensed under the GPL-3.0 license.
@@ -35,7 +33,7 @@ public class CommandAscii extends CommandHandler {
         Response response;
         try {
             response = new OkHttpClient().newCall(req).execute();
-            if(response.body().string().toCharArray().length > 1990)
+            if (response.body().string().toCharArray().length > 1990)
                 return createHelpMessage(invocation);
             SafeMessage.sendMessage(invocation.getTextChannel(), "```fix\n" + response.body().string() + "```");
         } catch (IOException e) {

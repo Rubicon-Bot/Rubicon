@@ -9,13 +9,8 @@ package fun.rubicon.listener.channel;
 import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.features.portal.Portal;
 import fun.rubicon.features.portal.PortalManager;
-import fun.rubicon.util.Logger;
-import net.dv8tion.jda.core.entities.Channel;
-import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.events.channel.text.TextChannelDeleteEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
-
-import java.util.HashMap;
 
 /**
  * @author Yannick Seeger / ForYaSee
@@ -26,21 +21,21 @@ public class TextChannelDeleteListener extends ListenerAdapter {
     public void onTextChannelDelete(TextChannelDeleteEvent event) {
         RubiconGuild rubiconGuild = RubiconGuild.fromGuild(event.getGuild());
 
-        if(rubiconGuild.hasJoinMessagesEnabled()) {
-            if(event.getChannel().getId().equals(rubiconGuild.getJoinMessage().getChannelId())) {
+        if (rubiconGuild.hasJoinMessagesEnabled()) {
+            if (event.getChannel().getId().equals(rubiconGuild.getJoinMessage().getChannelId())) {
                 rubiconGuild.deleteJoinMessage();
             }
         }
-        if(rubiconGuild.hasLeaveMessagesEnabled()) {
-            if(event.getChannel().getId().equals(rubiconGuild.getLeaveMessage().getChannelId())) {
+        if (rubiconGuild.hasLeaveMessagesEnabled()) {
+            if (event.getChannel().getId().equals(rubiconGuild.getLeaveMessage().getChannelId())) {
                 rubiconGuild.deleteLeaveMessage();
             }
         }
 
-        if(rubiconGuild.hasPortal()) {
+        if (rubiconGuild.hasPortal()) {
             PortalManager portalManager = new PortalManager();
             Portal portal = portalManager.getPortalByOwner(rubiconGuild.getPortalRoot());
-            if(portal.containsChannel(event.getChannel())) {
+            if (portal.containsChannel(event.getChannel())) {
                 portal.removeGuild(rubiconGuild.getGuild().getId());
                 rubiconGuild.closePortal();
             }

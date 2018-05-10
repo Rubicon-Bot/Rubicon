@@ -15,7 +15,7 @@ import net.dv8tion.jda.core.entities.Message;
 
 public class CommandStop extends CommandHandler {
     public CommandStop() {
-        super(new String[] {"stop"}, CommandCategory.MUSIC, new PermissionRequirements("stop", false,true), "Stop the current music", "");
+        super(new String[]{"stop"}, CommandCategory.MUSIC, new PermissionRequirements("stop", false, true), "Stop the current music", "");
     }
 
     @Override

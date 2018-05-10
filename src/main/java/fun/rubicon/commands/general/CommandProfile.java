@@ -1,4 +1,5 @@
 package fun.rubicon.commands.general;
+
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
@@ -11,7 +12,10 @@ import fun.rubicon.util.DateUtil;
 import fun.rubicon.util.Info;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
 
 import java.util.Arrays;
 
@@ -19,14 +23,15 @@ import java.util.Arrays;
  * @author Leon Kappes / Lee
  * @copyright RubiconBot Dev Team 2018
  * @License GPL-3.0 License <http://rubicon.fun/license>
- */public class CommandProfile extends CommandHandler {
+ */
+public class CommandProfile extends CommandHandler {
 
-    public CommandProfile(){
+    public CommandProfile() {
         super(new String[]{"profile", "user", "level", "profil"}, CommandCategory.GENERAL, new PermissionRequirements("command.profile", false, true), "Displays the bio, money and level of a user.", "" +
                 "\n" +
                 "[@User]");
     }
-    
+
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
         //profile
@@ -61,9 +66,9 @@ import java.util.Arrays;
         }
         embedBuilder.setDescription(rubiconUser.getBio());
         embedBuilder.addField("Money", "Balance: " + rubiconUser.getMoney() + " Rubys", true);
-        embedBuilder.addField("Premium", (rubiconUser.isPremium()) ? "Until " + DateUtil.formatDate(rubiconUser.getPremiumExpiryDate(),TranslationUtil.translate(user,"date.format")) : "No premium", true);
+        embedBuilder.addField("Premium", (rubiconUser.isPremium()) ? "Until " + DateUtil.formatDate(rubiconUser.getPremiumExpiryDate(), TranslationUtil.translate(user, "date.format")) : "No premium", true);
         //embedBuilder.addField("Level", buildProgressBar(rubiconUser), false);
-        SafeMessage.sendMessage(textChannel,embedBuilder.build(),300000);
+        SafeMessage.sendMessage(textChannel, embedBuilder.build(), 300000);
     }
 
     /*private String buildProgressBar(RubiconUser user) {

@@ -43,7 +43,7 @@ public class PortalManager {
     public Portal getPortalByOwner(String guildId) {
         Cursor cursor = rethink.db.table("portals").filter(rethink.rethinkDB.hashMap("root_guild", guildId)).run(rethink.getConnection());
         List<HashMap<String, ?>> list = cursor.toList();
-        if(list.isEmpty())
+        if (list.isEmpty())
             return null;
         try {
             HashMap<String, ?> map = list.get(0);

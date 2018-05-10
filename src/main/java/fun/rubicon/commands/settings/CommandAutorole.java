@@ -23,8 +23,8 @@ public class CommandAutorole extends CommandHandler {
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
         RubiconGuild rubiconGuild = RubiconGuild.fromGuild(invocation.getGuild());
 
-        if(invocation.getArgs().length<1)
-           return createHelpMessage(invocation);
+        if (invocation.getArgs().length < 1)
+            return createHelpMessage(invocation);
 
         if (invocation.getArgs().length == 1 && invocation.getArgs()[0].equalsIgnoreCase("info")) {
             if (!rubiconGuild.hasAutoroleEnabled()) {

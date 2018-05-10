@@ -8,7 +8,6 @@ import fun.rubicon.core.rpg.inventory.RPGInventoryItem;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
-import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
@@ -39,7 +38,7 @@ public class CommandInventory extends CommandHandler {
         embed.addField(invocation.translate("command.inv.pants"), inventory.getPants().getRpgItem().getDisplayName(), true);
         embed.addField(invocation.translate("command.inv.shoes"), inventory.getShoes().getRpgItem().getDisplayName(), true);
 
-        if(items.size() > 0) {
+        if (items.size() > 0) {
             StringBuilder slotString = new StringBuilder();
             for (RPGInventoryItem item : items) {
                 slotString.append(item.getAmount() + " x " + item.getRpgItem().getDisplayName() + "\n");

@@ -15,7 +15,7 @@ import net.dv8tion.jda.core.entities.Message;
 
 public class CommandClearQueue extends CommandHandler {
     public CommandClearQueue() {
-        super(new String[] {"clearqueue"}, CommandCategory.MUSIC, new PermissionRequirements("clearqueue", false, false), "", "");
+        super(new String[]{"clearqueue"}, CommandCategory.MUSIC, new PermissionRequirements("clearqueue", false, false), "", "");
     }
 
     @Override
