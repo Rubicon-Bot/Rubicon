@@ -33,6 +33,7 @@ public class CommandStatistics extends CommandHandler {
         embedBuilder.addField(invocation.translate("command.stats.voicechannels"), String.valueOf(RubiconBot.getShardManager().getVoiceChannels().size()), true);
         embedBuilder.addField(invocation.translate("command.stats.categories"), String.valueOf(RubiconBot.getShardManager().getCategories().size()), true);
         embedBuilder.addField(invocation.translate("command.stats.emotes"), String.valueOf(RubiconBot.getShardManager().getEmotes().size()), true);
+        embedBuilder.addField(invocation.translate("command.stats.music"), String.valueOf(RubiconBot.getGuildMusicPlayerManager().getPlayerStorage().size()), true);
         embedBuilder.addBlankField(true);
         return EmbedUtil.message(embedBuilder);
     }

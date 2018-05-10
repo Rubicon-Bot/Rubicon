@@ -31,8 +31,7 @@ public class CommandPremium extends CommandHandler {
     public static final long PREMIUM_TIME = new Date().getTime() + 15638400000L;
 
     public CommandPremium() {
-        super(new String[]{"premium"}, CommandCategory.GENERAL, new PermissionRequirements("premium", false, true), "See your premium state or buy premium.", "| Shows current premium state\n" +
-                "buy | Buy premium");
+        super(new String[]{"premium"}, CommandCategory.GENERAL, new PermissionRequirements("premium", false, true), "See your premium state or buy premium.", "| Shows current premium state");
     }
 
     @Override
@@ -58,19 +57,6 @@ public class CommandPremium extends CommandHandler {
         switch (args[0].toLowerCase()) {
             default:
                 return createHelpMessage();
-            case "buy":
-                if ((author.isPremium())) {
-                    return message(EmbedUtil.info(invocation.translate("command.premium.already.title"), invocation.translate("command.premium.until") + " " + author.formatExpiryDate().replace("%", "")));
-                }
-                long userMoney = author.getMoney();
-                if (userMoney - PriceList.PREMIUM.getPrice() >= 0) {
-                    author.setPremium(PREMIUM_TIME);
-                    author.setMoney(userMoney - PriceList.PREMIUM.getPrice());
-                    assignPremiumRole(author);
-                    return message(EmbedUtil.success(invocation.translate("command.premium.success"), invocation.translate("command.premium.success.buy")));
-                } else {
-                    return message(EmbedUtil.error(invocation.translate("command.premium.money.title"), String.format(invocation.translate("command.premium.money.desc"), PriceList.PREMIUM.getPrice(), userMoney)));
-                }
             case "add":
                 if (userPermissions.isBotAuthor()) {
                     List<User> users = invocation.getMessage().getMentionedUsers();
