@@ -33,7 +33,7 @@ public class RubiconGuildCache extends Cache {
     private RubiconGuild retrieveGuild(Guild guild) {
         Cursor cursor = table.filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection());
         List<?> list = cursor.toList();
-        if (list.isEmpty())
+        if (list.size() == 0)
             return null;
         HashMap<String, ?> map = (HashMap<String, ?>) list.get(0);
         return new RubiconGuild(guild, map);

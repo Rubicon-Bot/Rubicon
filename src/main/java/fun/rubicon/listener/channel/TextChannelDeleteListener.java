@@ -36,7 +36,7 @@ public class TextChannelDeleteListener extends ListenerAdapter {
             PortalManager portalManager = new PortalManager();
             Portal portal = portalManager.getPortalByOwner(rubiconGuild.getPortalRoot());
             if (portal.containsChannel(event.getChannel())) {
-                portal.removeGuild(rubiconGuild.getGuild().getId());
+                portal.removeGuild(event.getGuild().getId());
                 rubiconGuild.closePortal();
             }
         }

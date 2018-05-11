@@ -33,7 +33,7 @@ public class RubiconUserCache extends Cache {
     private RubiconUser retrieveUser(User user) {
         Cursor cursor = table.filter(rethink.rethinkDB.hashMap("userId", user.getId())).run(rethink.getConnection());
         List<?> list = cursor.toList();
-        if (list.isEmpty())
+        if (list.size() == 0)
             return null;
         HashMap<String, ?> map = (HashMap<String, ?>) list.get(0);
         return new RubiconUser(user, map);

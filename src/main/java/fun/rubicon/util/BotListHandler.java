@@ -33,11 +33,6 @@ public class BotListHandler {
             postDPW(silent);
         else Logger.warning("No bots.discord.pw Token found! Skipping Stats Posting.");
 
-        //TODO: Botlist has closed?
-        /*if (!RubiconBot.getConfiguration().getString("dbl_token").isEmpty())
-            postBDF(silent);
-        else Logger.warning("No botsfordiscord.com Token found! Skipping Stats Posting.");*/
-
         if (!RubiconBot.getConfiguration().getString("rubiconfun_token").isEmpty())
             postRubiconFunGuildCount(silent);
         else Logger.warning("No rubicon.fun Token found! Skipping Stats posting.");
@@ -81,26 +76,6 @@ public class BotListHandler {
         }
     }
 
-    private static void postBDF(boolean silent) {
-        try {
-            JSONObject json = new JSONObject().put("server_count", RubiconBot.getShardManager().getGuilds().size());
-            RequestBody bfdbody = RequestBody.create(MediaType.parse("application/json"), json.toString());
-            Request bdfreq = new Request.Builder()
-                    .addHeader("Authorization", RubiconBot.getConfiguration().getString("botsfordiscordtoken"))
-                    .url("https://botsfordiscord.com/api/v1/bots/" + RubiconBot.getShardManager().getApplicationInfo().getJDA().getSelfUser().getId())
-                    .post(bfdbody)
-                    .build();
-            try {
-                new OkHttpClient().newCall(bdfreq).execute().close();
-            } catch (IOException e) {
-                if (!silent)
-                    Logger.error(e);
-            }
-        } catch (NullPointerException e) {
-            Logger.error("BotListHandler - BDF: null");
-        }
-    }
-
     private static void postDPW(boolean silent) {
         JSONObject dpwBody = new JSONObject().put("server_count", RubiconBot.getShardManager().getGuilds().size());
 
@@ -135,9 +110,5 @@ public class BotListHandler {
             if (!silent)
                 Logger.error(e);
         }
-
-
     }
-
-
 }
