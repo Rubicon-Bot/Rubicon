@@ -214,7 +214,8 @@ public abstract class RubiconUserImpl extends RethinkHelper {
     }
 
     private static RubiconUser create(User user) {
-        RubiconBot.getRethink().db.table("users").insert(RubiconBot.getRethink().rethinkDB.array(RubiconBot.getRethink().rethinkDB.hashMap("userId", user.getId()))).run(RubiconBot.getRethink().getConnection());
+        if (!exist(RubiconBot.getRethink().db.table("users").filter(RubiconBot.getRethink().rethinkDB.hashMap("userId", user.getId())).run(RubiconBot.getRethink().getConnection())))
+            RubiconBot.getRethink().db.table("users").insert(RubiconBot.getRethink().rethinkDB.array(RubiconBot.getRethink().rethinkDB.hashMap("userId", user.getId()))).run(RubiconBot.getRethink().getConnection());
         return new RubiconUser(user, "No bio set.", 0, 0, "en-US", null, null);
     }
 
