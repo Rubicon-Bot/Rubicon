@@ -338,7 +338,7 @@ public class RubiconBot {
             Logger.error(e);
             throw new RuntimeException("Can't start bot!");
         }
-        ///lavalinkManager.initialize();
+        lavalinkManager.initialize();
         Info.lastRestart = new Date();
     }
 
