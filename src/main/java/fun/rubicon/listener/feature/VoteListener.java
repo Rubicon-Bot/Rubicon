@@ -46,9 +46,10 @@ public class VoteListener extends ListenerAdapter {
             }, 1000);
             return;
         }
+        System.out.println("dassdaa");
         String emoji = event.getReactionEmote().getName();
         event.getReaction().removeReaction(event.getUser()).queue();
-        poll.getVotes().put(event.getUser().getId(), poll.getReacts().get(emoji));
+        poll.addVote(event.getMember(), poll.getReacts().get(emoji));
         poll.updateMessages(event.getGuild(), CommandPoll.getParsedPoll(poll, event.getGuild()));
         pollManager.replacePoll(poll, guild);
     }

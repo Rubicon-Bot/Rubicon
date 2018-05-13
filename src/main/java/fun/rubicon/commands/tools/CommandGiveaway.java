@@ -70,7 +70,7 @@ public class CommandGiveaway extends CommandHandler {
     public static EmbedBuilder formatGiveaway(RubiconGiveaway giveaway) {
         EmbedBuilder emb = new EmbedBuilder()
                 .setColor(Colors.COLOR_PRIMARY)
-                .setDescription(String.format(TranslationUtil.translate(giveaway.getAuthor(), "giveaway.description"), giveaway.getPrize(), giveaway.getWinnerCount()));
+                .setDescription(String.format(TranslationUtil.translate(giveaway.getAuthor(), "giveaway.description"), giveaway.getPrize(), giveaway.getPrize()));
         if(giveaway.getUsers().isEmpty())
                 emb.setFooter(String.format(TranslationUtil.translate(giveaway.getAuthor(), "giveaway.footer.nobody"), DateUtil.formatDate(giveaway.getExpirationDate(), TranslationUtil.translate(giveaway.getAuthor(), "date.format"))), null);
         else if(giveaway.getUsers().size() == 1)
