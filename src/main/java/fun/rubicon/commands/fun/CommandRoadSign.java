@@ -28,7 +28,7 @@ public class CommandRoadSign extends CommandHandler {
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) throws Exception {
         if (invocation.getArgs().length == 0)
             return createHelpMessage();
-        if(!RubiconUser.fromUser(invocation.getAuthor()).isPremium())
+        if (!RubiconUser.fromUser(invocation.getAuthor()).isPremium())
             return message(noPremium());
 
         String content = invocation.getArgsString();
@@ -41,7 +41,7 @@ public class CommandRoadSign extends CommandHandler {
                 + "&line3=" + (content.length() > 30 ? URLEncoder.encode(content.substring(30, Math.min(45, content.length())), StandardCharsets.UTF_8.toString()) : "")
                 + "&line4=" + (content.length() > 45 ? URLEncoder.encode(content.substring(45, Math.min(60, content.length())), StandardCharsets.UTF_8.toString()) : "");
         InputStream inputStream = new URL(tombstoneUrl).openStream();
-        if(invocation.getMember().hasPermission(invocation.getTextChannel(), Permission.MESSAGE_ATTACH_FILES)) {
+        if (invocation.getMember().hasPermission(invocation.getTextChannel(), Permission.MESSAGE_ATTACH_FILES)) {
             invocation.getTextChannel().sendFile(inputStream, "MEDAL.png").queue();
         }
         return null;

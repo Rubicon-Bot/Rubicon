@@ -11,10 +11,14 @@ import fun.rubicon.core.entities.RubiconUser;
 import fun.rubicon.util.Logger;
 import net.dv8tion.jda.core.entities.User;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Manages translation bundles.
+ *
  * @author tr808axm
  */
 public class TranslationManager {
@@ -36,23 +40,16 @@ public class TranslationManager {
         List<TranslationLocale> translationLocales = new ArrayList<>();
         translationLocales.add(defaultTranslationLocale);
         translationLocales.add(new TranslationLocale(this, new Locale("de", "DE"), "German (Germany)"));
-        translationLocales.add(new TranslationLocale(this, new Locale("de", "SA"), "Saxon (Germany, Saxony)"));
-        translationLocales.add(new TranslationLocale(this, new Locale("de", "wf"), "Westphalian (Germany, Westphalia)"));
-        translationLocales.add(new TranslationLocale(this, new Locale("de", "KO"), "Kölsch (Germany, Westphalia)"));
-        translationLocales.add(new TranslationLocale(this, new Locale("de", "BA"), "Bavarian (Germany, Bavaria)"));
-        translationLocales.add(new TranslationLocale(this, new Locale("de", "AT"), "Austrian (Austria)"));
-        translationLocales.add(new TranslationLocale(this, new Locale("de", "CH"), "Swiss German (Switzerland)"));
+        translationLocales.add(new TranslationLocale(this, new Locale("de", "AT"), "German (Austria)"));
+        translationLocales.add(new TranslationLocale(this, new Locale("en", "US"), "English (America)"));
         translationLocales.add(new TranslationLocale(this, new Locale("es", "ES"), "Spanish (Spain)"));
-        translationLocales.add(new TranslationLocale(this, new Locale("sp", "KA"), "Catalan (Catalonia)"));
-        translationLocales.add(new TranslationLocale(this, new Locale("pt", "PT"), "Portuguese (Portugal)"));
-        translationLocales.add(new TranslationLocale(this, new Locale("pt", "BR"), "Portuguese (Brazil)"));
-        translationLocales.add(new TranslationLocale(this, new Locale("lol", "US"), "Lolcat (lol)"));
         translationLocales.add(new TranslationLocale(this, new Locale("fi", "FI"), "Finnish (Finland)"));
         translationLocales.add(new TranslationLocale(this, new Locale("fr", "FR"), "French (France)"));
-        translationLocales.add(new TranslationLocale(this, new Locale("it", "IT"), "Italian (Italy)"));
         translationLocales.add(new TranslationLocale(this, new Locale("hu", "HU"), "Hungarian (Hungary)"));
+        translationLocales.add(new TranslationLocale(this, new Locale("it", "IT"), "Italian (Italy)"));
         translationLocales.add(new TranslationLocale(this, new Locale("no", "NO"), "Norwegian (Norway)"));
-        //translationLocales.add(new TranslationLocale(this, new Locale("sv", "SE"), "Swedish (Sweden)"));
+        translationLocales.add(new TranslationLocale(this, new Locale("pt", "BR"), "Portuguese (Brasilia)"));
+        translationLocales.add(new TranslationLocale(this, new Locale("pt", "PT"), "Portuguese (Portugal)"));
         translationLocaleList = Collections.unmodifiableList(translationLocales);
 
         RubiconBot.getCommandManager().registerCommandHandler(new LanguageCommandHandler(this));
@@ -63,8 +60,8 @@ public class TranslationManager {
     }
 
     public TranslationLocale getTranslationLocaleByLocale(Locale locale) {
-        for(TranslationLocale translationLocale : translationLocaleList)
-            if(translationLocale.getLocale().equals(locale))
+        for (TranslationLocale translationLocale : translationLocaleList)
+            if (translationLocale.getLocale().equals(locale))
                 return translationLocale;
         return null;
     }

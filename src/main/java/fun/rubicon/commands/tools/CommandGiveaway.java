@@ -22,7 +22,7 @@ import java.util.Date;
 public class CommandGiveaway extends CommandHandler {
 
     public CommandGiveaway() {
-        super(new String[]{"giveaway"}, CommandCategory.TOOLS, new PermissionRequirements("giveaway", false, true), "Creates an automated giveaway users can take part in by reacting.", "<time> [WINNER AMOUNT] <prize>");
+        super(new String[]{"giveaway"}, CommandCategory.TOOLS, new PermissionRequirements("giveaway", false, true), "Creates an automated giveaway users can take part in by reacting.", "<time> [WINNER AMOUNT] <prize>\ninfo\ncancel");
     }
 
     @Override
@@ -68,9 +68,15 @@ public class CommandGiveaway extends CommandHandler {
 
 
     public static EmbedBuilder formatGiveaway(RubiconGiveaway giveaway) {
-        return new EmbedBuilder()
+        EmbedBuilder emb = new EmbedBuilder()
                 .setColor(Colors.COLOR_PRIMARY)
-                .setDescription(String.format(TranslationUtil.translate(giveaway.getAuthor(), "giveaway.description"), giveaway.getPrize()))
-                .setFooter(String.format(TranslationUtil.translate(giveaway.getAuthor(), "giveaway.footer"), giveaway.getUsers().size(),DateUtil.formatDate(giveaway.getExpirationDate(), TranslationUtil.translate(giveaway.getAuthor(), "date.format"))), null);
+                .setDescription(String.format(TranslationUtil.translate(giveaway.getAuthor(), "giveaway.description"), giveaway.getPrize(), giveaway.getWinnerCount()));
+        if(giveaway.getUsers().isEmpty())
+                emb.setFooter(String.format(TranslationUtil.translate(giveaway.getAuthor(), "giveaway.footer.nobody"), DateUtil.formatDate(giveaway.getExpirationDate(), TranslationUtil.translate(giveaway.getAuthor(), "date.format"))), null);
+        else if(giveaway.getUsers().size() == 1)
+            emb.setFooter(String.format(TranslationUtil.translate(giveaway.getAuthor(), "giveaway.footer.user"), DateUtil.formatDate(giveaway.getExpirationDate(), TranslationUtil.translate(giveaway.getAuthor(), "date.format"))), null);
+        else
+            emb.setFooter(String.format(TranslationUtil.translate(giveaway.getAuthor(), "giveaway.footer.users"), giveaway.getUsers().size(), DateUtil.formatDate(giveaway.getExpirationDate(), TranslationUtil.translate(giveaway.getAuthor(), "date.format"))), null);
+        return emb;
     }
 }

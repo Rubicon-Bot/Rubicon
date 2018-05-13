@@ -7,7 +7,7 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 
-import java.io.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
  * @author Michael Rittmeister / Schlaubi
  * @license GNU General Public License v3.0
  */
-public class RubiconPoll implements Serializable{
+public class RubiconPoll implements Serializable {
     Rethink rethink = RubiconBot.getRethink();
 
     /*The id of the poll creator*/
@@ -62,19 +62,19 @@ public class RubiconPoll implements Serializable{
         return guild;
     }
 
-    public void removePollMsg(String message){
+    public void removePollMsg(String message) {
         pollmsgs.remove(message);
     }
 
-    public boolean isPollmsg(String message){
+    public boolean isPollmsg(String message) {
         return pollmsgs.containsKey(message);
     }
 
-    public Member getCreator(Guild guild){
+    public Member getCreator(Guild guild) {
         return guild.getMemberById(getCreator());
     }
 
-    private RubiconPoll(Member creator, String heading, List<String> answers, Message message, Guild guild){
+    private RubiconPoll(Member creator, String heading, List<String> answers, Message message, Guild guild) {
         this.creator = creator.getUser().getId();
         this.heading = heading;
         this.answers = answers;
@@ -86,41 +86,43 @@ public class RubiconPoll implements Serializable{
         this.pollmsgs.put(message.getId(), message.getTextChannel().getId());
     }
 
-    public RubiconPoll(Member creator, String heading, List<String> answers, HashMap<String, String> pollmsgs, HashMap<String, Integer> votes, HashMap<String, Integer> reacts, Guild guild){
+    public RubiconPoll(Member creator, String heading, List<String> answers, HashMap<String, String> pollmsgs, HashMap<String, Integer> votes, HashMap<String, Integer> reacts, Guild guild) {
         this.creator = creator.getUser().getId();
         this.heading = heading;
         this.answers = answers;
         this.pollmsgs = pollmsgs;
         this.votes = votes;
-        this.reacts =reacts;
+        this.reacts = reacts;
         this.guild = guild.getId();
 
     }
 
-    public static RubiconPoll createPoll(String heading, List<String> answers, Message message, HashMap<String, Integer> emotes){
+    public static RubiconPoll createPoll(String heading, List<String> answers, Message message, HashMap<String, Integer> emotes) {
         RubiconPoll poll = new RubiconPoll(message.getMember(), heading, answers, message, message.getGuild());
         poll.reacts.putAll(emotes);
         RubiconBot.getPollManager().getPolls().put(message.getGuild(), poll);
         return poll;
     }
 
-    public RubiconPoll savePoll(){
+    public RubiconPoll savePoll() {
         /*Delete old poll*/
         delete();
-        rethink.db.table("votes").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("creator", creator).with("heading", heading).with("answers", answers).with("pollmsgs", pollmsgs).with("votes", votes).with("reacts", reacts).with("guild", guild))).run(rethink.getConnection());        return this;
+        rethink.db.table("votes").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("creator", creator).with("heading", heading).with("answers", answers).with("pollmsgs", pollmsgs).with("votes", votes).with("reacts", reacts).with("guild", guild))).run(rethink.getConnection());
+        return this;
     }
 
-    public boolean delete(){
+    public boolean delete() {
         rethink.db.table("votes").filter(rethink.rethinkDB.hashMap("guild", guild)).delete().run(rethink.getConnection());
         return true;
     }
 
-    public void updateMessages(Guild guild, EmbedBuilder message){
+    public void updateMessages(Guild guild, EmbedBuilder message) {
         getPollmsgs().forEach((m, c) -> {
             try {
                 Message pollmsg = guild.getTextChannelById(c).getMessageById(m).complete();
                 pollmsg.editMessage(message.build()).queue();
-            } catch (Exception ignored) { }
+            } catch (Exception ignored) {
+            }
         });
     }
 

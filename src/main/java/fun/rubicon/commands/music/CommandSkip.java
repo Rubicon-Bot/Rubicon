@@ -9,15 +9,13 @@ import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import net.dv8tion.jda.core.entities.Message;
 
-import java.io.UnsupportedEncodingException;
-
 /**
  * @author Schlaubi / Michael Rittmeister
  */
 
 public class CommandSkip extends CommandHandler {
     public CommandSkip() {
-        super(new String[] {"skip"}, CommandCategory.MUSIC, new PermissionRequirements("skip", false, true), "Skip a song", "<songs>");
+        super(new String[]{"skip"}, CommandCategory.MUSIC, new PermissionRequirements("skip", false, true), "Skip a song", "<songs>");
     }
 
     @Override

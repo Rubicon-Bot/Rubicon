@@ -21,8 +21,6 @@ import net.dv8tion.jda.core.entities.User;
 import java.util.Date;
 import java.util.List;
 
-import static fun.rubicon.util.EmbedUtil.message;
-
 /*
  * Copyright (c) 2018  Rubicon Bot Development Team
  * Licensed under the GPL-3.0 license.
@@ -33,46 +31,32 @@ public class CommandPremium extends CommandHandler {
     public static final long PREMIUM_TIME = new Date().getTime() + 15638400000L;
 
     public CommandPremium() {
-        super(new String[]{"premium"}, CommandCategory.GENERAL, new PermissionRequirements("premium", false, true), "See your premium state or buy premium.","| Shows current premium state\n"+
-        "buy | Buy premium");
+        super(new String[]{"premium"}, CommandCategory.GENERAL, new PermissionRequirements("premium", false, true), "See your premium state or buy premium.", "| Shows current premium state");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
         String[] args = invocation.getArgs();
         RubiconUser author = RubiconUser.fromUser(invocation.getAuthor());
-        if(args.length == 0) {
+        if (args.length == 0) {
             EmbedBuilder em = new EmbedBuilder();
-        em.setAuthor(
-                invocation.getAuthor().getName(), null, invocation.getAuthor().getAvatarUrl()
-        );
-        em.setColor(
-                Colors.COLOR_SECONDARY
-        );
-        if ((author.isPremium())) {
-            em.setDescription(invocation.translate("command.premium.until")+" " + author.formatExpiryDate().replace("%",""));
-        } else {
-            em.setDescription(invocation.translate("command.premium.nopremium"));
-        }
-        return message(em);
+            em.setAuthor(
+                    invocation.getAuthor().getName(), null, invocation.getAuthor().getAvatarUrl()
+            );
+            em.setColor(
+                    Colors.COLOR_SECONDARY
+            );
+            if ((author.isPremium())) {
+                em.setDescription(invocation.translate("command.premium.until") + " " + author.formatExpiryDate().replace("%", ""));
+            } else {
+                em.setDescription(invocation.translate("command.premium.nopremium"));
+            }
+            return message(em);
         }
 
         switch (args[0].toLowerCase()) {
             default:
-               return createHelpMessage();
-            case "buy":
-                if ((author.isPremium())) {
-                    return message(EmbedUtil.info(invocation.translate("command.premium.already.title"), invocation.translate("command.premium.until")+" " + author.formatExpiryDate().replace("%","")));
-                }
-                long userMoney = author.getMoney();
-                if (userMoney - PriceList.PREMIUM.getPrice() >= 0) {
-                    author.setPremium(PREMIUM_TIME);
-                    author.setMoney(userMoney - PriceList.PREMIUM.getPrice());
-                    assignPremiumRole(author);
-                    return message(EmbedUtil.success(invocation.translate("command.premium.success"), invocation.translate("command.premium.success.buy")));
-                } else {
-                    return message(EmbedUtil.error(invocation.translate("command.premium.money.title"), String.format(invocation.translate("command.premium.money.desc"),PriceList.PREMIUM.getPrice(),userMoney)));
-                }
+                return createHelpMessage();
             case "add":
                 if (userPermissions.isBotAuthor()) {
                     List<User> users = invocation.getMessage().getMentionedUsers();
@@ -115,12 +99,12 @@ public class CommandPremium extends CommandHandler {
 
     private void assignPremiumRole(RubiconUser user) {
         if (!user.isPremium()) return;
-        if(RubiconBot.getSelfUser().getIdLong() != 380713705073147915L)
+        if (RubiconBot.getSelfUser().getIdLong() != 380713705073147915L)
             return;
         Guild guild = RubiconBot.getShardManager().getGuildById(Info.RUBICON_SERVER);
         if (guild.getMember(user.getUser()) == null) return;
         Role role = guild.getRoleById(382160159339970560L);
-        if(role == null)
+        if (role == null)
             return;
         guild.getController().addSingleRoleToMember(guild.getMember(user.getUser()), role).queue();
     }

@@ -25,7 +25,7 @@ import java.util.List;
 
 public class CommandRanks extends CommandHandler {
     public CommandRanks() {
-        super(new String[]{"ranks", "rank"}, CommandCategory.SETTINGS, new PermissionRequirements("ranks", false, true), "Get ranks on your server", "<role1> <role2> <role3> \ncreate\ndelete\nlist");
+        super(new String[]{"ranks", "rank"}, CommandCategory.SETTINGS, new PermissionRequirements("ranks", false, true), "Get ranks on your server", "<role1> <role2> <role3> \ncreate <RoleName>\ndelete <@RoleName>\nlist");
     }
 
     @Override
@@ -40,32 +40,34 @@ public class CommandRanks extends CommandHandler {
         switch (args[0]) {
             case "create":
             case "add":
+                if (args.length < 2)
+                    return createHelpMessage(invocation);
                 if (!invocation.getMember().hasPermission(Permission.MANAGE_ROLES))
                     return message(error(invocation.translate("command.ranks.noperm.title"), invocation.translate("command.ranks.noperm.user.description")));
                 if (!invocation.getSelfMember().hasPermission(Permission.MANAGE_ROLES))
                     return message(error(invocation.translate("command.ranks.noperm.title"), invocation.translate("command.ranks.noperm.bot.description")));
-                if(!userPermissions.hasPermissionNode("command.ranks.manage"))
+                if (!userPermissions.hasPermissionNode("command.ranks.manage"))
                     return message(error(invocation.translate("command.ranks.noperm.manage.title"), invocation.translate("command.ranks.noperm.manage.description")));
                 Role rank = getOrCreateRole(args[1], guild.getGuild(), member);
-                if(rank == null)
+                if (rank == null)
                     return message(error(invocation.translate("command.ranks.noperm.role.title"), invocation.translate("command.ranks.noperm.role.description")));
                 /* Whitelist role as rank */
                 guild.allowRank(rank);
-                SafeMessage.sendMessage(invocation.getTextChannel(), message(success(invocation.translate("command.ranks.created.title"), String.format(invocation.translate("command.ranks.created.description"), rank.getName()))));
+                SafeMessage.sendMessage(invocation.getTextChannel(), message(success(invocation.translate("command.ranks.created.title"), String.format(invocation.translate("command.ranks.created.description"), rank.getName()))),30);
                 break;
             case "remove":
             case "delete":
-                if(!userPermissions.hasPermissionNode("command.ranks.manage"))
+                if (!userPermissions.hasPermissionNode("command.ranks.manage"))
                     return message(error(invocation.translate("command.ranks.noperm.manage.title"), invocation.translate("command.ranks.noperm.manage.description")));
                 if (message.getMentionedRoles().isEmpty())
-                    return message(error(invocation.translate("command.ranks.nomention.title"), invocation.translate("command.ranks.nomention.bot.description")));
+                    return message(error(invocation.translate("command.ranks.nomention.title"), invocation.translate("command.ranks.nomention.description")));
                 Role role = message.getMentionedRoles().get(0);
                 if (!guild.isRank(role))
                     return message(error(invocation.translate("command.ranks.notarank.title"), invocation.translate("command.ranks.notarank.description")));
                 /* Remove role from rank whitelist */
                 guild.disallowRank(role);
                 role.delete().queue();
-                SafeMessage.sendMessage(invocation.getTextChannel(), message(success(invocation.translate("command.ranks.deleted.title"), invocation.translate("command.ranks.deleted.description"))));
+                SafeMessage.sendMessage(invocation.getTextChannel(), message(success(invocation.translate("command.ranks.deleted.title"), invocation.translate("command.ranks.deleted.description"))),30);
                 break;
             case "list":
                 if (!guild.useRanks())
@@ -73,7 +75,7 @@ public class CommandRanks extends CommandHandler {
                 StringBuilder ranks = new StringBuilder();
                 guild.getRanks().forEach(r -> ranks.append("`").append(r.getName()).append("`").append(", "));
                 ranks.replace(ranks.lastIndexOf(","), ranks.lastIndexOf(",") + 1, "");
-                SafeMessage.sendMessage(invocation.getTextChannel(), message(success(invocation.translate("command.ranks.list.title"), ranks.toString())));
+                SafeMessage.sendMessage(invocation.getTextChannel(), message(success(invocation.translate("command.ranks.list.title"), ranks.toString())),30);
                 break;
             default:
                 if (!guild.useRanks())
@@ -85,14 +87,14 @@ public class CommandRanks extends CommandHandler {
                 Arrays.asList(args).forEach(name -> {
                     if (guild.getGuild().getRolesByName(name, true).isEmpty()) return;
                     Role rankRole = guild.getGuild().getRolesByName(name, true).get(0);
-                    if(!guild.isRank(rankRole)) return;
+                    if (!guild.isRank(rankRole)) return;
                     if (member.getRoles().contains(rankRole)) {
-                        if(guild.getGuild().getSelfMember().canInteract(rankRole)) {
+                        if (guild.getGuild().getSelfMember().canInteract(rankRole)) {
                             toRemoveRoles.add(rankRole);
                             removedRoles.append(rankRole.getName()).append(", ");
                         }
                     } else {
-                        if(guild.getGuild().getSelfMember().canInteract(rankRole)) {
+                        if (guild.getGuild().getSelfMember().canInteract(rankRole)) {
                             toAddRoles.add(rankRole);
                             addedRoles.append(rankRole.getName()).append(", ");
                         }
@@ -100,30 +102,31 @@ public class CommandRanks extends CommandHandler {
                 });
                 EmbedBuilder emb = new EmbedBuilder()
                         .setColor(Colors.COLOR_PRIMARY)
-                        .setTitle(invocation.translate("command.ranks.embed.title"));
-                if(!toRemoveRoles.isEmpty()){
+                        .setTitle(invocation.translate("command.ranks.embed.title"))
+                        .setFooter(String.format(invocation.translate("command.ranks.footer"), invocation.getAuthor().getName() + "#" + invocation.getAuthor().getDiscriminator()), invocation.getAuthor().getEffectiveAvatarUrl());
+                if (!toRemoveRoles.isEmpty()) {
                     guild.getGuild().getController().removeRolesFromMember(member, toRemoveRoles).queue();
                     removedRoles.replace(removedRoles.lastIndexOf(","), removedRoles.lastIndexOf(",") + 1, "");
                     emb.addField(invocation.translate("command.ranks.embed.removed"), removedRoles.toString(), false);
                 }
-                if(!toAddRoles.isEmpty()){
+                if (!toAddRoles.isEmpty()) {
                     guild.getGuild().getController().addRolesToMember(member, toAddRoles).queue();
                     addedRoles.replace(addedRoles.lastIndexOf(","), addedRoles.lastIndexOf(",") + 1, "");
                     emb.addField(invocation.translate("command.ranks.embed.added"), addedRoles.toString(), false);
                 }
-                if(toAddRoles.isEmpty() && toRemoveRoles.isEmpty())
+                if (toAddRoles.isEmpty() && toRemoveRoles.isEmpty())
                     return message(error(invocation.translate("command.ranks.noperm.title"), invocation.translate("command.ranks.noperm.bot.description")));
-                SafeMessage.sendMessage(invocation.getTextChannel(), message(emb));
+                SafeMessage.sendMessage(invocation.getTextChannel(), message(emb),30);
         }
         return null;
     }
 
-    private Role getOrCreateRole(String name, Guild guild, Member invoker){
-        if(guild.getRolesByName(name, true).isEmpty())
+    private Role getOrCreateRole(String name, Guild guild, Member invoker) {
+        if (guild.getRolesByName(name, true).isEmpty())
             return guild.getController().createRole().setName(name).setMentionable(true).complete();
         else {
             Role role = guild.getRolesByName(name, true).get(0);
-            if(invoker.canInteract(role) && guild.getSelfMember().canInteract(role) && !role.isManaged())
+            if (invoker.canInteract(role) && guild.getSelfMember().canInteract(role) && !role.isManaged())
                 return role;
         }
         return null;

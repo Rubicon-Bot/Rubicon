@@ -28,7 +28,7 @@ public class CommandMedal extends CommandHandler {
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) throws Exception {
         if (invocation.getArgs().length == 0)
             return createHelpMessage();
-        if(!RubiconUser.fromUser(invocation.getAuthor()).isPremium())
+        if (!RubiconUser.fromUser(invocation.getAuthor()).isPremium())
             return message(noPremium());
 
         String content = invocation.getArgsString();
@@ -41,7 +41,7 @@ public class CommandMedal extends CommandHandler {
                 + "&top3=" + (content.length() > 48 ? URLEncoder.encode(content.substring(48, Math.min(73, content.length())), StandardCharsets.UTF_8.toString()) : "")
                 + "&top4=" + (content.length() > 73 ? URLEncoder.encode(content.substring(73, Math.min(98, content.length())), StandardCharsets.UTF_8.toString()) : "");
         InputStream inputStream = new URL(tombstoneUrl).openStream();
-        if(invocation.getMember().hasPermission(invocation.getTextChannel(), Permission.MESSAGE_ATTACH_FILES)) {
+        if (invocation.getMember().hasPermission(invocation.getTextChannel(), Permission.MESSAGE_ATTACH_FILES)) {
             invocation.getTextChannel().sendFile(inputStream, "MEDAL.png").queue();
         }
         return null;

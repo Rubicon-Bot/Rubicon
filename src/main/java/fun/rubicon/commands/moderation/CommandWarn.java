@@ -29,53 +29,54 @@ import java.util.Map;
 
 public class CommandWarn extends CommandHandler {
     public CommandWarn() {
-        super(new String[] {"warn", "warns"}, CommandCategory.MODERATION, new PermissionRequirements("warn", false,false), "Easily warn users", "<@User> <reason>\nlist <@User>\nclear <@User> \nremove <@User> <index> (Use rc!warn list to get warns of a user.)\npunishment (Setup punishments for an speciefied amount of warns");
+        super(new String[]{"warn", "warns"}, CommandCategory.MODERATION, new PermissionRequirements("warn", false, false), "Easily warn users", "<@User> <reason>\nlist <@User>\nclear <@User> \nremove <@User> <index> (Use rc!warn list to get warns of a user.)\npunishment (Setup punishments for an speciefied amount of warns");
     }
 
     private Rethink rethink = RubiconBot.getRethink();
+
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
         String[] args = invocation.getArgs();
         Message message = invocation.getMessage();
-        if(args.length == 0)
+        if (args.length == 0)
             return createHelpMessage();
         RubiconMember member;
-        switch (args[0]){
+        switch (args[0]) {
             case "clear":
-                if(message.getMentionedUsers().isEmpty())
+                if (message.getMentionedUsers().isEmpty())
                     return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.warn.nouser.title"), invocation.translate("command.warn.nouser.description")));
                 member = RubiconMember.fromMember(message.getMentionedMembers().get(0));
-                if(!member.hasWarns())
+                if (!member.hasWarns())
                     return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.warn.list.nowarns.title"), invocation.translate("command.warn.list.nowarns.description")));
                 member.clearWarns();
                 SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.success(invocation.translate("command.warn.clear.cleared.title"), invocation.translate("command.warn.clear.cleared.description"))));
                 break;
             case "unwarn":
             case "remove":
-                if(message.getMentionedUsers().isEmpty())
+                if (message.getMentionedUsers().isEmpty())
                     return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.warn.nouser.title"), invocation.translate("command.warn.nouser.description")));
-                if(args.length < 3)
+                if (args.length < 3)
                     return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.warn.noid.title"), invocation.translate("command.warn.noid.description")));
                 args = invocation.getArgsString().replace("@", "").replace(invocation.getMessage().getMentionedMembers().get(0).getEffectiveName(), "a").split(" ");
                 member = RubiconMember.fromMember(message.getMentionedMembers().get(0));
-                if(!member.hasWarn(args[2]))
+                if (!member.hasWarn(args[2]))
                     return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.warn.remove.notmemberswarn.title"), invocation.translate("command.warn.remove.notmemberswarn.description")));
                 member.unwarn(args[2]);
                 SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.success(invocation.translate("command.warn.removed.title"), invocation.translate("command.warn.removed.description"))));
                 break;
             case "list":
-                if(message.getMentionedUsers().isEmpty())
+                if (message.getMentionedUsers().isEmpty())
                     return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.warn.nouser.title"), invocation.translate("command.warn.nouser.description")));
                 member = RubiconMember.fromMember(message.getMentionedMembers().get(0));
-                if(!member.hasWarns())
+                if (!member.hasWarns())
                     return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.warn.list.nowarns.title"), invocation.translate("command.warn.list.nowarns.description")));
                 SafeMessage.sendMessage(invocation.getTextChannel(), formatListMessage(member).build());
                 break;
             case "punishment":
             case "punishments":
-                if(args.length < 2)
+                if (args.length < 2)
                     return EmbedUtil.message(EmbedUtil.error("Usage", "rc!warns punishments add\nrc!warns punishments remove <id> \nrc!warns punishments list"));
-                switch (args[1]){
+                switch (args[1]) {
                     case "add":
                     case "create":
                         createRequest(invocation);
@@ -85,35 +86,35 @@ public class CommandWarn extends CommandHandler {
                         break;
                     case "delete":
                     case "remove":
-                        if(args.length == 2)
+                        if (args.length == 2)
                             return EmbedUtil.message(EmbedUtil.error("Usage", "rc!warns punishments add\nrc!warns punishments remove <id> \nrc!warns punishments list"));
                         deletePunishment(invocation);
                         break;
                 }
                 break;
-             default:
-                 if(message.getMentionedUsers().isEmpty())
-                     return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.warn.nouser.title"), invocation.translate("command.warn.nouser.description")));
-                 if(args.length < 2)
-                     return EmbedUtil.message(EmbedUtil.error());
-                 args = invocation.getArgsString().replace("@", "").replace(invocation.getMessage().getMentionedMembers().get(0).getEffectiveName(), "a").split(" ");
-                 System.out.println(args[0]);
-                 member = RubiconMember.fromMember(invocation.getMessage().getMentionedMembers().get(0));
-                 String reason = invocation.getArgsString().replace("@", "").replace(member.getMember().getEffectiveName(), "");
-                 member.warn(reason, invocation.getMember());
-                 SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.success(invocation.translate("command.warn.warned.title"), String.format(invocation.translate("command.warn.warned.description"), member.getUser().getAsMention(), reason)).build());
-                 SafeMessage.sendMessage(invocation.getTextChannel(), new EmbedBuilder().setColor(Colors.COLOR_ERROR).setTitle(member.translate("warnembed.title")).setDescription(String.format(member.translate("warnembed.description"), member.getUser().getAsMention(), reason)).setFooter(String.format(member.translate("warnembed.footer"), member.getWarnCount()), member.getUser().getAvatarUrl()).build());
-                 break;
+            default:
+                if (message.getMentionedUsers().isEmpty())
+                    return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.warn.nouser.title"), invocation.translate("command.warn.nouser.description")));
+                if (args.length < 2)
+                    return EmbedUtil.message(EmbedUtil.error());
+                args = invocation.getArgsString().replace("@", "").replace(invocation.getMessage().getMentionedMembers().get(0).getEffectiveName(), "a").split(" ");
+                System.out.println(args[0]);
+                member = RubiconMember.fromMember(invocation.getMessage().getMentionedMembers().get(0));
+                String reason = invocation.getArgsString().replace("@", "").replace(member.getMember().getEffectiveName(), "");
+                member.warn(reason, invocation.getMember());
+                SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.success(invocation.translate("command.warn.warned.title"), String.format(invocation.translate("command.warn.warned.description"), member.getUser().getAsMention(), reason)).build());
+                SafeMessage.sendMessage(invocation.getTextChannel(), new EmbedBuilder().setColor(Colors.COLOR_ERROR).setTitle(member.translate("warnembed.title")).setDescription(String.format(member.translate("warnembed.description"), member.getUser().getAsMention(), reason)).setFooter(String.format(member.translate("warnembed.footer"), member.getWarnCount()), member.getUser().getAvatarUrl()).build());
+                break;
         }
         return null;
     }
 
-    private boolean doesPunishmentExists(String id){
+    private boolean doesPunishmentExists(String id) {
         Cursor cursor = rethink.db.table("warn_punishments").filter(rethink.rethinkDB.hashMap("id", id)).run(rethink.getConnection());
         return !cursor.toList().isEmpty();
     }
 
-    private EmbedBuilder formatListMessage(RubiconMember member){
+    private EmbedBuilder formatListMessage(RubiconMember member) {
         StringBuilder warnList = new StringBuilder();
         member.getWarns().forEach(w -> warnList.append("**ID**: `").append(w.getId()).append("`").append("\n").append("**User**:").append(w.getMember().getAsMention()).append("\n").append("**Reason**:").append(w.getReason()).append("\n").append("**Time**:").append(DateUtil.formatDate(w.getIssueTime(), member.translate("date.format"))).append("\n").append("**Moderator**:").append(w.getModerator().getAsMention()).append("\n\n"));
         return new EmbedBuilder()
@@ -121,14 +122,14 @@ public class CommandWarn extends CommandHandler {
                 .setDescription(warnList.toString());
     }
 
-    private boolean punishmentExists(int amount, Guild guild){
+    private boolean punishmentExists(int amount, Guild guild) {
         Cursor cursor = rethink.db.table("warn_punishments").filter(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("amount", String.valueOf(amount))).run(rethink.getConnection());
         return !cursor.toList().isEmpty();
     }
 
     private void deletePunishment(CommandManager.ParsedCommandInvocation invocation) {
         String id = invocation.getArgs()[2];
-        if(!doesPunishmentExists(id)){
+        if (!doesPunishmentExists(id)) {
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.warn.punishment.notfound.title"), invocation.translate("command.warn.punishment.notfound.description"))), 5);
             return;
         }
@@ -136,18 +137,18 @@ public class CommandWarn extends CommandHandler {
         SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.success(invocation.translate("command.warn.punishment.deleted.title"), invocation.translate("command.warn.punishment.deleted.description"))), 5);
     }
 
-    private void createRequest(CommandManager.ParsedCommandInvocation invocation){
+    private void createRequest(CommandManager.ParsedCommandInvocation invocation) {
         Message msg = SafeMessage.sendMessageBlocking(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.info(invocation.translate("warns.setup.step0.info.title"), invocation.translate("warns.setup.step0.info.description"))));
         new WarnPunishmentSetupRequest(msg, invocation.getMember());
     }
 
-    private EmbedBuilder getPunishmentList(CommandManager.ParsedCommandInvocation invocation){
+    private EmbedBuilder getPunishmentList(CommandManager.ParsedCommandInvocation invocation) {
         Cursor cursor = rethink.db.table("warn_punishments").filter(rethink.rethinkDB.hashMap("guildId", invocation.getGuild().getId())).run(rethink.getConnection());
         List list = cursor.toList();
-        if(list.isEmpty())
+        if (list.isEmpty())
             return new EmbedBuilder().setTitle("No punishments").setDescription("You haven't configured any warn punishments").setColor(Colors.COLOR_ERROR);
         StringBuilder punishmentsString = new StringBuilder();
-        for(Object obj : list){
+        for (Object obj : list) {
             Map map = (Map) obj;
             punishmentsString.append("**ID**: `").append((String) map.get("id")).append("`").append("\n").append("**Minimum warns**:").append((String) map.get("amount")).append("\n").append("**Message**:").append(((String) map.get("message"))).append("\n").append("**Type**:").append(PunishmentType.valueOf((String) map.get("type")).getName()).append("\n\n");
         }
@@ -162,7 +163,7 @@ public class CommandWarn extends CommandHandler {
 
         private WarnPunishmentSettings settings;
 
-        private WarnPunishmentSetupRequest(Message msg, Member author){
+        private WarnPunishmentSetupRequest(Message msg, Member author) {
             this.infoMessage = msg;
             this.author = author;
             this.setupChannel = msg.getTextChannel();
@@ -174,20 +175,20 @@ public class CommandWarn extends CommandHandler {
         @Override
         public void next(Message invokeMsg) {
             new Thread(() -> {
-                switch (step){
+                switch (step) {
                     case 0:
                         int amount;
                         try {
                             amount = Integer.parseInt(invokeMsg.getContentDisplay());
-                        } catch (NumberFormatException e){
+                        } catch (NumberFormatException e) {
                             SafeMessage.sendMessage(setupChannel, setupMessage(translate("warns.setup.failed.title"), translate("warns.setup.step3.failed.description"), Colors.COLOR_ERROR).build());
                             return;
                         }
-                        if (amount == 0){
+                        if (amount == 0) {
                             SafeMessage.sendMessage(setupChannel, setupMessage(translate("warns.setup.failed.title"), translate("warn.setup.step0.null"), Colors.COLOR_ERROR).build(), 2);
                             return;
                         }
-                        if(punishmentExists(amount, guild)){
+                        if (punishmentExists(amount, guild)) {
                             SafeMessage.sendMessage(setupChannel, setupMessage(translate("warns.setup.failed.title"), translate("warn.setup.step0.exists"), Colors.COLOR_ERROR).build(), 2);
                             return;
                         }
@@ -198,7 +199,7 @@ public class CommandWarn extends CommandHandler {
                         PunishmentType type;
                         try {
                             type = PunishmentType.valueOf(invokeMsg.getContentDisplay().toUpperCase());
-                        } catch (IllegalArgumentException e){
+                        } catch (IllegalArgumentException e) {
                             SafeMessage.sendMessage(setupChannel, setupMessage(translate("warns.setup.failed.title"), translate("warns.setup.step1.failed.description"), Colors.COLOR_ERROR).build(), 2);
                             return;
                         }
@@ -207,7 +208,7 @@ public class CommandWarn extends CommandHandler {
                         break;
                     case 2:
                         settings.message = invokeMsg.getContentDisplay();
-                        if(settings.type.equals(PunishmentType.KICK)){
+                        if (settings.type.equals(PunishmentType.KICK)) {
                             finish();
                             return;
                         }
@@ -217,7 +218,7 @@ public class CommandWarn extends CommandHandler {
                         int length;
                         try {
                             length = Integer.parseInt(invokeMsg.getContentDisplay());
-                        } catch (NumberFormatException e){
+                        } catch (NumberFormatException e) {
                             SafeMessage.sendMessage(setupChannel, setupMessage(translate("warns.setup.failed.title"), translate("warns.setup.step3.failed.description"), Colors.COLOR_ERROR).build(), 2);
                             return;
                         }
@@ -228,7 +229,7 @@ public class CommandWarn extends CommandHandler {
             }, "WarnPunishmentSetupStep" + step + "-" + guild.getId()).start();
         }
 
-        private void finish(){
+        private void finish() {
             infoMessage.editMessage(setupMessage(translate("warns.setup.finish.title"), translate("warns.setup.finish.description"), Colors.COLOR_SECONDARY).build()).queue();
             unregister();
             rethink.db.table("warn_punishments").insert(rethink.rethinkDB.hashMap("guildId", guild.getId()).with("type", settings.type.toString()).with("length", settings.lenth).with("message", settings.message).with("amount", String.valueOf(settings.amount))).run(rethink.getConnection());
@@ -240,7 +241,7 @@ public class CommandWarn extends CommandHandler {
 
         }
 
-        private class WarnPunishmentSettings{
+        private class WarnPunishmentSettings {
 
             private int amount;
             private PunishmentType type;

@@ -8,11 +8,11 @@ package fun.rubicon.permission;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.util.Info;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.User;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Member/User-specific object used to query all permission-relevant variables.
@@ -63,7 +63,7 @@ public class UserPermissions {
     }
 
     public boolean hasPermissionNode(String permission) {
-        if(isBotAuthor()) return true;
+        if (isBotAuthor()) return true;
         return RubiconBot.sGetPermissionManager().hasPermission(new PermissionTarget(getDiscordMember()), Permission.parse(permission), false);
     }
 

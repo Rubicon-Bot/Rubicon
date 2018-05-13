@@ -2,13 +2,11 @@ package fun.rubicon.features.poll;
 
 import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
-import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.core.entities.RubiconPoll;
 import fun.rubicon.rethink.Rethink;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 
-import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,13 +21,13 @@ public class PollManager {
     private boolean running = false;
     Rethink rethink = RubiconBot.getRethink();
 
-    public synchronized void loadPolls(){
+    public synchronized void loadPolls() {
         new Thread(() -> {
             Cursor cursor = rethink.db.table("votes").run(rethink.getConnection());
-            for(Object obj : cursor){
+            for (Object obj : cursor) {
                 Map map = (Map) obj;
                 Guild guild = RubiconBot.getShardManager().getGuildById((String) map.get("guild"));
-                if(guild == null) {
+                if (guild == null) {
                     deletePoll((String) map.get("guild"));
                     continue;
                 }
@@ -41,7 +39,7 @@ public class PollManager {
     }
 
 
-    private Guild getGuild(String id){
+    private Guild getGuild(String id) {
         return RubiconBot.getShardManager().getGuildById(id);
     }
 
@@ -49,24 +47,23 @@ public class PollManager {
         return polls;
     }
 
-    public RubiconPoll getPollByGuild(Guild guild){
+    public RubiconPoll getPollByGuild(Guild guild) {
         return polls.get(guild);
     }
 
-    public boolean pollExists(Guild guild){
+    public boolean pollExists(Guild guild) {
         Cursor cursor = rethink.db.table("votes").filter(rethink.rethinkDB.hashMap("guild", guild.getId())).run(rethink.getConnection());
         return !cursor.toList().isEmpty();
     }
 
-    public void replacePoll(RubiconPoll poll, Guild guild){
+    public void replacePoll(RubiconPoll poll, Guild guild) {
         getPolls().replace(guild, poll);
         poll.savePoll();
     }
 
-    public void deletePoll(String guildId){
+    public void deletePoll(String guildId) {
         rethink.db.table("votes").filter(rethink.rethinkDB.hashMap("guild", guildId)).delete().run(rethink.getConnection());
     }
-
 
 
 }

@@ -69,14 +69,14 @@ public class CommandOverwatch extends CommandHandler {
                         .addField(parsedCommandInvocation.translate("command.overwatch.level"), String.valueOf(overall.get("level")), true)
                         .addField(parsedCommandInvocation.translate("command.overwatch.wins"), String.valueOf(overall.get("wins")), true)
                         .addField(parsedCommandInvocation.translate("command.overwatch.kd"), String.valueOf(game.get("kpd")), true)
-                        .addField(parsedCommandInvocation.translate("command.overwatch.death"),String.valueOf(Math.round(game.getInt("deaths"))),true)
-                        .addField(parsedCommandInvocation.translate("command.overwatch.kills"),String.valueOf(Math.round(game.getInt("solo_kills"))),true)
-                        .addField(parsedCommandInvocation.translate("command.overwatch.medals"),String.valueOf(Math.round(game.getInt("medals_gold"))),true);
-                        if(String.valueOf(rankover.get("comprank")).equals("null"))
-                            builder.addField(parsedCommandInvocation.translate("command.overwatch.comp"),"Unranked",true);
-                        else
-                            builder.addField(parsedCommandInvocation.translate("command.overwatch.comp"),String.valueOf(rankover.get("comprank")),true);
-                        builder.addField(parsedCommandInvocation.translate("command.overwatch.cards"),String.valueOf(Math.round(game.getInt("cards"))),true);
+                        .addField(parsedCommandInvocation.translate("command.overwatch.death"), String.valueOf(Math.round(game.getInt("deaths"))), true)
+                        .addField(parsedCommandInvocation.translate("command.overwatch.kills"), String.valueOf(Math.round(game.getInt("solo_kills"))), true)
+                        .addField(parsedCommandInvocation.translate("command.overwatch.medals"), String.valueOf(Math.round(game.getInt("medals_gold"))), true);
+                if (String.valueOf(rankover.get("comprank")).equals("null"))
+                    builder.addField(parsedCommandInvocation.translate("command.overwatch.comp"), "Unranked", true);
+                else
+                    builder.addField(parsedCommandInvocation.translate("command.overwatch.comp"), String.valueOf(rankover.get("comprank")), true);
+                builder.addField(parsedCommandInvocation.translate("command.overwatch.cards"), String.valueOf(Math.round(game.getInt("cards"))), true);
                 SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), builder.build(), 40);
             } catch (Exception ignored) {
                 SafeMessage.sendMessage(parsedCommandInvocation.getTextChannel(), error(parsedCommandInvocation.translate("command.overwatch.error"), parsedCommandInvocation.translate("command.overwatch.error.title")).build(), 20);

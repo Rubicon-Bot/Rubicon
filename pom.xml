@@ -31,11 +31,6 @@
             <version>LATEST</version>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.8-dmr</version>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.5</version>
@@ -56,11 +51,6 @@
             <version>1.8.3</version>
         </dependency>
         <dependency>
-            <groupId>tk.plogitech</groupId>
-            <artifactId>darksky-forecast-api</artifactId>
-            <version>0.10</version>
-        </dependency>
-        <dependency>
             <groupId>com.sedmelluq</groupId>
             <artifactId>lavaplayer</artifactId>
             <version>LATEST</version>
@@ -74,12 +64,6 @@
             <groupId>com.google.apis</groupId>
             <artifactId>google-api-services-youtube</artifactId>
             <version>v3-rev189-1.23.0</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.kohsuke/github-api -->
-        <dependency>
-            <groupId>org.kohsuke</groupId>
-            <artifactId>github-api</artifactId>
-            <version>1.92</version>
         </dependency>
         <dependency>
             <groupId>com.github.ForYaSee</groupId>
@@ -105,6 +89,12 @@
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
             <version>1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

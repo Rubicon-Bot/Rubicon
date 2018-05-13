@@ -4,8 +4,8 @@ package fun.rubicon.util;
 import de.foryasee.httprequest.HttpRequestBuilder;
 import de.foryasee.httprequest.RequestResponse;
 import de.foryasee.httprequest.RequestType;
-import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -17,7 +17,7 @@ public class MinecraftUtil {
     private JSONParser parser = new JSONParser();
 
 
-    public String fetchUUID(String playername){
+    public String fetchUUID(String playername) {
         HttpRequestBuilder request = new HttpRequestBuilder("https://api.mojang.com/users/profiles/minecraft/" + playername, RequestType.GET);
         RequestResponse response = null;
         try {
@@ -37,7 +37,7 @@ public class MinecraftUtil {
     }
 
 
-    private String fetchName(String playername){
+    private String fetchName(String playername) {
         HttpRequestBuilder request = new HttpRequestBuilder("https://api.mojang.com/users/profiles/minecraft/" + playername, RequestType.GET);
         RequestResponse response = null;
         try {
@@ -57,7 +57,7 @@ public class MinecraftUtil {
     }
 
 
-    public JSONArray fetchStatus(){
+    public JSONArray fetchStatus() {
         HttpRequestBuilder request = new HttpRequestBuilder("https://status.mojang.com/check", RequestType.GET);
         RequestResponse response = null;
         try {
@@ -66,17 +66,16 @@ public class MinecraftUtil {
             e.printStackTrace();
         }
         JSONArray res = null;
-        try{
+        try {
             res = ((JSONArray) parser.parse(response.getResponseMessage()));
-        } catch (ParseException e){
+        } catch (ParseException e) {
             Logger.error(e);
         }
         return res;
     }
 
 
-
-    private String fetchNameHistory(String uuid){
+    private String fetchNameHistory(String uuid) {
         HttpRequestBuilder request = new HttpRequestBuilder("https://api.mojang.com/user/profiles/" + uuid + "/names", RequestType.GET);
         RequestResponse response = null;
         try {

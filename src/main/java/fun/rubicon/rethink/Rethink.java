@@ -3,8 +3,11 @@ package fun.rubicon.rethink;
 import com.rethinkdb.RethinkDB;
 import com.rethinkdb.gen.ast.Db;
 import com.rethinkdb.net.Connection;
+import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.util.Logger;
+
+import java.util.List;
 
 /**
  * @author ForYaSee / Yannick Seeger
@@ -17,7 +20,6 @@ public class Rethink {
     private final String dbName;
     private final String user;
     private final String password;
-    public RethinkConnectionPool pool;
     public Db db;
     private Connection connection;
 
@@ -42,10 +44,7 @@ public class Rethink {
                 Logger.error("Can't connect to rethinkdb. Shutdown....");
                 System.exit(1);
             }
-            RethinkConnectionPoolBuilder builder = new RethinkConnectionPoolBuilder();
-            builder.hostname(host).port(port).username(user).password(password).maxConnections(50);
-            pool = builder.build();
-            connection = pool.getConnection();
+            connection = rethinkDB.connection().hostname(host).port(port).user(user, password).connect();
             db = rethinkDB.db(dbName);
             Logger.info(String.format("RethinkDB connection success (%s)", host));
         } catch (Exception e) {
@@ -55,7 +54,7 @@ public class Rethink {
     }
 
     public static void reanimate() {
-        RubiconBot.getRethink().pool.close();
+        RubiconBot.getRethink().connection.close();
         RubiconBot.connectRethink();
     }
 
@@ -64,6 +63,6 @@ public class Rethink {
     }
 
     public Connection getConnection() {
-        return pool.getConnection();
+        return connection;
     }
 }

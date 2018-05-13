@@ -48,14 +48,14 @@ public class PermissionRequirements {
         if (userPermissions.isServerOwner() || userPermissions.isServerAdmin())
             return true;
 
-        if(userPermissions.hasPermissionNode("!" + requiredPermissionNode))
+        if (userPermissions.hasPermissionNode("!" + requiredPermissionNode))
             return false;
-        if(isDefault)
+        if (isDefault)
             return true;
 
-        if(userPermissions.hasPermissionNode(requiredPermissionNode))
+        if (userPermissions.hasPermissionNode(requiredPermissionNode))
             return true;
-        if(userPermissions.hasPermissionNode(requiredPermissionNode))
+        if (userPermissions.hasPermissionNode(requiredPermissionNode))
             return true;
         return false;
     }

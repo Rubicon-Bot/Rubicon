@@ -27,7 +27,7 @@ public final class PortalInviteManager {
         Cursor cursor = table.filter(rethink.rethinkDB.hashMap("receiver", guildId)).run(rethink.getConnection());
         List<HashMap<String, String>> res = cursor.toList();
         ArrayList<PortalInvite> invites = new ArrayList<>();
-        for(HashMap<String, String> entry : res) {
+        for (HashMap<String, String> entry : res) {
             invites.add(new PortalInviteImpl(entry.get("sender"), entry.get("receiver")));
         }
         return invites;
@@ -37,7 +37,7 @@ public final class PortalInviteManager {
         Cursor cursor = table.filter(rethink.rethinkDB.hashMap("senders", guildId)).run(rethink.getConnection());
         List<HashMap<String, String>> res = cursor.toList();
         ArrayList<PortalInvite> invites = new ArrayList<>();
-        for(HashMap<String, String> entry : res) {
+        for (HashMap<String, String> entry : res) {
             invites.add(new PortalInviteImpl(entry.get("sender"), entry.get("receiver")));
         }
         return invites;
@@ -45,8 +45,8 @@ public final class PortalInviteManager {
 
     public boolean sendInvite(String sender, String receiver) {
         List<PortalInvite> invites = getOutcomingInvites(sender);
-        for(PortalInvite invite : invites) {
-            if(invite.getReceiver().equals(receiver))
+        for (PortalInvite invite : invites) {
+            if (invite.getReceiver().equals(receiver))
                 return false;
         }
         rethink.db.table("portal_invites").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("sender", sender).with("receiver", receiver))).run(rethink.getConnection());

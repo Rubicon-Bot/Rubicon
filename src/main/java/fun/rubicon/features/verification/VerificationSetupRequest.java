@@ -31,7 +31,7 @@ public class VerificationSetupRequest extends ReactionSetupRequest {
     }
 
     public static void createVerificationSetupRequest(CommandManager.ParsedCommandInvocation invocation) {
-        if(!invocation.getSelfMember().hasPermission(invocation.getTextChannel(), Permission.MESSAGE_ADD_REACTION)) {
+        if (!invocation.getSelfMember().hasPermission(invocation.getTextChannel(), Permission.MESSAGE_ADD_REACTION)) {
             SafeMessage.sendMessage(invocation.getTextChannel(), invocation.translate("error.noreactionperm"));
             return;
         }
@@ -54,7 +54,7 @@ public class VerificationSetupRequest extends ReactionSetupRequest {
                     }
                     TextChannel channel = invoke_msg.getMentionedChannels().get(0);
                     if (!guild.getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE, Permission.MESSAGE_ADD_REACTION)) {
-                        SafeMessage.sendMessage(setupChannel, setupMessage(translate("verification.setup.failed.title"),translate("verification.setup.step1.noperm"),Colors.COLOR_ERROR).build(), 4);
+                        SafeMessage.sendMessage(setupChannel, setupMessage(translate("verification.setup.failed.title"), translate("verification.setup.step1.noperm"), Colors.COLOR_ERROR).build(), 4);
                         return;
                     }
                     settings.channel = invoke_msg.getMentionedChannels().get(0);
@@ -82,7 +82,7 @@ public class VerificationSetupRequest extends ReactionSetupRequest {
                         return;
                     }
                     Role verifyRole = invoke_msg.getMentionedRoles().get(0);
-                    if(!guild.getSelfMember().canInteract(verifyRole) || !guild.getSelfMember().hasPermission(Permission.MANAGE_ROLES)){
+                    if (!guild.getSelfMember().canInteract(verifyRole) || !guild.getSelfMember().hasPermission(Permission.MANAGE_ROLES)) {
                         SafeMessage.sendMessage(setupChannel, setupMessage(translate("verification.setup.failed.title"), translate("verification.setup.step4.noperms"), Colors.COLOR_ERROR).build(), 4);
                         return;
                     }
@@ -135,14 +135,14 @@ public class VerificationSetupRequest extends ReactionSetupRequest {
     @Override
     public void handleReaction(GuildMessageReactionAddEvent event) {
         new Thread(() -> {
-            if(step == 0){
-                if(event.getReactionEmote().getName() == null) return;
+            if (step == 0) {
+                if (event.getReactionEmote().getName() == null) return;
                 String emote = event.getReactionEmote().getName();
-                if(emote.equals("✅")){
+                if (emote.equals("✅")) {
                     event.getReaction().removeReaction(event.getUser()).queue();
                     event.getChannel().getMessageById(event.getMessageId()).complete().getReactions().forEach(r -> r.removeReaction().queue());
                     infoMessage.editMessage(setupMessage(translate("verification.setup.step1.info.title"), translate("verification.setup.step1.info.description"), Colors.COLOR_SECONDARY).build()).queue();
-                } else if(emote.equals("⛔")){
+                } else if (emote.equals("⛔")) {
                     infoMessage.delete().queue();
                     unregister();
                     return;

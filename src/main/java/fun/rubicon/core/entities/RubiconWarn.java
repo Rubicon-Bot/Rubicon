@@ -17,7 +17,7 @@ public class RubiconWarn {
     private Member moderator;
     private Date issueTime;
 
-    public RubiconWarn(String id, Member member, String reason, Member moderator, Date issueTime){
+    public RubiconWarn(String id, Member member, String reason, Member moderator, Date issueTime) {
         this.id = id;
         this.member = member;
         this.reason = reason;
@@ -25,7 +25,7 @@ public class RubiconWarn {
         this.issueTime = issueTime;
     }
 
-    public String getId(){
+    public String getId() {
         return id;
     }
 

@@ -15,13 +15,12 @@ public class PortalMessageListener extends ListenerAdapter {
         if (event.getAuthor().isFake() || event.getAuthor().isBot() || event.getAuthor().equals(RubiconBot.getSelfUser()))
             return;
         RubiconGuild rubiconGuild = RubiconGuild.fromGuild(event.getGuild());
-
         if (rubiconGuild.hasPortal()) {
-            if(event.getMessage().getContentDisplay().startsWith(rubiconGuild.getPrefix()))
+            if (event.getMessage().getContentDisplay().startsWith(rubiconGuild.getPrefix()))
                 return;
             PortalManager portalManager = new PortalManager();
             Portal portal = portalManager.getPortalByOwner(rubiconGuild.getPortalRoot());
-            if(portal == null) {
+            if (portal == null) {
                 rubiconGuild.closePortal();
                 return;
             }

@@ -8,6 +8,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandManager;
+import fun.rubicon.core.entities.YouTubeVideo;
 import fun.rubicon.core.translation.TranslationUtil;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
@@ -22,7 +23,10 @@ import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.managers.AudioManager;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.stream.Collectors;
 
 /**
@@ -76,7 +80,7 @@ public class GuildMusicPlayer extends MusicPlayer {
 
     private void joinChannel() {
         if (!invocation.getSelfMember().hasPermission(invocation.getMember().getVoiceState().getChannel(), Permission.VOICE_CONNECT)) {
-            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.success(invocation.translate("command.join.bot.notconnectperms."), invocation.translate("command.join.bot.notconnectperms.description"))), 30);
+            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.join.bot.notconnectperms.title"), invocation.translate("command.join.bot.notconnectperms.description"))), 30);
             return;
         }
         RubiconBot.getLavalinkManager().createConnection(invocation.getMember().getVoiceState().getChannel());
@@ -140,6 +144,7 @@ public class GuildMusicPlayer extends MusicPlayer {
                         embedBuilder.addField(invocation.translate("command.play.loadTrack.title"), trackData.name, true);
                         embedBuilder.addField(invocation.translate("command.play.loadTrack.author"), trackData.author, true);
                         embedBuilder.addField(invocation.translate("command.play.loadTrack.duration"), trackData.isStream ? invocation.translate("command.play.loadTrack.stream") : getTimestamp(trackData.duration), false);
+                        embedBuilder.setThumbnail(new YouTubeVideo(trackData.url).getThumbnail());
                         embedBuilder.setColor(Colors.COLOR_PRIMARY);
                         SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(embedBuilder));
                     }
@@ -153,6 +158,7 @@ public class GuildMusicPlayer extends MusicPlayer {
                     embedBuilder.addField(invocation.translate("command.play.loadTrack.title"), trackData.name, true);
                     embedBuilder.addField(invocation.translate("command.play.loadTrack.author"), trackData.author, true);
                     embedBuilder.addField(invocation.translate("command.play.loadTrack.duration"), trackData.isStream ? invocation.translate("command.play.loadTrack.stream") : getTimestamp(trackData.duration), false);
+                    embedBuilder.setThumbnail(new YouTubeVideo(trackData.url).getThumbnail());
                     embedBuilder.setColor(Colors.COLOR_PRIMARY);
                     SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(embedBuilder));
                 }
@@ -386,6 +392,7 @@ public class GuildMusicPlayer extends MusicPlayer {
         embedBuilder.addField(invocation.translate("command.play.loadTrack.title"), t.name, true);
         embedBuilder.addField(invocation.translate("command.play.loadTrack.author"), t.author, true);
         embedBuilder.addField(invocation.translate("command.play.loadTrack.duration"), t.isStream ? invocation.translate("command.play.loadTrack.stream") : getTimestamp(t.duration), false);
+        embedBuilder.setThumbnail(new YouTubeVideo(t.url).getThumbnail());
         embedBuilder.setColor(Colors.COLOR_SECONDARY);
 
         SafeMessage.sendMessage(invocation.getTextChannel(), embedBuilder.build(), 30);
@@ -434,6 +441,7 @@ public class GuildMusicPlayer extends MusicPlayer {
         embedBuilder.addField(TranslationUtil.translate(event.getAuthor(), "command.play.loadTrack.author"), trackData.author, true);
         embedBuilder.addField(TranslationUtil.translate(event.getAuthor(), "command.play.loadTrack.duration"), trackData.isStream ? TranslationUtil.translate(event.getAuthor(), "command.play.loadTrack.stream") : getTimestamp(trackData.duration), false);
         embedBuilder.setColor(Colors.COLOR_PRIMARY);
+        embedBuilder.setThumbnail(new YouTubeVideo(trackData.url).getThumbnail());
         SafeMessage.sendMessage(event.getTextChannel(), embedBuilder.build());
         storage.get(0).getMessage().delete().queue();
         musicChoose.remove(storage.get(0));

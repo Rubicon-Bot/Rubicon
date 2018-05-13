@@ -12,7 +12,10 @@ import fun.rubicon.command.CommandManager;
 import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
-import fun.rubicon.util.*;
+import fun.rubicon.util.Colors;
+import fun.rubicon.util.EmbedUtil;
+import fun.rubicon.util.PermissionUtil;
+import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
@@ -48,7 +51,7 @@ public class CommandAutochannel extends CommandHandler {
         if (invocation.getArgs().length == 1) {
             if (invocation.getArgs()[0].equalsIgnoreCase("list")) {
                 StringBuilder stringBuilder = new StringBuilder();
-                if(rubiconGuild.getAutochannels().isEmpty())
+                if (rubiconGuild.getAutochannels().isEmpty())
                     stringBuilder.append(invocation.translate("command.autochannel.list.no"));
                 for (String id : rubiconGuild.getAutochannels()) {
                     try {
@@ -122,14 +125,14 @@ public class CommandAutochannel extends CommandHandler {
             return;
         VoiceChannel channel = search.channels.get(emote);
         if (search.remove) {
-            if(!RubiconGuild.fromGuild(event.getGuild()).getAutochannels().contains(channel.getId())) {
+            if (!RubiconGuild.fromGuild(event.getGuild()).getAutochannels().contains(channel.getId())) {
                 SafeMessage.sendMessage(event.getTextChannel(), EmbedUtil.message(EmbedUtil.error(search.language.getString("command.autochannel.already.removed.title"), search.language.getString("command.autochannel.already.removed.description"))));
                 return;
             }
             RubiconGuild.fromGuild(event.getGuild()).deleteAutochannel(channel.getId());
             SafeMessage.sendMessage(search.message.getTextChannel(), EmbedUtil.message(EmbedUtil.success(search.language.getString("command.autochannel.search.remove.title"), search.language.getString("command.autochannel.search.remove.description").replaceFirst("%channel%", "`" + channel.getName() + "`"))));
         } else {
-            if(RubiconGuild.fromGuild(event.getGuild()).getAutochannels().contains(channel.getId())) {
+            if (RubiconGuild.fromGuild(event.getGuild()).getAutochannels().contains(channel.getId())) {
                 SafeMessage.sendMessage(event.getTextChannel(), EmbedUtil.message(EmbedUtil.error(search.language.getString("command.autochannel.already.added.title"), search.language.getString("command.autochannel.already.added.description"))));
                 return;
             }
@@ -146,8 +149,8 @@ public class CommandAutochannel extends CommandHandler {
         if (foundChannels.size() > 1) {
             ChannelSearch search = createChannelSearch(foundChannels, invocation, false);
             searches.put(invocation.getGuild(), search);
-        } else if(foundChannels.size() == 1){
-            if(RubiconGuild.fromGuild(invocation.getGuild()).getAutochannels().contains(foundChannels.get(0).getId())) {
+        } else if (foundChannels.size() == 1) {
+            if (RubiconGuild.fromGuild(invocation.getGuild()).getAutochannels().contains(foundChannels.get(0).getId())) {
                 SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.autochannel.already.added.title"), invocation.translate("command.autochannel.already.added.description"))));
                 return;
             }
@@ -166,8 +169,8 @@ public class CommandAutochannel extends CommandHandler {
         if (foundChannels.size() > 1) {
             ChannelSearch search = createChannelSearch(foundChannels, invocation);
             searches.put(invocation.getGuild(), search);
-        } else if(foundChannels.size() == 1){
-            if(!RubiconGuild.fromGuild(invocation.getGuild()).getAutochannels().contains(foundChannels.get(0).getId())) {
+        } else if (foundChannels.size() == 1) {
+            if (!RubiconGuild.fromGuild(invocation.getGuild()).getAutochannels().contains(foundChannels.get(0).getId())) {
                 SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.autochannel.already.removed.title"), invocation.translate("command.autochannel.already.removed.description"))));
                 return;
             }

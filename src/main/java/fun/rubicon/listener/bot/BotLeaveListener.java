@@ -30,7 +30,7 @@ public class BotLeaveListener extends ListenerAdapter {
         rubiconGuild.disableVerification();
 
         PortalManager portalManager = new PortalManager();
-        if(rubiconGuild.hasPortal()) {
+        if (rubiconGuild.hasPortal()) {
             Portal portal = portalManager.getPortalByOwner(rubiconGuild.getPortalRoot());
             portal.removeGuild(event.getGuild().getId());
             rubiconGuild.closePortal();

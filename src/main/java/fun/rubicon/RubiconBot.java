@@ -23,7 +23,6 @@ import fun.rubicon.commands.tools.*;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.music.GuildMusicPlayerManager;
 import fun.rubicon.core.music.LavalinkManager;
-import fun.rubicon.core.rpg.RPGItemRegistry;
 import fun.rubicon.core.translation.TranslationManager;
 import fun.rubicon.features.poll.PollManager;
 import fun.rubicon.features.poll.PunishmentManager;
@@ -95,7 +94,6 @@ public class RubiconBot {
     private SetupManager setupManager;
     private static int SHARD_COUNT;
     private static LavalinkManager lavalinkManager;
-    private RPGItemRegistry rpgItemRegistry;
 
     /**
      * Constructs the RubiconBot.
@@ -152,7 +150,6 @@ public class RubiconBot {
         permissionManager = new PermissionManager();
         translationManager = new TranslationManager();
         gameAnimator = new GameAnimator();
-        rpgItemRegistry = new RPGItemRegistry();
         //Init url shorter API
         bitlyAPI = new BitlyAPI(configuration.getString("bitly_token"));
         verificationLoader = new VerificationLoader();
@@ -177,7 +174,6 @@ public class RubiconBot {
                 new CommandBotplay(),
                 new CommandDisco(),
                 new CommandTest(),
-                new CommandInvMod(),
                 new CommandBeta()
         );
 
@@ -285,9 +281,8 @@ public class RubiconBot {
         );
 
         //RPG
-        /*commandManager.registerCommandHandlers(
-                new CommandInventory()
-        );*/
+        commandManager.registerCommandHandlers(
+        );
     }
 
     /**
@@ -494,10 +489,6 @@ public class RubiconBot {
                 instance.configuration.getString("rethink_password")
         );
         rethink.connect();
-    }
-
-    public static RPGItemRegistry getRPGItemRegistry() {
-        return instance == null ? null : instance.rpgItemRegistry;
     }
 
     public static VerificationLoader getVerificationLoader() {

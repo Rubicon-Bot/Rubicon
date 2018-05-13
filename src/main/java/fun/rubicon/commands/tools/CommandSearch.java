@@ -18,12 +18,12 @@ import net.dv8tion.jda.core.entities.Message;
 
 public class CommandSearch extends CommandHandler {
     public CommandSearch() {
-        super(new String[] {"search", "find"}, CommandCategory.TOOLS, new PermissionRequirements("search", false, true), "Search for Channels and users", "<query>");
+        super(new String[]{"search", "find"}, CommandCategory.TOOLS, new PermissionRequirements("search", false, true), "Search for Channels and users", "<query>");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
-        if(invocation.getArgs().length == 0)
+        if (invocation.getArgs().length == 0)
             return createHelpMessage();
         Guild guild = invocation.getGuild();
         String query = invocation.getArgsString();
@@ -33,35 +33,35 @@ public class CommandSearch extends CommandHandler {
         StringBuilder roles = new StringBuilder();
         Message statusMessage = SafeMessage.sendMessageBlocking(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.info(invocation.translate("command.search.searching.title"), invocation.translate("command.search.searching.textchannels"))));
         guild.getTextChannels().forEach(tc -> {
-            if(tc.getName().toLowerCase().contains(query.toLowerCase()))
+            if (tc.getName().toLowerCase().contains(query.toLowerCase()))
                 textChannels.append(tc.getName()).append("(`").append(tc.getId()).append("`)\n");
         });
         statusMessage.editMessage(EmbedUtil.info(invocation.translate("command.search.searching.title"), invocation.translate("command.search.searching.voicechannels")).build()).queue();
         guild.getVoiceChannels().forEach(vc -> {
-            if(vc.getName().toLowerCase().contains(query.toLowerCase()))
+            if (vc.getName().toLowerCase().contains(query.toLowerCase()))
                 voiceChannels.append(vc.getName()).append("(`").append(vc.getId()).append("`)\n");
         });
         statusMessage.editMessage(EmbedUtil.info(invocation.translate("command.search.searching.title"), invocation.translate("command.search.searching.members")).build()).queue();
         guild.getMembers().forEach(m -> {
-            if(m.getUser().getName().toLowerCase().contains(query.toLowerCase()))
+            if (m.getUser().getName().toLowerCase().contains(query.toLowerCase()))
                 members.append(m.getUser().getName()).append("(`").append(m.getUser().getId()).append("`)\n");
         });
         statusMessage.editMessage(EmbedUtil.info(invocation.translate("command.search.searching.title"), invocation.translate("command.search.searching.roles")).build()).queue();
         guild.getRoles().forEach(r -> {
-            if(r.getName().toLowerCase().contains(query.toLowerCase()))
+            if (r.getName().toLowerCase().contains(query.toLowerCase()))
                 roles.append(r.getName()).append("(`").append(r.getId()).append("`)\n");
         });
 
         EmbedBuilder emb = new EmbedBuilder().setColor(Colors.COLOR_PRIMARY).setTitle(invocation.translate("command.search.result"));
-        if(!textChannels.toString().equals(""))
+        if (!textChannels.toString().equals(""))
             emb.addField(invocation.translate("command.search.result.text"), textChannels.toString(), false);
-        if(!voiceChannels.toString().equals(""))
+        if (!voiceChannels.toString().equals(""))
             emb.addField(invocation.translate("command.search.result.voice"), voiceChannels.toString(), false);
-        if(!members.toString().equals(""))
+        if (!members.toString().equals(""))
             emb.addField(invocation.translate("command.search.result.memb"), members.toString(), false);
-        if(!roles.toString().equals(""))
+        if (!roles.toString().equals(""))
             emb.addField(invocation.translate("command.search.result.role"), roles.toString(), false);
-        if(emb.getFields().isEmpty())
+        if (emb.getFields().isEmpty())
             return message(EmbedUtil.error(invocation.translate("command.search.noresulst.title"), invocation.translate("command.search.noresulst.description")));
         return message(emb);
     }
