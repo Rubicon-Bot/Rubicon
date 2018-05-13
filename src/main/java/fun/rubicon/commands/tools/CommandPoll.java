@@ -13,7 +13,6 @@ import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.exceptions.ErrorResponseException;
 
 import java.awt.*;
 import java.io.Serializable;
@@ -40,7 +39,7 @@ public class CommandPoll extends CommandHandler implements Serializable {
     private List<String> toAddEmojis = new ArrayList<>();
 
     public CommandPoll() {
-        super(new String[]{"vote", "v", "poll"}, CommandCategory.TOOLS, new PermissionRequirements("vote", false, false), "Let your members vote for something.", "create <Title>|<Option1>|<Option2>|...\nvote <index of Option>\nstats\nclose");
+        super(new String[]{"poll", "v", "vote"}, CommandCategory.TOOLS, new PermissionRequirements("vote", false, false), "Let your members vote for something.", "create <Title>|<Option1>|<Option2>|...\nvote <index of Option>\nstats\nclose");
     }
 
 
