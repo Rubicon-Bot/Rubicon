@@ -25,7 +25,6 @@ public class CommandStatistics extends CommandHandler {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setColor(Colors.COLOR_SECONDARY);
         embedBuilder.setAuthor(invocation.translate("command.stats.title"), null, invocation.getSelfMember().getUser().getAvatarUrl());
-        embedBuilder.addField(invocation.translate("command.stats.shards"), RubiconBot.getMaximumShardCount() + " Total", true);
         embedBuilder.addField(invocation.translate("command.stats.guilds"), String.valueOf(RubiconBot.getShardManager().getGuilds().size()), true);
         embedBuilder.addField(invocation.translate("command.stats.users"), String.valueOf(RubiconBot.getShardManager().getUsers().size()), true);
         embedBuilder.addField(invocation.translate("command.stats.roles"), String.valueOf(RubiconBot.getShardManager().getRoles().size()), true);
