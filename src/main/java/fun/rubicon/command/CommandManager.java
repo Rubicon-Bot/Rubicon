@@ -11,6 +11,7 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.core.entities.RubiconMember;
 import fun.rubicon.core.entities.RubiconUser;
+import fun.rubicon.listener.events.CommandExecutedEvent;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.rethink.Rethink;
 import fun.rubicon.util.Info;
@@ -114,6 +115,10 @@ public class CommandManager extends ListenerAdapter {
                 // Ignored
             }
         }
+
+        //Call event
+        RubiconBot.getEventManager().handle(new CommandExecutedEvent(parsedCommandInvocation.getJDA(), 200, parsedCommandInvocation.getMessage(), parsedCommandInvocation));
+
     }
 
     /**
@@ -254,6 +259,7 @@ public class CommandManager extends ListenerAdapter {
         public UserPermissions getPerms() {
             return new UserPermissions(getAuthor(), getGuild());
         }
+
 
         public String translate(String key) {
             String entry;

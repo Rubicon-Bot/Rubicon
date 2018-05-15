@@ -33,12 +33,10 @@ import fun.rubicon.listener.AutochannelListener;
 import fun.rubicon.listener.GeneralMessageListener;
 import fun.rubicon.listener.GeneralReactionListener;
 import fun.rubicon.listener.UserMentionListener;
-import fun.rubicon.listener.bot.BotJoinListener;
-import fun.rubicon.listener.bot.BotLeaveListener;
-import fun.rubicon.listener.bot.SelfMentionListener;
-import fun.rubicon.listener.bot.ShardListener;
+import fun.rubicon.listener.bot.*;
 import fun.rubicon.listener.channel.TextChannelDeleteListener;
 import fun.rubicon.listener.channel.VoiceChannelDeleteListener;
+import fun.rubicon.listener.events.RubiconEventManager;
 import fun.rubicon.listener.feature.PunishmentListener;
 import fun.rubicon.listener.feature.VerificationListener;
 import fun.rubicon.listener.feature.VoteListener;
@@ -51,6 +49,7 @@ import fun.rubicon.rethink.RethinkUtil;
 import fun.rubicon.setup.SetupListener;
 import fun.rubicon.setup.SetupManager;
 import fun.rubicon.util.*;
+import net.dv8tion.jda.bot.sharding.DefaultShardManager;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.bot.sharding.ShardManager;
 import net.dv8tion.jda.core.JDAInfo;
@@ -58,6 +57,8 @@ import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.impl.JDAImpl;
+import net.dv8tion.jda.core.hooks.IEventManager;
 import org.json.JSONObject;
 
 import javax.security.auth.login.LoginException;
@@ -94,6 +95,7 @@ public class RubiconBot {
     private SetupManager setupManager;
     private static int SHARD_COUNT;
     private static LavalinkManager lavalinkManager;
+    private static IEventManager eventManager;
 
     /**
      * Constructs the RubiconBot.
@@ -150,6 +152,7 @@ public class RubiconBot {
         permissionManager = new PermissionManager();
         translationManager = new TranslationManager();
         gameAnimator = new GameAnimator();
+        eventManager = new RubiconEventManager();
         //Init url shorter API
         bitlyAPI = new BitlyAPI(configuration.getString("bitly_token"));
         verificationLoader = new VerificationLoader();
@@ -332,6 +335,7 @@ public class RubiconBot {
                 new SetupListener(),
                 new PortalMessageListener()
         );
+        builder.setEventManager(eventManager);
         try {
             shardManager = builder.build();
         } catch (LoginException e) {
@@ -497,5 +501,9 @@ public class RubiconBot {
 
     public static SetupManager getSetupManager() {
         return instance.setupManager;
+    }
+
+    public static IEventManager getEventManager(){
+        return eventManager;
     }
 }

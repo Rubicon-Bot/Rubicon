@@ -21,7 +21,7 @@ public class ShardListener extends ListenerAdapter {
     public void onReady(ReadyEvent event) {
         tempLoadedShards++;
         if (tempLoadedShards == RubiconBot.getMaximumShardCount())
-            new AllShardsLoadedEvent();
+            RubiconBot.getEventManager().handle(new AllShardsLoadedEvent(event.getJDA(), event.getResponseNumber()));
     }
 
     @Override
