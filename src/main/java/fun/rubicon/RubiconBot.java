@@ -76,7 +76,7 @@ import java.util.stream.Collectors;
 public class RubiconBot {
 
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"log_webhook", "token", "playingStatus", "dbl_token", "discord_pw_token", "gif_token", "google_token", "rethink_host", "rethink_port", "rethink_db", "rethink_user", "rethink_password", "rethink_host2", "rethink_port2", "rethink_host3", "rethink_port3", "fortnite_key", "supporthook", "rubiconfun_token"};
+    private static final String[] CONFIG_KEYS = {"shard_count", "shard_id", "log_webhook", "token", "playingStatus", "dbl_token", "discord_pw_token", "gif_token", "google_token", "rethink_host", "rethink_port", "rethink_db", "rethink_user", "rethink_password", "rethink_host2", "rethink_port2", "rethink_host3", "rethink_port3", "fortnite_key", "supporthook", "rubiconfun_token"};
     private static RubiconBot instance;
     private final Configuration configuration;
     private static Rethink rethink;
@@ -92,9 +92,8 @@ public class RubiconBot {
     private BitlyAPI bitlyAPI;
     private VerificationLoader verificationLoader;
     private SetupManager setupManager;
-    private static int SHARD_COUNT;
     private static LavalinkManager lavalinkManager;
-    private static IEventManager eventManager;
+    private RPGItemRegistry rpgItemRegistry;
 
     /**
      * Constructs the RubiconBot.
@@ -137,9 +136,6 @@ public class RubiconBot {
         connectRethink();
         RethinkUtil.createDefaults(rethink);
 
-        SHARD_COUNT = generateShardCount();
-        Logger.info(String.format("Starting with %d shards...", SHARD_COUNT));
-
         //Init punishments
         punishmentManager = new PunishmentManager();
 
@@ -171,7 +167,6 @@ public class RubiconBot {
         //Bot Owner
         commandManager.registerCommandHandlers(
                 new CommandEval(),
-                new CommandShardManage(),
                 new CommandBotstatus(),
                 new CommandBotplay(),
                 new CommandDisco(),
@@ -310,7 +305,8 @@ public class RubiconBot {
         builder.setToken(instance.configuration.getString("token"));
         builder.setGame(Game.playing("Starting..."));
         builder.setStatus(OnlineStatus.DO_NOT_DISTURB);
-        builder.setShardsTotal(SHARD_COUNT);
+        builder.setShardsTotal(Integer.parseInt(configuration.getString("shard_count")));
+        builder.setShards(Integer.parseInt(configuration.getString("shard_id")));
 
         //Register Event Listeners
         builder.addEventListeners(
@@ -346,19 +342,6 @@ public class RubiconBot {
         }
         lavalinkManager.initialize();
         Info.lastRestart = new Date();
-    }
-
-    private static int generateShardCount() {
-
-        HttpRequestBuilder builder = new HttpRequestBuilder("https://discordapp.com/api/gateway/bot", RequestType.GET)
-                .setRequestHeader(new RequestHeader().addField("Authorization", getConfiguration().getString("token")).addField("User-Agent", "Rubicon"));
-        try {
-            RequestResponse response = builder.sendRequest();
-            return (int) (new JSONObject(response.getResponseMessage())).get("shards");
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("The Discord API did not Respond with a Shard count!");
-        }
     }
 
     /**
@@ -402,13 +385,6 @@ public class RubiconBot {
      */
     public static RubiconBot getRubiconBot() {
         return instance;
-    }
-
-    /**
-     * @return the maximum shard count
-     */
-    public static int getMaximumShardCount() {
-        return SHARD_COUNT;
     }
 
     /**

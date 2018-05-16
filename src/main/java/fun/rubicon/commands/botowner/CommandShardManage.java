@@ -10,6 +10,7 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
+import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.Colors;
@@ -19,6 +20,7 @@ import fun.rubicon.util.StringUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.OnlineStatus;
+import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
@@ -90,7 +92,7 @@ public class CommandShardManage extends CommandHandler {
             }
 
             JDA shard = RubiconBot.getShardManager().getShardById(shardId);
-            if (shard == null) {
+            if(shard == null) {
                 return EmbedUtil.message(EmbedUtil.error("Invalid shardId!", "Please use a correct shardId."));
             }
             switch (invocation.getArgs()[1]) {

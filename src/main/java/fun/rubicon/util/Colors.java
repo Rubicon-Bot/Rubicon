@@ -14,17 +14,11 @@ import java.awt.*;
  * @author Yannick Seeger / ForYaSee
  */
 public class Colors {
-    @Deprecated
     public static Color COLOR_PRIMARY = new Color(88, 198, 33);
-    @Deprecated
     public static Color COLOR_SECONDARY = new Color(18, 109, 229);
-    @Deprecated
     public static Color COLOR_ERROR = new Color(229, 60, 18);
-    @Deprecated
     public static Color COLOR_NO_PERMISSION = new Color(75, 31, 94);
-    @Deprecated
     public static Color COLOR_NOT_IMPLEMENTED = new Color(243, 156, 18);
-    @Deprecated
     public static Color COLOR_PREMIUM = new Color(255, 215, 0);
 
     public static Color FLAT_TURQUIOSE = new Color(26, 188, 156);

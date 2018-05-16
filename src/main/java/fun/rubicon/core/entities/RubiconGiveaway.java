@@ -233,4 +233,8 @@ public class RubiconGiveaway {
     public Message getMessage(){
         return RubiconBot.getShardManager().getGuildById(guildId).getTextChannelById(channelId).getMessageById(messageId).complete();
     }
+
+    public int getWinnerCount() {
+        return winnerCount;
+    }
 }

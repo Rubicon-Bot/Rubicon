@@ -55,7 +55,6 @@ public class PollManager {
     }
 
     public void replacePoll(RubiconPoll poll, Guild guild) {
-        System.out.println("!dasdsadsa");
         getPolls().replace(guild, poll);
         poll.savePoll();
     }
