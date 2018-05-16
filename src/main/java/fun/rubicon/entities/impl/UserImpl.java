@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * @author ForYaSee / Yannick Seeger
  */
-public class UserImpl extends RethinkDataset implements User, net.dv8tion.jda.core.entities.User {
+public class UserImpl extends RethinkDataset implements User {
 
     public static final transient String TABLE = "users";
     private final transient net.dv8tion.jda.core.entities.User user;

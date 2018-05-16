@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * @author ForYaSee / Yannick Seeger
  */
-public interface User {
+public interface User extends net.dv8tion.jda.core.entities.User {
 
     String getBio();
 

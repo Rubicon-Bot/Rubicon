@@ -52,10 +52,10 @@ public class RethinkDatabase {
 
     //Entity Getter
     public User getUser(@Nonnull net.dv8tion.jda.core.entities.User jdaUser) {
-        User user = r.table(UserImpl.TABLE).get(String.valueOf(jdaUser.getIdLong())).run(connection, User.class);
+        User user = r.table(UserImpl.TABLE).get(jdaUser.getId()).run(connection, User.class);
         if(user == null)
             user = new UserImpl(jdaUser, "No bio set.", 0, "en-US", null, 0, new HashMap<>());
-        UserProvider.getCache().put(jdaUser.getIdLong(), user);
+        UserProvider.addUser(user);
         return user;
     }
 
