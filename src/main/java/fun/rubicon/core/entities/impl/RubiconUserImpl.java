@@ -28,6 +28,7 @@ import java.util.List;
 /**
  * @author Yannick Seeger / ForYaSee
  */
+@Deprecated
 public abstract class RubiconUserImpl extends RethinkHelper {
 
     protected User user = null;

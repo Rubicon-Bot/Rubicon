@@ -15,6 +15,10 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 
+/**
+ * @deprecated Use {@link org.slf4j.Logger}
+ */
+@Deprecated
 public class Logger {
     private static File logFile;
     private static String loggerText = "";

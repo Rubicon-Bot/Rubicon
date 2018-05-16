@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 /**
  * @author Schlaubi
  */
+@Deprecated
 public class ConfigSetup {
 
     private static final BufferedReader sys_in;
@@ -21,7 +22,6 @@ public class ConfigSetup {
         InputStreamReader isr = new InputStreamReader(System.in);
         sys_in = new BufferedReader(isr);
     }
-
     public static String prompt(String req) {
         String token;
 

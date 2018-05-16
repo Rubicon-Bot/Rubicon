@@ -1,37 +1,39 @@
 package fun.rubicon.core;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author ForYaSee / Yannick Seeger
  */
-public abstract class Cache<T, V> {
+public class Cache<K, V> {
 
-    protected HashMap<T, V> cache;
+    private Map<K, V> storage;
 
     public Cache() {
-        this.cache = new HashMap<>();
+        storage = new HashMap<>();
     }
 
-    public V get(T key) {
-        if (cache.containsKey(key))
-            return cache.get(key);
-        return null;
+    public V get(K key) {
+        return storage.get(key);
     }
 
-    public boolean contains(T key) {
-        return cache.containsKey(key);
-    }
-
-    public V update(T key, V value) {
-        if (cache.containsKey(key))
-            cache.replace(key, value);
+    public void put(K key, V value) {
+        if (containsKey(key))
+            replace(key, value);
         else
-            cache.put(key, value);
-        return get(key);
+            storage.put(key, value);
     }
 
-    public void remove(T key) {
-        cache.remove(key);
+    public void replace(K key, V value) {
+        storage.replace(key, value);
+    }
+
+    public boolean containsKey(K key) {
+        return storage.containsKey(key);
+    }
+
+    public void remove(K key) {
+        storage.remove(key);
     }
 }

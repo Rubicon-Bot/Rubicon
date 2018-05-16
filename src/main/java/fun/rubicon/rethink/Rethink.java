@@ -3,11 +3,8 @@ package fun.rubicon.rethink;
 import com.rethinkdb.RethinkDB;
 import com.rethinkdb.gen.ast.Db;
 import com.rethinkdb.net.Connection;
-import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.util.Logger;
-
-import java.util.List;
 
 /**
  * @author ForYaSee / Yannick Seeger

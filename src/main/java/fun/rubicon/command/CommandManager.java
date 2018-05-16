@@ -75,7 +75,7 @@ public class CommandManager extends ListenerAdapter {
             Rethink.reanimate();
             return;
         }
-        //Check Database Entries
+        //Check RethinkDatabase Entries
         if (event.getChannelType().isGuild()) {
             RubiconGuild.fromGuild(event.getGuild());
             RubiconMember.fromMember(event.getMember());
