@@ -50,13 +50,13 @@ public class CommandBan extends CommandHandler implements PunishmentHandler {
         if (args.length == 1) {
             if (!new PermissionRequirements("ban.permanent", false, false).coveredBy(invocation.getPerms()))
                 return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.ban.nopermissions.user.title"), invocation.translate("command.ban.permanent.noperms.descriptio")).build()).build();
-            victim.ban();
+            victim.ban(invocation.getMember());
             return new MessageBuilder().setEmbed(EmbedUtil.success(invocation.translate("command.ban.banned.permanent.title"), String.format(invocation.translate("command.ban.banned.permanent.description"), victimMember.getAsMention())).build()).build();
         } else if (args.length > 1) {
             Date expiry = StringUtil.parseDate(args[1]);
             if (expiry == null)
                 return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("general.punishment.invalidnumber.title"), invocation.translate("general.punishment.invalidnumber.description")).build()).build();
-            victim.ban(expiry);
+            victim.ban(expiry, invocation.getMember());
             return new MessageBuilder().setEmbed(EmbedUtil.success(invocation.translate("command.ban.banned.temporary.title"), invocation.translate("command.ban.banned.temporary.permanent").replace("%mention%", victimMember.getAsMention()).replace("%date%", DateUtil.formatDate(expiry, invocation.translate("date.format")))).build()).build();
         }
 

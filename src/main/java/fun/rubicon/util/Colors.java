@@ -20,4 +20,13 @@ public class Colors {
     public static Color COLOR_NO_PERMISSION = new Color(75, 31, 94);
     public static Color COLOR_NOT_IMPLEMENTED = new Color(243, 156, 18);
     public static Color COLOR_PREMIUM = new Color(255, 215, 0);
+
+    public static Color FLAT_TURQUIOSE = new Color(26, 188, 156);
+    public static Color FLAT_EMERALD = new Color(46, 204, 113);
+    public static Color FLAT_PETER_RIVER = new Color(52, 152, 219);
+    public static Color FLAT_AMETHYST = new Color(155, 89, 182);
+    public static Color FLAT_WET_ASPHALT = new Color(52, 73, 94);
+    public static Color FLAT_GREEN_SEA = new Color(22, 160, 133);
+    public static Color FLAT_NEPHRITIS = new Color(39, 174, 96);
+    //TODO https://flatuicolors.com/palette/defo
 }

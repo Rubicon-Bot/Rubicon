@@ -11,6 +11,8 @@ import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.impl.RubiconUserImpl;
 import fun.rubicon.core.translation.TranslationUtil;
+import fun.rubicon.listener.events.PunishmentEvent;
+import fun.rubicon.listener.events.UnpunishEvent;
 import fun.rubicon.rethink.Rethink;
 import fun.rubicon.util.StringUtil;
 import net.dv8tion.jda.core.Permission;
@@ -59,47 +61,52 @@ public class RubiconMember extends RubiconUserImpl {
         return Long.valueOf(getLong(retrieve(), "points")).intValue();
     }
 
-    public RubiconMember mute() {
+    public RubiconMember mute(Member mod) {
         rethink.db.table("punishments").insert(rethink.rethinkDB.array(
                 rethink.rethinkDB.hashMap("guildId", guild.getId())
                         .with("type", "mute")
                         .with("userId", user.getId())
                         .with("expiry", 1L)
+                        .with("moderaor", mod.getUser().getId())
         )).run(rethink.getConnection());
         Role muted = RubiconGuild.fromGuild(guild).getMutedRole();
         guild.getController().addSingleRoleToMember(member, muted).queue();
         RubiconBot.getPunishmentManager().getMuteCache().put(member, 0L);
+        RubiconBot.getEventManager().handle(new PunishmentEvent(guild.getJDA(), 200, guild, member, mod, PunishmentType.MUTE, 0L));
         return this;
     }
 
 
-    public RubiconMember mute(Date date) {
+    public RubiconMember mute(Date date, Member mod) {
         rethink.db.table("punishments").insert(rethink.rethinkDB.array(
                 rethink.rethinkDB.hashMap("guildId", guild.getId())
                         .with("userId", user.getId())
                         .with("type", "mute")
                         .with("expiry", date.getTime())
+                        .with("moderaor", mod.getUser().getId())
         )).run(rethink.getConnection());
         Role muted = RubiconGuild.fromGuild(guild).getMutedRole();
         guild.getController().addSingleRoleToMember(member, muted).queue();
         RubiconBot.getPunishmentManager().getMuteCache().put(member, date.getTime());
+        RubiconBot.getEventManager().handle(new PunishmentEvent(guild.getJDA(), 200, guild, member, mod, PunishmentType.MUTE, date.getTime()));
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                RubiconMember.fromMember(member).unmute(true);
+                RubiconMember.fromMember(member).unmute(true, mod);
             }
         }, date);
         return this;
     }
 
 
-    public RubiconMember unmute(boolean removeRole) {
+    public RubiconMember unmute(boolean removeRole, Member mod) {
         rethink.db.table("punishments").filter(rethink.rethinkDB.hashMap("userId", user.getId()).with("guildId", guild.getId()).with("type", "mute")).delete().run(rethink.getConnection());
         if (removeRole) {
             Role muted = RubiconGuild.fromGuild(guild).getMutedRole();
             guild.getController().removeSingleRoleFromMember(member, muted).queue();
         }
         RubiconBot.getPunishmentManager().getMuteCache().remove(member);
+        RubiconBot.getEventManager().handle(new UnpunishEvent(guild.getJDA(), 200, guild, member, PunishmentType.MUTE));
         return this;
     }
 
@@ -109,12 +116,13 @@ public class RubiconMember extends RubiconUserImpl {
         else return new Date(res).after(new Date());
     }
 
-    public RubiconMember ban(Date expiry) {
+    public RubiconMember ban(Date expiry, Member mod) {
         rethink.db.table("punishments").insert(rethink.rethinkDB.array(
                 rethink.rethinkDB.hashMap("guildId", guild.getId())
                         .with("userId", user.getId())
                         .with("type", "ban")
                         .with("expiry", expiry.getTime())
+                        .with("moderaor", mod.getUser().getId())
         )).run(rethink.getConnection());
         if (guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
             guild.getController().ban(user, 7).queue();
@@ -126,21 +134,23 @@ public class RubiconMember extends RubiconUserImpl {
             }, expiry);
         } else
             guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: Unable to ban user `" + user.getName() + "`! Please give Rubicon `BAN_MEMBERS` permission in order to use ban command").queue();
+        RubiconBot.getEventManager().handle(new PunishmentEvent(guild.getJDA(), 200, guild, member, mod, PunishmentType.BAN, expiry.getTime()));
         return this;
     }
 
-    public RubiconMember ban() {
+    public RubiconMember ban(Member mod) {
         rethink.db.table("punishments").insert(rethink.rethinkDB.array(
                 rethink.rethinkDB.hashMap("guildId", guild.getId())
                         .with("userId", user.getId())
                         .with("type", "mute")
                         .with("expiry", 1L)
+                        .with("moderaor", mod.getUser().getId())
         )).run(rethink.getConnection());
         if (guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
             guild.getController().ban(user, 7).queue();
         } else
             guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: Unable to ban user `" + user.getName() + "`! Please give Rubicon `BAN_MEMBERS` permission in order to use ban command").queue();
-
+        RubiconBot.getEventManager().handle(new PunishmentEvent(guild.getJDA(), 200, guild, member, mod, PunishmentType.BAN, 0L));
         return this;
     }
 
@@ -203,15 +213,15 @@ public class RubiconMember extends RubiconUserImpl {
                 break;
             case BAN:
                 if (expiry == 0L)
-                    ban();
+                    ban(guild.getSelfMember());
                 else
-                    ban(StringUtil.parseDate(expiry + "m"));
+                    ban(StringUtil.parseDate(expiry + "m"), guild.getSelfMember());
                 break;
             case MUTE:
                 if (expiry == 0L)
-                    mute();
+                    mute(guild.getSelfMember());
                 else
-                    mute(StringUtil.parseDate(expiry + "m"));
+                    mute(StringUtil.parseDate(expiry + "m"), guild.getSelfMember());
                 break;
         }
         try {
@@ -234,7 +244,7 @@ public class RubiconMember extends RubiconUserImpl {
                 RubiconUser.fromUser(user).unban(guild);
                 break;
             case MUTE:
-                unmute(true);
+                unmute(true, guild.getSelfMember());
                 break;
         }
 
@@ -259,5 +269,13 @@ public class RubiconMember extends RubiconUserImpl {
 
     public String translate(String key) {
         return TranslationUtil.translate(user, key);
+    }
+
+    public RubiconGuild getRubiconGuild(){
+        return RubiconGuild.fromGuild(guild);
+    }
+
+    public Guild getGuild() {
+        return guild;
     }
 }

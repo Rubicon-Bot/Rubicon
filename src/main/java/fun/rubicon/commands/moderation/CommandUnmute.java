@@ -40,7 +40,7 @@ public class CommandUnmute extends CommandHandler {
             return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.mute.nopermissions.user.title"), String.format(invocation.translate("command.mute.nopermissions.user.description"), victimMember.getAsMention())).build()).build();
         if (!invocation.getSelfMember().canInteract(victimMember))
             return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.mute.nopermissions.bot.title"), String.format(invocation.translate("command.mute.nopermissions.bot.description"), victimMember.getAsMention())).build()).build();
-        victim.unmute(true);
+        victim.unmute(true, invocation.getMember());
         return new MessageBuilder().setEmbed(EmbedUtil.success(invocation.translate("command.unmute.unmuted.title"), String.format(invocation.translate("command.unmute.unmuted.description"), victimMember.getAsMention())).build()).build();
     }
 }

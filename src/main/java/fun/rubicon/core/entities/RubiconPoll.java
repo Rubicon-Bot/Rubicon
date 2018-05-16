@@ -30,9 +30,9 @@ public class RubiconPoll implements Serializable {
     /*Hashmap with all pollmsgs and their channels*/
     private HashMap<String, String> pollmsgs;
     /* Hashmap with count of voted for every option*/
-    private HashMap<String, Integer> votes;
+    private HashMap<String, String> votes;
     /*Hashmaps with all emotes and their vote options*/
-    private HashMap<String, Integer> reacts;
+    private HashMap<String, String> reacts;
 
     public String getCreator() {
         return creator;
@@ -51,11 +51,15 @@ public class RubiconPoll implements Serializable {
     }
 
     public HashMap<String, Integer> getVotes() {
-        return votes;
+        HashMap<String, Integer> map = new HashMap<>();
+        votes.forEach((s, i) -> map.put(s, Integer.parseInt(i)));
+        return map;
     }
 
     public HashMap<String, Integer> getReacts() {
-        return reacts;
+        HashMap<String, Integer> map = new HashMap<>();
+        reacts.forEach((s, i) -> map.put(s, Integer.parseInt(i)));
+        return map;
     }
 
     public String getGuild() {
@@ -94,6 +98,8 @@ public class RubiconPoll implements Serializable {
         this.votes = votes;
         this.reacts = reacts;
         this.guild = guild.getId();
+        votesInput.forEach((s, i) -> votes.put(s, String.valueOf(i)));
+        reactsInput.forEach((s, i) -> reacts.put(s, String.valueOf(i)));
 
     }
 
@@ -130,6 +136,10 @@ public class RubiconPoll implements Serializable {
         List<Message> messages = new ArrayList<>();
         this.pollmsgs.forEach((m, c) -> messages.add(guild.getTextChannelById(c).getMessageById(m).complete()));
         return messages;
+    }
+
+    public void addVote(Member member, Integer voteID){
+        votes.put(member.getUser().getId(), String.valueOf(voteID));
     }
 
 }
