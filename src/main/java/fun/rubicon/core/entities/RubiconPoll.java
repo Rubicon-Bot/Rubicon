@@ -79,6 +79,7 @@ public class RubiconPoll implements Serializable {
     }
 
     private RubiconPoll(Member creator, String heading, List<String> answers, Message message, Guild guild) {
+        System.out.println(creator.getUser().getId() + "ID");
         this.creator = creator.getUser().getId();
         this.heading = heading;
         this.answers = answers;
@@ -90,22 +91,33 @@ public class RubiconPoll implements Serializable {
         this.pollmsgs.put(message.getId(), message.getTextChannel().getId());
     }
 
-    public RubiconPoll(Member creator, String heading, List<String> answers, HashMap<String, String> pollmsgs, HashMap<String, Integer> votes, HashMap<String, Integer> reacts, Guild guild) {
+    public RubiconPoll(Member creator, String heading, List<String> answers, HashMap<String, String> pollmsgs, HashMap<String, Integer> votesInput, HashMap<String, Integer> reactsInput, Guild guild) {
         this.creator = creator.getUser().getId();
         this.heading = heading;
         this.answers = answers;
         this.pollmsgs = pollmsgs;
-        this.votes = votes;
-        this.reacts = reacts;
+        this.votes = new HashMap<>();
+        this.reacts = new HashMap<>();
         this.guild = guild.getId();
         votesInput.forEach((s, i) -> votes.put(s, String.valueOf(i)));
         reactsInput.forEach((s, i) -> reacts.put(s, String.valueOf(i)));
 
     }
 
-    public static RubiconPoll createPoll(String heading, List<String> answers, Message message, HashMap<String, Integer> emotes) {
-        RubiconPoll poll = new RubiconPoll(message.getMember(), heading, answers, message, message.getGuild());
-        poll.reacts.putAll(emotes);
+    public RubiconPoll(String creator, String heading, List<String> answers, HashMap<String, String> pollmsgs, HashMap<String, String> votesInput, HashMap<String, String> reactsInput, Guild guild) {
+        this.creator = creator;
+        this.heading = heading;
+        this.answers = answers;
+        this.pollmsgs = pollmsgs;
+        this.votes = votesInput;
+        this.reacts = reactsInput;
+        this.guild = guild.getId();
+
+    }
+
+    public static RubiconPoll createPoll(String heading, List<String> answers, Message message, HashMap<String, Integer> emotes, Member author) {
+        RubiconPoll poll = new RubiconPoll(author, heading, answers, message, message.getGuild());
+        emotes.forEach((s, i) -> poll.reacts.put(s, String.valueOf(i)));
         RubiconBot.getPollManager().getPolls().put(message.getGuild(), poll);
         return poll;
     }
@@ -113,6 +125,8 @@ public class RubiconPoll implements Serializable {
     public RubiconPoll savePoll() {
         /*Delete old poll*/
         delete();
+        System.out.println("OMI");
+        System.out.println(votes);
         rethink.db.table("votes").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("creator", creator).with("heading", heading).with("answers", answers).with("pollmsgs", pollmsgs).with("votes", votes).with("reacts", reacts).with("guild", guild))).run(rethink.getConnection());
         return this;
     }

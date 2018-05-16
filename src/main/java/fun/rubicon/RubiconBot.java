@@ -93,7 +93,7 @@ public class RubiconBot {
     private VerificationLoader verificationLoader;
     private SetupManager setupManager;
     private static LavalinkManager lavalinkManager;
-    private RPGItemRegistry rpgItemRegistry;
+    private IEventManager eventManager;
 
     /**
      * Constructs the RubiconBot.
@@ -482,6 +482,6 @@ public class RubiconBot {
     }
 
     public static IEventManager getEventManager(){
-        return eventManager;
+        return instance.eventManager;
     }
 }

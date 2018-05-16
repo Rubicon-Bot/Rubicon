@@ -585,32 +585,4 @@ public class RubiconGuild extends RubiconGuildCache {
 
 
 
-    /* RETHINK HELPER*/
-    protected static String getString(Cursor cursor, String key) {
-        Map map = parse(cursor);
-        if (map == null) {
-            return null;
-        }
-        Object res = map.get(key);
-        return res == null ? null : String.valueOf(res);
-    }
-
-    public static boolean getBoolean(Cursor cursor, String key) {
-        Map map = parse(cursor);
-        if (map == null)
-            return false;
-        Object res = map.get(key);
-        return res != null && (boolean) res;
-    }
-
-    protected static boolean exist(Cursor cursor) {
-        return !cursor.toList().isEmpty();
-    }
-
-    protected static Map parse(Cursor cursor) {
-        List list = cursor.toList();
-        if (list.size() == 0)
-            return null;
-        return (Map) list.get(0);
-    }
 }
