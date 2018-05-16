@@ -30,6 +30,7 @@ public class VerificationLoader {
                 Map map = (Map) obj;
                 Guild guild = RubiconBot.getShardManager().getGuildById((String) map.get("guildId"));
                 RubiconGuild rubiconGuild = RubiconGuild.fromGuild(guild);
+                if(rubiconGuild == null) continue;
                 Member member = guild.getMemberById((String) map.get("userId"));
                 if (member == null) continue;
                 try {

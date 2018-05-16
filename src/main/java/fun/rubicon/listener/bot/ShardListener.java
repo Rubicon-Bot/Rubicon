@@ -7,6 +7,7 @@
 package fun.rubicon.listener.bot;
 
 import fun.rubicon.RubiconBot;
+import fun.rubicon.core.entities.RubiconGuild;
 import net.dv8tion.jda.core.events.*;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -19,7 +20,7 @@ public class ShardListener extends ListenerAdapter {
 
     @Override
     public void onReady(ReadyEvent event) {
-        new AllShardsLoadedEvent();
+        RubiconBot.getEventManager().handle(new AllShardsLoadedEvent(event.getJDA(), event.getResponseNumber()));
     }
 
     @Override

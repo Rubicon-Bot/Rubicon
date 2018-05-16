@@ -9,9 +9,11 @@ package fun.rubicon.core.entities.impl;
 import com.rethinkdb.gen.ast.Filter;
 import com.rethinkdb.gen.ast.Table;
 import fun.rubicon.RubiconBot;
+import fun.rubicon.core.entities.PunishmentType;
 import fun.rubicon.core.entities.RubiconUser;
 import fun.rubicon.core.entities.cache.RubiconUserCache;
 import fun.rubicon.core.translation.TranslationUtil;
+import fun.rubicon.listener.events.UnpunishEvent;
 import fun.rubicon.rethink.Rethink;
 import fun.rubicon.rethink.RethinkHelper;
 import net.dv8tion.jda.core.Permission;
@@ -185,6 +187,8 @@ public abstract class RubiconUserImpl extends RethinkHelper {
             guild.getController().unban(user).queue();
         } else
             guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: Unable to unban user `" + user.getName() + "`! Please give Rubicon `BAN_MEMBERS` permission in order to use the unban command").queue();
+        RubiconBot.getEventManager().handle(new UnpunishEvent(guild.getJDA(), 200, guild, user, PunishmentType.BAN));
+
     }
 
     public void saveMusicPlaylist(List<String> links, String name) {

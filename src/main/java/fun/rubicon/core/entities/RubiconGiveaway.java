@@ -152,7 +152,6 @@ public class RubiconGiveaway {
                         msg = EmbedUtil.info(TranslationUtil.translate(author, "giveaway.won.title"), String.format(TranslationUtil.translate(author, "giveaway.won.single"), userNames.toString(), prize, author.getAsMention()));
                 }
                 SafeMessage.sendMessage(RubiconBot.getShardManager().getTextChannelById(getChannelId()), msg.build());
-                System.out.println(msg.build());
                 delete();
             }
         }, this.expirationDate);
