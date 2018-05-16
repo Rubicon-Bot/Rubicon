@@ -37,6 +37,7 @@ import fun.rubicon.listener.bot.*;
 import fun.rubicon.listener.channel.TextChannelDeleteListener;
 import fun.rubicon.listener.channel.VoiceChannelDeleteListener;
 import fun.rubicon.listener.events.RubiconEventManager;
+import fun.rubicon.listener.feature.LogListener;
 import fun.rubicon.listener.feature.PunishmentListener;
 import fun.rubicon.listener.feature.VerificationListener;
 import fun.rubicon.listener.feature.VoteListener;
@@ -49,7 +50,6 @@ import fun.rubicon.rethink.RethinkUtil;
 import fun.rubicon.setup.SetupListener;
 import fun.rubicon.setup.SetupManager;
 import fun.rubicon.util.*;
-import net.dv8tion.jda.bot.sharding.DefaultShardManager;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.bot.sharding.ShardManager;
 import net.dv8tion.jda.core.JDAInfo;
@@ -57,7 +57,6 @@ import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.entities.impl.JDAImpl;
 import net.dv8tion.jda.core.hooks.IEventManager;
 import org.json.JSONObject;
 
@@ -192,7 +191,8 @@ public class RubiconBot {
                 new CommandAutochannel(),
                 new CommandJoinImage(),
                 new CommandAutorole(),
-                new CommandRanks()
+                new CommandRanks(),
+                new CommandLog()
         );
 
         // Fun
@@ -333,7 +333,9 @@ public class RubiconBot {
                 new LavalinkManager(),
                 new VerificationListener(),
                 new SetupListener(),
-                new PortalMessageListener()
+                new PortalMessageListener(),
+                new AllShardsLoadedListener(),
+                new LogListener()
         );
         builder.setEventManager(eventManager);
         try {

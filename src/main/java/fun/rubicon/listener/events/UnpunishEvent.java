@@ -15,12 +15,12 @@ public class UnpunishEvent extends GenericPunishmentEvent{
     private User user;
 
     public UnpunishEvent(JDA api, long responseNumber, Guild guild, Member member, PunishmentType type) {
-        super(api, responseNumber, guild, member, type);
+        super(api, responseNumber, guild, member, null, type);
         this.user = member.getUser();
     }
 
     public UnpunishEvent(JDA api, long responseNumber, Guild guild, User user, PunishmentType type) {
-        super(api, responseNumber, guild, null, type);
+        super(api, responseNumber, guild, null, null, type);
         this.user = user;
     }
 

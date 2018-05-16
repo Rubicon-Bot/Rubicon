@@ -36,6 +36,15 @@ public class RubiconGuild extends RubiconGuildCache {
     private Rethink rethink;
     private Filter dbGuild;
 
+    /*Logging variables*/
+    private TextChannel logChannel;
+    private boolean memberLog;
+    private boolean roleLog;
+    private boolean messageLog;
+    private boolean voiceLog;
+    private boolean punishmentLog;
+    private boolean commandLog;
+
     private static RubiconGuildCache cache = new RubiconGuildCache();
 
     public RubiconGuild() {
@@ -49,12 +58,34 @@ public class RubiconGuild extends RubiconGuildCache {
         initRethink();
     }
 
+
     public RubiconGuild(Guild guild, HashMap<String, ?> map) {
         this.guild = guild;
         if (map == null) {
             prefix = Info.BOT_DEFAULT_PREFIX;
-        } else
+
+            logChannel = null;
+            memberLog = false;
+            roleLog = false;
+            messageLog = false;
+            voiceLog = false;
+            punishmentLog = false;
+            commandLog = false;
+        } else {
             prefix = map.containsKey("prefix") ? (String) map.get("prefix") : Info.BOT_DEFAULT_PREFIX;
+
+            logChannel = map.containsKey("logChannel") ? guild.getTextChannelById((String) map.get("logChannel")) : null;
+            memberLog = map.containsKey("memberLog") ? (Boolean) map.get("memberLog") : false;
+            roleLog = map.containsKey("roleLog") ? (Boolean) map.get("roleLog") : false;
+            messageLog = map.containsKey("messageLog") ? (Boolean) map.get("messageLog") : false;
+            voiceLog = map.containsKey("voiceLog") ? (Boolean) map.get("voiceLog") : false;
+            punishmentLog = map.containsKey("punishmentLog") ? (Boolean) map.get("punishmentLog") : false;
+            commandLog = map.containsKey("commandLog") ? (Boolean) map.get("commandLog") : false;
+
+
+        }
+
+
 
         initRethink();
     }
@@ -479,4 +510,78 @@ public class RubiconGuild extends RubiconGuildCache {
     public TextChannel getPunishmentLogChannel(){
         return guild.getTextChannelById(getPunishmentLogChannelRaw());
     }
+
+    public TextChannel getLogChannel() {
+        return logChannel;
+    }
+
+    public void setLogChannel(TextChannel channel) {
+        this.logChannel = channel;
+        dbGuild.update(rethink.rethinkDB.hashMap("logChannel", channel.getId())).run(rethink.getConnection());
+        cache.update(guild.getId(), this);
+    }
+
+    public boolean isMemberLogEnabled() {
+        return memberLog;
+    }
+
+    public boolean isRoleLogEnabled() {
+        return roleLog;
+    }
+
+    public boolean isMessageLogEnabled() {
+        return messageLog;
+    }
+
+    public boolean isVoiceLogEnabled() {
+        return voiceLog;
+    }
+
+    public boolean isPunishmentLogEnabled() {
+        return punishmentLog;
+    }
+
+    public boolean isCommandLogEnabled() {
+        return commandLog;
+    }
+
+    public boolean isLogChannelSet(){
+        return getLogChannel() != null;
+    }
+
+    public void setMemberLog(boolean enable) {
+        this.memberLog = enable;
+        dbGuild.update(rethink.rethinkDB.hashMap("memberLog", enable)).run(rethink.getConnection());
+        cache.update(guild.getId(), this);
+    }
+
+    public void setRoleLog(boolean enable) {
+        this.roleLog = enable;
+        dbGuild.update(rethink.rethinkDB.hashMap("roleLog", enable)).run(rethink.getConnection());
+        cache.update(guild.getId(), this);
+    }
+
+    public void setMessageLog(boolean enable) {
+        this.messageLog = enable;
+        dbGuild.update(rethink.rethinkDB.hashMap("messageLog", enable)).run(rethink.getConnection());
+        cache.update(guild.getId(), this);
+    }
+
+    public void setVoiceLog(boolean enable) {
+        this.voiceLog = enable;
+        dbGuild.update(rethink.rethinkDB.hashMap("voiceLog", enable)).run(rethink.getConnection());
+        cache.update(guild.getId(), this);
+    }
+    public void setPunishmentLog(boolean enable) {
+        this.punishmentLog = enable;
+        dbGuild.update(rethink.rethinkDB.hashMap("punishmentLog", enable)).run(rethink.getConnection());
+        cache.update(guild.getId(), this);
+    }
+    public void setCommandLog(boolean enable) {
+        this.commandLog = enable;
+        dbGuild.update(rethink.rethinkDB.hashMap("commandLog", enable)).run(rethink.getConnection());
+        cache.update(guild.getId(), this);
+    }
+
+
 }

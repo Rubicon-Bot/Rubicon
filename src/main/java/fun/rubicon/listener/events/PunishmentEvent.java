@@ -13,8 +13,8 @@ public class PunishmentEvent extends GenericPunishmentEvent{
 
     private long expiry;
 
-    public PunishmentEvent(JDA api, long responseNumber, Guild guild, Member member, PunishmentType type, long expiry) {
-        super(api, responseNumber, guild, member, type);
+    public PunishmentEvent(JDA api, long responseNumber, Guild guild, Member member, Member moderator, PunishmentType type, long expiry) {
+        super(api, responseNumber, guild, member, moderator, type);
         this.expiry = expiry;
     }
 

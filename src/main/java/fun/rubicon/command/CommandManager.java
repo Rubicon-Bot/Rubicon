@@ -117,7 +117,7 @@ public class CommandManager extends ListenerAdapter {
         }
 
         //Call event
-        RubiconBot.getEventManager().handle(new CommandExecutedEvent(parsedCommandInvocation.getJDA(), 200, parsedCommandInvocation.getMessage(), parsedCommandInvocation));
+        RubiconBot.getEventManager().handle(new CommandExecutedEvent(parsedCommandInvocation.getJDA(), 200, parsedCommandInvocation.getMessage(), parsedCommandInvocation, commandHandler));
 
     }
 

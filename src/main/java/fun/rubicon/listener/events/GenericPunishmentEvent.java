@@ -10,20 +10,17 @@ import net.dv8tion.jda.core.entities.User;
  * @author Schlaubi / Michael Rittmeister
  */
 
-public class GenericPunishmentEvent extends RubiconEvent{
-    private Guild guild;
+public class GenericPunishmentEvent extends GenericRubiconGuildEvent{
+
     private Member member;
     private PunishmentType type;
+    private Member moderator;
 
-    public GenericPunishmentEvent(JDA api, long responseNumber, Guild guild, Member member, PunishmentType type) {
-        super(api, responseNumber);
-        this.guild = guild;
+    public GenericPunishmentEvent(JDA api, long responseNumber, Guild guild, Member member, Member moderator, PunishmentType type) {
+        super(api, responseNumber, guild);
         this.member = member;
+        this.moderator = moderator;
         this.type = type;
-    }
-
-    public Guild getGuild() {
-        return guild;
     }
 
     public Member getMember() {
@@ -36,5 +33,9 @@ public class GenericPunishmentEvent extends RubiconEvent{
 
     public PunishmentType getType() {
         return type;
+    }
+
+    public Member getModerator() {
+        return moderator;
     }
 }
