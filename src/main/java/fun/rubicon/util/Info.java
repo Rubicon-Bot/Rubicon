@@ -39,8 +39,7 @@ public class Info {
             333220752117596160L, //BaseChip
             240797338430341120L, //Pilz
             235395943619493888L, //ls13game
-            170821070004158464L, //Dlenny
-            272397639855898624L  //Noooope
+            170821070004158464L //Dlenny
     };
     public static final long SUPPORT_ROLE = 442431704112562186L;
     public static final long BUG_ROLE = 442431609099255809L;

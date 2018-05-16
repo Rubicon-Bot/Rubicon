@@ -64,7 +64,7 @@ public class CommandManager extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if (!RubiconBot.allShardsInitialised() || event.isFromType(ChannelType.PRIVATE) || event.getAuthor().isBot() || event.getAuthor().isFake())
+        if (!RubiconBot.allShardsInitialised() || event.isFromType(ChannelType.PRIVATE) || event.getAuthor().isBot() || event.getAuthor().isFake() || event.isWebhookMessage())
             return;
         super.onMessageReceived(event);
         //Auto Rethink Connector
@@ -80,7 +80,7 @@ public class CommandManager extends ListenerAdapter {
             RubiconMember.fromMember(event.getMember());
         }
         ParsedCommandInvocation commandInvocation = parse(event.getMessage());
-        if (commandInvocation != null && !event.getAuthor().isBot() && !event.getAuthor().isFake() && !event.isWebhookMessage()) {
+        if (commandInvocation != null) {
             call(commandInvocation);
         }
     }
