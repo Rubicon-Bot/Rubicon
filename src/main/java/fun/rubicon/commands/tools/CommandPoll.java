@@ -13,7 +13,6 @@ import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.exceptions.ErrorResponseException;
 
 import java.awt.*;
 import java.io.Serializable;
@@ -40,7 +39,7 @@ public class CommandPoll extends CommandHandler implements Serializable {
     private List<String> toAddEmojis = new ArrayList<>();
 
     public CommandPoll() {
-        super(new String[]{"vote", "v", "poll"}, CommandCategory.TOOLS, new PermissionRequirements("vote", false, false), "Let your members vote for something.", "create <Title>|<Option1>|<Option2>|...\nvote <index of Option>\nstats\nclose");
+        super(new String[]{"poll", "v", "vote"}, CommandCategory.TOOLS, new PermissionRequirements("vote", false, false), "Let your members vote for something.", "create <Title>|<Option1>|<Option2>|...\nvote <index of Option>\nstats\nclose");
     }
 
 
@@ -211,22 +210,15 @@ public class CommandPoll extends CommandHandler implements Serializable {
         }
 
         RubiconPoll poll = pollManager.getPollByGuild(message.getGuild());
-
-        if (message.getMember().equals(poll.getCreator(message.getGuild()))) {
+        System.out.println(message.getAuthor().getId());
+        System.out.println(poll.getCreator());
+        if (!message.getAuthor().getId().equals(poll.getCreator())) {
             message.getTextChannel().sendMessage(EmbedUtil.error(parsedCommandInvocation.translate("command.poll.close.noperms.title"), parsedCommandInvocation.translate("command.poll.close.noperms.description")).build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
             return;
         }
 
         channel.sendMessage(getParsedPoll(poll, message.getGuild(), parsedCommandInvocation).build()).queue();
         message.getTextChannel().sendMessage(EmbedUtil.success(parsedCommandInvocation.translate("command.poll.close.closed.title"), String.format(parsedCommandInvocation.translate("command.poll.close.closed.description"), author.getAsMention())).build()).queue(msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
-        try {
-            poll.getPollmsgs().forEach((m, c) -> {
-                Message pollmsg = message.getGuild().getTextChannelById(c).getMessageById(m).complete();
-                pollmsg.editMessage(getParsedPoll(poll, message.getGuild(), parsedCommandInvocation).build()).queue();
-            });
-        } catch (ErrorResponseException e) {
-            //This is an empty Catch Block
-        }
         try {
             poll.getPollMessages(parsedCommandInvocation.getMessage().getGuild()).forEach(m -> m.delete().queue());
         } catch (Exception ignored) {
@@ -262,7 +254,7 @@ public class CommandPoll extends CommandHandler implements Serializable {
             toAddEmojis.remove(0);
             count.addAndGet(1);
         });
-        RubiconPoll poll = RubiconPoll.createPoll(heading, answers, pollmessage, reactions).savePoll();
+        RubiconPoll poll = RubiconPoll.createPoll(heading, answers, pollmessage, reactions, parsedCommandInvocation.getMember()).savePoll();
 
         new Timer().schedule(new TimerTask() {
             @Override
@@ -298,9 +290,8 @@ public class CommandPoll extends CommandHandler implements Serializable {
             return;
         }
 
-        poll.getVotes().put(message.getAuthor().getId(), vote);
+        poll.addVote(parsedCommandInvocation.getMember(), vote);
         pollManager.replacePoll(poll, message.getGuild());
-        SafeMessage.sendMessage((TextChannel) message.getAuthor().openPrivateChannel().complete(), String.format(parsedCommandInvocation.translate("command.poll.vote.voted"), vote));
         EmbedBuilder messageText = getParsedPoll(poll, message.getGuild(), parsedCommandInvocation);
         poll.updateMessages(message.getGuild(), messageText);
     }

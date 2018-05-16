@@ -53,14 +53,13 @@ public class CommandMute extends CommandHandler implements PunishmentHandler {
         if (args.length == 1) {
             if (!new PermissionRequirements("mute.permanent", false, false).coveredBy(invocation.getPerms()))
                 return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("command.mute.nopermissions.user.title"), invocation.translate("command.mute.permanent.noperms.description")).build()).build();
-
-            victim.mute();
+            victim.mute(invocation.getMember());
             return new MessageBuilder().setEmbed(EmbedUtil.success(invocation.translate("command.mute.muted.permanent.title"), String.format(invocation.translate("command.mute.muted.permanent.description"), victimMember.getAsMention())).build()).build();
         } else if (args.length > 1) {
             Date expiry = StringUtil.parseDate(args[1]);
             if (expiry == null)
                 return new MessageBuilder().setEmbed(EmbedUtil.error(invocation.translate("general.punishment.invalidnumber.title"), invocation.translate("general.punishment.invalidnumber.description")).build()).build();
-            victim.mute(expiry);
+            victim.mute(expiry, invocation.getMember());
             return new MessageBuilder().setEmbed(EmbedUtil.success(invocation.translate("command.mute.muted.temporary.title"), invocation.translate("command.mute.muted.temporary.description").replace("%mention%", victimMember.getAsMention()).replace("%date%", DateUtil.formatDate(expiry, invocation.translate("date.format")))).build()).build();
         }
         return createHelpMessage();
@@ -79,12 +78,13 @@ public class CommandMute extends CommandHandler implements PunishmentHandler {
                 continue;
             }
             RubiconBot.getPunishmentManager().getMuteCache().put(member.getMember(), (long) map.get("expiry"));
-            if (new Date((long) map.get("expiry")).before(new Date())) member.unmute(true);
+            Member mod = member.getGuild().getMemberById((String) map.get("moderator"));
+            if (new Date((long) map.get("expiry")).before(new Date())) member.unmute(true, mod);
             RubiconMember finalMember = member;
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    finalMember.unmute(true);
+                    finalMember.unmute(true, mod);
                 }
             }, new Date((long) map.get("expiry")));
         }

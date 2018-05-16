@@ -5,7 +5,6 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.RubiconPoll;
 import fun.rubicon.rethink.Rethink;
 import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,8 +30,7 @@ public class PollManager {
                     deletePoll((String) map.get("guild"));
                     continue;
                 }
-                Member member = guild.getMemberById((String) map.get("creator"));
-                RubiconPoll poll = new RubiconPoll(member, (String) map.get("heading"), (List<String>) map.get("answers"), (HashMap<String, String>) map.get("pollmsgs"), (HashMap<String, Integer>) map.get("votes"), (HashMap<String, Integer>) map.get("reacts"), guild);
+                RubiconPoll poll = new RubiconPoll((String) map.get("creator"), (String) map.get("heading"), (List<String>) map.get("answers"), (HashMap<String, String>) map.get("pollmsgs"), (HashMap<String, String>) map.get("votes"), (HashMap<String, String>) map.get("reacts"), guild);
                 polls.put(guild, poll);
             }
         }, "PollLoadingThread").start();

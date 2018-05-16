@@ -192,12 +192,6 @@ public abstract class CommandHandler extends EmbedUtil {
         return parameterUsage;
     }
 
-    /**
-     * Permissions of the command executer
-     *
-     * @return UserPermissions
-     */
-
 
     /**
      * Generates a usage message for this command with the default prefix and alias.
