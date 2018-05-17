@@ -10,11 +10,14 @@ import org.slf4j.LoggerFactory;
 public class ShutdownManager {
 
     private static final Logger logger = LoggerFactory.getLogger(ShutdownManager.class);
+    private static boolean shutdownInProgress = false;
 
     public static void shutdown(Class clazz, String message) {
-        logger.error(String.format("Executing shutdown.\n [%s] Reason: %s", clazz.getSimpleName(), message));
+        if(shutdownInProgress)
+            return;
+        shutdownInProgress = true;
+        logger.error(String.format("Executing shutdown.\n [%s] Reason: %s", clazz.getName(), message));
         RubiconBot.getInstance().shutdown();
-        logger.info("Done.");
         System.exit(0);
     }
 }

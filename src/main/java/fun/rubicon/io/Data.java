@@ -7,6 +7,8 @@ import fun.rubicon.util.RubiconInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+
 /**
  * @author ForYaSee / Yannick Seeger
  */
@@ -16,11 +18,6 @@ public class Data {
 
     private static Config config;
     private static RethinkDatabase rethinkDatabase;
-
-    public Data(String configFile) {
-        config = new Config(configFile);
-        rethinkDatabase = new RethinkDatabase();
-    }
 
     /**
      * @return the Rubicon {@link Config} instance
@@ -48,9 +45,19 @@ public class Data {
     }
 
     public static void init() {
-        if(config != null)
+        if(config == null) {
             config = new Config(RubiconInfo.CONFIG_FILE);
-        if(rethinkDatabase != null)
+            setConfigDefaults();
+        }
+        if(rethinkDatabase == null)
             rethinkDatabase = new RethinkDatabase();
+    }
+
+    private static void setConfigDefaults() {
+        Data.cfg().setDefault("rethinkdb_host", new ArrayList<>());
+        Data.cfg().setDefault("rethinkdb_user", new ArrayList<>());
+        Data.cfg().setDefault("rethinkdb_port", new ArrayList<>());
+        Data.cfg().setDefault("rethinkdb_password", new ArrayList<>());
+        Data.cfg().setDefault("rethinkdb_db", "rubicon");
     }
 }

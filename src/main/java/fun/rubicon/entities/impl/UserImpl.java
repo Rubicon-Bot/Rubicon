@@ -3,6 +3,7 @@ package fun.rubicon.entities.impl;
 import fun.rubicon.entities.User;
 import fun.rubicon.io.db.RethinkDataset;
 import lombok.Getter;
+import lombok.ToString;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.PrivateChannel;
@@ -15,18 +16,26 @@ import java.util.List;
 /**
  * @author ForYaSee / Yannick Seeger
  */
+@ToString
 public class UserImpl extends RethinkDataset implements User {
 
     public static final transient String TABLE = "users";
-    private final transient net.dv8tion.jda.core.entities.User user;
-    @Getter private String bio;
-    @Getter private long money;
-    @Getter private String language;
-    @Getter private String afk;
-    @Getter private long premium;
-    @Getter private HashMap<String, List<String>> playlists;
+    private transient net.dv8tion.jda.core.entities.User user;
+    private String id;
+    @Getter
+    private String bio;
+    @Getter
+    private Long money;
+    @Getter
+    private String language;
+    @Getter
+    private String afk;
+    @Getter
+    private Long premium;
+    @Getter
+    private HashMap<String, List<String>> playlists;
 
-    public UserImpl(net.dv8tion.jda.core.entities.User user, String bio, long money, String language, String afk, long premium,  HashMap<String, List<String>> playlists) {
+    public UserImpl(net.dv8tion.jda.core.entities.User user, String bio, Long money, String language, String afk, Long premium, HashMap<String, List<String>> playlists) {
         super(TABLE);
         this.user = user;
         this.bio = bio;
@@ -35,33 +44,46 @@ public class UserImpl extends RethinkDataset implements User {
         this.afk = afk;
         this.premium = premium;
         this.playlists = playlists;
+        this.id = user.getId();
     }
 
+    public UserImpl() {
+        super(TABLE);
+    }
+
+    public void setJDAUser(net.dv8tion.jda.core.entities.User user) {
+        this.user = user;
+    }
+
+    @Override
     public void setBio(String bio) {
         this.bio = bio;
         save();
     }
 
-    public void setMoney(long money) {
+    @Override
+    public void setMoney(Long money) {
         this.money = money;
         save();
     }
 
     @Override
-    public void addMoney(long money) {
+    public void addMoney(Long money) {
         setMoney(getMoney() + money);
     }
 
     @Override
-    public void removeMoney(long money) {
+    public void removeMoney(Long money) {
         setMoney(getMoney() - money);
     }
 
+    @Override
     public void setLanguage(String language) {
         this.language = language;
         save();
     }
 
+    @Override
     public void setAfk(String afk) {
         this.afk = afk;
         save();
@@ -77,16 +99,17 @@ public class UserImpl extends RethinkDataset implements User {
         return getAfk() != null;
     }
 
-    public void setPremium(long premium) {
+    @Override
+    public void setPremium(Long premium) {
         this.premium = premium;
         save();
     }
 
     @Override
     public boolean isPremium() {
-        long time = getPremium();
-        if(time <= new Date().getTime()) {
-            setPremium(0);
+        Long time = getPremium();
+        if (time <= new Date().getTime()) {
+            setPremium(0L);
             return false;
         }
         return true;
@@ -94,9 +117,10 @@ public class UserImpl extends RethinkDataset implements User {
 
     @Override
     public void disablePremium() {
-        setPremium(0);
+        setPremium(0L);
     }
 
+    @Override
     public void setPlaylists(HashMap<String, List<String>> playlists) {
         this.playlists = playlists;
         save();
@@ -104,7 +128,7 @@ public class UserImpl extends RethinkDataset implements User {
 
     @Override
     public String getId() {
-        return user.getId();
+        return id;
     }
 
     //JDA User

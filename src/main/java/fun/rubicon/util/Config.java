@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -44,7 +45,7 @@ public class Config {
     }
 
     public Object getElementFromArray(String key, int index) {
-        return jsonObject.getJSONArray(key).length() <= (index - 1) ? jsonObject.getJSONArray(key).get(index) : null;
+        return jsonObject.getJSONArray(key).length() >= (index - 1) ? jsonObject.getJSONArray(key).get(index) : null;
     }
 
     public int getInt(String key) {
@@ -106,6 +107,13 @@ public class Config {
 
     public void setDefault(String key, long value) {
         if (has(key))
+            return;
+        jsonObject.put(key, value);
+        writeConfig();
+    }
+
+    public void setDefault(String key, List<?> value) {
+        if(has(key))
             return;
         jsonObject.put(key, value);
         writeConfig();

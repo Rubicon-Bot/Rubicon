@@ -1,7 +1,11 @@
 package fun.rubicon.io.db;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.rethinkdb.RethinkDB;
+import com.rethinkdb.gen.ast.Json;
 import com.rethinkdb.net.Connection;
+import com.rethinkdb.net.Cursor;
 import fun.rubicon.core.ShutdownManager;
 import fun.rubicon.entities.User;
 import fun.rubicon.entities.impl.UserImpl;
@@ -12,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author ForYaSee / Yannick Seeger
@@ -31,7 +36,13 @@ public class RethinkDatabase {
     private void connect() {
         String dbHost = Data.cfg().has("rethinkdb_host") ? (String) Data.cfg().getElementFromArray("rethinkdb_host", connectionAttempt) : null;
         String dbUser = Data.cfg().has("rethinkdb_user") ? (String) Data.cfg().getElementFromArray("rethinkdb_user", connectionAttempt) : null;
-        int dbPort = Data.cfg().has("rethinkdb_port") ? Data.cfg().getElementFromArray("rethinkdb_port", connectionAttempt) == null ? 0 : (int) Data.cfg().getElementFromArray("rethinkdb_port", connectionAttempt) : 0;
+        String rawDbPort = Data.cfg().has("rethinkdb_port") ? (String) Data.cfg().getElementFromArray("rethinkdb_port", connectionAttempt) : null;
+        int dbPort;
+        try {
+            dbPort = rawDbPort == null ? 0 : Integer.parseInt(rawDbPort);
+        } catch (NumberFormatException e) {
+            dbPort = 0;
+        }
         String dbPassword = Data.cfg().has("rethinkdb_password") ? (String) Data.cfg().getElementFromArray("rethinkdb_password", connectionAttempt) : null;
         String db = Data.cfg().has("rethinkdb_db") ? Data.cfg().getString("rethinkdb_db") : null;
 
@@ -52,17 +63,24 @@ public class RethinkDatabase {
 
     //Entity Getter
     public User getUser(@Nonnull net.dv8tion.jda.core.entities.User jdaUser) {
-        User user = r.table(UserImpl.TABLE).get(jdaUser.getId()).run(connection, User.class);
+        Map map = r.table(UserImpl.TABLE).get(jdaUser.getId()).run(connection);
+        Gson gson = new Gson();
+        JsonElement json = gson.toJsonTree(map);
+        UserImpl user = gson.fromJson(json, UserImpl.class);
         if(user == null)
-            user = new UserImpl(jdaUser, "No bio set.", 0, "en-US", null, 0, new HashMap<>());
+            user = new UserImpl(jdaUser, "No bio set.", 0L, "en-US", null, 0L, new HashMap<>());
+        user.setJDAUser(jdaUser);
+        logger.info("Premium: " + user.toString());
         UserProvider.addUser(user);
         return user;
     }
 
     public void save(@Nonnull RethinkDataset dataset) {
+        if(dataset.getId() == null)
+            return;
         checkConnection();
         logger.debug(String.format("Saving %s in %s", dataset.getId(), dataset.getTable()));
-        r.table(dataset.getTable()).insert(dataset).optArg("conflict", "replace").runNoReply(connection);
+        r.table(dataset.getTable()).insert(r.array(new Json(new Gson().toJson(dataset, dataset.getClass())))).optArg("conflict", "replace").run(connection);
     }
 
     public void delete(@Nonnull RethinkDataset dataset) {

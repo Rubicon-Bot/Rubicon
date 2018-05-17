@@ -1,6 +1,5 @@
 package fun.rubicon.listener.events;
 
-import fun.rubicon.RubiconBot;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.events.Event;
 

@@ -60,11 +60,13 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.hooks.IEventManager;
 import org.json.JSONObject;
+import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -123,6 +125,8 @@ public class RubiconBot {
      */
     @Deprecated
     private RubiconBot() {
+        //System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
+
         instance = this;
         System.out.println(
                 " ______        _     _                  \n" +
@@ -146,6 +150,7 @@ public class RubiconBot {
 
         //Initialise Config and Database
         Data.init();
+
 
         //OLD
         Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, "rubicon_logs/");

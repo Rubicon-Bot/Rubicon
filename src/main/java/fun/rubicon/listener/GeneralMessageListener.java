@@ -3,9 +3,13 @@ package fun.rubicon.listener;
 import fun.rubicon.commands.tools.CommandYouTube;
 import fun.rubicon.core.music.GuildMusicPlayer;
 import fun.rubicon.core.music.QueueMessage;
+import fun.rubicon.entities.User;
+import fun.rubicon.provider.UserProvider;
 import net.dv8tion.jda.core.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+
+import java.util.Date;
 
 /**
  * @author Leon Kappes / Lee

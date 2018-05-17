@@ -6,11 +6,11 @@ import java.util.HashMap;
  * @author ForYaSee / Yannick Seeger
  */
 @Deprecated
-public abstract class OldCache<T, V> {
+public abstract class Cache<T, V> {
 
     protected HashMap<T, V> cache;
 
-    public OldCache() {
+    public Cache() {
         this.cache = new HashMap<>();
     }
 

@@ -10,23 +10,23 @@ public interface User extends net.dv8tion.jda.core.entities.User {
 
     String getBio();
 
-    long getMoney();
+    Long getMoney();
 
     String getLanguage();
 
     String getAfk();
 
-    long getPremium();
+    Long getPremium();
 
-    List<String> getPlaylists();
+    HashMap<String, List<String>> getPlaylists();
 
     void setBio(String bio);
 
-    void setMoney(long money);
+    void setMoney(Long money);
 
-    void addMoney(long money);
+    void addMoney(Long money);
 
-    void removeMoney(long money);
+    void removeMoney(Long money);
 
     void setLanguage(String language);
 
@@ -34,7 +34,7 @@ public interface User extends net.dv8tion.jda.core.entities.User {
 
     void disableAfk();
 
-    void setPremium(long premium);
+    void setPremium(Long premium);
 
     void disablePremium();
 
