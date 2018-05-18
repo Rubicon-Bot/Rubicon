@@ -6,4 +6,5 @@ package fun.rubicon.util;
 public class RubiconInfo {
 
     public static final String CONFIG_FILE = "n-config.json";
+    public static final String DEFAULT_PREFIX = "rc!";
 }

@@ -58,13 +58,13 @@ public class UserImpl extends RethinkDataset implements User {
     @Override
     public void setBio(String bio) {
         this.bio = bio;
-        save();
+        saveData();
     }
 
     @Override
     public void setMoney(Long money) {
         this.money = money;
-        save();
+        saveData();
     }
 
     @Override
@@ -80,13 +80,13 @@ public class UserImpl extends RethinkDataset implements User {
     @Override
     public void setLanguage(String language) {
         this.language = language;
-        save();
+        saveData();
     }
 
     @Override
     public void setAfk(String afk) {
         this.afk = afk;
-        save();
+        saveData();
     }
 
     @Override
@@ -102,7 +102,7 @@ public class UserImpl extends RethinkDataset implements User {
     @Override
     public void setPremium(Long premium) {
         this.premium = premium;
-        save();
+        saveData();
     }
 
     @Override
@@ -123,7 +123,12 @@ public class UserImpl extends RethinkDataset implements User {
     @Override
     public void setPlaylists(HashMap<String, List<String>> playlists) {
         this.playlists = playlists;
-        save();
+        saveData();
+    }
+
+    @Override
+    public void delete() {
+        deleteData();
     }
 
     @Override

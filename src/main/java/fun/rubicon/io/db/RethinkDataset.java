@@ -15,11 +15,11 @@ public abstract class RethinkDataset {
     @Getter @Nonnull
     private final transient String table;
 
-    public void save() {
+    public void saveData() {
         Data.db().save(this);
     }
 
-    public void delete() {
+    public void deleteData() {
         Data.db().delete(this);
     }
 

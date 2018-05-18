@@ -7,10 +7,14 @@ import com.rethinkdb.gen.ast.Json;
 import com.rethinkdb.net.Connection;
 import com.rethinkdb.net.Cursor;
 import fun.rubicon.core.ShutdownManager;
+import fun.rubicon.entities.Guild;
 import fun.rubicon.entities.User;
+import fun.rubicon.entities.impl.GuildImpl;
 import fun.rubicon.entities.impl.UserImpl;
 import fun.rubicon.io.Data;
+import fun.rubicon.provider.GuildProvider;
 import fun.rubicon.provider.UserProvider;
+import fun.rubicon.util.RubiconInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,16 +71,27 @@ public class RethinkDatabase {
         Gson gson = new Gson();
         JsonElement json = gson.toJsonTree(map);
         UserImpl user = gson.fromJson(json, UserImpl.class);
-        if(user == null)
+        if (user == null)
             user = new UserImpl(jdaUser, "No bio set.", 0L, "en-US", null, 0L, new HashMap<>());
         user.setJDAUser(jdaUser);
-        logger.info("Premium: " + user.toString());
         UserProvider.addUser(user);
         return user;
     }
 
+    public Guild getGuild(@Nonnull net.dv8tion.jda.core.entities.Guild jdaGuild) {
+        Map map = r.table(GuildImpl.TABLE).get(jdaGuild.getId()).run(connection);
+        Gson gson = new Gson();
+        JsonElement json = gson.toJsonTree(map);
+        GuildImpl guild = gson.fromJson(json, GuildImpl.class);
+        if (guild == null)
+            guild = new GuildImpl(jdaGuild, RubiconInfo.DEFAULT_PREFIX);
+        guild.setGuild(jdaGuild);
+        GuildProvider.addGuild(guild);
+        return guild;
+    }
+
     public void save(@Nonnull RethinkDataset dataset) {
-        if(dataset.getId() == null)
+        if (dataset.getId() == null)
             return;
         checkConnection();
         logger.debug(String.format("Saving %s in %s", dataset.getId(), dataset.getTable()));

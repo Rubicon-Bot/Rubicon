@@ -14,6 +14,7 @@ import java.util.Date;
  *
  * @author ForYaSee, DerSchlaubi, LeeDJD, tr808axm
  */
+@Deprecated
 public class Info {
 
     public final static String BOT_DEFAULT_PREFIX = "rc!";

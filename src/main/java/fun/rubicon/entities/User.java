@@ -43,4 +43,6 @@ public interface User extends net.dv8tion.jda.core.entities.User {
     boolean isAfk();
 
     boolean isPremium();
+
+    void delete();
 }

@@ -14,6 +14,7 @@ import java.util.List;
 /**
  * @author ForYaSee / Yannick Seeger
  */
+@Deprecated
 public class RubiconGuildCache extends Cache {
 
     public Rethink rethink;

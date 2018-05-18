@@ -28,6 +28,7 @@ import java.util.Map;
 /**
  * @author Yannick Seeger / ForYaSee
  */
+@Deprecated
 public class RubiconGuild extends RubiconGuildCache {
 
 

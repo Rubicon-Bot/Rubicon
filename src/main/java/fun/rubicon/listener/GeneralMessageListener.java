@@ -3,7 +3,9 @@ package fun.rubicon.listener;
 import fun.rubicon.commands.tools.CommandYouTube;
 import fun.rubicon.core.music.GuildMusicPlayer;
 import fun.rubicon.core.music.QueueMessage;
+import fun.rubicon.entities.Guild;
 import fun.rubicon.entities.User;
+import fun.rubicon.provider.GuildProvider;
 import fun.rubicon.provider.UserProvider;
 import net.dv8tion.jda.core.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -19,6 +21,11 @@ import java.util.Date;
 public class GeneralMessageListener extends ListenerAdapter {
 
     public void onMessageReceived(MessageReceivedEvent event) {
+        User user = UserProvider.getUserById(event.getAuthor().getIdLong());
+        Guild guild = GuildProvider.getGuildById(event.getGuild().getIdLong());
+        guild.setPrefix("!!!");
+        user.setBio(event.getMessage().getContentDisplay());
+
         new Thread(() -> CommandYouTube.handle(event), "YouTube-" + event.getMessage().getId() + "-Setup-Thread").start();
         new Thread(() -> GuildMusicPlayer.handleTrackChoose(event), "Track-chooser-" + event.getMessage().getId() + "-Thread").start();
     }
