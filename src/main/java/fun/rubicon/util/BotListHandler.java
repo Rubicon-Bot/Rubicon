@@ -13,29 +13,32 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import org.json.JSONObject;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 public class BotListHandler {
 
+    private static final org.slf4j.Logger Logger = LoggerFactory.getLogger(BotListHandler.class);
+
     public static void postStats(boolean silent) {
         // check if bot has already been initialized
         if (RubiconBot.getShardManager() == null) {
-            Logger.warning("No Shardmanager found! Terminating all Stats Poster.");
+            Logger.error("No Shardmanager found! Terminating all Stats Poster.");
             return;
         }
 
         if (!RubiconBot.getConfiguration().getString("dbl_token").isEmpty())
             postDBL(silent);
-        else Logger.warning("No discordbots.org Token found! Skipping Stats Posting.");
+        else Logger.warn("No discordbots.org Token found! Skipping Stats Posting.");
 
         if (!RubiconBot.getConfiguration().getString("discord_pw_token").isEmpty())
             postDPW(silent);
-        else Logger.warning("No bots.discord.pw Token found! Skipping Stats Posting.");
+        else Logger.warn("No bots.discord.pw Token found! Skipping Stats Posting.");
 
         if (!RubiconBot.getConfiguration().getString("rubiconfun_token").isEmpty())
             postRubiconFunGuildCount(silent);
-        else Logger.warning("No rubicon.fun Token found! Skipping Stats posting.");
+        else Logger.warn("No rubicon.fun Token found! Skipping Stats posting.");
     }
 
     private static void postRubiconFunGuildCount(boolean silent) {
@@ -49,7 +52,7 @@ public class BotListHandler {
                     .build()).execute().close();
         } catch (IOException e) {
             if (!silent)
-                Logger.error(e);
+                e.printStackTrace();
         }
     }
 
@@ -72,7 +75,7 @@ public class BotListHandler {
                     .build()).execute().close();
         } catch (IOException e) {
             if (!silent)
-                Logger.error(e);
+                e.printStackTrace();
         }
     }
 
@@ -91,7 +94,7 @@ public class BotListHandler {
             new OkHttpClient().newCall(req).execute().close();
         } catch (IOException e) {
             if (!silent)
-                Logger.error(e);
+                e.printStackTrace();
         }
     }
 
@@ -108,7 +111,7 @@ public class BotListHandler {
             new OkHttpClient().newCall(request).execute().close();
         } catch (IOException e) {
             if (!silent)
-                Logger.error(e);
+                e.printStackTrace();
         }
     }
 }
