@@ -12,7 +12,7 @@
 
     <groupId>fun.rubicon</groupId>
     <artifactId>rubiconBot</artifactId>
-    <version>1.0.0</version>
+    <version>1.3.0</version>
 
     <properties>
         <kotlin.version>1.2.41</kotlin.version>

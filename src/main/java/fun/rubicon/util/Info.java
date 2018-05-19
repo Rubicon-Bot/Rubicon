@@ -18,7 +18,7 @@ public class Info {
 
     public final static String BOT_DEFAULT_PREFIX = "rc!";
     public final static String BOT_NAME = "RubiconBot";
-    public final static String BOT_VERSION = "1.0.2";
+    public final static String BOT_VERSION = "1.3.0";
     public final static String CONFIG_FILE = "config.json";
 
     public final static long RUBICON_SERVER = 381419503164325900L;
