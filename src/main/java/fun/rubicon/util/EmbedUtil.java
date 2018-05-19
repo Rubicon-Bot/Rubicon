@@ -164,7 +164,6 @@ public class EmbedUtil {
                 ? null
                 // else: delete after interval
                 : sentMessage -> sentMessage.delete().queueAfter(deleteInterval, deleteIntervalTimeUnit, null, ignored -> {
-            //TODO evaluate exception, i.e. bot does not have permission
         }));
     }
 }

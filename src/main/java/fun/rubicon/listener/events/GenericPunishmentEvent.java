@@ -9,7 +9,7 @@ import net.dv8tion.jda.core.entities.User;
 /**
  * @author Schlaubi / Michael Rittmeister
  */
-
+@Deprecated
 public class GenericPunishmentEvent extends GenericRubiconGuildEvent{
 
     private Member member;

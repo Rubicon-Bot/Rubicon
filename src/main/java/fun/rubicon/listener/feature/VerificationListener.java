@@ -3,7 +3,7 @@ package fun.rubicon.listener.feature;
 import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.RubiconGuild;
-import fun.rubicon.rethink.Rethink;
+import fun.rubicon.io.deprecated_rethink.Rethink;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;

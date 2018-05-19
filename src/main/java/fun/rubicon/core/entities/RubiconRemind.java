@@ -2,7 +2,7 @@ package fun.rubicon.core.entities;
 
 import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
-import fun.rubicon.rethink.Rethink;
+import fun.rubicon.io.deprecated_rethink.Rethink;
 import net.dv8tion.jda.core.entities.User;
 
 import java.util.*;

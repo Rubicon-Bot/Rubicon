@@ -7,10 +7,6 @@
 package fun.rubicon;
 
 import com.sedmelluq.discord.lavaplayer.tools.PlayerLibrary;
-import de.foryasee.httprequest.HttpRequestBuilder;
-import de.foryasee.httprequest.RequestHeader;
-import de.foryasee.httprequest.RequestResponse;
-import de.foryasee.httprequest.RequestType;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.botowner.*;
@@ -20,7 +16,9 @@ import fun.rubicon.commands.moderation.*;
 import fun.rubicon.commands.music.*;
 import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
+import fun.rubicon.core.EventManager;
 import fun.rubicon.core.GameAnimator;
+import fun.rubicon.core.ListenerAdapter;
 import fun.rubicon.core.music.GuildMusicPlayerManager;
 import fun.rubicon.core.music.LavalinkManager;
 import fun.rubicon.core.translation.TranslationManager;
@@ -30,10 +28,7 @@ import fun.rubicon.features.portal.PortalMessageListener;
 import fun.rubicon.features.verification.VerificationCommandHandler;
 import fun.rubicon.features.verification.VerificationLoader;
 import fun.rubicon.io.Data;
-import fun.rubicon.listener.AutochannelListener;
-import fun.rubicon.listener.GeneralMessageListener;
-import fun.rubicon.listener.GeneralReactionListener;
-import fun.rubicon.listener.UserMentionListener;
+import fun.rubicon.listener.*;
 import fun.rubicon.listener.bot.*;
 import fun.rubicon.listener.channel.TextChannelDeleteListener;
 import fun.rubicon.listener.channel.VoiceChannelDeleteListener;
@@ -46,8 +41,8 @@ import fun.rubicon.listener.member.MemberJoinListener;
 import fun.rubicon.listener.member.MemberLeaveListener;
 import fun.rubicon.listener.role.RoleDeleteListener;
 import fun.rubicon.permission.PermissionManager;
-import fun.rubicon.rethink.Rethink;
-import fun.rubicon.rethink.RethinkUtil;
+import fun.rubicon.io.deprecated_rethink.Rethink;
+import fun.rubicon.io.deprecated_rethink.RethinkUtil;
 import fun.rubicon.setup.SetupListener;
 import fun.rubicon.setup.SetupManager;
 import fun.rubicon.util.*;
@@ -59,14 +54,12 @@ import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.hooks.IEventManager;
-import org.json.JSONObject;
-import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -79,6 +72,25 @@ import java.util.stream.Collectors;
 public class RubiconBot {
 
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
+    private static RubiconBot instance;
+    private static Rethink rethink;
+    private final Configuration configuration;
+    private final GameAnimator gameAnimator;
+    private final CommandManager commandManager;
+    private final PermissionManager permissionManager;
+    private final TranslationManager translationManager;
+    private PunishmentManager punishmentManager;
+    private PollManager pollManager;
+    private GuildMusicPlayerManager guildMusicPlayerManager;
+    private ShardManager shardManager;
+    private boolean allShardsInitialised;
+    private BitlyAPI bitlyAPI;
+    private VerificationLoader verificationLoader;
+    private SetupManager setupManager;
+    private static LavalinkManager lavalinkManager;
+    @Deprecated
+    private IEventManager iEventManager;
+    private EventManager eventManager;
     private static final String[] CONFIG_KEYS = {
             "shard_count",
             "shard_id",
@@ -102,24 +114,6 @@ public class RubiconBot {
             "supporthook",
             "rubiconfun_token"
     };
-    private static RubiconBot instance;
-    private final Configuration configuration;
-    private static Rethink rethink;
-    private final GameAnimator gameAnimator;
-    private final CommandManager commandManager;
-    private final PermissionManager permissionManager;
-    private final TranslationManager translationManager;
-    private PunishmentManager punishmentManager;
-    private PollManager pollManager;
-    private GuildMusicPlayerManager guildMusicPlayerManager;
-    private ShardManager shardManager;
-    private boolean allShardsInitialised;
-    private BitlyAPI bitlyAPI;
-    private VerificationLoader verificationLoader;
-    private SetupManager setupManager;
-    private static LavalinkManager lavalinkManager;
-    private IEventManager eventManager;
-
     /**
      * Constructs the RubiconBot.
      */
@@ -150,7 +144,7 @@ public class RubiconBot {
 
         //Initialise Config and Database
         Data.init();
-
+        eventManager = new EventManager();
 
         //OLD
         Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, "rubicon_logs/");
@@ -181,7 +175,7 @@ public class RubiconBot {
         permissionManager = new PermissionManager();
         translationManager = new TranslationManager();
         gameAnimator = new GameAnimator();
-        eventManager = new RubiconEventManager();
+        iEventManager = new RubiconEventManager();
         //Init url shorter API
         bitlyAPI = new BitlyAPI(configuration.getString("bitly_token"));
         verificationLoader = new VerificationLoader();
@@ -324,6 +318,22 @@ public class RubiconBot {
         Data.db().closeConnection();
     }
 
+    public void addListenerAdapter(ListenerAdapter listenerAdapter) {
+        eventManager.addListenerAdapters(listenerAdapter);
+    }
+
+    public void addListenerAdapters(ListenerAdapter... listenerAdapters) {
+        eventManager.addListenerAdapters(listenerAdapters);
+    }
+
+    public void removeListenerAdapter(ListenerAdapter listenerAdapter) {
+        eventManager.removeListenerAdapter(listenerAdapter);
+    }
+
+    public EventManager getEventManager() {
+        return eventManager;
+    }
+
     public static RubiconBot getInstance() {
         return instance;
     }
@@ -379,7 +389,7 @@ public class RubiconBot {
                 new AllShardsLoadedListener(),
                 new LogListener()
         );
-        builder.setEventManager(eventManager);
+        builder.setEventManager(iEventManager);
         try {
             shardManager = builder.build();
         } catch (LoginException e) {
@@ -540,7 +550,7 @@ public class RubiconBot {
         return instance.setupManager;
     }
     @Deprecated
-    public static IEventManager getEventManager(){
-        return instance.eventManager;
+    public static IEventManager getDEventManager(){
+        return instance.iEventManager;
     }
 }

@@ -10,6 +10,7 @@ import net.dv8tion.jda.core.entities.User;
  * @author Schlaubi / Michael Rittmeister
  */
 
+@Deprecated
 public class UnpunishEvent extends GenericPunishmentEvent{
 
     private User user;

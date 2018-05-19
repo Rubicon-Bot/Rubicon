@@ -9,7 +9,7 @@ import fun.rubicon.core.entities.PunishmentType;
 import fun.rubicon.core.entities.RubiconMember;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
-import fun.rubicon.rethink.Rethink;
+import fun.rubicon.io.deprecated_rethink.Rethink;
 import fun.rubicon.setup.SetupRequest;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.DateUtil;

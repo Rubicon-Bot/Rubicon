@@ -20,7 +20,7 @@ public class ShardListener extends ListenerAdapter {
 
     @Override
     public void onReady(ReadyEvent event) {
-        RubiconBot.getEventManager().handle(new AllShardsLoadedEvent(event.getJDA(), event.getResponseNumber()));
+        RubiconBot.getDEventManager().handle(new AllShardsLoadedEvent(event.getJDA(), event.getResponseNumber()));
     }
 
     @Override

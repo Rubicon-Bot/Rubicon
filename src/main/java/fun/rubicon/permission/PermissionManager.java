@@ -9,9 +9,8 @@ package fun.rubicon.permission;
 import com.rethinkdb.gen.ast.Table;
 import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
-import fun.rubicon.rethink.Rethink;
-import fun.rubicon.rethink.RethinkHelper;
-import fun.rubicon.util.Logger;
+import fun.rubicon.io.deprecated_rethink.Rethink;
+import fun.rubicon.io.deprecated_rethink.RethinkHelper;
 import net.dv8tion.jda.core.entities.Member;
 
 import java.sql.SQLException;
@@ -117,7 +116,7 @@ public class PermissionManager extends RethinkHelper {
         if (getPermissions(target).size() == 0) {
             table.filter(rethink.rethinkDB.hashMap("guildId", target.getGuild().getId())
                     .with("type", String.valueOf(target.getType().getIdentifier()))
-                    .with("id", String.valueOf(target.getId()))).delete().run(rethink.getConnection());//TODO Do this better
+                    .with("id", String.valueOf(target.getId()))).delete().run(rethink.getConnection());
             table.insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("guildId", target.getGuild().getId())
                     .with("type", String.valueOf(target.getType().getIdentifier()))
                     .with("id", String.valueOf(target.getId()))

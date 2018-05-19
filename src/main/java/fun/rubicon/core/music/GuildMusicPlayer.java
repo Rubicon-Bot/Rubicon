@@ -34,10 +34,6 @@ import java.util.stream.Collectors;
  */
 public class GuildMusicPlayer extends MusicPlayer {
 
-    /* TODO
-     * - add silent option
-     */
-
     private static List<MusicSearchResult> musicChoose = new ArrayList<>();
 
     public CommandManager.ParsedCommandInvocation invocation;

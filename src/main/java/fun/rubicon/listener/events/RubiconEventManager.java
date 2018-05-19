@@ -11,7 +11,7 @@ import java.util.Iterator;
 /**
  * @author Schlaubi / Michael Rittmeister
  */
-
+@Deprecated
 public class RubiconEventManager extends InterfacedEventManager implements IEventManager {
 
 

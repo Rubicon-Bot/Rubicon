@@ -7,7 +7,7 @@ import net.dv8tion.jda.core.entities.Guild;
 /**
  * @author Schlaubi / Michael Rittmeister
  */
-
+@Deprecated
 public class GenericRubiconGuildEvent extends RubiconEvent{
 
     private Guild guild;

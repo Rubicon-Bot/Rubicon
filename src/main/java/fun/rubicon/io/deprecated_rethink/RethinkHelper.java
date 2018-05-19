@@ -1,4 +1,4 @@
-package fun.rubicon.rethink;
+package fun.rubicon.io.deprecated_rethink;
 
 import com.rethinkdb.net.Cursor;
 
@@ -8,6 +8,7 @@ import java.util.Map;
 /**
  * @author ForYaSee / Yannick Seeger
  */
+@Deprecated
 public abstract class RethinkHelper {
 
     protected static String getString(Cursor cursor, String key) {

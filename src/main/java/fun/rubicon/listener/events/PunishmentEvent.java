@@ -8,7 +8,7 @@ import net.dv8tion.jda.core.entities.Member;
 /**
  * @author Schlaubi / Michael Rittmeister
  */
-
+@Deprecated
 public class PunishmentEvent extends GenericPunishmentEvent{
 
     private long expiry;

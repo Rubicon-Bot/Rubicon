@@ -12,7 +12,7 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.settings.CommandJoinMessage;
 import fun.rubicon.commands.settings.CommandLeaveMessage;
 import fun.rubicon.core.entities.cache.RubiconGuildCache;
-import fun.rubicon.rethink.Rethink;
+import fun.rubicon.io.deprecated_rethink.Rethink;
 import fun.rubicon.util.Info;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;

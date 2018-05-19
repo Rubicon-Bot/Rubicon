@@ -1,4 +1,4 @@
-package fun.rubicon.rethink;
+package fun.rubicon.io.deprecated_rethink;
 
 import com.rethinkdb.RethinkDB;
 import com.rethinkdb.gen.ast.Db;
@@ -9,6 +9,7 @@ import fun.rubicon.util.Logger;
 /**
  * @author ForYaSee / Yannick Seeger
  */
+@Deprecated
 public class Rethink {
 
     public final RethinkDB rethinkDB;

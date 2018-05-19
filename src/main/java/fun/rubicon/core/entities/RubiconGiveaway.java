@@ -4,7 +4,7 @@ import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.tools.CommandGiveaway;
 import fun.rubicon.core.translation.TranslationUtil;
-import fun.rubicon.rethink.Rethink;
+import fun.rubicon.io.deprecated_rethink.Rethink;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;

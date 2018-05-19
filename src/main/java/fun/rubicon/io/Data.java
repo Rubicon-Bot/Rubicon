@@ -2,7 +2,6 @@ package fun.rubicon.io;
 
 import fun.rubicon.core.ShutdownManager;
 import fun.rubicon.io.db.RethinkDatabase;
-import fun.rubicon.util.Config;
 import fun.rubicon.util.RubiconInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +53,8 @@ public class Data {
     }
 
     private static void setConfigDefaults() {
+        Data.cfg().setDefault("bot_token", "myToken");
+        Data.cfg().setDefault("cluster_password", "myPassword");
         Data.cfg().setDefault("rethinkdb_host", new ArrayList<>());
         Data.cfg().setDefault("rethinkdb_user", new ArrayList<>());
         Data.cfg().setDefault("rethinkdb_port", new ArrayList<>());

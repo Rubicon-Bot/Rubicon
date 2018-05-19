@@ -1,10 +1,11 @@
-package fun.rubicon.rethink;
+package fun.rubicon.io.deprecated_rethink;
 
 import com.rethinkdb.gen.exc.ReqlOpFailedError;
 
 /**
  * @author ForYaSee / Yannick Seeger
  */
+@Deprecated
 public class RethinkUtil {
 
     private final static String[] tables = {
