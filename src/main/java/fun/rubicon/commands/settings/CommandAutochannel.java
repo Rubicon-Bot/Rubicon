@@ -176,7 +176,7 @@ public class CommandAutochannel extends CommandHandler {
             }
             VoiceChannel channel = foundChannels.get(0);
             rubiconGuild.deleteAutochannel(channel.getId());
-            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.success(invocation.translate("command.autochannel.added.title"), invocation.translate("command.autochannel.added.description").replaceFirst("%channel%", "`" + channel.getName() + "`"))));
+            SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.success(invocation.translate("command.autochannel.search.remove.title"), invocation.translate("command.autochannel.search.remove.descriptio").replaceFirst("%channel%", "`" + channel.getName() + "`"))));
         } else {
             SafeMessage.sendMessage(invocation.getTextChannel(), EmbedUtil.message(EmbedUtil.error(invocation.translate("command.autochannel.add.title"), invocation.translate("command.autochannel.add.description"))));
         }
