@@ -4,9 +4,10 @@ import de.foryasee.httprequest.HttpRequestBuilder;
 import de.foryasee.httprequest.RequestResponse;
 import de.foryasee.httprequest.RequestType;
 import fun.rubicon.RubiconBot;
-import fun.rubicon.util.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -24,13 +25,17 @@ public class YouTubeVideo {
     private String ID;
     private String description;
 
+    private final org.slf4j.Logger logger = LoggerFactory.getLogger(YouTubeVideo.class);
+
     public YouTubeVideo(String videoURL) {
+        if(!videoURL.startsWith("https://youtu.be/") || !videoURL.startsWith("https://www.youtube.com/watch"))
+            return;
         if (!videoURL.startsWith("https://youtu.be/"))
             this.URL = "https://youtu.be/" + videoURL.substring(videoURL.lastIndexOf("=") + 1);
         else this.URL = videoURL;
         fetchByURL();
         if (this.title == null)
-            Logger.error("YouTubeVideo Get-Request failed for an unexpected Reason. Please check if there is a google Token in the Config or contact Lee");
+            logger.error("YouTubeVideo Get-Request failed for an unexpected Reason. Please check if there is a google Token in the Config or contact Lee");
     }
 
     private void fetchByURL() {
@@ -43,10 +48,10 @@ public class YouTubeVideo {
             RequestResponse response = fetcher.sendRequest();
             JSONObject root = new JSONObject(response.getResponseMessage());
             JSONObject item = (JSONObject) ((JSONObject) ((JSONArray) root.get("items")).get(0)).get("snippet");
-
+            logger.info(item.toString());
             this.description = (String) item.get("description");
             this.title = (String) item.get("title");
-            this.thumbnail = (String) ((JSONObject) ((JSONObject) item.get("thumbnails")).get("maxres")).get("url");
+            this.thumbnail = (String) ((JSONObject) ((JSONObject) item.get("thumbnails")).get("default")).get("url");
             this.creator = (String) item.get("channelTitle");
 
         } catch (IOException ignored) {

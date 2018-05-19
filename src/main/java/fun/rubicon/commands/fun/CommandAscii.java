@@ -22,25 +22,28 @@ import java.io.IOException;
 public class CommandAscii extends CommandHandler {
 
     public CommandAscii() {
-        super(new String[]{"ascii", "asciitext"}, CommandCategory.FUN, new PermissionRequirements("", false, true), "", "");
+        super(new String[]{"ascii", "asciitext"}, CommandCategory.FUN, new PermissionRequirements("ascii", false, true), "Convert text to ASCII art", "<text>");
     }
 
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
+        if(invocation.getArgs().length<1)
+            return createHelpMessage(invocation);
         Request req = new Request.Builder()
                 .url("http://artii.herokuapp.com/make?text=" + invocation.getArgsString())
                 .build();
         Response response;
         try {
             response = new OkHttpClient().newCall(req).execute();
-            if (response.body().string().toCharArray().length > 1990)
+            String body = response.body().string();
+            if (body.toCharArray().length > 1990)
                 return createHelpMessage(invocation);
-            SafeMessage.sendMessage(invocation.getTextChannel(), "```fix\n" + response.body().string() + "```");
+            SafeMessage.sendMessage(invocation.getTextChannel(), "```fix\n" + body + "```");
+            response.close();
         } catch (IOException e) {
             e.printStackTrace();
             return message(EmbedUtil.error(invocation.translate("command.money.give.selferror.title"), invocation.translate("command.ascii.error")));
         }
-        response.close();
         return null;
     }
 
