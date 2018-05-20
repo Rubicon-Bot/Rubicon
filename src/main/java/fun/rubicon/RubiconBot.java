@@ -204,7 +204,8 @@ public class RubiconBot {
                 new CommandQR(),
                 new CommandFortnite(),
                 new CommandOverwatch(),
-                new CommandMinecraft()
+                new CommandMinecraft(),
+                new CommandRainbow()
         );
 
         //General
