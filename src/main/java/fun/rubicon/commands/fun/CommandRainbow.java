@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
     
     @Override
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
-        //https://api.r6stats.com/api/v1/players/ForYaSee/?platform=uplay
         if(invocation.getArgs().length<2)
             return createHelpMessage(invocation);
 
