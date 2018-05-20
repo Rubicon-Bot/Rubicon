@@ -298,4 +298,9 @@ public class GuildImpl extends RethinkDataset implements Guild {
     public long getIdLong() {
         return guild.getIdLong();
     }
+
+    @Override
+    public RestAction<EnumSet<Region>> retrieveRegions(boolean b) {
+        return guild.retrieveRegions(b);
+    }
 }

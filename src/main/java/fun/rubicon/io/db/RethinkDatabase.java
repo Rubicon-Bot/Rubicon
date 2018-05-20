@@ -3,10 +3,14 @@ package fun.rubicon.io.db;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.rethinkdb.RethinkDB;
+import com.rethinkdb.RethinkDBConstants;
 import com.rethinkdb.gen.ast.Db;
 import com.rethinkdb.gen.ast.Json;
 import com.rethinkdb.gen.exc.ReqlOpFailedError;
 import com.rethinkdb.net.Connection;
+import de.jakobjarosch.rethinkdb.pool.ConnectionPoolMetrics;
+import de.jakobjarosch.rethinkdb.pool.RethinkDBPool;
+import de.jakobjarosch.rethinkdb.pool.RethinkDBPoolBuilder;
 import fun.rubicon.core.ShutdownManager;
 import fun.rubicon.entities.Guild;
 import fun.rubicon.entities.Member;
@@ -18,12 +22,14 @@ import fun.rubicon.io.Data;
 import fun.rubicon.provider.GuildProvider;
 import fun.rubicon.provider.UserProvider;
 import fun.rubicon.util.RubiconInfo;
+import javafx.util.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @author ForYaSee / Yannick Seeger
@@ -34,7 +40,7 @@ public class RethinkDatabase {
     private String dbName;
     private final Logger logger = LoggerFactory.getLogger(RethinkDatabase.class);
     private int connectionAttempt;
-    private Connection connection;
+    private RethinkDBPool pool;
 
     public RethinkDatabase() {
         connectionAttempt = 0;
@@ -62,8 +68,10 @@ public class RethinkDatabase {
             assert dbUser != null;
             assert dbPassword != null;
             assert db != null;
-            connection = r.connection().hostname(dbHost).port(dbPort).user(dbUser, dbPassword).db(db).connect();
-
+            r.connection().hostname(dbHost).port(dbPort).user(dbUser, dbPassword).db(db).connect();
+            logger.info("Creating connection pool connections...");
+            pool = new RethinkDBPoolBuilder().hostname(dbHost).port(dbPort).username(dbUser).password(dbPassword).database(db).maxConnections(1000).timeout(10).build();
+            logger.info("Successfully created connection pool.");
             //CreateDefaults
             createDefaultTables();
 
@@ -76,7 +84,7 @@ public class RethinkDatabase {
 
     //Entity Getter
     public User getUser(@Nonnull net.dv8tion.jda.core.entities.User jdaUser) {
-        Map map = r.table(UserImpl.TABLE).get(jdaUser.getId()).run(connection);
+        Map map = r.table(UserImpl.TABLE).get(jdaUser.getId()).run(getConnection());
         Gson gson = new Gson();
         JsonElement json = gson.toJsonTree(map);
         UserImpl user = gson.fromJson(json, UserImpl.class);
@@ -88,7 +96,7 @@ public class RethinkDatabase {
     }
 
     public Guild getGuild(@Nonnull net.dv8tion.jda.core.entities.Guild jdaGuild) {
-        Map map = r.table(GuildImpl.TABLE).get(jdaGuild.getId()).run(connection);
+        Map map = r.table(GuildImpl.TABLE).get(jdaGuild.getId()).run(getConnection());
         Gson gson = new Gson();
         JsonElement json = gson.toJsonTree(map);
         GuildImpl guild = gson.fromJson(json, GuildImpl.class);
@@ -108,32 +116,36 @@ public class RethinkDatabase {
     public void save(@Nonnull RethinkDataset dataset) {
         if (dataset.getId() == null)
             return;
-        checkConnection();
         logger.debug(String.format("Saving %s in %s", dataset.getId(), dataset.getTable()));
-        r.table(dataset.getTable()).insert(r.array(new Json(new Gson().toJson(dataset, dataset.getClass())))).optArg("conflict", "replace").run(connection);
+        r.table(dataset.getTable()).insert(r.array(new Json(new Gson().toJson(dataset, dataset.getClass())))).optArg("conflict", "replace").run(getConnection());
     }
 
     public void delete(@Nonnull RethinkDataset dataset) {
-        checkConnection();
         logger.debug(String.format("Deleting %s from %s", dataset.getId(), dataset.getTable()));
-        r.table(dataset.getTable()).get(dataset.getId()).delete().runNoReply(connection);
+        r.table(dataset.getTable()).get(dataset.getId()).delete().runNoReply(getConnection());
     }
 
     public Connection getConnection() {
-        checkConnection();
-        return connection;
+        return getConnection(-1);
+    }
+
+    public Connection getConnection(int timeout) {
+        if(pool.getMetrics().getPoolHealth().equals(ConnectionPoolMetrics.PoolHealth.FULL)) {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        logger.info(String.format("Free RethinkDB pool connections: %d", pool.getMetrics().getFreeConnections()));
+        if (timeout == -1)
+            return pool.getConnection();
+        return pool.getConnection(timeout);
     }
 
     public void closeConnection() {
-        if (connection != null)
-            connection.close();
-    }
-
-    private void checkConnection() {
-        if (connection == null) {
-            logger.warn("Connection is null. Trying to reconnect...");
-            connect();
-        }
+        if (pool != null)
+            pool.shutdown();
     }
 
     private void createDefaultTables() {
