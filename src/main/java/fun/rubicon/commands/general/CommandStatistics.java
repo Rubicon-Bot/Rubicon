@@ -10,6 +10,7 @@ import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.User;
 
 /**
  * @author ForYaSee / Yannick Seeger
@@ -26,7 +27,7 @@ public class CommandStatistics extends CommandHandler {
         embedBuilder.setColor(Colors.COLOR_SECONDARY);
         embedBuilder.setAuthor(invocation.translate("command.stats.title"), null, invocation.getSelfMember().getUser().getAvatarUrl());
         embedBuilder.addField(invocation.translate("command.stats.guilds"), String.valueOf(RubiconBot.getShardManager().getGuilds().size()), true);
-        embedBuilder.addField(invocation.translate("command.stats.users"), String.valueOf(RubiconBot.getShardManager().getUsers().size()), true);
+        embedBuilder.addField(invocation.translate("command.stats.users"), String.valueOf((RubiconBot.getShardManager().getUsers().size()-RubiconBot.getShardManager().getUsers().stream().filter(User::isBot).count())), true);
         embedBuilder.addField(invocation.translate("command.stats.roles"), String.valueOf(RubiconBot.getShardManager().getRoles().size()), true);
         embedBuilder.addField(invocation.translate("command.stats.textchannels"), String.valueOf(RubiconBot.getShardManager().getTextChannels().size()), true);
         embedBuilder.addField(invocation.translate("command.stats.voicechannels"), String.valueOf(RubiconBot.getShardManager().getVoiceChannels().size()), true);
