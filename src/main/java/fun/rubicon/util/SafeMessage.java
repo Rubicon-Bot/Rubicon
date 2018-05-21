@@ -76,7 +76,7 @@ public class SafeMessage {
 
 
     private static boolean hasPermissions(TextChannel channel) {
-        return channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_READ);
+        return channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE) && channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_READ);
     }
 
     private static boolean hasEmbedPermissions(TextChannel channel) {

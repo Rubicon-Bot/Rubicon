@@ -11,8 +11,10 @@ import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.rethink.Rethink;
 import fun.rubicon.util.EmbedUtil;
+import fun.rubicon.util.Logger;
 import fun.rubicon.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -48,8 +50,6 @@ public class CommandYouTube extends CommandHandler {
     protected Message execute(CommandManager.ParsedCommandInvocation invocation, UserPermissions userPermissions) {
         if (invocation.getArgs().length < 2)
             return createHelpMessage(invocation);
-        if (!RubiconUser.fromUser(invocation.getAuthor()).isPremium())
-            return EmbedUtil.message(EmbedUtil.noPremium());
         if (invocation.getMessage().getMentionedChannels().isEmpty())
             return EmbedUtil.message(EmbedUtil.error(invocation.translate("command.yt.mention.title"), invocation.translate("command.yt.mention.description")));
         Cursor cursor = RubiconBot.getRethink().db.table("youtube").filter(RubiconBot.getRethink().rethinkDB.hashMap("guildId", invocation.getGuild().getId())).run(RubiconBot.getRethink().getConnection());
@@ -83,6 +83,8 @@ public class CommandYouTube extends CommandHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if(!invocation.getGuild().getSelfMember().hasPermission(invocation.getMessage().getMentionedChannels().get(0),Permission.MESSAGE_WRITE))
+            return message(error(invocation.translate("command.punishment.noperm.title"),invocation.translate("command.punishment.noperm.description")));
 
         Message infoMessage = SafeMessage.sendMessageBlocking(invocation.getTextChannel(), EmbedUtil.message(new EmbedBuilder().setTitle(invocation.translate("command.yt.setup.title")).setDescription(invocation.translate("command.yt.setup.description")).setFooter(invocation.translate("command.yt.setup.footer"), null)));
         announceMap.put(invocation.getAuthor().getIdLong(), new AnnounceHolder(invocation.getTextChannel(), invocation.getMessage().getMentionedChannels().get(0), creator, invocation.getAuthor(), infoMessage));
