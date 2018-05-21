@@ -53,8 +53,7 @@ public class CommandInfo extends CommandHandler {
         }
 
         String partner = "[ZapHosting](https://zap-hosting.com/rubicon)\n" +
-                "[Groovy - Music Bot](https://rxsto.github.io/musicBot/invite/)\n" +
-                "[ModBot.xyz](https://modbot.xyz/)";
+                "[Groovy - Music Bot](https://rxsto.github.io/musicBot/invite/)\n";
 
         embedBuilder.setDescription("**" + invocation.translate("command.info.version") + ":** " + Info.BOT_VERSION + "\n" +
                 "**" + invocation.translate("command.info.website") + ":** [rubicon.fun](https://rubicon.fun)\n" +

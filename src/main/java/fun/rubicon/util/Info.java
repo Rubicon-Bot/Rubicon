@@ -30,7 +30,7 @@ public class Info {
             227817074976751616L, // ForYaSee
             153507094933274624L, // Lee
             264048760580079616L, // Schlaubi
-            137263174675070976L,  // tr808axm
+            137263174675070976L, // tr808axm
             137253345336229889L  // Lucsoft
     };
 
@@ -39,7 +39,7 @@ public class Info {
             333220752117596160L, //BaseChip
             240797338430341120L, //Pilz
             235395943619493888L, //ls13game
-            170821070004158464L //Dlenny
+            170821070004158464L  //Dlenny
     };
     public static final long SUPPORT_ROLE = 442431704112562186L;
     public static final long BUG_ROLE = 442431609099255809L;
