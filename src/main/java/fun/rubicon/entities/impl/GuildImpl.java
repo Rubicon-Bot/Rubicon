@@ -1,6 +1,7 @@
 package fun.rubicon.entities.impl;
 
 import fun.rubicon.entities.Guild;
+import fun.rubicon.entities.Joinmessage;
 import fun.rubicon.io.db.RethinkDataset;
 import lombok.Getter;
 import lombok.ToString;
@@ -32,6 +33,7 @@ public class GuildImpl extends RethinkDataset implements Guild {
 
     public static final transient String TABLE = "guilds";
     private transient net.dv8tion.jda.core.entities.Guild guild;
+    @Getter private transient Joinmessage joinmessage;
     private String id;
     @Getter private String prefix;
 
@@ -55,6 +57,16 @@ public class GuildImpl extends RethinkDataset implements Guild {
     public void setPrefix(String prefix) {
         this.prefix = prefix;
         saveData();
+    }
+
+    @Override
+    public void setJoinmessage(Joinmessage joinmessage) {
+        this.joinmessage = joinmessage;
+    }
+
+    @Override
+    public boolean hasJoinmessagesEnabled() {
+        return joinmessage != null;
     }
 
     @Override

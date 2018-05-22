@@ -12,7 +12,8 @@ import javax.annotation.Nonnull;
 @RequiredArgsConstructor
 public abstract class RethinkDataset {
 
-    @Getter @Nonnull
+    @Getter
+    @Nonnull
     private final transient String table;
 
     public void saveData() {

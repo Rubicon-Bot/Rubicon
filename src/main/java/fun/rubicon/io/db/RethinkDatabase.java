@@ -3,7 +3,6 @@ package fun.rubicon.io.db;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.rethinkdb.RethinkDB;
-import com.rethinkdb.RethinkDBConstants;
 import com.rethinkdb.gen.ast.Db;
 import com.rethinkdb.gen.ast.Json;
 import com.rethinkdb.gen.exc.ReqlOpFailedError;
@@ -13,23 +12,23 @@ import de.jakobjarosch.rethinkdb.pool.RethinkDBPool;
 import de.jakobjarosch.rethinkdb.pool.RethinkDBPoolBuilder;
 import fun.rubicon.core.ShutdownManager;
 import fun.rubicon.entities.Guild;
+import fun.rubicon.entities.Joinmessage;
 import fun.rubicon.entities.Member;
 import fun.rubicon.entities.User;
 import fun.rubicon.entities.impl.GuildImpl;
+import fun.rubicon.entities.impl.JoinmessageImpl;
 import fun.rubicon.entities.impl.MemberImpl;
 import fun.rubicon.entities.impl.UserImpl;
 import fun.rubicon.io.Data;
 import fun.rubicon.provider.GuildProvider;
 import fun.rubicon.provider.UserProvider;
 import fun.rubicon.util.RubiconInfo;
-import javafx.util.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * @author ForYaSee / Yannick Seeger
@@ -102,9 +101,22 @@ public class RethinkDatabase {
         GuildImpl guild = gson.fromJson(json, GuildImpl.class);
         if (guild == null)
             guild = new GuildImpl(jdaGuild, RubiconInfo.DEFAULT_PREFIX);
+        //Set vars
         guild.setGuild(jdaGuild);
+        guild.setJoinmessage(getJoinmessage(jdaGuild.getId()));
+        //Save Guild in Cache
         GuildProvider.addGuild(guild);
         return guild;
+    }
+
+    public Joinmessage getJoinmessage(String guildId) {
+        Map map = r.table(JoinmessageImpl.TABLE).get(guildId).run(getConnection());
+        Gson gson = new Gson();
+        JsonElement json = gson.toJsonTree(map);
+        JoinmessageImpl joinmessage = gson.fromJson(json, JoinmessageImpl.class);
+        if (joinmessage == null)
+            return null;
+        return joinmessage;
     }
 
     //TODO Implement Database things
@@ -130,7 +142,7 @@ public class RethinkDatabase {
     }
 
     public Connection getConnection(int timeout) {
-        if(pool.getMetrics().getPoolHealth().equals(ConnectionPoolMetrics.PoolHealth.FULL)) {
+        if (pool.getMetrics().getPoolHealth().equals(ConnectionPoolMetrics.PoolHealth.FULL)) {
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
@@ -143,7 +155,7 @@ public class RethinkDatabase {
         return pool.getConnection(timeout);
     }
 
-    public void closeConnection() {
+    public void closePool() {
         if (pool != null)
             pool.shutdown();
     }

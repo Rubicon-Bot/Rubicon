@@ -315,7 +315,7 @@ public class RubiconBot {
      * Call all necessary methods
      */
     public void shutdown() {
-        Data.db().closeConnection();
+        Data.db().closePool();
     }
 
     public void addListenerAdapter(ListenerAdapter listenerAdapter) {
