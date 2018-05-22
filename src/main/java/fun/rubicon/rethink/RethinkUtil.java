@@ -36,6 +36,7 @@ public class RethinkUtil {
             "giveaways",
             "giveaways",
             "portal_invites",
+            "premiums",
     };
 
     public static void createDefaults(Rethink rethink) {
