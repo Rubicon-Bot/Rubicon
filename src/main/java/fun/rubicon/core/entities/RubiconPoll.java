@@ -152,7 +152,7 @@ public class RubiconPoll implements Serializable {
         return messages;
     }
 
-    public void addVote(Member member, Integer voteID){
+    public void addVote(Member member, Integer voteID) {
         votes.put(member.getUser().getId(), String.valueOf(voteID));
     }
 

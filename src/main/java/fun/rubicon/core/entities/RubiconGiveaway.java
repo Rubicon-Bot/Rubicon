@@ -19,7 +19,7 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * @author Leon Kappes / Lee
  * @copyright RubiconBot Dev Team 2018
- * @license  GPL-3.0 License <http://rubicon.fun/license>
+ * @license GPL-3.0 License <http://rubicon.fun/license>
  */
 public class RubiconGiveaway {
 
@@ -110,15 +110,14 @@ public class RubiconGiveaway {
     }
 
 
-
     public static void handleReaction(MessageReactionAddEvent event) {
-        if(event.getUser().isBot()) return;
-        if(!event.getReactionEmote().getName().equals("\uD83C\uDFC6"))
+        if (event.getUser().isBot()) return;
+        if (!event.getReactionEmote().getName().equals("\uD83C\uDFC6"))
             return;
         RubiconGiveaway giveaway = new RubiconGiveaway(event.getMessageId());
-        if(!giveaway.isExists()) return;
-        if(giveaway.hasUser(event.getUser())) return;
-        //if(giveaway.getAuthor().equals(event.getUser())) return;
+        if (!giveaway.isExists()) return;
+        if (giveaway.hasUser(event.getUser())) return;
+        //if(giveaway.getAuthor().equals(events.getUser())) return;
         giveaway.addUser(event.getUser());
         giveaway.updateMessage();
 
@@ -131,13 +130,13 @@ public class RubiconGiveaway {
             public void run() {
                 users = new RubiconGiveaway(author).getUsers();
                 EmbedBuilder msg = EmbedUtil.error();
-                if(users.isEmpty())
+                if (users.isEmpty())
                     msg = EmbedUtil.error(TranslationUtil.translate(author, "giveaway.nowinner.title"), TranslationUtil.translate(author, "giveaway.nowinner.description"));
                 else {
                     int winners = 0;
                     StringBuilder userNames = new StringBuilder();
                     for (int i = 0; i < winnerCount; i++) {
-                        if(users.isEmpty())
+                        if (users.isEmpty())
                             return;
                         User user = RubiconBot.getShardManager().getUserById(users.get(ThreadLocalRandom.current().nextInt(users.size())));
                         users.remove(user.getId());
@@ -146,7 +145,7 @@ public class RubiconGiveaway {
                     }
                     if (!userNames.toString().equals(""))
                         userNames.replace(userNames.lastIndexOf(","), userNames.lastIndexOf(",") + 1, "");
-                    if(winners > 1)
+                    if (winners > 1)
                         msg = EmbedUtil.info(TranslationUtil.translate(author, "giveaway.won.title"), String.format(TranslationUtil.translate(author, "giveaway.won.multiple"), userNames.toString(), prize, author.getAsMention()));
                     else
                         msg = EmbedUtil.info(TranslationUtil.translate(author, "giveaway.won.title"), String.format(TranslationUtil.translate(author, "giveaway.won.single"), userNames.toString(), prize, author.getAsMention()));
@@ -177,8 +176,8 @@ public class RubiconGiveaway {
         timerStorage.remove(author);
     }
 
-    private void updateMessage(){
-        if(getMessage() == null) {
+    private void updateMessage() {
+        if (getMessage() == null) {
             delete();
             return;
         }
@@ -230,7 +229,7 @@ public class RubiconGiveaway {
         }, "GiveawayLoaderThread").start();
     }
 
-    public Message getMessage(){
+    public Message getMessage() {
         return RubiconBot.getShardManager().getGuildById(guildId).getTextChannelById(channelId).getMessageById(messageId).complete();
     }
 

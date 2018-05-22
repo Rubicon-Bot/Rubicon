@@ -1,12 +1,14 @@
-package fun.rubicon.core.entities;
+package fun.rubicon.entities;
 
 import de.foryasee.httprequest.HttpRequestBuilder;
 import de.foryasee.httprequest.RequestResponse;
 import de.foryasee.httprequest.RequestType;
 import fun.rubicon.RubiconBot;
-import fun.rubicon.util.Logger;
+import lombok.Getter;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -15,13 +17,20 @@ import java.io.IOException;
  * @copyright RubiconBot Dev Team 2018
  * @License GPL-3.0 License <http://rubicon.fun/license>
  */
+@Deprecated
 public class YouTubeVideo {
 
+    @Getter
     private String URL;
+    @Getter
     private String title;
+    @Getter
     private String thumbnail;
+    @Getter
     private String creator;
+    @Getter
     private String ID;
+    @Getter
     private String description;
 
     public YouTubeVideo(String videoURL) {
@@ -29,8 +38,9 @@ public class YouTubeVideo {
             this.URL = "https://youtu.be/" + videoURL.substring(videoURL.lastIndexOf("=") + 1);
         else this.URL = videoURL;
         fetchByURL();
+        Logger logger = LoggerFactory.getLogger(YouTubeVideo.class);
         if (this.title == null)
-            Logger.error("YouTubeVideo Get-Request failed for an unexpected Reason. Please check if there is a google Token in the Config or contact Lee");
+            logger.error("YouTubeVideo Get-Request failed for an unexpected Reason. Please check if there is a google Token in the Config or contact Lee");
     }
 
     private void fetchByURL() {
@@ -54,49 +64,24 @@ public class YouTubeVideo {
         }
     }
 
-    public String getURL() {
-        return URL;
-    }
-
     public void setURL(String URL) {
         this.URL = URL;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public String getThumbnail() {
-        return thumbnail;
-    }
-
     public void setThumbnail(String thumbnail) {
         this.thumbnail = thumbnail;
-    }
-
-    public String getCreator() {
-        return creator;
     }
 
     public void setCreator(String creator) {
         this.creator = creator;
     }
 
-    public String getID() {
-        return ID;
-    }
-
     public void setID(String ID) {
         this.ID = ID;
-    }
-
-
-    public String getDescription() {
-        return description;
     }
 
     public void setDescription(String description) {

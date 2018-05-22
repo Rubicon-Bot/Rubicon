@@ -11,14 +11,8 @@ import de.jakobjarosch.rethinkdb.pool.ConnectionPoolMetrics;
 import de.jakobjarosch.rethinkdb.pool.RethinkDBPool;
 import de.jakobjarosch.rethinkdb.pool.RethinkDBPoolBuilder;
 import fun.rubicon.core.ShutdownManager;
-import fun.rubicon.entities.Guild;
-import fun.rubicon.entities.Joinmessage;
-import fun.rubicon.entities.Member;
-import fun.rubicon.entities.User;
-import fun.rubicon.entities.impl.GuildImpl;
-import fun.rubicon.entities.impl.JoinmessageImpl;
-import fun.rubicon.entities.impl.MemberImpl;
-import fun.rubicon.entities.impl.UserImpl;
+import fun.rubicon.entities.*;
+import fun.rubicon.entities.impl.*;
 import fun.rubicon.io.Data;
 import fun.rubicon.provider.GuildProvider;
 import fun.rubicon.provider.UserProvider;
@@ -100,10 +94,12 @@ public class RethinkDatabase {
         JsonElement json = gson.toJsonTree(map);
         GuildImpl guild = gson.fromJson(json, GuildImpl.class);
         if (guild == null)
-            guild = new GuildImpl(jdaGuild, RubiconInfo.DEFAULT_PREFIX);
+            guild = new GuildImpl(jdaGuild, RubiconInfo.DEFAULT_PREFIX, null);
         //Set vars
         guild.setGuild(jdaGuild);
         guild.setJoinmessage(getJoinmessage(jdaGuild.getId()));
+        guild.setLeavemessage(getLeavemessage(jdaGuild.getId()));
+        guild.setJoinimage(getJoinimage(jdaGuild.getId()));
         //Save Guild in Cache
         GuildProvider.addGuild(guild);
         return guild;
@@ -117,6 +113,26 @@ public class RethinkDatabase {
         if (joinmessage == null)
             return null;
         return joinmessage;
+    }
+
+    public Leavemessage getLeavemessage(String guildId) {
+        Map map = r.table(LeavemessageImpl.TABLE).get(guildId).run(getConnection());
+        Gson gson = new Gson();
+        JsonElement json = gson.toJsonTree(map);
+        LeavemessageImpl leavemessage = gson.fromJson(json, LeavemessageImpl.class);
+        if (leavemessage == null)
+            return null;
+        return leavemessage;
+    }
+
+    public Joinimage getJoinimage(String guildId) {
+        Map map = r.table(JoinImageImpl.TABLE).get(guildId).run(getConnection());
+        Gson gson = new Gson();
+        JsonElement json = gson.toJsonTree(map);
+        JoinImageImpl joinImage = gson.fromJson(json, JoinImageImpl.class);
+        if (joinImage == null)
+            return null;
+        return joinImage;
     }
 
     //TODO Implement Database things
@@ -134,7 +150,7 @@ public class RethinkDatabase {
 
     public void delete(@Nonnull RethinkDataset dataset) {
         logger.debug(String.format("Deleting %s from %s", dataset.getId(), dataset.getTable()));
-        r.table(dataset.getTable()).get(dataset.getId()).delete().runNoReply(getConnection());
+        r.table(dataset.getTable()).get(dataset.getId()).delete().run(getConnection());
     }
 
     public Connection getConnection() {
@@ -149,7 +165,6 @@ public class RethinkDatabase {
                 e.printStackTrace();
             }
         }
-        logger.info(String.format("Free RethinkDB pool connections: %d", pool.getMetrics().getFreeConnections()));
         if (timeout == -1)
             return pool.getConnection();
         return pool.getConnection(timeout);
@@ -185,6 +200,7 @@ public class RethinkDatabase {
                 "portal_settings",
                 "votes",
                 "giveaways",
+                "premiums"
         };
         Db db = r.db(dbName);
         db.config().update(r.hashMap("write_acks", "single")).run(getConnection());

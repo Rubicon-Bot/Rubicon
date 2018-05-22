@@ -18,7 +18,7 @@ public class EventManager {
     }
 
     public void call(Event event) {
-        for(ListenerAdapter adapter : listenerAdapters) {
+        for (ListenerAdapter adapter : listenerAdapters) {
             new Thread(() -> adapter.onEvent(event)).start();
         }
     }

@@ -33,7 +33,7 @@ public class GuildProvider {
     }
 
     public static void addGuild(Guild guild) {
-        if(!cache.containsKey(new PrimitiveLong(guild.getIdLong())))
+        if (!cache.containsKey(new PrimitiveLong(guild.getIdLong())))
             cache.put(new PrimitiveLong(guild.getIdLong()), guild);
     }
 }

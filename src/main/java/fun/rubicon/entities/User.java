@@ -44,5 +44,5 @@ public interface User extends net.dv8tion.jda.core.entities.User {
 
     void setPlaylists(HashMap<String, List<String>> playlists);
 
-    void delete();
+    void deleteUser();
 }

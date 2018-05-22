@@ -26,11 +26,11 @@ public class CommandExecutedEvent extends GenericRubiconGuildEvent {
 
     }
 
-    public Message getMessage(){
+    public Message getMessage() {
         return msg;
     }
 
-    public CommandManager.ParsedCommandInvocation getInvocation(){
+    public CommandManager.ParsedCommandInvocation getInvocation() {
         return invocation;
     }
 

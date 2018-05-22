@@ -1,14 +1,11 @@
 package fun.rubicon.entities;
 
-public interface Joinmessage {
+public interface Joinimage {
 
     void setChannelId(String channelId);
 
     String getChannelId();
 
-    String getMessage();
-
-    void setMessage(String message);
-
     void delete();
+
 }

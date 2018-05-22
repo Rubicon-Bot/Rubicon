@@ -28,7 +28,12 @@ import fun.rubicon.features.portal.PortalMessageListener;
 import fun.rubicon.features.verification.VerificationCommandHandler;
 import fun.rubicon.features.verification.VerificationLoader;
 import fun.rubicon.io.Data;
-import fun.rubicon.listener.*;
+import fun.rubicon.io.deprecated_rethink.Rethink;
+import fun.rubicon.io.deprecated_rethink.RethinkUtil;
+import fun.rubicon.listener.AutochannelListener;
+import fun.rubicon.listener.GeneralMessageListener;
+import fun.rubicon.listener.GeneralReactionListener;
+import fun.rubicon.listener.UserMentionListener;
 import fun.rubicon.listener.bot.*;
 import fun.rubicon.listener.channel.TextChannelDeleteListener;
 import fun.rubicon.listener.channel.VoiceChannelDeleteListener;
@@ -41,8 +46,6 @@ import fun.rubicon.listener.member.MemberJoinListener;
 import fun.rubicon.listener.member.MemberLeaveListener;
 import fun.rubicon.listener.role.RoleDeleteListener;
 import fun.rubicon.permission.PermissionManager;
-import fun.rubicon.io.deprecated_rethink.Rethink;
-import fun.rubicon.io.deprecated_rethink.RethinkUtil;
 import fun.rubicon.setup.SetupListener;
 import fun.rubicon.setup.SetupManager;
 import fun.rubicon.util.*;
@@ -58,8 +61,6 @@ import net.dv8tion.jda.core.hooks.IEventManager;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -114,6 +115,7 @@ public class RubiconBot {
             "supporthook",
             "rubiconfun_token"
     };
+
     /**
      * Constructs the RubiconBot.
      */
@@ -498,38 +500,47 @@ public class RubiconBot {
     public static List<Guild> getGuildsByName(String name, boolean ignoreCase) {
         return ignoreCase ? getShardManager().getGuilds().stream().filter(guild -> guild.getName().equalsIgnoreCase(name)).collect(Collectors.toList()) : getShardManager().getGuilds().stream().filter(guild -> guild.getName().equals(name)).collect(Collectors.toList());
     }
+
     @Deprecated
     public static boolean allShardsInitialised() {
         return instance.allShardsInitialised;
     }
+
     @Deprecated
     public static void setAllShardsInitialised(boolean allShardsInitialised) {
         instance.allShardsInitialised = allShardsInitialised;
     }
+
     @Deprecated
     public static GameAnimator getGameAnimator() {
         return instance.gameAnimator;
     }
+
     @Deprecated
     public static PollManager getPollManager() {
         return instance.pollManager;
     }
+
     @Deprecated
     public static BitlyAPI getBitlyAPI() {
         return instance.bitlyAPI;
     }
+
     @Deprecated
     public static LavalinkManager getLavalinkManager() {
         return lavalinkManager;
     }
+
     @Deprecated
     public static GuildMusicPlayerManager getGuildMusicPlayerManager() {
         return instance.guildMusicPlayerManager;
     }
+
     @Deprecated
     public static Rethink getRethink() {
         return instance == null ? null : rethink;
     }
+
     @Deprecated
     public static void connectRethink() {
         rethink = new Rethink(
@@ -541,16 +552,19 @@ public class RubiconBot {
         );
         rethink.connect();
     }
+
     @Deprecated
     public static VerificationLoader getVerificationLoader() {
         return instance.verificationLoader;
     }
+
     @Deprecated
     public static SetupManager getSetupManager() {
         return instance.setupManager;
     }
+
     @Deprecated
-    public static IEventManager getDEventManager(){
+    public static IEventManager getDEventManager() {
         return instance.iEventManager;
     }
 }

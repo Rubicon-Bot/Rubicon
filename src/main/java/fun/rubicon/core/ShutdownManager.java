@@ -13,7 +13,7 @@ public class ShutdownManager {
     private static boolean shutdownInProgress = false;
 
     public static void shutdown(Class clazz, String message) {
-        if(shutdownInProgress)
+        if (shutdownInProgress)
             return;
         shutdownInProgress = true;
         logger.error(String.format("Executing shutdown.\n [%s] Reason: %s", clazz.getName(), message));

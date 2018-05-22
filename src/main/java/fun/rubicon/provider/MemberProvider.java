@@ -2,11 +2,8 @@ package fun.rubicon.provider;
 
 import fun.rubicon.RubiconBot;
 import fun.rubicon.entities.Member;
-import fun.rubicon.entities.User;
 import fun.rubicon.io.Data;
 import fun.rubicon.util.DoubleLong;
-import fun.rubicon.util.PrimitiveLong;
-import fun.rubicon.util.RubiconInfo;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -36,7 +33,7 @@ public class MemberProvider {
     }
 
     public static void addMember(Member member) {
-        if(!cache.containsKey(new DoubleLong(member.getUser().getIdLong(), member.getGuild().getIdLong())))
+        if (!cache.containsKey(new DoubleLong(member.getUser().getIdLong(), member.getGuild().getIdLong())))
             cache.put(new DoubleLong(member.getUser().getIdLong(), member.getGuild().getIdLong()), member);
     }
 }

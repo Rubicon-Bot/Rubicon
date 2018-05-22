@@ -1,0 +1,25 @@
+{
+  "rethinkdb_user": [
+    "admin",
+    "admin",
+    "admin"
+  ],
+  "rethinkdb_password": [
+    "IchBinVollKrassUndIhrNichtxD",
+    "IchBinVollKrassUndIhrNichtxD",
+    "IchBinVollKrassUndIhrNichtxD"
+  ],
+  "rethinkdb_port": [
+    "28040",
+    "28015",
+    "28015"
+  ],
+  "rethinkdb_db": "rucb_test",
+  "bot_token": "NDExNTE1NTk2OTI5MjM2OTkz.DeLzpg.N5KY-eqcOuG0GOCFgl0azmqMYTo",
+  "rethinkdb_host": [
+    "foryasee.de",
+    "schlaubi.me",
+    "likes-to.live"
+  ],
+  "cluster_password": "myPassword"
+}

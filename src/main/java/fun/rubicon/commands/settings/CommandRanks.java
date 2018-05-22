@@ -53,7 +53,7 @@ public class CommandRanks extends CommandHandler {
                     return message(error(invocation.translate("command.ranks.noperm.role.title"), invocation.translate("command.ranks.noperm.role.description")));
                 /* Whitelist role as rank */
                 guild.allowRank(rank);
-                SafeMessage.sendMessage(invocation.getTextChannel(), message(success(invocation.translate("command.ranks.created.title"), String.format(invocation.translate("command.ranks.created.description"), rank.getName()))),30);
+                SafeMessage.sendMessage(invocation.getTextChannel(), message(success(invocation.translate("command.ranks.created.title"), String.format(invocation.translate("command.ranks.created.description"), rank.getName()))), 30);
                 break;
             case "remove":
             case "delete":
@@ -67,7 +67,7 @@ public class CommandRanks extends CommandHandler {
                 /* Remove role from rank whitelist */
                 guild.disallowRank(role);
                 role.delete().queue();
-                SafeMessage.sendMessage(invocation.getTextChannel(), message(success(invocation.translate("command.ranks.deleted.title"), invocation.translate("command.ranks.deleted.description"))),30);
+                SafeMessage.sendMessage(invocation.getTextChannel(), message(success(invocation.translate("command.ranks.deleted.title"), invocation.translate("command.ranks.deleted.description"))), 30);
                 break;
             case "list":
                 if (!guild.useRanks())
@@ -75,7 +75,7 @@ public class CommandRanks extends CommandHandler {
                 StringBuilder ranks = new StringBuilder();
                 guild.getRanks().forEach(r -> ranks.append("`").append(r.getName()).append("`").append(", "));
                 ranks.replace(ranks.lastIndexOf(","), ranks.lastIndexOf(",") + 1, "");
-                SafeMessage.sendMessage(invocation.getTextChannel(), message(success(invocation.translate("command.ranks.list.title"), ranks.toString())),30);
+                SafeMessage.sendMessage(invocation.getTextChannel(), message(success(invocation.translate("command.ranks.list.title"), ranks.toString())), 30);
                 break;
             default:
                 if (!guild.useRanks())
@@ -116,7 +116,7 @@ public class CommandRanks extends CommandHandler {
                 }
                 if (toAddRoles.isEmpty() && toRemoveRoles.isEmpty())
                     return message(error(invocation.translate("command.ranks.noperm.title"), invocation.translate("command.ranks.noperm.bot.description")));
-                SafeMessage.sendMessage(invocation.getTextChannel(), message(emb),30);
+                SafeMessage.sendMessage(invocation.getTextChannel(), message(emb), 30);
         }
         return null;
     }

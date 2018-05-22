@@ -1,6 +1,6 @@
 package fun.rubicon.entities;
 
-public interface Joinmessage {
+public interface Leavemessage {
 
     void setChannelId(String channelId);
 

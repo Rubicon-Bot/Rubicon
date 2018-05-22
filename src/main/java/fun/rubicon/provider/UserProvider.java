@@ -6,7 +6,10 @@ import fun.rubicon.io.Data;
 import fun.rubicon.util.PrimitiveLong;
 import lombok.Getter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author ForYaSee / Yannick Seeger
@@ -20,8 +23,9 @@ public class UserProvider {
         //TODO Replace this line
         assert RubiconBot.getShardManager() != null;
         net.dv8tion.jda.core.entities.User jdaUser = RubiconBot.getShardManager().getUserById(userId);
-        if (jdaUser == null)
+        if (jdaUser == null) {
             return null;
+        }
         return cache.containsKey(new PrimitiveLong(userId)) ? cache.get(new PrimitiveLong(userId)) : Data.db().getUser(jdaUser);
     }
 
@@ -30,7 +34,7 @@ public class UserProvider {
     }
 
     public static void addUser(User user) {
-        if(!cache.containsKey(new PrimitiveLong(user.getIdLong())))
+        if (!cache.containsKey(new PrimitiveLong(user.getIdLong())))
             cache.put(new PrimitiveLong(user.getIdLong()), user);
     }
 }

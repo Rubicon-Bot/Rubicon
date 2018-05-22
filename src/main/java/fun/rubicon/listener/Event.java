@@ -1,7 +1,14 @@
 package fun.rubicon.listener;
 
+import fun.rubicon.entities.Shard;
+import lombok.Data;
+
 /**
  * @author ForYaSee / Yannick Seeger
  */
-public interface Event {
+@Data
+public abstract class Event {
+
+    private final Shard shard;
+
 }

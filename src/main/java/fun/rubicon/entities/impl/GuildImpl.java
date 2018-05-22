@@ -1,7 +1,9 @@
 package fun.rubicon.entities.impl;
 
 import fun.rubicon.entities.Guild;
+import fun.rubicon.entities.Joinimage;
 import fun.rubicon.entities.Joinmessage;
+import fun.rubicon.entities.Leavemessage;
 import fun.rubicon.io.db.RethinkDataset;
 import lombok.Getter;
 import lombok.ToString;
@@ -21,6 +23,7 @@ import net.dv8tion.jda.core.utils.cache.SnowflakeCacheView;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -33,35 +36,89 @@ public class GuildImpl extends RethinkDataset implements Guild {
 
     public static final transient String TABLE = "guilds";
     private transient net.dv8tion.jda.core.entities.Guild guild;
-    @Getter private transient Joinmessage joinmessage;
+    @Getter
+    private transient Joinmessage joinmessage;
+    @Getter
+    private transient Leavemessage leavemessage;
+    @Getter
+    private transient Joinimage joinimage;
     private String id;
-    @Getter private String prefix;
+    @Getter
+    private String prefix;
+    private List<String> rank;
+    private String beta;
 
-    public GuildImpl(net.dv8tion.jda.core.entities.Guild guild, String prefix) {
+    public GuildImpl(net.dv8tion.jda.core.entities.Guild guild, String prefix, String beta) {
         super(TABLE);
         this.guild = guild;
         this.id = guild.getId();
         this.prefix = prefix;
+        if (beta != null && !beta.equals("1"))
+            disableBeta();
+        else this.beta = beta;
     }
 
     public GuildImpl() {
         super(TABLE);
     }
 
+    //Guild
     public void setGuild(net.dv8tion.jda.core.entities.Guild guild) {
         this.guild = guild;
         this.id = guild.getId();
     }
 
     @Override
+    public void deleteGuild() {
+        disableJoinimages();
+        disableJoinmessages();
+        disableLeavemessages();
+        deleteData();
+    }
+
+    //Prefix
+    @Override
     public void setPrefix(String prefix) {
         this.prefix = prefix;
         saveData();
     }
 
+    //Beta
+    @Override
+    public boolean isBeta() {
+        return beta != null;
+    }
+
+    @Override
+    public void enableBeta() {
+        beta = "1";
+        saveData();
+    }
+
+    @Override
+    public void disableBeta() {
+        beta = null;
+        saveData();
+        leave().queue();
+    }
+
+    //Joinmessage
     @Override
     public void setJoinmessage(Joinmessage joinmessage) {
         this.joinmessage = joinmessage;
+    }
+
+    @Override
+    public void disableJoinmessages() {
+        if (joinmessage == null)
+            return;
+        joinmessage.delete();
+        joinmessage = null;
+    }
+
+    @Override
+    public void enableJoinmessages(String channelId, String message) {
+        setJoinmessage(new JoinmessageImpl(getId(), channelId, message));
     }
 
     @Override
@@ -69,11 +126,130 @@ public class GuildImpl extends RethinkDataset implements Guild {
         return joinmessage != null;
     }
 
+    //Leavemessage
+    @Override
+    public void setLeavemessage(Leavemessage leavemessage) {
+        this.leavemessage = leavemessage;
+    }
+
+    @Override
+    public void enableLeavemessages(String channelId, String message) {
+        setLeavemessage(new LeavemessageImpl(getId(), channelId, message));
+    }
+
+    @Override
+    public void disableLeavemessages() {
+        if (leavemessage == null)
+            return;
+        leavemessage.delete();
+        leavemessage = null;
+    }
+
+    @Override
+    public boolean hasLeavemessageEnanled() {
+        return leavemessage != null;
+    }
+
+    //Joinimages
+    @Override
+    public void setJoinimage(Joinimage joinimage) {
+        this.joinimage = joinimage;
+    }
+
+    @Override
+    public void disableJoinimages() {
+        if (joinimage == null)
+            return;
+        joinimage.delete();
+        joinimage = null;
+    }
+
+    @Override
+    public void enableJoinimage(String channelId) {
+        setJoinimage(new JoinImageImpl(getId(), channelId));
+    }
+
+    @Override
+    public boolean hasJoinimagesEnabled() {
+        return joinimage != null;
+    }
+
+    //Ranks (Biggest shit i've ever seen)
+    @Override
+    public boolean usesRanks() {
+        return getRankIds() != null;
+    }
+
+    @Override
+    public boolean isRank(Role role) {
+        return false;
+    }
+
+    @Override
+    public void allowRank(Role role) {
+        List<String> list;
+        if (usesRanks())
+            list = getRankIds();
+        else
+            list = new ArrayList<>();
+        list.add(role.getId());
+        updateRanks(list);
+    }
+
+    @Override
+    public void disallowRank(Role role) {
+        if (!usesRanks())
+            return;
+        List<String> list = getRankIds();
+        list.remove(role.getId());
+        updateRanks(list);
+    }
+
+    @Override
+    public void updateRanks(List<String> idList) {
+        if (idList.isEmpty())
+            rank = null;
+        else
+            rank = idList;
+
+        saveData();
+    }
+
+    @Override
+    public void checkRanks() {
+        if (!usesRanks()) return;
+        List<String> idList = getRankIds();
+        getRankIds().forEach(id -> {
+            Role role = getRoleById(id);
+            if (role == null)
+                idList.remove(id);
+        });
+        updateRanks(idList);
+    }
+
+    @Override
+    public List<Role> getRanks() {
+        checkRanks();
+        List<Role> roles = new ArrayList<>();
+        getRankIds().forEach(id -> roles.add(getRoleById(id)));
+        return roles;
+    }
+
+    @Override
+    public List<String> getRankIds() {
+        return rank;
+    }
+
+    //Portal
+
+
+    //ID
     @Override
     public String getId() {
         return guild.getId();
     }
 
+    //JDA stuff
     @Override
     public RestAction<EnumSet<Region>> retrieveRegions() {
         return guild.retrieveRegions();

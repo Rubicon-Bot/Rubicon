@@ -22,7 +22,7 @@ public class Data {
      * @return the Rubicon {@link Config} instance
      */
     public static Config config() {
-        if(config == null)
+        if (config == null)
             ShutdownManager.shutdown(Data.class, "Config instance is null.");
         return config;
     }
@@ -38,17 +38,17 @@ public class Data {
      * @return the Rubicon {@link RethinkDatabase} instance
      */
     public static RethinkDatabase db() {
-        if(rethinkDatabase == null)
+        if (rethinkDatabase == null)
             ShutdownManager.shutdown(Data.class, "RethinkDB instance is null.");
         return rethinkDatabase;
     }
 
     public static void init() {
-        if(config == null) {
+        if (config == null) {
             config = new Config(RubiconInfo.CONFIG_FILE);
             setConfigDefaults();
         }
-        if(rethinkDatabase == null)
+        if (rethinkDatabase == null)
             rethinkDatabase = new RethinkDatabase();
     }
 

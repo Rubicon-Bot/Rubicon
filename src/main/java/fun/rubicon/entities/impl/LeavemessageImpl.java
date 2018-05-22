@@ -1,14 +1,12 @@
 package fun.rubicon.entities.impl;
 
-import fun.rubicon.entities.Joinmessage;
+import fun.rubicon.entities.Leavemessage;
 import fun.rubicon.io.db.RethinkDataset;
 import lombok.Getter;
-import lombok.ToString;
 
-@ToString
-public class JoinmessageImpl extends RethinkDataset implements Joinmessage {
+public class LeavemessageImpl extends RethinkDataset implements Leavemessage {
 
-    public static final transient String TABLE = "joinmessages";
+    public static transient String TABLE = "leavemessages";
 
     @Getter
     private String id;
@@ -17,17 +15,18 @@ public class JoinmessageImpl extends RethinkDataset implements Joinmessage {
     @Getter
     private String message;
 
-    public JoinmessageImpl(String guildId, String channelId, String message) {
+    public LeavemessageImpl() {
         super(TABLE);
-        this.id = guildId;
+    }
+
+    public LeavemessageImpl(String guildId, String channelId, String message) {
+        super(TABLE);
         this.channelId = channelId;
+        this.id = guildId;
         this.message = message;
         saveData();
     }
 
-    public JoinmessageImpl() {
-        super(TABLE);
-    }
 
     @Override
     public void setChannelId(String channelId) {
@@ -42,12 +41,12 @@ public class JoinmessageImpl extends RethinkDataset implements Joinmessage {
     }
 
     @Override
-    public void delete() {
-        deleteData();
+    public String getId() {
+        return id;
     }
 
     @Override
-    public String getId() {
-        return id;
+    public void delete() {
+        deleteData();
     }
 }

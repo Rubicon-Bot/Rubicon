@@ -22,6 +22,7 @@ public class ConfigSetup {
         InputStreamReader isr = new InputStreamReader(System.in);
         sys_in = new BufferedReader(isr);
     }
+
     public static String prompt(String req) {
         String token;
 

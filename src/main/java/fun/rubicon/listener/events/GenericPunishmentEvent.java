@@ -10,7 +10,7 @@ import net.dv8tion.jda.core.entities.User;
  * @author Schlaubi / Michael Rittmeister
  */
 @Deprecated
-public class GenericPunishmentEvent extends GenericRubiconGuildEvent{
+public class GenericPunishmentEvent extends GenericRubiconGuildEvent {
 
     private Member member;
     private PunishmentType type;
@@ -27,7 +27,7 @@ public class GenericPunishmentEvent extends GenericRubiconGuildEvent{
         return member;
     }
 
-    public User getUser(){
+    public User getUser() {
         return member.getUser();
     }
 

@@ -113,7 +113,7 @@ public class Config {
     }
 
     public void setDefault(String key, List<?> value) {
-        if(has(key))
+        if (has(key))
             return;
         jsonObject.put(key, value);
         writeConfig();

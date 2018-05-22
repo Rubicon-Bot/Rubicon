@@ -60,9 +60,9 @@ public class PermissionManager extends RethinkHelper {
      */
     public boolean hasPermission(PermissionTarget target, Permission permission, boolean ignoreNegation) {
         List<Permission> permissions = getPermissions(target);
-        if(target.getUser() != null && target.getGuild() != null) {
+        if (target.getUser() != null && target.getGuild() != null) {
             Member member = target.getGuild().getMember(target.getUser());
-            if(member.isOwner() || member.hasPermission(net.dv8tion.jda.core.Permission.ADMINISTRATOR))
+            if (member.isOwner() || member.hasPermission(net.dv8tion.jda.core.Permission.ADMINISTRATOR))
                 return true;
         }
         if (permissions.contains(permission))

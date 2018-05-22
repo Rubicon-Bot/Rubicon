@@ -11,9 +11,9 @@ import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.impl.RubiconUserImpl;
 import fun.rubicon.core.translation.TranslationUtil;
+import fun.rubicon.io.deprecated_rethink.Rethink;
 import fun.rubicon.listener.events.PunishmentEvent;
 import fun.rubicon.listener.events.UnpunishEvent;
-import fun.rubicon.io.deprecated_rethink.Rethink;
 import fun.rubicon.util.StringUtil;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
@@ -25,6 +25,7 @@ import java.util.*;
 /**
  * @author Yannick Seeger / ForYaSee, Michael Rittmeister / Schlaubi
  */
+@Deprecated
 public class RubiconMember extends RubiconUserImpl {
 
     private Member member;

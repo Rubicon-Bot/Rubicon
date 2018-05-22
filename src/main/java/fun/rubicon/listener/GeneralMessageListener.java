@@ -11,8 +11,6 @@ import net.dv8tion.jda.core.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-import java.util.Date;
-
 /**
  * @author Leon Kappes / Lee
  * @copyright RubiconBot Dev Team 2018
@@ -21,6 +19,8 @@ import java.util.Date;
 public class GeneralMessageListener extends ListenerAdapter {
 
     public void onMessageReceived(MessageReceivedEvent event) {
+        if (event.getAuthor().isFake() || event.getAuthor().isBot() || event.isWebhookMessage())
+            return;
         User user = UserProvider.getUserById(event.getAuthor().getIdLong());
         Guild guild = GuildProvider.getGuildById(event.getGuild().getIdLong());
         guild.setPrefix("!!!");

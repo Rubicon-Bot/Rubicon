@@ -60,18 +60,18 @@ public class ClusterImpl implements Cluster, Runnable {
 
     @Override
     public synchronized void shutdown() {
-        if(!isRunning)
+        if (!isRunning)
             return;
         isRunning = false;
 
-        for(ClusterClient clusterClient : hostSockets) {
+        for (ClusterClient clusterClient : hostSockets) {
             clusterClient.close();
         }
     }
 
     @Override
     public synchronized void start() {
-        if(isRunning)
+        if (isRunning)
             return;
         isRunning = true;
         serverThread.start();

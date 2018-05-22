@@ -9,7 +9,6 @@ import com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceM
 import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import fun.rubicon.RubiconBot;
-import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.util.Logger;
 import lavalink.client.io.Lavalink;
 import lavalink.client.io.Link;

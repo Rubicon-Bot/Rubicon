@@ -127,7 +127,7 @@ public class UserImpl extends RethinkDataset implements User {
     }
 
     @Override
-    public void delete() {
+    public void deleteUser() {
         deleteData();
     }
 
