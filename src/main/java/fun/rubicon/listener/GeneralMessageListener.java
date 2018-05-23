@@ -25,6 +25,13 @@ public class GeneralMessageListener extends ListenerAdapter {
         Guild guild = GuildProvider.getGuildById(event.getGuild().getIdLong());
         guild.setPrefix("!!!");
         user.setBio(event.getMessage().getContentDisplay());
+        guild.enableAutochannel(event.getGuild().getId(),"442396650825187329");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(guild.getAutochannels());
 
         new Thread(() -> CommandYouTube.handle(event), "YouTube-" + event.getMessage().getId() + "-Setup-Thread").start();
         new Thread(() -> GuildMusicPlayer.handleTrackChoose(event), "Track-chooser-" + event.getMessage().getId() + "-Thread").start();

@@ -100,6 +100,7 @@ public class RethinkDatabase {
         guild.setJoinmessage(getJoinmessage(jdaGuild.getId()));
         guild.setLeavemessage(getLeavemessage(jdaGuild.getId()));
         guild.setJoinimage(getJoinimage(jdaGuild.getId()));
+        guild.setAutochannel(getAutochannel(jdaGuild.getId()));
         //Save Guild in Cache
         GuildProvider.addGuild(guild);
         return guild;
@@ -133,6 +134,16 @@ public class RethinkDatabase {
         if (joinImage == null)
             return null;
         return joinImage;
+    }
+
+    public Autochannel getAutochannel(String guildId){
+        Map map = r.table(AutochannelImpl.TABLE).get(guildId).run(getConnection());
+        Gson gson = new Gson();
+        JsonElement json = gson.toJsonTree(map);
+        AutochannelImpl autochannel = gson.fromJson(json, AutochannelImpl.class);
+        if (autochannel == null)
+            return null;
+        return autochannel;
     }
 
     //TODO Implement Database things

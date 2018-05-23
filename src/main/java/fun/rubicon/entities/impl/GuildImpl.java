@@ -1,9 +1,7 @@
 package fun.rubicon.entities.impl;
 
+import fun.rubicon.entities.*;
 import fun.rubicon.entities.Guild;
-import fun.rubicon.entities.Joinimage;
-import fun.rubicon.entities.Joinmessage;
-import fun.rubicon.entities.Leavemessage;
 import fun.rubicon.io.db.RethinkDataset;
 import lombok.Getter;
 import lombok.ToString;
@@ -11,6 +9,8 @@ import net.dv8tion.jda.client.requests.restaction.pagination.MentionPaginationAc
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.Region;
 import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.managers.AudioManager;
 import net.dv8tion.jda.core.managers.GuildController;
 import net.dv8tion.jda.core.managers.GuildManager;
@@ -42,6 +42,7 @@ public class GuildImpl extends RethinkDataset implements Guild {
     private transient Leavemessage leavemessage;
     @Getter
     private transient Joinimage joinimage;
+    private transient Autochannel autochannel;
     private String id;
     @Getter
     private String prefix;
@@ -182,7 +183,7 @@ public class GuildImpl extends RethinkDataset implements Guild {
 
     @Override
     public boolean isRank(Role role) {
-        return false;
+        return getRankIds().contains(role.getId());
     }
 
     @Override
@@ -240,8 +241,39 @@ public class GuildImpl extends RethinkDataset implements Guild {
         return rank;
     }
 
-    //Portal
+    //Autochannel
+    @Override
+    public List<String> getAutochannels() {
+        return autochannel.getAutoChannels();
+    }
 
+    @Override
+    public void setAutochannel(Autochannel autochannel) {
+        this.autochannel = autochannel;
+    }
+
+    @Override
+    public void enableAutochannel(String guildId, List<String> channels) {
+        this.autochannel = new AutochannelImpl(guildId,channels);
+    }
+
+    @Override
+    public void enableAutochannel(String guildId, String channelId) {
+        this.autochannel = new AutochannelImpl(guildId,channelId);
+    }
+
+    @Override
+    public boolean isAutochannel(String channelId) {
+        return getAutochannels().contains(channelId);
+    }
+
+    @Override
+    public void disableAutochannel() {
+        if (autochannel == null)
+            return;
+        autochannel.delete();
+        autochannel = null;
+    }
 
     //ID
     @Override

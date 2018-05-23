@@ -74,8 +74,24 @@ public interface Guild extends net.dv8tion.jda.core.entities.Guild {
 
     List<String> getRankIds();
 
+    //Autochannels
+
+    List<String> getAutochannels();
+
+    void setAutochannel(Autochannel autochannel);
+
+    boolean isAutochannel(String channelId);
+
+    void disableAutochannel();
+
+    void enableAutochannel(String guildId, List<String> channels);
+
+    void enableAutochannel(String guildId, String channelId);
+
+
+
     //Portal
 
-    // TODO: 5/22/18 Add Autochannels i am too dumb, LG Lee
+    // TODO: 5/22/18 Add Autochannels i am too dumb, LG Lee EDIT: I finished it yeah not dumb anymore
 
 }
