@@ -16,9 +16,7 @@ import fun.rubicon.commands.moderation.*;
 import fun.rubicon.commands.music.*;
 import fun.rubicon.commands.settings.*;
 import fun.rubicon.commands.tools.*;
-import fun.rubicon.core.EventManager;
 import fun.rubicon.core.GameAnimator;
-import fun.rubicon.core.ListenerAdapter;
 import fun.rubicon.core.music.GuildMusicPlayerManager;
 import fun.rubicon.core.music.LavalinkManager;
 import fun.rubicon.core.translation.TranslationManager;
@@ -91,7 +89,6 @@ public class RubiconBot {
     private static LavalinkManager lavalinkManager;
     @Deprecated
     private IEventManager iEventManager;
-    private EventManager eventManager;
     private static final String[] CONFIG_KEYS = {
             "shard_count",
             "shard_id",
@@ -146,7 +143,6 @@ public class RubiconBot {
 
         //Initialise Config and Database
         Data.init();
-        eventManager = new EventManager();
 
         //OLD
         Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, "rubicon_logs/");
@@ -318,22 +314,6 @@ public class RubiconBot {
      */
     public void shutdown() {
         Data.db().closePool();
-    }
-
-    public void addListenerAdapter(ListenerAdapter listenerAdapter) {
-        eventManager.addListenerAdapters(listenerAdapter);
-    }
-
-    public void addListenerAdapters(ListenerAdapter... listenerAdapters) {
-        eventManager.addListenerAdapters(listenerAdapters);
-    }
-
-    public void removeListenerAdapter(ListenerAdapter listenerAdapter) {
-        eventManager.removeListenerAdapter(listenerAdapter);
-    }
-
-    public EventManager getEventManager() {
-        return eventManager;
     }
 
     public static RubiconBot getInstance() {
