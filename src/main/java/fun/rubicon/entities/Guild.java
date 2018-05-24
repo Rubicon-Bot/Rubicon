@@ -1,6 +1,7 @@
 package fun.rubicon.entities;
 
 import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.util.List;
 
@@ -76,6 +77,8 @@ public interface Guild extends net.dv8tion.jda.core.entities.Guild {
 
     //Autochannels
 
+    Autochannel getAutochannel();
+
     List<String> getAutochannels();
 
     void setAutochannel(Autochannel autochannel);
@@ -88,9 +91,48 @@ public interface Guild extends net.dv8tion.jda.core.entities.Guild {
 
     void enableAutochannel(String guildId, String channelId);
 
+    //Mutes
 
+    Role getMutedRole();
 
     //Portal
+    boolean hasPortal();
+
+    void setPortal(String rootGuildId);
+
+    String getPortal();
+
+    void closePortal();
+
+    //Portal Settings
+    PortalSettings getPortalSettings();
+
+    void setPortalSettings(PortalSettings portalSettings);
+
+    boolean hasPortalEmbedsEnables();
+
+    boolean allowsPortalInvites();
+
+    void deletePortalSettings();
+
+    void setPortalInvites(boolean state);
+
+    void setPortalEmbeds(boolean state);
+
+    //Verification Settings
+    void setVerificationSettings(VerificationSettings verificationSettings);
+
+    VerificationSettings getVerificationSettings();
+
+    void disableVerification();
+
+    boolean isVerificationEnabled();
+
+    TextChannel getVerificationChannel();
+
+    Role getVerificationRole();
+
+    String getVerificationKickText();
 
     // TODO: 5/22/18 Add Autochannels i am too dumb, LG Lee EDIT: I finished it yeah not dumb anymore
 

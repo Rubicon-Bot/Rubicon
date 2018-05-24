@@ -49,6 +49,12 @@ public class AutochannelImpl extends RethinkDataset implements Autochannel {
     }
 
     @Override
+    public void removeChannel(String channelId) {
+        this.channels.remove(channelId);
+        saveData();
+    }
+
+    @Override
     public List<String> getAutoChannels() {
         return channels;
     }

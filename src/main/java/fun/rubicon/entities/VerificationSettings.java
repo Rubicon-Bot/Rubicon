@@ -1,21 +1,18 @@
 package fun.rubicon.entities;
 
-import java.util.List;
-
 /**
  * @author Leon Kappes / Lee
  * @copyright RubiconBot Dev Team 2018
  * @License GPL-3.0 License <http://rubicon.fun/license>
  */
-public interface Autochannel {
+public interface VerificationSettings {
 
-    List<String> getAutoChannels();
+    String getChannelId();
 
-    void addChannel(String channelId);
+    String getKickText();
 
-    void removeChannel(String channelId);
+    String getRoleId();
 
     void delete();
-
 
 }

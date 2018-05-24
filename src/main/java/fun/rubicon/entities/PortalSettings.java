@@ -1,19 +1,19 @@
 package fun.rubicon.entities;
 
-import java.util.List;
-
 /**
  * @author Leon Kappes / Lee
  * @copyright RubiconBot Dev Team 2018
  * @License GPL-3.0 License <http://rubicon.fun/license>
  */
-public interface Autochannel {
+public interface PortalSettings {
 
-    List<String> getAutoChannels();
+    void setInvites(boolean state);
 
-    void addChannel(String channelId);
+    void setEmbeds(boolean state);
 
-    void removeChannel(String channelId);
+    boolean getInvites();
+
+    boolean getEmbeds();
 
     void delete();
 
