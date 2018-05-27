@@ -65,7 +65,7 @@ public class PermissionManager extends RethinkHelper {
             if (member.isOwner() || member.hasPermission(net.dv8tion.jda.core.Permission.ADMINISTRATOR))
                 return true;
         }
-        if (permissions.contains(permission))
+        if (permissions.contains(permission) || permissions.contains(Permission.parse("*")))
             return true;
         if (!ignoreNegation)
             return false;

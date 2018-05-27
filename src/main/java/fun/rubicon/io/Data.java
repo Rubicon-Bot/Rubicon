@@ -55,6 +55,8 @@ public class Data {
     private static void setConfigDefaults() {
         Data.cfg().setDefault("bot_token", "myToken");
         Data.cfg().setDefault("cluster_password", "myPassword");
+        Data.cfg().setDefault("cluster_host", "localhost");
+        Data.cfg().setDefault("cluster_port", 13902);
         Data.cfg().setDefault("rethinkdb_host", new ArrayList<>());
         Data.cfg().setDefault("rethinkdb_user", new ArrayList<>());
         Data.cfg().setDefault("rethinkdb_port", new ArrayList<>());

@@ -19,7 +19,7 @@ public class Info {
 
     public final static String BOT_DEFAULT_PREFIX = "rc!";
     public final static String BOT_NAME = "RubiconBot";
-    public final static String BOT_VERSION = "1.0.2";
+    public final static String BOT_VERSION = "2.0.0";
     public final static String CONFIG_FILE = "config.json";
 
     public final static long RUBICON_SERVER = 381419503164325900L;
@@ -36,7 +36,7 @@ public class Info {
     };
 
     public final static Long[] COMMUNITY_STAFF_TEAM = {
-            401817301919465482L, //Skidder
+            //401817301919465482L, //Skidder
             333220752117596160L, //BaseChip
             240797338430341120L, //Pilz
             235395943619493888L, //ls13game
