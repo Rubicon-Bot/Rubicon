@@ -36,7 +36,7 @@ public class Info {
     };
 
     public final static Long[] COMMUNITY_STAFF_TEAM = {
-            //401817301919465482L, //Skidder
+            401817301919465482L, //Skidder
             333220752117596160L, //BaseChip
             240797338430341120L, //Pilz
             235395943619493888L, //ls13game

@@ -1,5 +1,6 @@
 package fun.rubicon.io;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -46,6 +47,10 @@ public class Config {
 
     public Object getElementFromArray(String key, int index) {
         return jsonObject.getJSONArray(key).length() >= (index - 1) ? jsonObject.getJSONArray(key).get(index) : null;
+    }
+
+    public JSONArray getArray(String key) {
+        return jsonObject.getJSONArray(key);
     }
 
     public int getInt(String key) {
