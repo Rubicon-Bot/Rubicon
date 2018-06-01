@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 /**
  * @author Schlaubi
  */
+@Deprecated
 public class Configuration {
 
     private File file;

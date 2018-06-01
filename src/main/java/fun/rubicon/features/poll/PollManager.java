@@ -3,7 +3,7 @@ package fun.rubicon.features.poll;
 import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.RubiconPoll;
-import fun.rubicon.rethink.Rethink;
+import fun.rubicon.io.deprecated_rethink.Rethink;
 import net.dv8tion.jda.core.entities.Guild;
 
 import java.util.HashMap;

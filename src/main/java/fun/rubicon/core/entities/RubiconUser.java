@@ -15,6 +15,7 @@ import java.util.List;
 /**
  * @author Yannick Seeger / ForYaSee
  */
+@Deprecated
 public class RubiconUser extends RubiconUserImpl {
 
     public RubiconUser(User user, String bio, long money, long premium, String language, String afk, HashMap<String, List<String>> playlists) {

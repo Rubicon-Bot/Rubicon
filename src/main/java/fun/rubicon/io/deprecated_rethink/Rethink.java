@@ -1,17 +1,15 @@
-package fun.rubicon.rethink;
+package fun.rubicon.io.deprecated_rethink;
 
 import com.rethinkdb.RethinkDB;
 import com.rethinkdb.gen.ast.Db;
 import com.rethinkdb.net.Connection;
-import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.util.Logger;
-
-import java.util.List;
 
 /**
  * @author ForYaSee / Yannick Seeger
  */
+@Deprecated
 public class Rethink {
 
     public final RethinkDB rethinkDB;

@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 /**
  * @author Schlaubi
  */
+@Deprecated
 public class ConfigSetup {
 
     private static final BufferedReader sys_in;

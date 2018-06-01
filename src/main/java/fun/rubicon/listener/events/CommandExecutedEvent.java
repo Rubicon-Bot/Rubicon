@@ -9,7 +9,7 @@ import net.dv8tion.jda.core.entities.Message;
 /**
  * @author Schlaubi / Michael Rittmeister
  */
-
+@Deprecated
 public class CommandExecutedEvent extends GenericRubiconGuildEvent {
 
     private Message msg;
@@ -26,11 +26,11 @@ public class CommandExecutedEvent extends GenericRubiconGuildEvent {
 
     }
 
-    public Message getMessage(){
+    public Message getMessage() {
         return msg;
     }
 
-    public CommandManager.ParsedCommandInvocation getInvocation(){
+    public CommandManager.ParsedCommandInvocation getInvocation() {
         return invocation;
     }
 

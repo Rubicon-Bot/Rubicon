@@ -1,4 +1,4 @@
-package fun.rubicon.util;
+package fun.rubicon.features.portal;
 
 /**
  * @author Yannick Seeger / ForYaSee

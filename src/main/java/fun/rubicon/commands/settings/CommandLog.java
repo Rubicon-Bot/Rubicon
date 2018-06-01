@@ -17,7 +17,7 @@ import net.dv8tion.jda.core.entities.TextChannel;
 
 public class CommandLog extends CommandHandler {
     public CommandLog() {
-        super(new String[] {"log"}, CommandCategory.SETTINGS, new PermissionRequirements("logs", false, false), "Easy logging system", "channel <#channel>\n member - Join/Leave log \nrole - Role assignments\n message - Message deletions\n voice - Voice log");
+        super(new String[]{"log"}, CommandCategory.SETTINGS, new PermissionRequirements("logs", false, false), "Easy logging system WHOOO", "channel <#channel>\n member - Join/Leave log \nrole - Role assignments\n message - Message deletions\n voice - Voice log");
     }
 
     @Override
@@ -25,20 +25,20 @@ public class CommandLog extends CommandHandler {
         String[] args = invocation.getArgs();
         Message message = invocation.getMessage();
         RubiconGuild guild = RubiconGuild.fromGuild(invocation.getGuild());
-        if(args.length == 0)
+        if (args.length == 0)
             return createHelpMessage();
-        switch (args[0]){
+        switch (args[0]) {
             case "channel":
-                if(message.getMentionedChannels().isEmpty())
+                if (message.getMentionedChannels().isEmpty())
                     return message(error(invocation.translate("command.log.notc.title"), invocation.translate("command.log.notc.description")));
                 TextChannel channel = message.getMentionedChannels().get(0);
-                if(!invocation.getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE))
+                if (!invocation.getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE))
                     return message(error());
                 guild.setLogChannel(channel);
                 SafeMessage.sendMessage(invocation.getTextChannel(), message(success(invocation.translate("command.log.setchannel.title"), invocation.translate("command.log.setchannel.description"))));
                 break;
             case "member":
-                if(guild.isMemberLogEnabled()) {
+                if (guild.isMemberLogEnabled()) {
                     guild.setMemberLog(false);
                     SafeMessage.sendMessage(invocation.getTextChannel(), message(success(invocation.translate("command.log.disabled.title"), String.format(invocation.translate("command.log.disabled.description"), invocation.translate("command.log.member")))));
                 } else {
@@ -47,7 +47,7 @@ public class CommandLog extends CommandHandler {
                 }
                 break;
             case "role":
-                if(guild.isRoleLogEnabled()) {
+                if (guild.isRoleLogEnabled()) {
                     guild.setRoleLog(false);
                     SafeMessage.sendMessage(invocation.getTextChannel(), message(success(invocation.translate("command.log.disabled.title"), String.format(invocation.translate("command.log.disabled.description"), invocation.translate("command.log.role")))));
                 } else {
@@ -56,7 +56,7 @@ public class CommandLog extends CommandHandler {
                 }
                 break;
             case "message":
-                if(guild.isMessageLogEnabled()) {
+                if (guild.isMessageLogEnabled()) {
                     guild.setMessageLog(false);
                     SafeMessage.sendMessage(invocation.getTextChannel(), message(success(invocation.translate("command.log.disabled.title"), String.format(invocation.translate("command.log.disabled.description"), invocation.translate("command.log.message")))));
                 } else {
@@ -65,7 +65,7 @@ public class CommandLog extends CommandHandler {
                 }
                 break;
             case "voice":
-                if(guild.isVoiceLogEnabled()) {
+                if (guild.isVoiceLogEnabled()) {
                     guild.setVoiceLog(false);
                     SafeMessage.sendMessage(invocation.getTextChannel(), message(success(invocation.translate("command.log.disabled.title"), String.format(invocation.translate("command.log.disabled.description"), invocation.translate("command.log.voice")))));
                 } else {
@@ -75,7 +75,7 @@ public class CommandLog extends CommandHandler {
                 break;
             case "punishments":
             case "punishment":
-                if(guild.isPunishmentLogEnabled()) {
+                if (guild.isPunishmentLogEnabled()) {
                     guild.setPunishmentLog(false);
                     SafeMessage.sendMessage(invocation.getTextChannel(), message(success(invocation.translate("command.log.disabled.title"), String.format(invocation.translate("command.log.disabled.description"), invocation.translate("command.log.punishment")))));
                 } else {
@@ -85,7 +85,7 @@ public class CommandLog extends CommandHandler {
                 break;
             case "command":
             case "commands":
-                if(guild.isCommandLogEnabled()) {
+                if (guild.isCommandLogEnabled()) {
                     guild.setCommandLog(false);
                     SafeMessage.sendMessage(invocation.getTextChannel(), message(success(invocation.translate("command.log.disabled.title"), String.format(invocation.translate("command.log.disabled.description"), invocation.translate("command.log.command")))));
                 } else {

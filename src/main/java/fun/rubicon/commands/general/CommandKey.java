@@ -5,10 +5,11 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandCategory;
 import fun.rubicon.command.CommandHandler;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.core.entities.RubiconUser;
+import fun.rubicon.entities.Guild;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
+import fun.rubicon.provider.GuildProvider;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.util.Date;
@@ -61,6 +62,7 @@ public class CommandKey extends CommandHandler {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
+                            break;
                         default:
                             return createHelpMessage(invocation);
                     }
@@ -78,7 +80,10 @@ public class CommandKey extends CommandHandler {
                             RubiconBot.getRethink().db.table("keys").filter(RubiconBot.getRethink().rethinkDB.hashMap("id", invocation.getArgs()[0])).delete().run(RubiconBot.getRethink().getConnection());
                             return message(success(invocation.translate("command.key.redeem"), invocation.translate("command.key.redeem.premium")));
                         case "beta":
-                            RubiconGuild.fromGuild(invocation.getGuild()).setBeta(true);
+                            Guild guild = GuildProvider.getGuildById(invocation.getGuild().getIdLong());
+                            if (guild != null) {
+                                guild.enableBeta();
+                            }
                             RubiconBot.getRethink().db.table("keys").filter(RubiconBot.getRethink().rethinkDB.hashMap("id", invocation.getArgs()[0])).delete().run(RubiconBot.getRethink().getConnection());
                             return message(success(invocation.translate("command.key.redeem"), invocation.translate("command.key.redeem.beta")));
                         default:

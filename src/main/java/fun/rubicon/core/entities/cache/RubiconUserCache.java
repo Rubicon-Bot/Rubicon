@@ -5,7 +5,7 @@ import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.Cache;
 import fun.rubicon.core.entities.RubiconUser;
-import fun.rubicon.rethink.Rethink;
+import fun.rubicon.io.deprecated_rethink.Rethink;
 import net.dv8tion.jda.core.entities.User;
 
 import java.util.HashMap;
@@ -14,6 +14,7 @@ import java.util.List;
 /**
  * @author ForYaSee / Yannick Seeger
  */
+@Deprecated
 public class RubiconUserCache extends Cache {
 
     public Rethink rethink;

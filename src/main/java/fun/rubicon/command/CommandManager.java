@@ -11,9 +11,9 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.core.entities.RubiconMember;
 import fun.rubicon.core.entities.RubiconUser;
+import fun.rubicon.io.deprecated_rethink.Rethink;
 import fun.rubicon.listener.events.CommandExecutedEvent;
 import fun.rubicon.permission.UserPermissions;
-import fun.rubicon.rethink.Rethink;
 import fun.rubicon.util.Info;
 import fun.rubicon.util.Logger;
 import fun.rubicon.util.SafeMessage;
@@ -75,7 +75,7 @@ public class CommandManager extends ListenerAdapter {
             Rethink.reanimate();
             return;
         }
-        //Check Database Entries
+        //Check RethinkDatabase Entries
         if (event.getChannelType().isGuild()) {
             RubiconGuild.fromGuild(event.getGuild());
             RubiconMember.fromMember(event.getMember());
@@ -116,8 +116,8 @@ public class CommandManager extends ListenerAdapter {
             }
         }
 
-        //Call event
-        RubiconBot.getEventManager().handle(new CommandExecutedEvent(parsedCommandInvocation.getJDA(), 200, parsedCommandInvocation.getMessage(), parsedCommandInvocation, commandHandler));
+        //Call events
+        RubiconBot.getDEventManager().handle(new CommandExecutedEvent(parsedCommandInvocation.getJDA(), 200, parsedCommandInvocation.getMessage(), parsedCommandInvocation, commandHandler));
 
     }
 

@@ -19,7 +19,7 @@ public class BotLeaveListener extends ListenerAdapter {
 
     public void onGuildLeave(GuildLeaveEvent event) {
         RubiconGuild rubiconGuild = RubiconGuild.fromGuild(event.getGuild());
-        //Database Deletes
+        //RethinkDatabase Deletes
         rubiconGuild.delete();
         rubiconGuild.deleteJoinMessage();
         rubiconGuild.deleteLeaveMessage();

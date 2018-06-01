@@ -30,7 +30,7 @@ public class CommandAFK extends CommandHandler {
         if (invocation.getArgs().length == 0) {
             RubiconUser rubiconUser = RubiconUser.fromUser(invocation.getAuthor());
 
-            return message(info(invocation.translate("command.afk.current"), (rubiconUser.getAFKState()).equals("") ? invocation.translate("command.afk.disable.error.title") : rubiconUser.getAFKState()).setFooter(invocation.getAuthor().getName(),invocation.getAuthor().getEffectiveAvatarUrl()));
+            return message(info(invocation.translate("command.afk.current"), (rubiconUser.getAFKState()).equals("") ? invocation.translate("command.afk.disable.error.title") : rubiconUser.getAFKState()).setFooter(invocation.getAuthor().getName(), invocation.getAuthor().getEffectiveAvatarUrl()));
         } else if (invocation.getArgs().length == 1) {
             if (invocation.getArgs()[0].equalsIgnoreCase("disable")) {
                 return disable(invocation);

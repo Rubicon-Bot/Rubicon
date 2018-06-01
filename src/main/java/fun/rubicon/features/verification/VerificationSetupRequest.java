@@ -3,7 +3,7 @@ package fun.rubicon.features.verification;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.core.translation.TranslationUtil;
-import fun.rubicon.rethink.Rethink;
+import fun.rubicon.io.deprecated_rethink.Rethink;
 import fun.rubicon.setup.ReactionSetupRequest;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.SafeMessage;

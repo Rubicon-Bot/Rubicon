@@ -4,7 +4,7 @@ import com.rethinkdb.gen.ast.Table;
 import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.features.portal.impl.PortalInviteImpl;
-import fun.rubicon.rethink.Rethink;
+import fun.rubicon.io.deprecated_rethink.Rethink;
 
 import java.util.ArrayList;
 import java.util.HashMap;

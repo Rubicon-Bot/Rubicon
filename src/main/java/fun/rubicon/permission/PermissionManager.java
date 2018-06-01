@@ -9,9 +9,8 @@ package fun.rubicon.permission;
 import com.rethinkdb.gen.ast.Table;
 import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
-import fun.rubicon.rethink.Rethink;
-import fun.rubicon.rethink.RethinkHelper;
-import fun.rubicon.util.Logger;
+import fun.rubicon.io.deprecated_rethink.Rethink;
+import fun.rubicon.io.deprecated_rethink.RethinkHelper;
 import net.dv8tion.jda.core.entities.Member;
 
 import java.sql.SQLException;
@@ -61,12 +60,12 @@ public class PermissionManager extends RethinkHelper {
      */
     public boolean hasPermission(PermissionTarget target, Permission permission, boolean ignoreNegation) {
         List<Permission> permissions = getPermissions(target);
-        if(target.getUser() != null && target.getGuild() != null) {
+        if (target.getUser() != null && target.getGuild() != null) {
             Member member = target.getGuild().getMember(target.getUser());
-            if(member.isOwner() || member.hasPermission(net.dv8tion.jda.core.Permission.ADMINISTRATOR))
+            if (member.isOwner() || member.hasPermission(net.dv8tion.jda.core.Permission.ADMINISTRATOR))
                 return true;
         }
-        if (permissions.contains(permission))
+        if (permissions.contains(permission) || permissions.contains(Permission.parse("*")))
             return true;
         if (!ignoreNegation)
             return false;
@@ -117,7 +116,7 @@ public class PermissionManager extends RethinkHelper {
         if (getPermissions(target).size() == 0) {
             table.filter(rethink.rethinkDB.hashMap("guildId", target.getGuild().getId())
                     .with("type", String.valueOf(target.getType().getIdentifier()))
-                    .with("id", String.valueOf(target.getId()))).delete().run(rethink.getConnection());//TODO Do this better
+                    .with("id", String.valueOf(target.getId()))).delete().run(rethink.getConnection());
             table.insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("guildId", target.getGuild().getId())
                     .with("type", String.valueOf(target.getType().getIdentifier()))
                     .with("id", String.valueOf(target.getId()))

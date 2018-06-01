@@ -5,7 +5,7 @@ import com.rethinkdb.gen.ast.Table;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.RubiconGuild;
 import fun.rubicon.features.portal.Portal;
-import fun.rubicon.rethink.Rethink;
+import fun.rubicon.io.deprecated_rethink.Rethink;
 import fun.rubicon.util.Colors;
 import fun.rubicon.util.EmbedUtil;
 import fun.rubicon.util.SafeMessage;

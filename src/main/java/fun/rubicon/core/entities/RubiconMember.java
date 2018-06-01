@@ -11,9 +11,9 @@ import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.impl.RubiconUserImpl;
 import fun.rubicon.core.translation.TranslationUtil;
+import fun.rubicon.io.deprecated_rethink.Rethink;
 import fun.rubicon.listener.events.PunishmentEvent;
 import fun.rubicon.listener.events.UnpunishEvent;
-import fun.rubicon.rethink.Rethink;
 import fun.rubicon.util.StringUtil;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
@@ -25,6 +25,7 @@ import java.util.*;
 /**
  * @author Yannick Seeger / ForYaSee, Michael Rittmeister / Schlaubi
  */
+@Deprecated
 public class RubiconMember extends RubiconUserImpl {
 
     private Member member;
@@ -72,7 +73,7 @@ public class RubiconMember extends RubiconUserImpl {
         Role muted = RubiconGuild.fromGuild(guild).getMutedRole();
         guild.getController().addSingleRoleToMember(member, muted).queue();
         RubiconBot.getPunishmentManager().getMuteCache().put(member, 0L);
-        RubiconBot.getEventManager().handle(new PunishmentEvent(guild.getJDA(), 200, guild, member, mod, PunishmentType.MUTE, 0L));
+        RubiconBot.getDEventManager().handle(new PunishmentEvent(guild.getJDA(), 200, guild, member, mod, PunishmentType.MUTE, 0L));
         return this;
     }
 
@@ -88,7 +89,7 @@ public class RubiconMember extends RubiconUserImpl {
         Role muted = RubiconGuild.fromGuild(guild).getMutedRole();
         guild.getController().addSingleRoleToMember(member, muted).queue();
         RubiconBot.getPunishmentManager().getMuteCache().put(member, date.getTime());
-        RubiconBot.getEventManager().handle(new PunishmentEvent(guild.getJDA(), 200, guild, member, mod, PunishmentType.MUTE, date.getTime()));
+        RubiconBot.getDEventManager().handle(new PunishmentEvent(guild.getJDA(), 200, guild, member, mod, PunishmentType.MUTE, date.getTime()));
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
@@ -106,7 +107,7 @@ public class RubiconMember extends RubiconUserImpl {
             guild.getController().removeSingleRoleFromMember(member, muted).queue();
         }
         RubiconBot.getPunishmentManager().getMuteCache().remove(member);
-        RubiconBot.getEventManager().handle(new UnpunishEvent(guild.getJDA(), 200, guild, member, PunishmentType.MUTE));
+        RubiconBot.getDEventManager().handle(new UnpunishEvent(guild.getJDA(), 200, guild, member, PunishmentType.MUTE));
         return this;
     }
 
@@ -134,7 +135,7 @@ public class RubiconMember extends RubiconUserImpl {
             }, expiry);
         } else
             guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: Unable to ban user `" + user.getName() + "`! Please give Rubicon `BAN_MEMBERS` permission in order to use ban command").queue();
-        RubiconBot.getEventManager().handle(new PunishmentEvent(guild.getJDA(), 200, guild, member, mod, PunishmentType.BAN, expiry.getTime()));
+        RubiconBot.getDEventManager().handle(new PunishmentEvent(guild.getJDA(), 200, guild, member, mod, PunishmentType.BAN, expiry.getTime()));
         return this;
     }
 
@@ -150,7 +151,7 @@ public class RubiconMember extends RubiconUserImpl {
             guild.getController().ban(user, 7).queue();
         } else
             guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: Unable to ban user `" + user.getName() + "`! Please give Rubicon `BAN_MEMBERS` permission in order to use ban command").queue();
-        RubiconBot.getEventManager().handle(new PunishmentEvent(guild.getJDA(), 200, guild, member, mod, PunishmentType.BAN, 0L));
+        RubiconBot.getDEventManager().handle(new PunishmentEvent(guild.getJDA(), 200, guild, member, mod, PunishmentType.BAN, 0L));
         return this;
     }
 
@@ -247,7 +248,6 @@ public class RubiconMember extends RubiconUserImpl {
                 unmute(true, guild.getSelfMember());
                 break;
         }
-
     }
 
     private boolean punishmentExists(int warnCount) {
@@ -271,7 +271,7 @@ public class RubiconMember extends RubiconUserImpl {
         return TranslationUtil.translate(user, key);
     }
 
-    public RubiconGuild getRubiconGuild(){
+    public RubiconGuild getRubiconGuild() {
         return RubiconGuild.fromGuild(guild);
     }
 

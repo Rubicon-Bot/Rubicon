@@ -7,47 +7,23 @@
 package fun.rubicon;
 
 import com.sedmelluq.discord.lavaplayer.tools.PlayerLibrary;
-import de.foryasee.httprequest.HttpRequestBuilder;
-import de.foryasee.httprequest.RequestHeader;
-import de.foryasee.httprequest.RequestResponse;
-import de.foryasee.httprequest.RequestType;
+import fun.rubicon.cluster.ClusterClient;
+import fun.rubicon.cluster.command.ClusterCommandManager;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.commands.admin.CommandPortal;
-import fun.rubicon.commands.botowner.*;
-import fun.rubicon.commands.fun.*;
-import fun.rubicon.commands.general.*;
-import fun.rubicon.commands.moderation.*;
-import fun.rubicon.commands.music.*;
-import fun.rubicon.commands.settings.*;
-import fun.rubicon.commands.tools.*;
+import fun.rubicon.registries.CommandRegistry;
 import fun.rubicon.core.GameAnimator;
 import fun.rubicon.core.music.GuildMusicPlayerManager;
 import fun.rubicon.core.music.LavalinkManager;
 import fun.rubicon.core.translation.TranslationManager;
 import fun.rubicon.features.poll.PollManager;
 import fun.rubicon.features.poll.PunishmentManager;
-import fun.rubicon.features.portal.PortalMessageListener;
-import fun.rubicon.features.verification.VerificationCommandHandler;
 import fun.rubicon.features.verification.VerificationLoader;
-import fun.rubicon.listener.AutochannelListener;
-import fun.rubicon.listener.GeneralMessageListener;
-import fun.rubicon.listener.GeneralReactionListener;
-import fun.rubicon.listener.UserMentionListener;
-import fun.rubicon.listener.bot.*;
-import fun.rubicon.listener.channel.TextChannelDeleteListener;
-import fun.rubicon.listener.channel.VoiceChannelDeleteListener;
+import fun.rubicon.io.Data;
+import fun.rubicon.io.deprecated_rethink.Rethink;
+import fun.rubicon.io.deprecated_rethink.RethinkUtil;
 import fun.rubicon.listener.events.RubiconEventManager;
-import fun.rubicon.listener.feature.LogListener;
-import fun.rubicon.listener.feature.PunishmentListener;
-import fun.rubicon.listener.feature.VerificationListener;
-import fun.rubicon.listener.feature.VoteListener;
-import fun.rubicon.listener.member.MemberJoinListener;
-import fun.rubicon.listener.member.MemberLeaveListener;
-import fun.rubicon.listener.role.RoleDeleteListener;
 import fun.rubicon.permission.PermissionManager;
-import fun.rubicon.rethink.Rethink;
-import fun.rubicon.rethink.RethinkUtil;
-import fun.rubicon.setup.SetupListener;
+import fun.rubicon.registries.EventRegistry;
 import fun.rubicon.setup.SetupManager;
 import fun.rubicon.util.*;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
@@ -58,11 +34,10 @@ import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.hooks.IEventManager;
-import org.json.JSONObject;
+import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -76,14 +51,17 @@ import java.util.stream.Collectors;
 public class RubiconBot {
 
     private static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss");
-    private static final String[] CONFIG_KEYS = {"shard_count", "shard_id", "log_webhook", "token", "playingStatus", "dbl_token", "discord_pw_token", "gif_token", "google_token", "rethink_host", "rethink_port", "rethink_db", "rethink_user", "rethink_password", "rethink_host2", "rethink_port2", "rethink_host3", "rethink_port3", "fortnite_key", "supporthook", "rubiconfun_token"};
+    private static LavalinkManager lavalinkManager;
     private static RubiconBot instance;
-    private final Configuration configuration;
     private static Rethink rethink;
+    private final Configuration configuration;
     private final GameAnimator gameAnimator;
     private final CommandManager commandManager;
     private final PermissionManager permissionManager;
     private final TranslationManager translationManager;
+    private final ClusterClient clusterClient;
+    private final ClusterCommandManager clusterCommandManager;
+    private final org.slf4j.Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     private PunishmentManager punishmentManager;
     private PollManager pollManager;
     private GuildMusicPlayerManager guildMusicPlayerManager;
@@ -92,33 +70,45 @@ public class RubiconBot {
     private BitlyAPI bitlyAPI;
     private VerificationLoader verificationLoader;
     private SetupManager setupManager;
-    private static LavalinkManager lavalinkManager;
-    private IEventManager eventManager;
+    private IEventManager iEventManager;
+    private static final String[] CONFIG_KEYS = {
+            "shard_count",
+            "shard_id",
+            "log_webhook",
+            "token",
+            "playingStatus",
+            "dbl_token",
+            "discord_pw_token",
+            "gif_token",
+            "google_token",
+            "rethink_host",
+            "rethink_port",
+            "rethink_db",
+            "rethink_user",
+            "rethink_password",
+            "rethink_host2",
+            "rethink_port2",
+            "rethink_host3",
+            "rethink_port3",
+            "fortnite_key",
+            "supporthook",
+            "rubiconfun_token"
+    };
 
     /**
      * Constructs the RubiconBot.
      */
-    private RubiconBot() {
+    public RubiconBot(ClusterClient clusterClient, ClusterCommandManager clusterCommandManager) {
+        this.clusterClient = clusterClient;
+        this.clusterCommandManager = clusterCommandManager;
+
+        //System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
         instance = this;
-        System.out.println(
-                " ______        _     _                  \n" +
-                        "(_____ \\      | |   (_)                 \n" +
-                        " _____) )_   _| |__  _  ____ ___  ____  \n" +
-                        "|  __  /| | | |  _ \\| |/ ___) _ \\|  _ \\ \n" +
-                        "| |  \\ \\| |_| | |_) ) ( (__| |_| | | | |\n" +
-                        "|_|   |_|____/|____/|_|\\____)___/|_| |_|\n" +
-                        "                                        \n"
-        );
-        System.out.println("Version: " + Info.BOT_VERSION);
-        System.out.println("Operating System: " + System.getProperty("os.name") + " (" + System.getProperty("os.arch") + ") version " + System.getProperty("os.version"));
-        System.out.println("Java Version: " + System.getProperty("java.version") + ", " + System.getProperty("java.vendor"));
-        System.out.println("Java VM Version: " + System.getProperty("java.vm.name") + " (" + System.getProperty("java.vm.info") + "), " + System.getProperty("java.vm.vendor"));
-        System.out.println("JDA: " + JDAInfo.VERSION);
-        System.out.println("Lavaplayer: " + PlayerLibrary.VERSION);
-        System.out.println("\n");
         new File("rubicon_logs").mkdirs();
         new File("data/").mkdirs();
         new File("data/bot/settings").mkdirs();
+
+        //OLD
         Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, "rubicon_logs/");
 
         //Init config
@@ -132,9 +122,10 @@ public class RubiconBot {
         //Deactivate Beta if not active
         if (!configuration.has("beta"))
             configuration.set("beta", 0);
-        Logger.enableWebhooks(configuration.getString("log_webhook"));
         connectRethink();
+        logger.info("4");
         RethinkUtil.createDefaults(rethink);
+        logger.info("3");
 
         //Init punishments
         punishmentManager = new PunishmentManager();
@@ -143,11 +134,15 @@ public class RubiconBot {
         lavalinkManager = new LavalinkManager();
         pollManager = new PollManager();
         guildMusicPlayerManager = new GuildMusicPlayerManager();
-        registerCommands();
+        logger.info("0");
+        CommandRegistry commandRegistry = new CommandRegistry(commandManager, punishmentManager);
+        logger.info("1");
+        commandRegistry.register();
+        logger.info("2");
         permissionManager = new PermissionManager();
         translationManager = new TranslationManager();
         gameAnimator = new GameAnimator();
-        eventManager = new RubiconEventManager();
+        iEventManager = new RubiconEventManager();
         //Init url shorter API
         bitlyAPI = new BitlyAPI(configuration.getString("bitly_token"));
         verificationLoader = new VerificationLoader();
@@ -163,141 +158,30 @@ public class RubiconBot {
         Logger.info("Started!");
     }
 
-    private void registerCommands() {
-        //Bot Owner
-        commandManager.registerCommandHandlers(
-                new CommandEval(),
-                new CommandBotstatus(),
-                new CommandBotplay(),
-                new CommandDisco(),
-                new CommandTest(),
-                new CommandBeta()
-        );
-
-        //Admin
-        commandManager.registerCommandHandlers(
-                new CommandPortal()
-        );
-
-        // Settings
-        commandManager.registerCommandHandlers(
-                new CommandJoinMessage(),
-                new CommandLeaveMessage(),
-                new CommandAutochannel(),
-                new CommandJoinImage(),
-                new CommandAutorole(),
-                new CommandRanks(),
-                new CommandLog()
-        );
-
-        // Fun
-        commandManager.registerCommandHandlers(
-                new CommandRandom(),
-                new CommandLmgtfy(),
-                new CommandAscii(),
-                new CommandGiphy(),
-                new CommandRip(),
-                new CommandMedal(),
-                new CommandRoadSign(),
-                new CommandWeddingSign(),
-                new CommandDice(),
-                new CommandQR(),
-                new CommandFortnite(),
-                new CommandOverwatch(),
-                new CommandMinecraft(),
-                new CommandRainbow()
-        );
-
-        //General
-        commandManager.registerCommandHandlers(
-                new CommandHelp(),
-                new CommandInfo(),
-                new CommandAFK(),
-                new CommandPrefix(),
-                new CommandBio(),
-                new CommandInvite(),
-                new CommandSay(),
-                new CommandUptime(),
-                new CommandUserinfo(),
-                new CommandMoney(),
-                new CommandStatistics(),
-                new CommandYTSearch(),
-                new CommandPremium(),
-                new CommandKey(),
-                new CommandPing(),
-                new CommandPermissionCheck(),
-                new CommandProfile(),
-                new CommandSupport(),
-                new CommandBug()
-        );
-
-        //Moderation
-        commandManager.registerCommandHandlers(
-                new CommandUnmute(),
-                new CommandUnban(),
-                new CommandMoveall(),
-                new CommandWarn(),
-                new CommandClear()
-        );
-
-        //Punishments
-        punishmentManager.registerPunishmentHandlers(
-                new CommandMute(),
-                new CommandBan()
-        );
-
-        //Tools
-        commandManager.registerCommandHandlers(
-                new CommandPoll(),
-                new CommandShort(),
-                new CommandYouTube(),
-                new CommandNick(),
-                new VerificationCommandHandler(),
-                new CommandChoose(),
-                new fun.rubicon.commands.tools.CommandSearch(),
-                new CommandServerInfo(),
-                new CommandRemindMe(),
-                new CommandLeet(),
-                new CommandGiveaway()
-        );
-
-        //Music
-        commandManager.registerCommandHandlers(
-                new CommandJoin(),
-                new CommandLeave(),
-                new CommandPlay(),
-                new CommandForcePlay(),
-                new CommandVolume(),
-                new CommandSkip(),
-                new CommandClearQueue(),
-                new CommandQueue(),
-                new CommandStop(),
-                new CommandPause(),
-                new CommandResume(),
-                new CommandShuffle(),
-                new CommandNow(),
-                new CommandPlaylist()
-        );
-
-        //RPG
-        commandManager.registerCommandHandlers(
-        );
+    /**
+     * Call all necessary shutdown methods
+     */
+    public void shutdown() {
+        Data.db().closePool();
+        shardManager.shutdown();
     }
 
-    /**
-     * Initialises the bot.
-     *
-     * @param args command line parameters.
-     */
-    public static void main(String[] args) {
-        if (instance != null)
-            throw new RuntimeException("RubiconBot has already been initialized in this VM.");
-        new RubiconBot();
+    public ClusterClient getClusterClient() {
+        return clusterClient;
+    }
+
+    public ClusterCommandManager getClusterCommandManager() {
+        return clusterCommandManager;
+    }
+
+    public static RubiconBot getInstance() {
+        return instance;
     }
 
     /**
      * Initializes the JDA instance.
      */
+    @Deprecated
     private void initShardManager() {
         if (instance == null)
             throw new NullPointerException("RubiconBot has not been initialized yet.");
@@ -308,33 +192,11 @@ public class RubiconBot {
         builder.setStatus(OnlineStatus.DO_NOT_DISTURB);
         builder.setShardsTotal(Integer.parseInt(configuration.getString("shard_count")));
         builder.setShards(Integer.parseInt(configuration.getString("shard_id")));
-
-        //Register Event Listeners
-        builder.addEventListeners(
-                new BotJoinListener(),
-                new BotLeaveListener(),
-                commandManager,
-                new UserMentionListener(),
-                new ShardListener(),
-                new SelfMentionListener(),
-                new VoteListener(),
-                new MemberJoinListener(),
-                new MemberLeaveListener(),
-                new TextChannelDeleteListener(),
-                new VoiceChannelDeleteListener(),
-                new GeneralReactionListener(),
-                new AutochannelListener(),
-                new PunishmentListener(),
-                new GeneralMessageListener(),
-                new RoleDeleteListener(),
-                new LavalinkManager(),
-                new VerificationListener(),
-                new SetupListener(),
-                new PortalMessageListener(),
-                new AllShardsLoadedListener(),
-                new LogListener()
-        );
-        builder.setEventManager(eventManager);
+        EventRegistry eventRegistry = new EventRegistry(builder, commandManager);
+        logger.info("1");
+        eventRegistry.register();
+        logger.info("2");
+        builder.setEventManager(iEventManager);
         try {
             shardManager = builder.build();
         } catch (LoginException e) {
@@ -348,6 +210,7 @@ public class RubiconBot {
     /**
      * @return the {@link ShardManager} that is used in the Rubicon project
      */
+    @Deprecated
     public static ShardManager getShardManager() {
         return instance == null ? null : instance.shardManager;
     }
@@ -355,6 +218,7 @@ public class RubiconBot {
     /**
      * @return the Rubicon {@link User} instance
      */
+    @Deprecated
     public static User getSelfUser() {
         return instance == null ? null : instance.shardManager.getApplicationInfo().getJDA().getSelfUser();
     }
@@ -362,14 +226,17 @@ public class RubiconBot {
     /**
      * @return the bot configuration.
      */
+    @Deprecated
     public static Configuration getConfiguration() {
         return instance == null ? null : instance.configuration;
     }
 
+    @Deprecated
     public static CommandManager getCommandManager() {
         return instance == null ? null : instance.commandManager;
     }
 
+    @Deprecated
     public PermissionManager getPermissionManager() {
         return instance.permissionManager;
     }
@@ -377,6 +244,7 @@ public class RubiconBot {
     /**
      * @return the {@link PermissionManager} via a static reference.
      */
+    @Deprecated
     public static PermissionManager sGetPermissionManager() {
         return instance == null ? null : instance.permissionManager;
     }
@@ -384,6 +252,7 @@ public class RubiconBot {
     /**
      * @return the rubicon instance
      */
+    @Deprecated
     public static RubiconBot getRubiconBot() {
         return instance;
     }
@@ -391,6 +260,7 @@ public class RubiconBot {
     /**
      * @return a freshly generated timestamp in the 'dd.MM.yyyy HH:mm:ss' format.
      */
+    @Deprecated
     public static String getNewTimestamp() {
         return timeStampFormatter.format(new Date());
     }
@@ -399,6 +269,7 @@ public class RubiconBot {
      * @param date A Date object
      * @return a generated timestamp in the 'dd.MM.yyyy HH:mm:ss' format.
      */
+    @Deprecated
     public static String getTimestamp(Date date) {
         return timeStampFormatter.format(date);
     }
@@ -406,6 +277,7 @@ public class RubiconBot {
     /**
      * @return the translation manager.
      */
+    @Deprecated
     public TranslationManager getTranslationManager() {
         return translationManager;
     }
@@ -413,6 +285,7 @@ public class RubiconBot {
     /**
      * @return the punishment manager
      */
+    @Deprecated
     public static PunishmentManager getPunishmentManager() {
         return instance == null ? null : instance.punishmentManager;
     }
@@ -420,6 +293,7 @@ public class RubiconBot {
     /**
      * @return the translation manager via a static reference.
      */
+    @Deprecated
     public static TranslationManager sGetTranslations() {
         return instance == null ? null : instance.translationManager;
     }
@@ -427,42 +301,52 @@ public class RubiconBot {
     /**
      * @return List<Guild> of Guilds by name
      */
+    @Deprecated
     public static List<Guild> getGuildsByName(String name, boolean ignoreCase) {
         return ignoreCase ? getShardManager().getGuilds().stream().filter(guild -> guild.getName().equalsIgnoreCase(name)).collect(Collectors.toList()) : getShardManager().getGuilds().stream().filter(guild -> guild.getName().equals(name)).collect(Collectors.toList());
     }
 
+    @Deprecated
     public static boolean allShardsInitialised() {
         return instance.allShardsInitialised;
     }
 
+    @Deprecated
     public static void setAllShardsInitialised(boolean allShardsInitialised) {
         instance.allShardsInitialised = allShardsInitialised;
     }
 
+    @Deprecated
     public static GameAnimator getGameAnimator() {
         return instance.gameAnimator;
     }
 
+    @Deprecated
     public static PollManager getPollManager() {
         return instance.pollManager;
     }
 
+    @Deprecated
     public static BitlyAPI getBitlyAPI() {
         return instance.bitlyAPI;
     }
 
+    @Deprecated
     public static LavalinkManager getLavalinkManager() {
         return lavalinkManager;
     }
 
+    @Deprecated
     public static GuildMusicPlayerManager getGuildMusicPlayerManager() {
         return instance.guildMusicPlayerManager;
     }
 
+    @Deprecated
     public static Rethink getRethink() {
         return instance == null ? null : rethink;
     }
 
+    @Deprecated
     public static void connectRethink() {
         rethink = new Rethink(
                 instance.configuration.getString("rethink_host"),
@@ -474,15 +358,18 @@ public class RubiconBot {
         rethink.connect();
     }
 
+    @Deprecated
     public static VerificationLoader getVerificationLoader() {
         return instance.verificationLoader;
     }
 
+    @Deprecated
     public static SetupManager getSetupManager() {
         return instance.setupManager;
     }
 
-    public static IEventManager getEventManager(){
-        return instance.eventManager;
+    @Deprecated
+    public static IEventManager getDEventManager() {
+        return instance.iEventManager;
     }
 }

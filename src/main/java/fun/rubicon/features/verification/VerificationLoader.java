@@ -3,7 +3,7 @@ package fun.rubicon.features.verification;
 import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.RubiconGuild;
-import fun.rubicon.rethink.Rethink;
+import fun.rubicon.io.deprecated_rethink.Rethink;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -30,7 +30,7 @@ public class VerificationLoader {
                 Map map = (Map) obj;
                 Guild guild = RubiconBot.getShardManager().getGuildById((String) map.get("guildId"));
                 RubiconGuild rubiconGuild = RubiconGuild.fromGuild(guild);
-                if(rubiconGuild == null) continue;
+                if (rubiconGuild == null) continue;
                 Member member = guild.getMemberById((String) map.get("userId"));
                 if (member == null) continue;
                 try {

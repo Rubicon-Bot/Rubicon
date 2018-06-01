@@ -8,8 +8,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.command.CommandManager;
-import fun.rubicon.core.entities.YouTubeVideo;
 import fun.rubicon.core.translation.TranslationUtil;
+import fun.rubicon.entities.YouTubeVideo;
 import fun.rubicon.permission.PermissionRequirements;
 import fun.rubicon.permission.UserPermissions;
 import fun.rubicon.util.*;
@@ -33,10 +33,6 @@ import java.util.stream.Collectors;
  * @author ForYaSee / Yannick Seeger
  */
 public class GuildMusicPlayer extends MusicPlayer {
-
-    /* TODO
-     * - add silent option
-     */
 
     private static List<MusicSearchResult> musicChoose = new ArrayList<>();
 

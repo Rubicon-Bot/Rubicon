@@ -38,7 +38,7 @@ public class StringUtil {
             cal.add(Calendar.MONTH, amount);
         else if (date.contains("h"))
             cal.add(Calendar.HOUR_OF_DAY, amount);
-        else if(date.contains("s"))
+        else if (date.contains("s"))
             cal.add(Calendar.SECOND, amount);
         else
             return null;
