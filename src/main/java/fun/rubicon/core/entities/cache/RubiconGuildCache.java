@@ -25,6 +25,7 @@ public class RubiconGuildCache extends Cache {
     }
 
     public RubiconGuild getGuild(Guild guild) {
+        if(guild == null) return null;
         if (contains(guild.getId()))
             return (RubiconGuild) get(guild.getId());
         return (RubiconGuild) update(guild.getId(), retrieveGuild(guild));

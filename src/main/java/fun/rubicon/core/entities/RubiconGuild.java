@@ -448,6 +448,7 @@ public class RubiconGuild extends RubiconGuildCache {
     }
 
     private static RubiconGuild create(Guild guild) {
+        if(guild == null) return null;
         if (!exist(RubiconBot.getRethink().db.table("guilds").filter(RubiconBot.getRethink().rethinkDB.hashMap("guildId", guild.getId())).run(RubiconBot.getRethink().getConnection())))
             RubiconBot.getRethink().db.table("guilds").insert(RubiconBot.getRethink().rethinkDB.array(RubiconBot.getRethink().rethinkDB.hashMap("guildId", guild.getId()))).runNoReply(RubiconBot.getRethink().getConnection());
         return new RubiconGuild(guild, "rc!");

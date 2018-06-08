@@ -6,6 +6,7 @@ import fun.rubicon.core.entities.RubiconGiveaway;
 import fun.rubicon.core.entities.RubiconRemind;
 import fun.rubicon.listener.events.RubiconEventAdapter;
 import fun.rubicon.util.BotListHandler;
+import net.dv8tion.jda.core.managers.AccountManager;
 
 /**
  * @author Schlaubi / Michael Rittmeister
@@ -30,5 +31,6 @@ public class AllShardsLoadedListener extends RubiconEventAdapter {
         RubiconRemind.loadReminders();
         //Load all Giveaways
         RubiconGiveaway.loadGiveaways();
+
     }
 }
