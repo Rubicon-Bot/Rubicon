@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 public class VerificationListener extends ListenerAdapter {
 
-    Rethink rethink = RubiconBot.getRethink();
+    private Rethink rethink = RubiconBot.getRethink();
 
     private HashMap<Member, Message> userStorage = RubiconBot.getVerificationLoader().getUserStorage();
 
@@ -40,7 +40,7 @@ public class VerificationListener extends ListenerAdapter {
                     return;
                 }
                 event.getGuild().getController().addRolesToMember(event.getMember(), role).queue();
-                String verifiedText = ((String) getDatabaseValue(rubiconGuild.getGuild(), "verifiedText")).replace("%user%", event.getUser().getAsMention()).replace("%guild%", event.getGuild().getName());
+                String verifiedText = getDatabaseValue(rubiconGuild.getGuild(), "verifiedText").replace("%user%", event.getUser().getAsMention()).replace("%guild%", event.getGuild().getName());
                 event.getChannel().getMessageById(event.getMessageId()).complete().editMessage(verifiedText).complete().delete().queueAfter(10, TimeUnit.SECONDS);
                 rethink.db.table("verification_users").filter(rethink.rethinkDB.hashMap("guildId", event.getGuild().getId()).with("userId", event.getUser().getId())).delete().run(rethink.getConnection());
             }
@@ -52,10 +52,10 @@ public class VerificationListener extends ListenerAdapter {
         if(event.getUser().isBot()) return;
         RubiconGuild rubiconGuild = RubiconGuild.fromGuild(event.getGuild());
         if (rubiconGuild.isVerificationEnabled()) {
-            TextChannel verifyChannel = event.getGuild().getTextChannelById((String) getDatabaseValue(rubiconGuild.getGuild(), "channelId"));
+            TextChannel verifyChannel = event.getGuild().getTextChannelById(getDatabaseValue(rubiconGuild.getGuild(), "channelId"));
             if (verifyChannel == null) return;
-            String welcomeText = ((String) getDatabaseValue(rubiconGuild.getGuild(), "welcomeText")).replace("%user%", event.getUser().getAsMention()).replace("%guild%", event.getGuild().getName());
-            String emoteRaw = (String) getDatabaseValue(rubiconGuild.getGuild(), "emote");
+            String welcomeText = getDatabaseValue(rubiconGuild.getGuild(), "welcomeText").replace("%user%", event.getUser().getAsMention()).replace("%guild%", event.getGuild().getName());
+            String emoteRaw = getDatabaseValue(rubiconGuild.getGuild(), "emote");
             Message verifyMsg = SafeMessage.sendMessageBlocking(verifyChannel, welcomeText);
             Date expiry = null;
             if (isEmojiCustom(event.getGuild(), emoteRaw))
@@ -109,7 +109,7 @@ public class VerificationListener extends ListenerAdapter {
 
     private String getDatabaseValue(Guild guild, String key) {
         Cursor cursor = rethink.db.table("verification_settings").filter(rethink.rethinkDB.hashMap("guildId", guild.getId())).run(rethink.getConnection());
-        Map map = ((Map) ((Object) cursor.toList().get(0)));
+        Map map = ((Map) cursor.toList().get(0));
         return (String) map.get(key);
     }
 
