@@ -80,18 +80,18 @@ public class SafeMessage {
     }
 
     private static boolean hasEmbedPermissions(TextChannel channel) {
-        return channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_EMBED_LINKS);
+        return !channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_EMBED_LINKS);
     }
 
     private static Message send(TextChannel textChannel, Message msg) {
-        if (!hasEmbedPermissions(textChannel) && !msg.getEmbeds().isEmpty())
+        if (hasEmbedPermissions(textChannel) && !msg.getEmbeds().isEmpty())
             return textChannel.sendMessage(formatEmbed(msg.getEmbeds().get(0))).complete();
         else
             return textChannel.sendMessage(msg).complete();
     }
 
     private static Message send(TextChannel textChannel, MessageEmbed msg) {
-        if (!hasEmbedPermissions(textChannel))
+        if (hasEmbedPermissions(textChannel))
             return textChannel.sendMessage(formatEmbed(msg)).complete();
         else
             return textChannel.sendMessage(msg).complete();

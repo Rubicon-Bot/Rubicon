@@ -4,6 +4,7 @@ import fun.rubicon.RubiconBot;
 import fun.rubicon.commands.tools.CommandPoll;
 import fun.rubicon.core.entities.RubiconPoll;
 import fun.rubicon.features.poll.PollManager;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
@@ -38,6 +39,7 @@ public class VoteListener extends ListenerAdapter {
         RubiconPoll poll = pollManager.getPollByGuild(guild);
         if (!poll.isPollmsg(event.getMessageId())) return;
         if (poll.getVotes().containsKey(event.getUser().getId())) {
+            if(!event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) return;
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -46,9 +48,9 @@ public class VoteListener extends ListenerAdapter {
             }, 1000);
             return;
         }
-        System.out.println("dassdaa");
         String emoji = event.getReactionEmote().getName();
-        event.getReaction().removeReaction(event.getUser()).queue();
+        if(event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE))
+            event.getReaction().removeReaction(event.getUser()).queue();
         poll.addVote(event.getMember(), poll.getReacts().get(emoji));
         poll.updateMessages(event.getGuild(), CommandPoll.getParsedPoll(poll, event.getGuild()));
         pollManager.replacePoll(poll, guild);
@@ -67,7 +69,8 @@ public class VoteListener extends ListenerAdapter {
             if (!pollManager.pollExists(event.getGuild())) return;
             RubiconPoll poll = pollManager.getPollByGuild(event.getGuild());
             if (!poll.isPollmsg(event.getMessageId())) return;
-            event.getChannel().getMessageById(event.getMessageId()).complete().addReaction(event.getReactionEmote().getName()).queue();
+            if(poll.getReacts().containsKey(event.getReactionEmote().getName()))
+                event.getChannel().getMessageById(event.getMessageId()).complete().addReaction(event.getReactionEmote().getName()).queue();
         } catch (Exception ignored) {
         }
     }

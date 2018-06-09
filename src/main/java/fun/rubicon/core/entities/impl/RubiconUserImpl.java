@@ -8,6 +8,7 @@ package fun.rubicon.core.entities.impl;
 
 import com.rethinkdb.gen.ast.Filter;
 import com.rethinkdb.gen.ast.Table;
+import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.core.entities.PunishmentType;
 import fun.rubicon.core.entities.RubiconUser;
@@ -24,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Yannick Seeger / ForYaSee
@@ -181,12 +183,15 @@ public abstract class RubiconUserImpl extends RethinkHelper {
     }
 
     public void unban(Guild guild) {
+        Cursor cursor = rethink.db.table("punishments").filter(rethink.rethinkDB.hashMap("userId", user.getId()).with("guildId", guild.getId()).with("type", "ban")).run(rethink.getConnection());
+        if(cursor.toList().isEmpty()) return;
+        Map map = (Map) cursor.toList().get(0);
         rethink.db.table("punishments").filter(rethink.rethinkDB.hashMap("userId", user.getId()).with("guildId", guild.getId()).with("type", "ban")).delete().run(rethink.getConnection());
 
         if (guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
             guild.getController().unban(user).queue();
         } else
-            guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: Unable to unban user `" + user.getName() + "`! Please give Rubicon `BAN_MEMBERS` permission in order to use the unban command").queue();
+            guild.getMemberById(Long.parseLong((String) map.get("moderator"))).getUser().openPrivateChannel().complete().sendMessage("ERROR: Unable to unban user `" + user.getName() + "`! Please give Rubicon `BAN_MEMBERS` permission in order to use the unban command").queue();
         RubiconBot.getEventManager().handle(new UnpunishEvent(guild.getJDA(), 200, guild, user, PunishmentType.BAN));
 
     }
@@ -236,5 +241,10 @@ public abstract class RubiconUserImpl extends RethinkHelper {
 
     public static RubiconUserCache getUserCache() {
         return userCache;
+    }
+
+    public boolean isBanned(Guild guild){
+        Cursor cursor = rethink.db.table("punishments").filter(rethink.rethinkDB.hashMap("userId", user.getId()).with("guildId", guild.getId()).with("type", "ban")).run(rethink.getConnection());
+        return !cursor.toList().isEmpty();
     }
 }

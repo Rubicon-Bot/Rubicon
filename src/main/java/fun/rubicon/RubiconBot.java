@@ -7,10 +7,6 @@
 package fun.rubicon;
 
 import com.sedmelluq.discord.lavaplayer.tools.PlayerLibrary;
-import de.foryasee.httprequest.HttpRequestBuilder;
-import de.foryasee.httprequest.RequestHeader;
-import de.foryasee.httprequest.RequestResponse;
-import de.foryasee.httprequest.RequestType;
 import fun.rubicon.command.CommandManager;
 import fun.rubicon.commands.admin.CommandPortal;
 import fun.rubicon.commands.botowner.*;
@@ -58,11 +54,9 @@ import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.hooks.IEventManager;
-import org.json.JSONObject;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;

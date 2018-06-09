@@ -49,7 +49,7 @@ public class Rethink {
             Logger.info(String.format("RethinkDB connection success (%s)", host));
         } catch (Exception e) {
             failedConnection++;
-            connect();
+            //connect();
         }
     }
 

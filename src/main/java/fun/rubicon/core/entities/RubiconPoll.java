@@ -1,5 +1,6 @@
 package fun.rubicon.core.entities;
 
+import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.rethink.Rethink;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -17,7 +18,7 @@ import java.util.List;
  * @license GNU General Public License v3.0
  */
 public class RubiconPoll implements Serializable {
-    Rethink rethink = RubiconBot.getRethink();
+    private Rethink rethink = RubiconBot.getRethink();
 
     /*The id of the poll creator*/
     private String creator;
@@ -79,7 +80,6 @@ public class RubiconPoll implements Serializable {
     }
 
     private RubiconPoll(Member creator, String heading, List<String> answers, Message message, Guild guild) {
-        System.out.println(creator.getUser().getId() + "ID");
         this.creator = creator.getUser().getId();
         this.heading = heading;
         this.answers = answers;
@@ -89,19 +89,6 @@ public class RubiconPoll implements Serializable {
         this.guild = guild.getId();
 
         this.pollmsgs.put(message.getId(), message.getTextChannel().getId());
-    }
-
-    public RubiconPoll(Member creator, String heading, List<String> answers, HashMap<String, String> pollmsgs, HashMap<String, Integer> votesInput, HashMap<String, Integer> reactsInput, Guild guild) {
-        this.creator = creator.getUser().getId();
-        this.heading = heading;
-        this.answers = answers;
-        this.pollmsgs = pollmsgs;
-        this.votes = new HashMap<>();
-        this.reacts = new HashMap<>();
-        this.guild = guild.getId();
-        votesInput.forEach((s, i) -> votes.put(s, String.valueOf(i)));
-        reactsInput.forEach((s, i) -> reacts.put(s, String.valueOf(i)));
-
     }
 
     public RubiconPoll(String creator, String heading, List<String> answers, HashMap<String, String> pollmsgs, HashMap<String, String> votesInput, HashMap<String, String> reactsInput, Guild guild) {
@@ -125,8 +112,6 @@ public class RubiconPoll implements Serializable {
     public RubiconPoll savePoll() {
         /*Delete old poll*/
         delete();
-        System.out.println("OMI");
-        System.out.println(votes);
         rethink.db.table("votes").insert(rethink.rethinkDB.array(rethink.rethinkDB.hashMap("creator", creator).with("heading", heading).with("answers", answers).with("pollmsgs", pollmsgs).with("votes", votes).with("reacts", reacts).with("guild", guild))).run(rethink.getConnection());
         return this;
     }
@@ -155,5 +140,6 @@ public class RubiconPoll implements Serializable {
     public void addVote(Member member, Integer voteID){
         votes.put(member.getUser().getId(), String.valueOf(voteID));
     }
+
 
 }

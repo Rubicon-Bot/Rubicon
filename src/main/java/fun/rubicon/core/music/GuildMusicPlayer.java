@@ -407,7 +407,7 @@ public class GuildMusicPlayer extends MusicPlayer {
         boolean isStream;
         long duration;
 
-        public TrackDataHolder(AudioTrack track) {
+        TrackDataHolder(AudioTrack track) {
             this.track = track;
             this.name = track.getInfo().title;
             this.author = track.getInfo().author;

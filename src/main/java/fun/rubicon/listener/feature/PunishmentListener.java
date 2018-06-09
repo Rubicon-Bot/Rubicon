@@ -47,6 +47,8 @@ public class PunishmentListener extends ListenerAdapter {
 
     @Override
     public void onGuildUnban(GuildUnbanEvent event) {
-        RubiconUser.fromUser(event.getUser()).unban(event.getGuild());
+        RubiconUser user = RubiconUser.fromUser(event.getUser());
+        if(user.isBanned(event.getGuild()))
+            RubiconUser.fromUser(event.getUser()).unban(event.getGuild());
     }
 }

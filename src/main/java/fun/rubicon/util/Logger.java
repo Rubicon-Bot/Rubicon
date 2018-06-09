@@ -7,6 +7,7 @@
 package fun.rubicon.util;
 
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.webhook.WebhookClient;
 import net.dv8tion.jda.webhook.WebhookClientBuilder;
 
@@ -112,33 +113,35 @@ public class Logger {
                 String infoMessage = formatLogMessage("Info", text);
                 System.out.println(infoMessage);
                 addLogEntry(infoMessage + "\n");
-                webhookClient.send(new EmbedBuilder().setColor(Colors.COLOR_SECONDARY).setTitle("INFO").setDescription("```" + text + "```").setTimestamp(Instant.now()).build());
+                MessageEmbed embed = new EmbedBuilder().setColor(Colors.COLOR_SECONDARY).setTitle("INFO").setDescription("```" + text + "```").setTimestamp(Instant.now()).build();
+                send(embed);
                 break;
             case DEBUG:
                 String debugMessage = formatLogMessage("Debug", text);
                 System.out.println(debugMessage);
                 addLogEntry(debugMessage + "\n");
-                webhookClient.send(new EmbedBuilder().setColor(Colors.COLOR_NO_PERMISSION).setTitle("DEBUG").setDescription("```" + text + "```").setTimestamp(Instant.now()).build());
+                send(new EmbedBuilder().setColor(Colors.COLOR_NO_PERMISSION).setTitle("DEBUG").setDescription("```" + text + "```").setTimestamp(Instant.now()).build());
                 break;
             case ERROR:
                 String errorMessage = formatLogMessage("Error", text);
                 System.err.println(errorMessage);
                 addLogEntry(errorMessage + "\n");
-                webhookClient.send(new EmbedBuilder().setColor(Colors.COLOR_ERROR).setTitle("ERROR").setDescription("```" + text + "```").setTimestamp(Instant.now()).build());
+                send(new EmbedBuilder().setColor(Colors.COLOR_ERROR).setTitle("ERROR").setDescription("```" + text + "```").setTimestamp(Instant.now()).build());
                 break;
             case THROWABLE:
                 addLogEntry(formatLogMessage("Error", text) + "\n");
                 if (text.length() < 2000)
-                    webhookClient.send(new EmbedBuilder().setColor(Colors.COLOR_ERROR).setTitle("THROWABLE").setDescription("```" + text + "```").setTimestamp(Instant.now()).build());
+                    send(new EmbedBuilder().setColor(Colors.COLOR_ERROR).setTitle("THROWABLE").setDescription("```" + text + "```").setTimestamp(Instant.now()).build());
                 break;
             case WARNING:
                 String warningMessage = formatLogMessage("Warning", text);
                 System.err.println(warningMessage);
                 addLogEntry(warningMessage + "\n");
-                webhookClient.send(new EmbedBuilder().setColor(Colors.COLOR_PREMIUM).setTitle("WARNING").setDescription("```" + text + "```").setTimestamp(Instant.now()).build());
+                send(new EmbedBuilder().setColor(Colors.COLOR_PREMIUM).setTitle("WARNING").setDescription("```" + text + "```").setTimestamp(Instant.now()).build());
                 break;
             default:
                 break;
+                
         }
     }
 
@@ -154,7 +157,6 @@ public class Logger {
         long maxMemoryInMB = maxMemory / 1024L / 1024L;
         long totalMemoryInMB = totalMemory / 1024L / 1024L;
         long freeMemoryInMB = freeMemory / 1024L / 1024L;
-
         return String.valueOf(freeMemory) + " bytes (" + freeMemoryInMB + " MB) / " +
                 totalMemory + " bytes (" + totalMemoryInMB + " MB) up to " +
                 maxMemory + " bytes (" + maxMemoryInMB + " MB)";
@@ -164,6 +166,16 @@ public class Logger {
         return logFile;
     }
 
+    
+    private static void send(MessageEmbed... embeds){
+        try {
+            webhookClient.send(embeds);
+        } catch (IllegalArgumentException ignored) {}
+    }
+    
+    
+
+    
 
     public enum LoggerLevel {
         INFO, DEBUG, ERROR, THROWABLE, WARNING

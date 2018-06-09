@@ -16,13 +16,16 @@ public class PunishmentManager {
     private HashMap<Member, Long> muteCache = new HashMap<>();
 
     public void registerPunishmentHandler(PunishmentHandler handler) {
-        RubiconBot.getCommandManager().registerCommandHandler((CommandHandler) handler);
+        if (RubiconBot.getCommandManager() != null) {
+            RubiconBot.getCommandManager().registerCommandHandler((CommandHandler) handler);
+        }
         punishmentHandlers.add(handler);
     }
 
     public void registerPunishmentHandlers(PunishmentHandler... handlers) {
         Collections.addAll(punishmentHandlers, handlers);
         for (PunishmentHandler handler : handlers) {
+            assert RubiconBot.getCommandManager() != null;
             RubiconBot.getCommandManager().registerCommandHandler((CommandHandler) handler);
         }
     }
