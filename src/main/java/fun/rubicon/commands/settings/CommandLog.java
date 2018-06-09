@@ -17,7 +17,7 @@ import net.dv8tion.jda.core.entities.TextChannel;
 
 public class CommandLog extends CommandHandler {
     public CommandLog() {
-        super(new String[] {"log"}, CommandCategory.SETTINGS, new PermissionRequirements("logs", false, false), "Easy logging system", "channel <#channel>\n member - Join/Leave log \nrole - Role assignments\n message - Message deletions\n voice - Voice log");
+        super(new String[] {"log"}, CommandCategory.SETTINGS, new PermissionRequirements("logs", false, false), "Easy logging system", "channel <#channel>\n member - Join/Leave log \nrole - Role assignments\n message - Message deletions\n voice - Voice log\n command - Command log\n punishment - Punishment log");
     }
 
     @Override
