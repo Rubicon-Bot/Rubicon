@@ -49,6 +49,7 @@ public class VerificationListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
+        if(event.getUser().isBot()) return;
         RubiconGuild rubiconGuild = RubiconGuild.fromGuild(event.getGuild());
         if (rubiconGuild.isVerificationEnabled()) {
             TextChannel verifyChannel = event.getGuild().getTextChannelById((String) getDatabaseValue(rubiconGuild.getGuild(), "channelId"));
