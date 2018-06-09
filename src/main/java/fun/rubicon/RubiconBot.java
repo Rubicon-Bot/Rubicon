@@ -192,6 +192,7 @@ public class RubiconBot {
                 new CommandGiphy(),
                 new CommandRip(),
                 new CommandMedal(),
+                new CommandMotel(),
                 new CommandRoadSign(),
                 new CommandWeddingSign(),
                 new CommandDice(),
