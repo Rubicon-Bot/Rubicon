@@ -1,16 +1,17 @@
 package fun.rubicon.entities.impl;
 
+import fun.rubicon.entities.*;
 import fun.rubicon.entities.Guild;
-import fun.rubicon.entities.Joinimage;
-import fun.rubicon.entities.Joinmessage;
-import fun.rubicon.entities.Leavemessage;
 import fun.rubicon.io.db.RethinkDataset;
 import lombok.Getter;
 import lombok.ToString;
 import net.dv8tion.jda.client.requests.restaction.pagination.MentionPaginationAction;
 import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.Region;
 import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.managers.AudioManager;
 import net.dv8tion.jda.core.managers.GuildController;
 import net.dv8tion.jda.core.managers.GuildManager;
@@ -31,6 +32,7 @@ import java.util.Set;
 /**
  * @author ForYaSee / Yannick Seeger
  */
+@SuppressWarnings("Duplicates")
 @ToString
 public class GuildImpl extends RethinkDataset implements Guild {
 
@@ -42,10 +44,19 @@ public class GuildImpl extends RethinkDataset implements Guild {
     private transient Leavemessage leavemessage;
     @Getter
     private transient Joinimage joinimage;
+    @Getter
+    private transient Autochannel autochannel;
+    @Getter
+    private transient PortalSettings portalSettings;
+    @Getter
+    private transient VerificationSettings verificationSettings;
+    @Getter
     private String id;
     @Getter
     private String prefix;
     private List<String> rank;
+    @Getter
+    private String portal;
     private String beta;
 
     public GuildImpl(net.dv8tion.jda.core.entities.Guild guild, String prefix, String beta) {
@@ -182,7 +193,7 @@ public class GuildImpl extends RethinkDataset implements Guild {
 
     @Override
     public boolean isRank(Role role) {
-        return false;
+        return getRankIds().contains(role.getId());
     }
 
     @Override
@@ -240,13 +251,143 @@ public class GuildImpl extends RethinkDataset implements Guild {
         return rank;
     }
 
-    //Portal
-
-
-    //ID
+    //Autochannel
     @Override
-    public String getId() {
-        return guild.getId();
+    public List<String> getAutochannels() {
+        return autochannel.getAutoChannels();
+    }
+
+    @Override
+    public void setAutochannel(Autochannel autochannel) {
+        this.autochannel = autochannel;
+    }
+
+
+    @Override
+    public void enableAutochannel(String guildId, List<String> channels) {
+        this.autochannel = new AutochannelImpl(guildId, channels);
+    }
+
+    @Override
+    public void enableAutochannel(String guildId, String channelId) {
+        this.autochannel = new AutochannelImpl(guildId, channelId);
+    }
+
+    @Override
+    public boolean isAutochannel(String channelId) {
+        return getAutochannels().contains(channelId);
+    }
+
+    @Override
+    public void disableAutochannel() {
+        if (autochannel == null)
+            return;
+        autochannel.delete();
+        autochannel = null;
+    }
+
+    //Mutes
+    @Override
+    public Role getMutedRole() {
+        if (!guild.getRolesByName("rubicon-muted", false).isEmpty())
+            return guild.getRolesByName("rubicon-muted", false).get(0);
+        if (!guild.getSelfMember().hasPermission(Permission.MANAGE_ROLES, Permission.MANAGE_PERMISSIONS)) {
+            guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: I can't create roles so you can't use mute feature! Please give me `MANAGE_ROLES` and `MANAGE_PERMISSIONS` Permission").queue();
+            return null;
+        }
+        Role mute = guild.getController().createRole().setName("rubicon-muted").complete();
+        if (!guild.getSelfMember().hasPermission(Permission.MANAGE_CHANNEL, Permission.MANAGE_PERMISSIONS)) {
+            guild.getOwner().getUser().openPrivateChannel().complete().sendMessage("ERROR: I can't manage channels so you can't use mute feature! Please give me ``MANAGE_ROLES` and `MANAGE_PERMISSIONS` Permission").queue();
+            return mute;
+        }
+        guild.getTextChannels().forEach(tc -> {
+            if (guild.getSelfMember().hasPermission(tc, Permission.MANAGE_PERMISSIONS)) {
+                if (tc.getPermissionOverride(mute) != null) return;
+                PermissionOverride override = tc.createPermissionOverride(mute).complete();
+                override.getManager().deny(Permission.MESSAGE_WRITE).queue();
+            }
+        });
+        return mute;
+    }
+
+    //Portal
+    @Override
+    public boolean hasPortal() {
+        return portal != null;
+    }
+
+    @Override
+    public void setPortal(String rootPortalId) {
+        this.portal = rootPortalId;
+        saveData();
+    }
+
+    @Override
+    public void closePortal() {
+        this.portal = null;
+        saveData();
+    }
+
+    //Portal Settings
+    @Override
+    public void setPortalSettings(PortalSettings portalSettings) {
+            this.portalSettings = portalSettings;
+    }
+
+    @Override
+    public boolean hasPortalEmbedsEnables() {
+        return getPortalSettings().getEmbeds();
+    }
+
+    @Override
+    public boolean allowsPortalInvites() {
+        return getPortalSettings().getInvites();
+    }
+
+    @Override
+    public void deletePortalSettings() {
+        getPortalSettings().delete();
+    }
+
+    @Override
+    public void setPortalInvites(boolean state) {
+        getPortalSettings().setInvites(state);
+    }
+
+    @Override
+    public void setPortalEmbeds(boolean state) {
+        getPortalSettings().setEmbeds(state);
+    }
+
+    //Verification Settings
+    @Override
+    public void setVerificationSettings(VerificationSettings verificationSettings) {
+        this.verificationSettings = verificationSettings;
+    }
+
+    @Override
+    public void disableVerification() {
+        getVerificationSettings().delete();
+    }
+
+    @Override
+    public boolean isVerificationEnabled() {
+        return verificationSettings != null;
+    }
+
+    @Override
+    public TextChannel getVerificationChannel() {
+        return guild.getTextChannelById(getVerificationSettings().getChannelId());
+    }
+
+    @Override
+    public Role getVerificationRole() {
+        return guild.getRoleById(getVerificationSettings().getRoleId());
+    }
+
+    @Override
+    public String getVerificationKickText() {
+        return getVerificationSettings().getKickText();
     }
 
     //JDA stuff

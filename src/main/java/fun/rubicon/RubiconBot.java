@@ -70,6 +70,7 @@ public class RubiconBot {
     private BitlyAPI bitlyAPI;
     private VerificationLoader verificationLoader;
     private SetupManager setupManager;
+    @Deprecated
     private IEventManager iEventManager;
     private static final String[] CONFIG_KEYS = {
             "shard_count",
@@ -155,7 +156,7 @@ public class RubiconBot {
         gameAnimator.start();
         shardManager.setStatus(OnlineStatus.ONLINE);
 
-        Logger.info("Started!");
+        logger.info("Started!");
     }
 
     /**
@@ -200,12 +201,20 @@ public class RubiconBot {
         try {
             shardManager = builder.build();
         } catch (LoginException e) {
-            Logger.error(e);
+            logger.error("",e);
             throw new RuntimeException("Can't start bot!");
         }
         lavalinkManager.initialize();
         Info.lastRestart = new Date();
     }
+
+    /**
+     * @return an {@link org.slf4j.Logger} instance.
+     */
+    public static org.slf4j.Logger getLogger(Class theClass){
+        return LoggerFactory.getLogger(theClass);
+    }
+
 
     /**
      * @return the {@link ShardManager} that is used in the Rubicon project

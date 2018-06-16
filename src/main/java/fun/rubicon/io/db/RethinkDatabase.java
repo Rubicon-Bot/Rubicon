@@ -100,6 +100,9 @@ public class RethinkDatabase {
         guild.setJoinmessage(getJoinmessage(jdaGuild.getId()));
         guild.setLeavemessage(getLeavemessage(jdaGuild.getId()));
         guild.setJoinimage(getJoinimage(jdaGuild.getId()));
+        guild.setAutochannel(getAutochannel(jdaGuild.getId()));
+        guild.setPortalSettings(getPortalSettings(jdaGuild.getId()));
+        guild.setVerificationSettings(getVerificationSettings(jdaGuild.getId()));
         //Save Guild in Cache
         GuildProvider.addGuild(guild);
         return guild;
@@ -133,6 +136,36 @@ public class RethinkDatabase {
         if (joinImage == null)
             return null;
         return joinImage;
+    }
+
+    public Autochannel getAutochannel(String guildId) {
+        Map map = r.table(AutochannelImpl.TABLE).get(guildId).run(getConnection());
+        Gson gson = new Gson();
+        JsonElement json = gson.toJsonTree(map);
+        AutochannelImpl autochannel = gson.fromJson(json, AutochannelImpl.class);
+        if (autochannel == null)
+            return null;
+        return autochannel;
+    }
+
+    public PortalSettings getPortalSettings(String guildId) {
+        Map map = r.table(PortalSettingsImpl.TABLE).get(guildId).run(getConnection());
+        Gson gson = new Gson();
+        JsonElement json = gson.toJsonTree(map);
+        PortalSettingsImpl portalSettings = gson.fromJson(json, PortalSettingsImpl.class);
+        if (portalSettings == null)
+            return null;
+        return portalSettings;
+    }
+
+    public VerificationSettings getVerificationSettings(String guildId) {
+        Map map = r.table(VerificationSettingsImpl.TABLE).get(guildId).run(getConnection());
+        Gson gson = new Gson();
+        JsonElement json = gson.toJsonTree(map);
+        VerificationSettingsImpl verificationSettings = gson.fromJson(json, VerificationSettingsImpl.class);
+        if (verificationSettings == null)
+            return null;
+        return verificationSettings;
     }
 
     //TODO Implement Database things
