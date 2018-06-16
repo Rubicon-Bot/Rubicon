@@ -10,19 +10,22 @@ import com.rethinkdb.net.Connection;
 import de.jakobjarosch.rethinkdb.pool.ConnectionPoolMetrics;
 import de.jakobjarosch.rethinkdb.pool.RethinkDBPool;
 import de.jakobjarosch.rethinkdb.pool.RethinkDBPoolBuilder;
+import fun.rubicon.RubiconBot;
 import fun.rubicon.core.ShutdownManager;
 import fun.rubicon.entities.*;
 import fun.rubicon.entities.impl.*;
 import fun.rubicon.io.Data;
+import fun.rubicon.permission.Permission;
+import fun.rubicon.permission.PermissionTarget;
 import fun.rubicon.provider.GuildProvider;
+import fun.rubicon.provider.PermissionProvider;
 import fun.rubicon.provider.UserProvider;
 import fun.rubicon.util.RubiconInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author ForYaSee / Yannick Seeger
@@ -84,6 +87,15 @@ public class RethinkDatabase {
         if (user == null)
             user = new UserImpl(jdaUser, "No bio set.", 0L, "en-US", null, 0L, new HashMap<>());
         user.setJDAUser(jdaUser);
+        //Bind permissions
+        Map map1 = r.table("permissions").get(jdaUser.getId()).run(getConnection());
+        System.out.println(map1.get("permissions"));
+        List<Permission> myList = new ArrayList<>();
+        String[] nodes = map1.get("permissions").toString().split(",");
+        for (String node : nodes) {
+            myList.add(Permission.parse(node));
+        }
+        PermissionProvider.addPermissions(new PermissionTarget(RubiconBot.getShardManager().getGuildById(map1.get("guildId").toString()),PermissionTarget.Type.getByIdentifier(map1.get("type").toString().charAt(0)),jdaUser.getIdLong()),myList);
         UserProvider.addUser(user);
         return user;
     }

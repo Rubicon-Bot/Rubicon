@@ -87,7 +87,7 @@ public class PermissionCommandHandler extends CommandHandler {
                 if (!LIST_PERMISSIONS.coveredBy(userPermissions))
                     return message(no_permissions());
                 List<CommandHandler> filteredCommandList = RubiconBot.getCommandManager().getCommandAssociations().values().stream().filter(commandHandler -> commandHandler.getCategory() != CommandCategory.BOT_OWNER).collect(Collectors.toList());
-                List<Permission> permissionEntries = RubiconBot.sGetPermissionManager().getPermissions(target);
+                List<Permission> permissionEntries = RubiconBot.getPermissionManager().getPermissions(target);
                 StringBuilder deniedPermissionString = new StringBuilder();
                 StringBuilder allowedPermissionString = new StringBuilder();
                 ArrayList<CommandHandler> alreadyAdded = new ArrayList<>();
@@ -129,35 +129,35 @@ public class PermissionCommandHandler extends CommandHandler {
 
             if (subCommand.equalsIgnoreCase("allow") || subCommand.equalsIgnoreCase("add")) {
                 Permission permission = Permission.parse(permissionString);
-                if (RubiconBot.sGetPermissionManager().hasPermission(target, permission, true)) {
-                    for (Permission p : RubiconBot.sGetPermissionManager().getPermissions(target)) {
+                if (RubiconBot.getPermissionManager().hasPermission(target, permission, true)) {
+                    for (Permission p : RubiconBot.getPermissionManager().getPermissions(target)) {
                         if (p.getPermissionString().contains(permissionString)) {
                             if (!p.isNegated()) {
                                 return message(error(invocation.translate("command.perm.exist.title"), String.format(invocation.translate("command.perm.exist.desc"),
                                         Permission.parse(permissionString).getPermissionString(), target.toString(), invocation.getPrefix() + invocation.getCommandInvocation() + " list " + (targetString))));
                             } else {
-                                RubiconBot.sGetPermissionManager().removePermission(target, permission.setNegated(true));
+                                RubiconBot.getPermissionManager().removePermission(target, permission.setNegated(true));
                                 return message(success(invocation.translate("command.perm.updated.title"), String.format(invocation.translate("command.perm.allow.desc"), permissionString, target.toString())));
                             }
                         }
                     }
                 } else {
-                    RubiconBot.sGetPermissionManager().addPermission(target, Permission.parse(permissionString));
+                    RubiconBot.getPermissionManager().addPermission(target, Permission.parse(permissionString));
                     return message(success(invocation.translate("command.perm.updated.title"), String.format(invocation.translate("command.perm.allow.desc"), permissionString, target.toString())));
                 }
                 // Check Permissions
-                return RubiconBot.sGetPermissionManager().addPermission(target, Permission.parse(permissionString))
+                return RubiconBot.getPermissionManager().addPermission(target, Permission.parse(permissionString))
                         ? message(success(invocation.translate("command.perm.updated.title"), String.format(invocation.translate("command.perm.allow.desc"), permissionString, target.toString())))
                         : message(error(invocation.translate("command.perm.exist.title"), String.format(invocation.translate("command.perm.exist.desc"),
                         Permission.parse(permissionString).getPermissionString(), target.toString(), invocation.getPrefix() + invocation.getCommandInvocation() + " list " + (targetString))));
 
             } else if (subCommand.equalsIgnoreCase("deny") || subCommand.equalsIgnoreCase("remove")) {
                 Permission permission = Permission.parse(permissionString);
-                if (RubiconBot.sGetPermissionManager().hasPermission(target, permission, true)) {
-                    for (Permission p : RubiconBot.sGetPermissionManager().getPermissions(target)) {
+                if (RubiconBot.getPermissionManager().hasPermission(target, permission, true)) {
+                    for (Permission p : RubiconBot.getPermissionManager().getPermissions(target)) {
                         if (p.getPermissionString().contains(permissionString)) {
                             if (!p.isNegated()) {
-                                RubiconBot.sGetPermissionManager().removePermission(target, permission);
+                                RubiconBot.getPermissionManager().removePermission(target, permission);
                                 return message(success(invocation.translate("command.perm.updated.title"), String.format(invocation.translate("command.perm.denied.desc"), permissionString, target.toString())));
                             } else {
                                 return message(error(invocation.translate("command.perm.exist.title"), String.format(invocation.translate("command.perm.exist.desc"),
@@ -166,7 +166,7 @@ public class PermissionCommandHandler extends CommandHandler {
                         }
                     }
                 } else {
-                    RubiconBot.sGetPermissionManager().addPermission(target, Permission.parse("!" + permissionString));
+                    RubiconBot.getPermissionManager().addPermission(target, Permission.parse("!" + permissionString));
                     return message(success(invocation.translate("command.perm.updated.title"), String.format(invocation.translate("command.perm.denied.desc"), permissionString, target.toString())));
                 }
             }

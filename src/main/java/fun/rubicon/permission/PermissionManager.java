@@ -11,6 +11,7 @@ import com.rethinkdb.net.Cursor;
 import fun.rubicon.RubiconBot;
 import fun.rubicon.io.deprecated_rethink.Rethink;
 import fun.rubicon.io.deprecated_rethink.RethinkHelper;
+import fun.rubicon.provider.PermissionProvider;
 import net.dv8tion.jda.core.entities.Member;
 
 import java.sql.SQLException;
@@ -90,7 +91,7 @@ public class PermissionManager extends RethinkHelper {
         return true;
     }
 
-    public List<Permission> getPermissions(PermissionTarget target) {
+    public List<Permission> retrivePermissions(PermissionTarget target) {
         List<Permission> permissions = new ArrayList<>();
         Cursor cursor = table.filter(
                 rethink.rethinkDB.hashMap("guildId", target.getGuild().getId())
@@ -107,6 +108,10 @@ public class PermissionManager extends RethinkHelper {
 
         }
         return permissions;
+    }
+
+    public List<Permission> getPermissions(PermissionTarget target){
+        return PermissionProvider.getPermissionList(target);
     }
 
     private void updatePermissions(PermissionTarget target, List<Permission> permissions) {

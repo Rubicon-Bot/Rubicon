@@ -36,6 +36,8 @@ public class BotLauncher {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
     }
 
     private static void printHeader() {

@@ -1,5 +1,7 @@
 package fun.rubicon.cluster;
 
+import fun.rubicon.BotLauncher;
+import fun.rubicon.RubiconBot;
 import fun.rubicon.cluster.event.ClusterListenerAdapter;
 import fun.rubicon.cluster.impl.ClusterClientImpl;
 

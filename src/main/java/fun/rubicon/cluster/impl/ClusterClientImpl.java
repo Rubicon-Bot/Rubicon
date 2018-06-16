@@ -1,5 +1,7 @@
 package fun.rubicon.cluster.impl;
 
+import fun.rubicon.BotLauncher;
+import fun.rubicon.RubiconBot;
 import fun.rubicon.cluster.ClusterClient;
 import fun.rubicon.cluster.event.ClusterEventManager;
 import fun.rubicon.cluster.event.ClusterListenerAdapter;
@@ -73,6 +75,8 @@ public class ClusterClientImpl implements ClusterClient {
                     });
             ChannelFuture channelFuture = bootstrap.connect().sync();
             logger.info("Started Cluster Client.");
+
+            new RubiconBot(BotLauncher.getClusterClient(),BotLauncher.getClusterCommandManager());
 
             //Shutdown
             channelFuture.channel().closeFuture().sync();

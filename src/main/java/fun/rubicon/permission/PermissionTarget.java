@@ -20,7 +20,7 @@ public class PermissionTarget {
         USER('u', "user"),
         ROLE('r', "role"),
         DISCORD_PERMISSION('d', "discord permission");
-
+        //TODO: Wird gelöscht kein bock auf d
         private final char identifier;
 
         private final String name;

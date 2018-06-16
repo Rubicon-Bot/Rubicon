@@ -100,6 +100,7 @@ public class RubiconBot {
      * Constructs the RubiconBot.
      */
     public RubiconBot(ClusterClient clusterClient, ClusterCommandManager clusterCommandManager) {
+        System.out.println("sadasd");
         this.clusterClient = clusterClient;
         this.clusterCommandManager = clusterCommandManager;
 
@@ -108,7 +109,7 @@ public class RubiconBot {
         new File("rubicon_logs").mkdirs();
         new File("data/").mkdirs();
         new File("data/bot/settings").mkdirs();
-
+        System.out.println("asd");
         //OLD
         Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, "rubicon_logs/");
 
@@ -120,6 +121,7 @@ public class RubiconBot {
                 configuration.set(configKey, input);
             }
         }
+        System.out.println("conf");
         //Deactivate Beta if not active
         if (!configuration.has("beta"))
             configuration.set("beta", 0);
@@ -140,6 +142,60 @@ public class RubiconBot {
         logger.info("1");
         commandRegistry.register();
         logger.info("2");
+        permissionManager = new PermissionManager();
+        translationManager = new TranslationManager();
+        gameAnimator = new GameAnimator();
+        iEventManager = new RubiconEventManager();
+        //Init url shorter API
+        bitlyAPI = new BitlyAPI(configuration.getString("bitly_token"));
+        verificationLoader = new VerificationLoader();
+        setupManager = new SetupManager();
+
+
+        //Init Shard
+        initShardManager();
+
+        gameAnimator.start();
+        shardManager.setStatus(OnlineStatus.ONLINE);
+
+        logger.info("Started!");
+    }
+
+    public RubiconBot() {
+        this.clusterClient = null;
+        this.clusterCommandManager = null;
+        System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
+        instance = this;
+        new File("rubicon_logs").mkdirs();
+        new File("data/").mkdirs();
+        new File("data/bot/settings").mkdirs();
+        //OLD
+        Logger.logInFile(Info.BOT_NAME, Info.BOT_VERSION, "rubicon_logs/");
+
+        //Init config
+        configuration = new Configuration(new File(Info.CONFIG_FILE));
+        for (String configKey : CONFIG_KEYS) {
+            if (!configuration.has(configKey)) {
+                String input = ConfigSetup.prompt(configKey);
+                configuration.set(configKey, input);
+            }
+        }
+        Logger.enableWebhooks(configuration.getString("log_webhook"));
+        //Deactivate Beta if not active
+        if (!configuration.has("beta"))
+            configuration.set("beta", 0);
+        connectRethink();
+        RethinkUtil.createDefaults(rethink);
+
+        //Init punishments
+        punishmentManager = new PunishmentManager();
+
+        commandManager = new CommandManager();
+        lavalinkManager = new LavalinkManager();
+        pollManager = new PollManager();
+        guildMusicPlayerManager = new GuildMusicPlayerManager();
+        CommandRegistry commandRegistry = new CommandRegistry(commandManager, punishmentManager);
+        commandRegistry.register();
         permissionManager = new PermissionManager();
         translationManager = new TranslationManager();
         gameAnimator = new GameAnimator();
@@ -194,9 +250,7 @@ public class RubiconBot {
         builder.setShardsTotal(Integer.parseInt(configuration.getString("shard_count")));
         builder.setShards(Integer.parseInt(configuration.getString("shard_id")));
         EventRegistry eventRegistry = new EventRegistry(builder, commandManager);
-        logger.info("1");
         eventRegistry.register();
-        logger.info("2");
         builder.setEventManager(iEventManager);
         try {
             shardManager = builder.build();
@@ -244,17 +298,19 @@ public class RubiconBot {
     public static CommandManager getCommandManager() {
         return instance == null ? null : instance.commandManager;
     }
-
+    
+    /**
+     * @return the {@link PermissionManager} via a static reference.
+     */
     @Deprecated
-    public PermissionManager getPermissionManager() {
+    public PermissionManager sgetPermissionManager() {
         return instance.permissionManager;
     }
 
     /**
      * @return the {@link PermissionManager} via a static reference.
      */
-    @Deprecated
-    public static PermissionManager sGetPermissionManager() {
+    public static PermissionManager getPermissionManager() {
         return instance == null ? null : instance.permissionManager;
     }
 

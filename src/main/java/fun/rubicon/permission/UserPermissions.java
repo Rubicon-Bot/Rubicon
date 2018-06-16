@@ -64,7 +64,7 @@ public class UserPermissions {
 
     public boolean hasPermissionNode(String permission) {
         if (isBotAuthor()) return true;
-        return RubiconBot.sGetPermissionManager().hasPermission(new PermissionTarget(getDiscordMember()), Permission.parse(permission), false);
+        return RubiconBot.getPermissionManager().hasPermission(new PermissionTarget(getDiscordMember()), Permission.parse(permission), false);
     }
 
     /**

@@ -46,6 +46,7 @@ public class Rethink {
             db = rethinkDB.db(dbName);
             Logger.info(String.format("RethinkDB connection success (%s)", host));
         } catch (Exception e) {
+            e.printStackTrace();
             failedConnection++;
             connect();
         }
