@@ -20,8 +20,12 @@ import java.io.IOException;
 public class BotListHandler {
 
     private static final org.slf4j.Logger Logger = LoggerFactory.getLogger(BotListHandler.class);
+    private static final OkHttpClient client = new OkHttpClient();
+    private static final JSONObject DEFAULT_OBJECT = new JSONObject().put("shard_id", RubiconBot.getConfiguration().getString("shard_id")).put("shard_count", RubiconBot.getConfiguration().getString("shard_count")).put("server_count", RubiconBot.getShardManager().getGuilds().size());
+
 
     public static void postStats(boolean silent) {
+        Logger.debug("hey");
         // check if bot has already been initialized
         if (RubiconBot.getShardManager() == null) {
             Logger.error("No Shardmanager found! Terminating all Stats Poster.");
@@ -80,38 +84,29 @@ public class BotListHandler {
     }
 
     private static void postDPW(boolean silent) {
-        JSONObject dpwBody = new JSONObject().put("server_count", RubiconBot.getShardManager().getGuilds().size());
-
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"), dpwBody.toString());
-        //Post stats to bots.discord.pw
-        Request req = new Request.Builder()
-                .url("https://bots.discord.pw/api/bots/" + RubiconBot.getSelfUser().getId() + "/stats")
-                .addHeader("Authorization", RubiconBot.getConfiguration().getString("discord_pw_token"))
-                .post(body)
-                .build();
-
-        try {
-            new OkHttpClient().newCall(req).execute().close();
-        } catch (IOException e) {
-            if (!silent)
-                e.printStackTrace();
-        }
+        post(silent, "https://bots.discord.pw/api/bots/" + RubiconBot.getSelfUser().getId() + "/stats", RequestBody.create(MediaType.parse("application/json"), DEFAULT_OBJECT.toString()), RubiconBot.getConfiguration().getString("discord_pw_token"));
     }
 
     private static void postDBL(boolean silent) {
-        JSONObject object = new JSONObject().put("server_count", RubiconBot.getShardManager().getGuilds().size());
+        post(silent, "https://discordbots.org/api/bots/" + RubiconBot.getSelfUser().getId() + "/stats" ,RequestBody.create(MediaType.parse("application/json; charset=utf-8"), DEFAULT_OBJECT.toString()), RubiconBot.getConfiguration().getString("dbl_token"));
+    }
 
-        Request request = new Request.Builder()
-                .url("https://discordbots.org/api/bots/" + RubiconBot.getSelfUser().getId() + "/stats")
-                .addHeader("Authorization", RubiconBot.getConfiguration().getString("dbl_token"))
-                .put(RequestBody.create(MediaType.parse("application/json; charset=utf-8"), object.toString()))
+    //TODO: Add BFD stats posting when BFD adds shard support
+    //TODO: Add BLS stats posting when BLS adds shard support, that is not such shit like the actual one
+
+
+    private static void post(boolean silent, String url, RequestBody body, String token){
+        Request req = new Request.Builder()
+                .url(url)
+                .addHeader("Authorization", token)
+                .put(body)
                 .build();
 
         try {
-            new OkHttpClient().newCall(request).execute().close();
-        } catch (IOException e) {
-            if (!silent)
-                e.printStackTrace();
+            client.newCall(req).execute().close();
+        } catch (IOException e){
+            if(!silent)
+                Logger.error("An error occured while posting stats to: " + url,e);
         }
     }
 }
