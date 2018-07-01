@@ -128,7 +128,6 @@ public class RubiconBot {
             configuration.set("beta", 0);
         Logger.enableWebhooks(configuration.getString("log_webhook"));
         connectRethink();
-        RethinkUtil.createDefaults(rethink);
 
         //Init punishments
         punishmentManager = new PunishmentManager();
@@ -467,6 +466,7 @@ public class RubiconBot {
                 instance.configuration.getString("rethink_password")
         );
         rethink.connect();
+        RethinkUtil.createDefaults(rethink);
     }
 
     public static VerificationLoader getVerificationLoader() {
