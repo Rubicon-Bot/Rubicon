@@ -69,8 +69,8 @@ public class CommandBan extends CommandHandler implements PunishmentHandler {
         for (Object obj : cursor) {
             Map map = (Map) obj;
             RubiconUser user = RubiconUser.fromUser(RubiconBot.getShardManager().getUserById((long) map.get("userId")));
-            long guildId = (long) map.get("guildId");
-            long expiry = (long) map.get("expiry");
+            long guildId = Long.parseLong((String) map.get("guildId"));
+            long expiry = Long.parseLong((String) map.get("expiry"));
             if (expiry == 1L) return;
             if (new Date(expiry).before(new Date())) user.unban(RubiconBot.getShardManager().getGuildById(guildId));
             new Timer().schedule(new TimerTask() {
