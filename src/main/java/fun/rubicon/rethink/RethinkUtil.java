@@ -38,7 +38,9 @@ public class RethinkUtil {
             "portal_invites",
     };
 
-    public static void createDefaults(Rethink rethink) {
+    public static void createDefaults(Rethink rethink){
+        if(rethink == null)
+            return;
         rethink.db.config().update(rethink.rethinkDB.hashMap("write_acks", "single")).run(rethink.getConnection());
         for (String table : tables) {
             try {
