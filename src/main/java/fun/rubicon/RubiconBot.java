@@ -466,7 +466,8 @@ public class RubiconBot {
                 instance.configuration.getString("rethink_password")
         );
         rethink.connect();
-        RethinkUtil.createDefaults(rethink);
+        //TODO: Fix database generation
+        //RethinkUtil.createDefaults(rethink);
     }
 
     public static VerificationLoader getVerificationLoader() {
