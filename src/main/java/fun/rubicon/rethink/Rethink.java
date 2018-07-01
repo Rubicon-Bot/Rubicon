@@ -36,6 +36,7 @@ public class Rethink {
     }
 
     public void connect() {
+        System.out.println("Trying to connect to Rethink");
         try {
             if (failedConnection > 1 && failedConnection <= 5) {
                 host = RubiconBot.getConfiguration().getString("rethink_host" + failedConnection);
