@@ -53,7 +53,6 @@ public class RubiconGiveaway {
         this.expirationDate = new Date(Long.parseLong((String) map.get("expirationDate")));
         this.prize = (String) map.get("prize");
         this.users = (List<String>) map.get("users");
-        System.out.println(this.users);
         this.guildId = (String) map.get("guildId");
         this.channelId = (String) map.get("channelId");
         this.messageId = (String) map.get("messageId");

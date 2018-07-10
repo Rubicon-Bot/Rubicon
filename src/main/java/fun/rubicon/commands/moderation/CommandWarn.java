@@ -98,7 +98,6 @@ public class CommandWarn extends CommandHandler {
                 if (args.length < 2)
                     return EmbedUtil.message(EmbedUtil.error());
                 args = invocation.getArgsString().replace("@", "").replace(invocation.getMessage().getMentionedMembers().get(0).getEffectiveName(), "a").split(" ");
-                System.out.println(args[0]);
                 member = RubiconMember.fromMember(invocation.getMessage().getMentionedMembers().get(0));
                 String reason = invocation.getArgsString().replace("@", "").replace(member.getMember().getEffectiveName(), "");
                 member.warn(reason, invocation.getMember());

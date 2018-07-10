@@ -8,6 +8,7 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.exceptions.ErrorResponseException;
 
 import java.util.*;
 
@@ -34,8 +35,10 @@ public class VerificationLoader {
                 Member member = guild.getMemberById((String) map.get("userId"));
                 if (member == null) continue;
                 try {
-                    userStorage.put(member, rubiconGuild.getVerificationChannel().getMessageById((String) map.get("messageId")).complete());
-                } catch (NullPointerException ignored) {
+                    Message message = rubiconGuild.getVerificationChannel().getMessageById((String) map.get("messageId")).complete();
+                    if(message == null) continue;
+                    userStorage.put(member, message);
+                } catch (NullPointerException | ErrorResponseException ignored) {
                     //Channel is null
                     continue;
                 }

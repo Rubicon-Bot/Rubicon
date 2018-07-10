@@ -17,10 +17,10 @@ public class AllShardsLoadedListener extends RubiconEventAdapter {
     @Override
     public void onAllShardsLoaded(AllShardsLoadedEvent event) {
         RubiconBot.setAllShardsInitialised(true);
-        //Load all punishments (bans & mutes)
-        RubiconBot.getPunishmentManager().loadPunishments();
         //Post Guild Stats
         BotListHandler.postStats(false);
+        //Load all punishments (bans & mutes)
+        RubiconBot.getPunishmentManager().loadPunishments();
         //Load all polls
         RubiconBot.getPollManager().loadPolls();
         //Load all YouTube Events
